@@ -1,0 +1,67 @@
+@keyframes jumbo {
+  from {
+    background-position:
+      100% 100%,
+      100% 50%;
+  }
+  to {
+    background-position:
+      100% 50%,
+      70% 50%;
+  }
+}
+
+.jumbo {
+  --stripes: repeating-linear-gradient(
+    20deg,
+    #fff 0%,
+    #fff 7%,
+    transparent 10%,
+    transparent 12%,
+    #fff 16%
+  );
+  --stripesDark: repeating-linear-gradient(
+    20deg,
+    #1e1e1e 0%,
+    #1e1e1e 7%,
+    transparent 10%,
+    transparent 12%,
+    #78716c 16%
+  );
+  --rainbow: repeating-linear-gradient(
+    20deg,
+    #0369a1 35%,
+    #ffffff 15%,
+    #94a3b8 50%
+  );
+  background-image: var(--stripes), var(--rainbow);
+  background-size: 300%, 600%;
+  background-position:
+    50% 50%,
+    100% 50%;
+
+  filter: blur(6px) invert(100%);
+
+  mask-image: radial-gradient(ellipse at 100% 10%, black 40%, transparent 60%);
+
+  pointer-events: none;
+}
+
+.jumbo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--stripes), var(--rainbow);
+  background-size: 200%, 150%;
+  animation: jumbo 0s linear infinite;
+  background-attachment: fixed;
+  mix-blend-mode: difference;
+}
+
+.dark .jumbo {
+  background-image: var(--stripesDark), var(--rainbow);
+  filter: blur(10px) opacity(50%) saturate(200%);
+}
+.dark .jumbo::after {
+  background-image: var(--stripesDark), var(--rainbow);
+}
