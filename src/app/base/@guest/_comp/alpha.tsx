@@ -50,7 +50,7 @@ const Hero = memo(() => (
 Hero.displayName = "Hero";
 
 const Partners = () => (
-  <div className="h-[calc(100vh*0.1)] content-center xl:h-[calc(100vh*0.20)]">
+  <div className="h-[calc(100vh*0.3)] content-center xl:h-[calc(100vh*0.20)]">
     <Marq pauseOnHover>
       {partners.map((partner) => (
         <div key={partner.id} className="w-[calc(100vh*0.2)] opacity-40">
@@ -94,7 +94,7 @@ const partners: Partner[] = [
 ];
 
 export const Alpha = () => (
-  <div className="h-full">
+  <div className="h-fit md:h-full">
     <Header />
     <Hero />
     <Partners />
