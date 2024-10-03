@@ -566,3 +566,17 @@ export function getPreviousMonths(): (MonthName | undefined)[] {
   ];
   return previousMonths.map((month) => monthNames[month]);
 }
+
+const s = () =>
+  Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+
+export const guid = () =>
+  `${s()}${s()}-${s()}-${s()}-${s()}-${s()}${s()}${s()}`;
+
+export const svgToPath = (svg: string) => {
+  const p0 = svg.indexOf('d="');
+  const p1 = svg.indexOf('"', p0 + 3);
+  return svg.substring(p0 + 3, p1);
+};

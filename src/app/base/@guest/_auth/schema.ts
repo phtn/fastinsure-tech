@@ -1,6 +1,6 @@
 import { type HTMLInputTypeAttribute } from "react";
 import { z } from "zod";
-import { type DualIcon } from "../types";
+import { type DualIcon } from "@/app/types";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 
 export const EmailAndPasswordSchema = z.object({

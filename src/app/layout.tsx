@@ -1,32 +1,39 @@
-"use client";
 import "@/styles/globals.css";
-
 import { GeistSans } from "geist/font/sans";
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono, Instrument_Sans } from "next/font/google";
 import { Providers } from "./_ctx/providers";
-import { type ReactElement } from "react";
-import { useAuthState } from "@/lib/auth/useAuthState";
-import { auth } from "@/lib/db";
+import { type PropsWithChildren } from "react";
+import { type Metadata } from "next";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
 
-interface RootProps {
-  authd: ReactElement;
-  guest: ReactElement;
-}
+const jet = JetBrains_Mono({
+  variable: "--font-jet",
+  subsets: ["latin"],
+});
 
-export default function RootLayout({ authd, guest }: Readonly<RootProps>) {
-  const { user } = useAuthState(auth);
+const instrument = Instrument_Sans({
+  variable: "--font-inst",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "FastInsure Technologies",
+  description: "v10",
+  icons: [{ rel: "icon", url: "/svg/logo_v2.svg" }],
+};
+
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html
       lang="en"
-      className={`font-sans ${inter.variable} ${GeistSans.variable} antialiased`}
+      className={`${instrument.variable} ${inter.variable} ${jet.variable} ${GeistSans.variable} antialiased`}
     >
-      <body className="bg-background text-foreground light">
-        <Providers>{user?.uid ? authd : guest}</Providers>
+      <body className={`bg-background text-foreground light`}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

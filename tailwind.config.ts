@@ -1,5 +1,4 @@
 import { type Config } from "tailwindcss";
-import { fontFamily } from "tailwindcss/defaultTheme";
 import { nextui } from "@nextui-org/react";
 
 export default {
@@ -10,8 +9,10 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
+        sans: ["var(--font-geist-sans)"],
         inter: ["var(--font-inter)"],
+        jet: ["var(--font-jet)"],
+        inst: ["var(--font-inst)"],
       },
       animation: {
         enter: "enter 0.275s ease-out normal both",
@@ -19,6 +20,9 @@ export default {
         shimmer: "shimmer 5s linear infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        marquee: "marquee var(--duration) linear infinite",
+        "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
+        grid: "grid 35s linear infinite",
       },
       keyframes: {
         "accordion-down": {
@@ -77,12 +81,42 @@ export default {
             transform: "translateX(0)",
           },
         },
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(calc(-100% - var(--gap)))" },
+        },
+        "marquee-vertical": {
+          from: { transform: "translateY(0)" },
+          to: { transform: "translateY(calc(-100% - var(--gap)))" },
+        },
+        grid: {
+          "0%": { transform: "translateY(-50%)" },
+          "100%": { transform: "translateY(0)" },
+        },
       },
       transitionDuration: {
         "2000": "2000ms",
         "3000": "3000ms",
         "4000": "4000ms",
         "5000": "5000ms",
+      },
+      boxShadow: {
+        "i-tl-lg": "inset 15px 30px 60px -25px rgba(125, 125, 125, 0.15)",
+        "i-br-lg": "inset -10px -30px 60px -10px rgba(125, 125, 125, 0.15)",
+        // Case light
+        "i-br-li": "inset -15px -30px 40px -30px rgba(203, 213, 225, 0.35)",
+        "i-tl-li-hv": "inset 20px 20px 60px -30px rgba(100, 116, 139, 0.20)",
+        // Case dark
+        "i-br-dk": "inset -15px -30px 40px -30px rgba(255, 255, 255, 0.50)",
+        "i-tl-dk-hv": "inset 25px 15px 60px -30px rgba(225, 225, 225, 0.8)",
+        // Light
+        "i-tl-li": "inset 20px 20px 40px -30px rgba(125, 125, 125, 0.15)",
+        "i-br-li-hv": "inset -20px -20px 40px -30px rgba(125, 125, 125, 0.20)",
+        // Dark
+        "i-tl-dk": "inset 20px 20px 40px -30px rgba(255, 255, 255, 0.85)",
+        "i-br-dk-hv": "inset -20px -20px 40px -30px rgba(255, 255, 255, 0.70)",
+        // Meter
+        "i-br-md-m": "inset -15px -30px 40px -20px rgba(175, 175, 175, 0.8)",
       },
     },
   },
@@ -92,21 +126,22 @@ export default {
       themes: {
         light: {
           colors: {
-            default: "#FFFFFF",
+            default: "#f8fafc",
             background: "#FFFFFF",
-            foreground: "#1e1e1e",
+            foreground: "#0F172A",
             primary: {
-              100: "#F5F9FD",
-              200: "#EBF3FC",
-              300: "#DEE9F8",
-              400: "#D2DEF1",
-              500: "#0e7490",
-              600: "#8C9EC7",
-              700: "#6074A7",
-              800: "#3D4F86",
-              900: "#24346F",
-              foreground: "#FFFFFF",
-              DEFAULT: "#001744",
+              50: "#f8fafc",
+              100: "#D4E2F4",
+              200: "#ADC4E9",
+              300: "#758FBF",
+              400: "#41557F",
+              500: "#0F172A",
+              600: "#0A1124",
+              700: "#070C1E",
+              800: "#040818",
+              900: "#020514",
+              foreground: "#f8fafc",
+              DEFAULT: "#0f172a",
             },
             secondary: {
               100: "#FDFEFE",
@@ -125,8 +160,8 @@ export default {
         },
         dark: {
           colors: {
-            background: "#18181b",
-            foreground: "#f4f4f5",
+            background: "#0f172a",
+            foreground: "#f8fafc",
             primary: {
               100: "#F5F9FD",
               200: "#EBF3FC",
@@ -137,8 +172,8 @@ export default {
               700: "#6074A7",
               800: "#3D4F86",
               900: "#24346F",
-              foreground: "#1e1e1e",
-              DEFAULT: "#DEE9F8",
+              foreground: "#0f172a",
+              DEFAULT: "#f8fafc",
             },
           },
         },

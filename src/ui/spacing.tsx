@@ -23,7 +23,7 @@ export function Spacing({
   className,
 }: GradualSpacingProps) {
   return (
-    <div className="flex justify-center space-x-1">
+    <div className="flex justify-start space-x-1">
       <AnimatePresence>
         {text.split("").map((char, i) => (
           <motion.h1
@@ -33,7 +33,7 @@ export function Spacing({
             exit="hidden"
             variants={framerProps}
             transition={{ duration, delay: i * delayMultiple }}
-            className={cn("drop-shadow-sm", className)}
+            className={cn("-tracking-widest drop-shadow-sm", className)}
           >
             {char === " " ? <span>&nbsp;</span> : char}
           </motion.h1>
@@ -43,10 +43,16 @@ export function Spacing({
   );
 }
 
-export function Spaced(props: { text: string }) {
+export function Spaced(props: { text: string; bold?: boolean }) {
   return (
     <Spacing
-      className="text-center font-inter text-3xl font-extrabold -tracking-widest text-primary drop-shadow-xl dark:text-white md:text-7xl md:leading-[5rem]"
+      className={cn(
+        "font-jet shrink-0 text-lg text-foreground/50 md:text-2xl xl:text-3xl",
+        {
+          "font-inst text-4xl font-extrabold text-primary md:text-5xl xl:text-6xl":
+            props.bold,
+        },
+      )}
       text={props.text}
     />
   );

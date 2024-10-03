@@ -1,4 +1,4 @@
-import { type InputField } from "@/app/_comp/schema";
+import { type InputField } from "@/app/base/@guest/_auth/schema";
 import { type EmailAndPassword } from "@/lib/auth/useSignIn";
 import { cn } from "@/lib/utils";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
@@ -20,15 +20,16 @@ export const InputForm = forwardRef<
       <Badge
         size="sm"
         content=""
+        isInvisible={props.dirty}
         shape="circle"
         showOutline={false}
         placement="bottom-right"
         classNames={{
-          badge: cn({ "hidden ": !props.dirty }),
+          badge: cn("size-1"),
         }}
         color={props.valid ? "success" : "warning"}
       >
-        <props.icon className="mr-2 size-5 shrink-0 text-primary/40 drop-shadow-lg" />
+        <props.icon className="mr-2 size-5 shrink-0 text-primary/40" />
       </Badge>
     }
     endContent={
@@ -40,23 +41,22 @@ export const InputForm = forwardRef<
           onClick={props.fn}
         >
           {props.type === "password" ? (
-            <EyeSlashIcon className="mx-2 size-5 shrink-0 text-primary/40 drop-shadow-lg" />
+            <EyeSlashIcon className="size-5 shrink-0 text-primary/40" />
           ) : (
-            <EyeIcon className="mx-2 size-5 shrink-0 text-primary/40 drop-shadow-lg" />
+            <EyeIcon className="size-5 shrink-0 text-primary/40" />
           )}
         </Button>
       ) : null
     }
-    size="lg"
     isRequired
     disabled={props.loading}
-    className="animate-enter outline-none focus:outline-none"
+    className="outline-none focus:outline-none"
     classNames={{
       inputWrapper: "shadow-none",
       innerWrapper:
-        "border-[0.33px] border-primary/20 h-14 px-4 rounded-xl bg-white/30 backdrop-blur-md",
+        "bg-neutral-100 border-[0.33px] border-slate-100 h-14 sm:h-12 px-4 rounded-xl",
       input: cn("leading-none font-normal text-sm", {
-        "tracking-[4px] drop-shadow-lg font-mono": props.name === "password",
+        "tracking-[4px] font-mono": props.name === "password",
       }),
     }}
     {...props}

@@ -1,3 +1,5 @@
+"use client";
+
 import type {
   Auth,
   AuthError,
@@ -22,7 +24,7 @@ export type SignInWithPopupHook = AuthActionHook<
   ) => Promise<UserCredential | null | undefined>
 >;
 
-export const useSignInGoogle = (auth: Auth): SignInWithPopupHook => {
+export const useGoogleSignin = (auth: Auth): SignInWithPopupHook => {
   const [error, setError] = useState<AuthError>();
   const [user, setUser] = useState<UserCredential | undefined>();
   const [loading, setLoading] = useState<boolean>(false);

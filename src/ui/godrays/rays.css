@@ -18,19 +18,19 @@
     #fff 7%,
     transparent 10%,
     transparent 12%,
-    #fff 16%
+    #f8fafc 12%
   );
   --stripesDark: repeating-linear-gradient(
     20deg,
-    #1e1e1e 0%,
-    #1e1e1e 7%,
+    #64748b 0%,
+    #64748b 7%,
     transparent 10%,
     transparent 12%,
     #78716c 16%
   );
   --rainbow: repeating-linear-gradient(
     20deg,
-    #0369a1 35%,
+    #78716c 35%,
     #ffffff 15%,
     #94a3b8 50%
   );
@@ -40,9 +40,13 @@
     50% 50%,
     100% 50%;
 
-  filter: blur(6px) invert(100%);
+  filter: blur(2px) invert(100%);
 
-  mask-image: radial-gradient(ellipse at 100% 10%, black 40%, transparent 60%);
+  mask-image: radial-gradient(
+    ellipse at 100% 10%,
+    papayawhip 40%,
+    transparent 60%
+  );
 
   pointer-events: none;
 }
@@ -60,7 +64,7 @@
 
 .dark .jumbo {
   background-image: var(--stripesDark), var(--rainbow);
-  filter: blur(10px) opacity(50%) saturate(200%);
+  filter: blur(2px) opacity(40%) saturate(250%);
 }
 .dark .jumbo::after {
   background-image: var(--stripesDark), var(--rainbow);
