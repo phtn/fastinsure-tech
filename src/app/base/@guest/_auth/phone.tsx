@@ -85,7 +85,7 @@ export const PhoneSigninForm = () => {
           classNames={{
             inputWrapper: "shadow-none",
             innerWrapper:
-              "border-[0.33px]_ max-w-[325px] border-primary/20 flex-grow-0 px-4 h-14 sm:h-12 rounded-xl bg-neutral-100",
+              "border-[0.33px]_ max-w-[325px] border-primary/20 flex-grow-0 px-4 h-14 sm:h-12 rounded-xl bg-primary-200/80",
             input: "leading-none font-normal tracking-widest font-mono text-xl",
           }}
           startContent={

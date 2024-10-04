@@ -141,7 +141,7 @@ export function Chart() {
   );
 
   return (
-    <Card className="shadow-xl shadow-neutral-300/50">
+    <Card className="bg-background text-foreground shadow-xl shadow-background/20">
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="font-inst flex flex-1 flex-col justify-center gap-1 px-4 py-2 xl:px-6 xl:py-6">
           <CardTitle className="text-lg xl:text-xl">

@@ -11,25 +11,30 @@ import {
   CreditCardIcon,
   SparklesIcon,
 } from "@heroicons/react/24/solid";
+import { type ClassName } from "@/app/types";
+import { type TooltipData, TooltipNodes } from "@/ui/tooltip";
 
-const Circle = forwardRef<
-  HTMLDivElement,
-  { className?: string; children?: ReactNode }
->(({ className, children }, ref) => {
-  return (
-    <div
-      ref={ref}
-      className={cn(
-        "z-10 flex size-12 items-center justify-center rounded-full border-2 border-foreground/15 bg-background/10 p-3 text-foreground backdrop-blur-sm dark:bg-background/80",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
-});
+interface NodeProps {
+  className?: ClassName;
+  children?: ReactNode;
+}
+const Node = forwardRef<HTMLDivElement, NodeProps>(
+  ({ className, children }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "z-10 flex size-12 items-center justify-center rounded-full border-2 border-foreground/15 bg-background/10 p-3 text-foreground backdrop-blur-sm dark:bg-background/80",
+          className,
+        )}
+      >
+        {children}
+      </div>
+    );
+  },
+);
 
-Circle.displayName = "Circle";
+Node.displayName = "Node";
 
 export function Flow({ className }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -40,6 +45,8 @@ export function Flow({ className }: { className?: string }) {
   const div5Ref = useRef<HTMLDivElement>(null);
   const div6Ref = useRef<HTMLDivElement>(null);
   const div7Ref = useRef<HTMLDivElement>(null);
+
+  const refs = [div1Ref, div2Ref, div3Ref, div4Ref, div5Ref];
 
   return (
     <div className="mr-6 portrait:hidden">
@@ -52,31 +59,17 @@ export function Flow({ className }: { className?: string }) {
       >
         <div className="flex size-full max-w-lg flex-row justify-between">
           <div className="flex flex-col gap-2 xl:gap-6">
-            <Circle ref={div1Ref} className="-ml-6 drop-shadow-sm">
-              <Icons.ai />
-            </Circle>
-            <Circle ref={div2Ref}>
-              <Icons.database />
-            </Circle>
-            <Circle ref={div3Ref} className="md:-ml-12 xl:-ml-16">
-              <Icons.payments />
-            </Circle>
-            <Circle ref={div4Ref} className="-ml-4">
-              <Icons.servers />
-            </Circle>
-            <Circle ref={div5Ref} className="-ml-12">
-              <Icons.messaging />
-            </Circle>
+            <TooltipNodes data={tooltipNodes} refs={refs} />
           </div>
           <div className="flex flex-col justify-center">
-            <Circle ref={div6Ref} className="size-20">
+            <Node ref={div6Ref} className="size-20">
               <Icons.fastinsure />
-            </Circle>
+            </Node>
           </div>
           <div className="flex flex-col justify-center">
-            <Circle ref={div7Ref}>
+            <Node ref={div7Ref}>
               <Icons.user />
-            </Circle>
+            </Node>
           </div>
         </div>
 
@@ -139,6 +132,52 @@ export function Flow({ className }: { className?: string }) {
     </div>
   );
 }
+
+const tooltipNodes: TooltipData[] = [
+  {
+    id: 1,
+    title: "Include AI to Services",
+    value: "ai",
+    icon: SparklesIcon,
+    image: "/svg/logo_dark.svg",
+    label: "AI Integration",
+    className: "-ml-6 drop-shadow-sm",
+  },
+  {
+    id: 2,
+    title: "Fast Transation Speeds",
+    value: "database",
+    icon: CircleStackIcon,
+    image: "/svg/logo_dark.svg",
+    label: "Realtime Database",
+  },
+  {
+    id: 3,
+    title: "Accept Payments",
+    value: "payments",
+    icon: CreditCardIcon,
+    image: "/svg/logo_dark.svg",
+    label: "Payments",
+    className: "md:-ml-12 xl:-ml-16",
+  },
+  {
+    id: 4,
+    title: "Secured Data Processing",
+    value: "Servers",
+    icon: ServerStackIcon,
+    image: "/svg/logo_dark.svg",
+    label: "Cloud Servers",
+    className: "-ml-4",
+  },
+  {
+    id: 5,
+    title: "Messaging",
+    value: "Chat Support",
+    icon: ChatBubbleLeftRightIcon,
+    label: "Messaging",
+    className: "-ml-12",
+  },
+];
 
 const Icons = {
   fastinsure: () => (

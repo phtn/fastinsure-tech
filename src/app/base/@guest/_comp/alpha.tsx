@@ -4,6 +4,7 @@ import { guid } from "@/utils/helpers";
 import { Button, Image } from "@nextui-org/react";
 import { memo } from "react";
 import { Flow } from "./flow";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
 const Header = () => (
   <div className="flex h-[calc(100vh*0.1)] w-full items-center space-x-4 pl-6 md:pl-14 xl:pl-20">
@@ -29,13 +30,17 @@ const Jumbotron = () => (
     </div>
     <div>
       <Button
+        size="lg"
+        radius="full"
         variant="shadow"
         color="primary"
-        size="lg"
-        className="rounded-md"
+        className=""
         onPress={() => console.log(guid())}
       >
-        Get Started
+        <div className="pr-4">Get Started</div>
+        <div className="-mr-3.5 flex size-8 items-center justify-center rounded-full bg-background">
+          <ChevronRightIcon className="size-3 text-foreground" />
+        </div>
       </Button>
     </div>
   </div>

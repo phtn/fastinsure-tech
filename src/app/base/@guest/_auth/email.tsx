@@ -5,7 +5,7 @@ import {
   EmailAndPasswordSchema,
   loginFields,
 } from "./schema";
-import { InputForm } from "@/ui/input";
+import { InputForm } from "./input";
 import { GoogleSignin } from "./google";
 import { useSignInWithEmail } from "@/lib/auth/useSignIn";
 import { type FormEvent, useCallback, useMemo, useState } from "react";

@@ -2,16 +2,19 @@ import { AuthLobby } from "../_auth/signin";
 import { Chart } from "./chart";
 
 export const Beta = () => (
-  <div className="h-fit w-screen overflow-y-auto overflow-x-clip border border-t-[0.33px] pb-20 xl:h-screen xl:pb-0">
-    <div className="h-2 bg-default" />
-    <Header />
-    <Columns />
+  <div className="flex h-full w-full flex-col items-center overflow-y-auto overflow-x-clip px-1 pb-20 md:px-8 xl:h-screen xl:pb-0">
+    <div className="h-[calc(100vh*0.075)]" />
+    <div className="h-full w-full rounded-3xl bg-foreground pb-10 xl:pb-0">
+      <Header />
+      <Columns />
+    </div>
+    <div className="h-[calc(100vh*0.1)]" />
   </div>
 );
 
 const Header = () => (
-  <div className="font-inst flex h-[calc(100vh*0.225)] w-full items-center justify-center p-4 md:h-[calc(100vh*0.35)] lg:grid-cols-2 xl:h-[calc(100vh*0.25)] xl:p-12">
-    <div className="flex h-full w-full flex-col items-start justify-center px-6 xl:px-12">
+  <div className="flex h-[calc(100vh*0.225)] w-full items-center justify-center p-4 font-inst md:h-[calc(100vh*0.35)] lg:grid-cols-2 xl:h-[calc(100vh*0.175)] xl:p-12">
+    <div className="flex h-full w-full flex-col items-start justify-center px-6 text-background xl:px-12">
       <h2 className="text-3xl font-semibold tracking-tight md:text-2xl xl:text-4xl">
         Partner Login
       </h2>
@@ -27,8 +30,8 @@ const Columns = () => (
     <div className="flex h-full w-full items-start justify-center lg:col-span-2">
       <AuthLobby />
     </div>
-    <div className="h-full w-full px-6 lg:col-span-3 xl:pr-20 portrait:hidden">
-      <div className="font-inst py-2 text-2xl font-medium opacity-60 xl:py-6">
+    <div className="h-full w-full px-6 text-background/80 lg:col-span-3 xl:pr-20 portrait:hidden">
+      <div className="py-2 font-inst text-2xl font-medium opacity-60 xl:py-6">
         Remote Monitoring
       </div>
       <Chart />

@@ -11,7 +11,7 @@ export const Form = () => {
       radius="sm"
       className="w-full px-3 portrait:px-4"
       classNames={{
-        tabList: "bg-neutral-100",
+        tabList: "bg-primary-200",
         tab: "text-foreground text-sm",
       }}
     >

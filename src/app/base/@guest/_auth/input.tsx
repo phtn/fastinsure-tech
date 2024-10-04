@@ -54,7 +54,7 @@ export const InputForm = forwardRef<
     classNames={{
       inputWrapper: "shadow-none",
       innerWrapper:
-        "bg-neutral-100 border-[0.33px] border-slate-100 h-14 sm:h-12 px-4 rounded-xl",
+        "bg-primary-200/80 shadow-none border-[0.33px] border-slate-100 h-14 sm:h-12 px-4 rounded-xl",
       input: cn("leading-none font-normal text-sm", {
         "tracking-[4px] font-mono": props.name === "password",
       }),
