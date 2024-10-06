@@ -24,4 +24,4 @@ const t = initTRPC.context<typeof tRPCCtx>().create({
 
 export const router = t.router;
 export const proc = t.procedure;
-export const createCaller = t.createCallerFactory;
+export const factory = t.createCallerFactory;

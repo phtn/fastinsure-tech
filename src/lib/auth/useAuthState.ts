@@ -1,15 +1,16 @@
 import { errHandler } from "@/utils/helpers";
-import { type Auth, type User, onAuthStateChanged } from "firebase/auth";
+import { type User, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
+import { auth } from ".";
 
 type AuthStateOptions = {
   onUserChanged?: (user: User | null) => Promise<void>;
 };
 
-export const useAuthState = (auth: Auth, options?: AuthStateOptions) => {
+export const useAuthState = (options?: AuthStateOptions) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>(null);
-  const [user, setUser] = useState<User | null>(auth.currentUser);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -32,7 +33,7 @@ export const useAuthState = (auth: Auth, options?: AuthStateOptions) => {
     return () => {
       session();
     };
-  }, [auth, options]);
+  }, [options]);
 
   return {
     user,

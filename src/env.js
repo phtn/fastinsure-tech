@@ -7,9 +7,12 @@ export const env = createEnv({
     PROJECT_ID: z.string(),
     PROCESSOR_LOC: z.string(),
     CR_PROCESSOR: z.string(),
+    FIREBASE_PROJECT_ID: z.string(),
+    CONVEX_DEPLOYMENT: z.string(),
+    RE_UP_SECURE_URL: z.string().url(),
   },
   client: {
-    // NEXT_PUBLIC_ADC: z.string(),
+    NEXT_PUBLIC_CONVEX_URL: z.string().url(), // NEXT_PUBLIC_ADC: z.string(),
   },
 
   shared: {
@@ -21,6 +24,10 @@ export const env = createEnv({
     PROJECT_ID: process.env.PROJECT_ID,
     PROCESSOR_LOC: process.env.PROCESSOR_LOC,
     CR_PROCESSOR: process.env.CR_PROCESSOR,
+    FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
+    CONVEX_DEPLOYMENT: process.env.CONVEX_DEPLOYMENT,
+    NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
+    RE_UP_SECURE_URL: process.env.RE_UP_SECURE_URL,
     NODE_ENV: process.env.NODE_ENV,
     // NEXT_PUBLIC_ADC: process.env.NEXT_PUBLIC_ADC,
   },

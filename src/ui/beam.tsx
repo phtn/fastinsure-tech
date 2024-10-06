@@ -1,6 +1,6 @@
 "use client";
 
-import { type RefObject, useEffect, useId, useState } from "react";
+import { type RefObject, useEffect, useId, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
@@ -51,19 +51,23 @@ export const BeamEffect: React.FC<AnimatedBeamProps> = ({
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
 
   // Calculate the gradient coordinates based on the reverse prop
-  const gradientCoordinates = reverse
-    ? {
-        x1: ["90%", "-10%"],
-        x2: ["100%", "0%"],
-        y1: ["0%", "0%"],
-        y2: ["0%", "0%"],
-      }
-    : {
-        x1: ["10%", "110%"],
-        x2: ["0%", "100%"],
-        y1: ["0%", "0%"],
-        y2: ["0%", "0%"],
-      };
+  const gradientCoordinates = useMemo(
+    () =>
+      reverse
+        ? {
+            x1: ["90%", "-10%"],
+            x2: ["100%", "0%"],
+            y1: ["0%", "0%"],
+            y2: ["0%", "0%"],
+          }
+        : {
+            x1: ["10%", "110%"],
+            x2: ["0%", "100%"],
+            y1: ["0%", "0%"],
+            y2: ["0%", "0%"],
+          },
+    [reverse]
+  );
 
   useEffect(() => {
     const updatePath = () => {
@@ -96,9 +100,6 @@ export const BeamEffect: React.FC<AnimatedBeamProps> = ({
     // Initialize ResizeObserver
     const resizeObserver = new ResizeObserver((entries) => {
       // For all entries, recalculate the path
-      // for (let entry of entries) {
-      //   updatePath();
-      // }
       entries.forEach((_) => {
         updatePath();
       });
@@ -127,6 +128,37 @@ export const BeamEffect: React.FC<AnimatedBeamProps> = ({
     endYOffset,
   ]);
 
+  const initial = useMemo(
+    () => ({
+      x1: "0%",
+      x2: "0%",
+      y1: "0%",
+      y2: "0%",
+    }),
+    []
+  );
+
+  const animate = useMemo(
+    () => ({
+      x1: gradientCoordinates.x1,
+      x2: gradientCoordinates.x2,
+      y1: gradientCoordinates.y1,
+      y2: gradientCoordinates.y2,
+    }),
+    [gradientCoordinates]
+  );
+
+  // Use a stable transition object
+  const stableTransition = useMemo(() => {
+    return {
+      delay,
+      duration,
+      ease: [0.16, 1, 0.3, 1], // https://easings.net/#easeOutExpo
+      repeat: Infinity,
+      repeatDelay: 0,
+    };
+  }, [delay, duration]);
+
   return (
     <svg
       fill="none"
@@ -135,7 +167,7 @@ export const BeamEffect: React.FC<AnimatedBeamProps> = ({
       xmlns="http://www.w3.org/2000/svg"
       className={cn(
         "pointer-events-none absolute left-0 top-0 transform-gpu stroke-2",
-        className,
+        className
       )}
       viewBox={`0 0 ${svgDimensions.width} ${svgDimensions.height}`}
     >
@@ -158,25 +190,9 @@ export const BeamEffect: React.FC<AnimatedBeamProps> = ({
           className="transform-gpu"
           id={id}
           gradientUnits={"userSpaceOnUse"}
-          initial={{
-            x1: "0%",
-            x2: "0%",
-            y1: "0%",
-            y2: "0%",
-          }}
-          animate={{
-            x1: gradientCoordinates.x1,
-            x2: gradientCoordinates.x2,
-            y1: gradientCoordinates.y1,
-            y2: gradientCoordinates.y2,
-          }}
-          transition={{
-            delay,
-            duration,
-            ease: [0.16, 1, 0.3, 1], // https://easings.net/#easeOutExpo
-            repeat: Infinity,
-            repeatDelay: 0,
-          }}
+          initial={initial}
+          animate={animate}
+          transition={stableTransition}
         >
           <stop stopColor={gradientStartColor} stopOpacity="0"></stop>
           <stop stopColor={gradientStartColor}></stop>

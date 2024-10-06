@@ -1,3 +1,3 @@
-import { Content } from "./content";
-const Main = async () => <Content />;
-export default Main;
+import { MainContent } from "./content";
+const MainPage = async () => <MainContent />;
+export default MainPage;

@@ -1,46 +1,88 @@
-import { signInWithEmailAndPassword, type User } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  type OAuthCredential,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  type User,
+} from "firebase/auth";
 import { useState } from "react";
-import { auth } from "../db";
-import { warnHandler } from "@/utils/helpers";
-
-export type EmailAndPassword = {
-  email: string;
-  password: string;
-};
+import { auth } from "./";
+import { errHandler } from "@/utils/helpers";
+import { type SignInWithEmailAndPassword } from "./resource";
+import { verifyIdToken } from "../secure/callers";
 
 export type SignInResponse = {
-  token: string;
+  idToken: string;
   user: User;
 };
 
-export const useSignInWithEmail = () => {
+export const useSignIn = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>(null);
-  const [creds, setCreds] = useState<SignInResponse | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [idToken, setIdToken] = useState("");
+  const [oauth, setOAuth] = useState<OAuthCredential | null>(null);
 
-  const signIn = async (emailAndPassword: EmailAndPassword) => {
+  const signWithEmail = async (params: SignInWithEmailAndPassword) => {
     setLoading(true);
     setError(null);
-
-    await signInWithEmailAndPassword(
+    const userCredential = await signInWithEmailAndPassword(
       auth,
-      emailAndPassword.email,
-      emailAndPassword.password,
-    )
-      .then(async (credential) => {
-        const user = credential.user;
-        const token = await credential.user.getIdToken();
-        setLoading(false);
-        console.log(token);
-        setCreds({ token, user });
-      })
-      .catch(warnHandler(setLoading, setError));
+      params.email,
+      params.password,
+    );
+    const idToken = await userCredential.user.getIdToken();
+
+    await verifyIdToken({ idToken }).then(console.log).catch(console.log);
+
+    setUser(userCredential.user);
+    setIdToken(idToken);
+    setLoading(false);
+  };
+
+  const signWithGoogle = async () => {
+    setLoading(true);
+    const provider = new GoogleAuthProvider();
+    const userCredential = await signInWithPopup(auth, provider);
+    await userCredential.user
+      .getIdToken()
+      .then(setIdToken)
+      .catch(errHandler(setLoading));
+    const oauthCredential =
+      GoogleAuthProvider.credentialFromResult(userCredential);
+    setUser(userCredential.user);
+    setOAuth(oauthCredential);
+    setLoading(false);
   };
 
   return {
-    signIn,
+    signWithEmail,
+    signWithGoogle,
+    idToken,
     loading,
     error,
-    creds,
+    oauth,
+    user,
   };
 };
+
+/*
+{
+  "auth_time": 1728165216,
+  "iss": "https://securetoken.google.com/fastinsure-f1801",
+  "aud": "fastinsure-f1801",
+  "exp": 1728168816,
+  "iat": 1728165216,
+  "sub": "N7yCd3kCViMA0jD3eNuv5rqKxgy1",
+  "uid": "N7yCd3kCViMA0jD3eNuv5rqKxgy1",
+  "firebase": {
+    "sign_in_provider": "password",
+    "tenant": "",
+    "identities": {
+      "email": [
+        "hq@re-up.ph"
+      ]
+    }
+  }
+}
+*/

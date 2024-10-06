@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { Inter, JetBrains_Mono, Instrument_Sans } from "next/font/google";
-import { Providers } from "./_ctx/providers";
+import { Providers } from "./ctx/providers";
 import { type PropsWithChildren } from "react";
 import { type Metadata } from "next";
 

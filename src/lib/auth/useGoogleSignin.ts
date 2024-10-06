@@ -1,7 +1,6 @@
 "use client";
 
 import type {
-  Auth,
   AuthError,
   CustomParameters,
   OAuthCredential,
@@ -9,6 +8,7 @@ import type {
 } from "firebase/auth";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useCallback, useState } from "react";
+import { auth } from ".";
 
 export type AuthActionHook<M> = [
   M,
@@ -24,13 +24,13 @@ export type SignInWithPopupHook = AuthActionHook<
   ) => Promise<UserCredential | null | undefined>
 >;
 
-export const useGoogleSignin = (auth: Auth): SignInWithPopupHook => {
+export const useGoogleSignin = (): SignInWithPopupHook => {
   const [error, setError] = useState<AuthError>();
   const [user, setUser] = useState<UserCredential | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
   const [oauth, setOAuth] = useState<OAuthCredential | null>();
 
-  const sign = useCallback(async () => {
+  const signIn = useCallback(async () => {
     const provider = new GoogleAuthProvider();
     setLoading(true);
     setError(undefined);
@@ -46,7 +46,7 @@ export const useGoogleSignin = (auth: Auth): SignInWithPopupHook => {
     } finally {
       setLoading(false);
     }
-  }, [auth]);
+  }, []);
 
-  return [sign, user, loading, oauth, error];
+  return [signIn, user, loading, oauth, error];
 };

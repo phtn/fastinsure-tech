@@ -4,7 +4,7 @@ import type { Dispatch, ReactElement, SetStateAction } from "react";
 // import JSZip from "jszip";
 // import { saveAs } from "file-saver";
 import pkg from "../../package.json";
-import { onError, onSuccess, onWarn } from "@/app/_ctx/toasts";
+import { onError, onSuccess, onWarn } from "@/app/ctx/toasts";
 
 // import { type IImageList } from "@/app/account/@dashboard/(hooks)/file-handler";
 // import type { MonthName } from "@/app/types.index";
@@ -389,7 +389,7 @@ export const getMonthAndYear = (
   return { month, year };
 };
 
-export const errHandler =
+export const authHandler =
   <T extends Error>(
     setLoading: Dispatch<SetStateAction<boolean>>,
     setError?: Dispatch<SetStateAction<T>>,
@@ -400,6 +400,28 @@ export const errHandler =
         ? "Invalid Credentials"
         : e.message,
     );
+    setLoading(false);
+    if (setError) setError(e);
+  };
+
+export const okHandler =
+  (setLoading: Dispatch<SetStateAction<boolean>>, message?: string) => () => {
+    setLoading(false);
+    onSuccess(`${message}`);
+  };
+
+export const settle = (setLoading: Dispatch<SetStateAction<boolean>>) => () => {
+  setLoading(false);
+};
+
+export const errHandler =
+  <T extends Error>(
+    setLoading: Dispatch<SetStateAction<boolean>>,
+    setError?: Dispatch<SetStateAction<T>>,
+    message?: string,
+  ) =>
+  (e: T) => {
+    onError(message ?? e.message);
     setLoading(false);
     if (setError) setError(e);
   };
