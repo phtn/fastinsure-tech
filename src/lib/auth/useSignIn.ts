@@ -10,6 +10,7 @@ import { auth } from "./";
 import { errHandler } from "@/utils/helpers";
 import { type SignInWithEmailAndPassword } from "./resource";
 import { verifyIdToken } from "../secure/callers";
+import { getAuthKey, setAuthKey } from "@/app/actions";
 
 export type SignInResponse = {
   idToken: string;
@@ -33,7 +34,15 @@ export const useSignIn = () => {
     );
     const idToken = await userCredential.user.getIdToken();
 
-    await verifyIdToken({ idToken }).then(console.log).catch(console.log);
+    const withAuthKey = await getAuthKey();
+
+    if (!withAuthKey) {
+      await verifyIdToken({ idToken })
+        .then((key) => {
+          setAuthKey(JSON.stringify(key)).then(console.log).catch(console.log);
+        })
+        .catch(console.log);
+    }
 
     setUser(userCredential.user);
     setIdToken(idToken);

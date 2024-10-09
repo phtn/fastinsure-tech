@@ -12,12 +12,13 @@ export const GoogleSignin = () => {
   return (
     <div className="flex w-full">
       <Button
+        variant="ghost"
         isLoading={loading}
         onClick={handleOnPress}
-        className="flex h-14 w-full rounded-md border-[0.33px] border-foreground sm:h-12"
+        className="flex h-14 w-full rounded-md border-[0.33px] border-foreground dark:border-foreground/50 sm:h-12"
       >
-        <div className="flex h-full w-full items-center justify-center space-x-3">
-          <p className="font-inst font-medium text-foreground/80">
+        <div className="flex h-full w-full items-center justify-center space-x-4">
+          <p className="font-inst text-sm font-medium text-foreground/80">
             Continue with Google
           </p>
           <div

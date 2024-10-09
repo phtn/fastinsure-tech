@@ -1,4 +1,4 @@
-import { type ReactNode, forwardRef, useRef, useMemo } from "react";
+import { type ReactNode, forwardRef, useRef, useMemo, memo } from "react";
 import { cn } from "@/lib/utils";
 import { BeamEffect } from "@/ui/beam";
 import { Image } from "@nextui-org/react";
@@ -12,7 +12,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { type ClassName } from "@/app/types";
 import { type TooltipData, TooltipNodes } from "@/ui/tooltip";
-import React from "react";
+import { useThemeCtx } from "../ctx/theme";
 
 interface NodeProps {
   className?: ClassName;
@@ -37,7 +37,7 @@ const Node = forwardRef<HTMLDivElement, NodeProps>(
 Node.displayName = "Node";
 
 // Memoize BeamEffect to prevent unnecessary re-renders
-const MemoizedBeamEffect = React.memo(BeamEffect);
+const MemoizedBeamEffect = memo(BeamEffect);
 
 export function Flow({ className }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -55,6 +55,7 @@ export function Flow({ className }: { className?: string }) {
   // Use useMemo to ensure tooltipNodes is stable
   const memoizedTooltipNodes = useMemo(() => tooltipNodes, []);
 
+  const { theme } = useThemeCtx();
   return (
     <div className="mr-6 portrait:hidden">
       <div
@@ -70,7 +71,9 @@ export function Flow({ className }: { className?: string }) {
           </div>
           <div className="flex flex-col justify-center">
             <Node ref={div6Ref} className="size-20">
-              <Icons.fastinsure />
+              <Icons.fastinsure
+                src={theme === "light" ? "/svg/logo_dark.svg" : "/svg/f.svg"}
+              />
             </Node>
           </div>
           <div className="flex flex-col justify-center">
@@ -141,7 +144,7 @@ export function Flow({ className }: { className?: string }) {
 }
 
 // Ensure MemoizedTooltipNodes is properly memoized
-const MemoizedTooltipNodes = React.memo(TooltipNodes);
+const MemoizedTooltipNodes = memo(TooltipNodes);
 
 const tooltipNodes: TooltipData[] = [
   {
@@ -181,7 +184,7 @@ const tooltipNodes: TooltipData[] = [
   },
   {
     id: 5,
-    title: "For Teams & Support",
+    title: "Teams & Support",
     value: "messaging",
     icon: ChatBubbleLeftRightIcon,
     label: "Messaging",
@@ -190,19 +193,14 @@ const tooltipNodes: TooltipData[] = [
 ];
 
 const Icons = {
-  fastinsure: () => (
+  fastinsure: (props: { src: string }) => (
     <Image
       className="rounded-none"
       alt="http://www.w3.org/2000/svg"
       width={36}
       height={36}
-      src="/svg/logo_dark.svg"
+      src={props.src}
     />
   ),
-  database: () => <CircleStackIcon />,
-  messaging: () => <ChatBubbleLeftRightIcon />,
-  payments: () => <CreditCardIcon />,
-  servers: () => <ServerStackIcon />,
-  ai: () => <SparklesIcon />,
   user: () => <BuildingStorefrontIcon />,
 };

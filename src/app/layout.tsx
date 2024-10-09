@@ -32,9 +32,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
       lang="en"
       className={`${instrument.variable} ${inter.variable} ${jet.variable} ${GeistSans.variable} antialiased`}
     >
-      <body className={`bg-background text-foreground light`}>
-        <Providers>{children}</Providers>
-      </body>
+      <Providers>{children}</Providers>
     </html>
   );
 }

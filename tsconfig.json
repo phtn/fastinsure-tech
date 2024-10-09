@@ -27,7 +27,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@vex/*": ["./convex/_generated/*"]
+      "@vex/*": ["./convex/_generated/*"],
+      "@ctx/*": ["./src/app/ctx/*"]
     }
   },
   "include": [

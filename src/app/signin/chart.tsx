@@ -73,8 +73,8 @@ export function Chart() {
   );
 
   return (
-    <Card className="bg-background text-foreground shadow-xl shadow-background/20">
-      <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+    <Card className="border-[0.33px] border-foreground/60 bg-background/60 text-foreground shadow-xl shadow-background/20">
+      <CardHeader className="flex flex-col items-stretch space-y-0 p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-4 py-2 font-inst xl:px-6 xl:py-6">
           <CardTitle className="text-lg xl:text-xl">
             Monthly Page Views

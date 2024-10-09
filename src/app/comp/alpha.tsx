@@ -6,19 +6,20 @@ import { Button, Image } from "@nextui-org/react";
 import { memo, useCallback, Suspense } from "react"; // Import lazy and Suspense
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Flow } from "./flow";
+import { useThemeCtx } from "../ctx/theme";
 
 // Dynamically import the Flow component
 
-const Header = () => (
+const Header = (props: { theme: string }) => (
   <div className="flex h-[calc(100vh*0.15)] w-full items-center space-x-4 pl-6 md:pl-14 xl:h-[calc(100vh*0.15)] xl:pl-20">
     <div className="flex size-[24px] items-center justify-center rounded-full border-1 border-primary/40 xl:size-[32px]">
       <Image
         alt=""
-        src="/svg/logo_dark.svg"
+        src={props.theme === "light" ? "/svg/logo_dark.svg" : "/svg/f.svg"}
         className="size-[12px] rounded-none xl:size-[16px]"
       />
     </div>
-    <h1 className="font-jet font-medium tracking-tight text-foreground drop-shadow-lg xl:text-lg">
+    <h1 className="font-inst font-medium text-foreground drop-shadow-lg dark:text-foreground/60 xl:text-lg">
       FastInsure Technologies
     </h1>
   </div>
@@ -82,10 +83,13 @@ const Hero = memo(() => (
 ));
 Hero.displayName = "Hero";
 
-export const Alpha = memo(() => (
-  <div className="h-fit md:h-full">
-    <Header />
-    <Hero />
-  </div>
-));
+export const Alpha = memo(() => {
+  const { theme } = useThemeCtx();
+  return (
+    <div className="h-fit md:h-screen">
+      <Header theme={theme} />
+      <Hero />
+    </div>
+  );
+});
 Alpha.displayName = "Alpha";

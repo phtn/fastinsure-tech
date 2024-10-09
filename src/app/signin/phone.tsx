@@ -77,8 +77,9 @@ export const PhoneSigninForm = () => {
   return (
     <form className="flex w-full flex-col gap-2 gap-y-4 space-y-6 py-2 xl:gap-6">
       <div className="h-fit w-full space-y-6 md:space-y-4">
-        <div className="font-inst px-4 text-sm">Type your phone number</div>
+        <div className="px-4 font-inst text-sm">Type your phone number</div>
         <Input
+          color="primary"
           className={cn("font-mono font-medium", {
             "opacity-100": phoneNumber !== "",
           })}
@@ -86,7 +87,8 @@ export const PhoneSigninForm = () => {
             inputWrapper: "shadow-none",
             innerWrapper:
               "border-[0.33px]_ max-w-[325px] border-primary/20 flex-grow-0 px-4 h-14 sm:h-12 rounded-xl bg-primary-200/80",
-            input: "leading-none font-normal tracking-widest font-mono text-xl",
+            input:
+              "leading-none text-foreground font-normal tracking-widest font-mono text-xl",
           }}
           startContent={
             <p
