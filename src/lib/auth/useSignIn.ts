@@ -9,19 +9,19 @@ import { useState } from "react";
 import { auth } from "./";
 import { errHandler } from "@/utils/helpers";
 import { type SignInWithEmailAndPassword } from "./resource";
-import { verifyIdToken } from "../secure/callers";
-import { getAuthKey, setAuthKey } from "@/app/actions";
 
 export type SignInResponse = {
   idToken: string;
   user: User;
 };
 
+// Yo can you read this?
+
 export const useSignIn = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [idToken, setIdToken] = useState("");
+  const [idToken, setIdToken] = useState<string>();
   const [oauth, setOAuth] = useState<OAuthCredential | null>(null);
 
   const signWithEmail = async (params: SignInWithEmailAndPassword) => {
@@ -32,20 +32,12 @@ export const useSignIn = () => {
       params.email,
       params.password,
     );
-    const idToken = await userCredential.user.getIdToken();
-
-    const withAuthKey = await getAuthKey();
-
-    if (!withAuthKey) {
-      await verifyIdToken({ idToken })
-        .then((key) => {
-          setAuthKey(JSON.stringify(key)).then(console.log).catch(console.log);
-        })
-        .catch(console.log);
-    }
+    await userCredential.user
+      .getIdToken()
+      .then(setIdToken)
+      .catch(errHandler(setLoading));
 
     setUser(userCredential.user);
-    setIdToken(idToken);
     setLoading(false);
   };
 

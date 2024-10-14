@@ -1,8 +1,8 @@
-import { Dashboard } from "./dashboard";
+import { AuthedContent } from "./content";
 export interface AuthdPageProps {
   params: {
     uid: string | undefined;
   };
 }
-const AuthdPage = async () => <Dashboard />;
+const AuthdPage = async () => <AuthedContent />;
 export default AuthdPage;

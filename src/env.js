@@ -10,6 +10,10 @@ export const env = createEnv({
     FIREBASE_PROJECT_ID: z.string(),
     CONVEX_DEPLOYMENT: z.string(),
     RE_UP_SECURE_URL: z.string().url(),
+    RE_UP_SECURE_API_KEY: z.string(),
+    FASTINSURE_REFRESH_TOKEN: z.string(),
+    FASTINSURE_EMAIL: z.string().email(),
+    FASTINSURE_UID: z.string(),
   },
   client: {
     NEXT_PUBLIC_CONVEX_URL: z.string().url(), // NEXT_PUBLIC_ADC: z.string(),
@@ -28,8 +32,11 @@ export const env = createEnv({
     CONVEX_DEPLOYMENT: process.env.CONVEX_DEPLOYMENT,
     NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
     RE_UP_SECURE_URL: process.env.RE_UP_SECURE_URL,
+    RE_UP_SECURE_API_KEY: process.env.RE_UP_SECURE_API_KEY,
+    FASTINSURE_REFRESH_TOKEN: process.env.FASTINSURE_REFRESH_TOKEN,
+    FASTINSURE_EMAIL: process.env.FASTINSURE_EMAIL,
+    FASTINSURE_UID: process.env.FASTINSURE_UID,
     NODE_ENV: process.env.NODE_ENV,
-    // NEXT_PUBLIC_ADC: process.env.NEXT_PUBLIC_ADC,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

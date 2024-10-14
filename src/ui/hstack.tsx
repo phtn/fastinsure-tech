@@ -3,8 +3,32 @@ import { cn } from "@/lib/utils";
 import { useInView } from "framer-motion";
 import { useRef, type PropsWithChildren, type ReactNode } from "react";
 
-export const HStackComponent = ({ children }: PropsWithChildren) => (
-  <div className="_h-[calc(100vh*0.675-8px)] grid h-fit w-full grid-cols-1 lg:grid-cols-5 xl:h-[calc(100vh*0.75-8px)]">
+interface HStackProps {
+  children?: ReactNode;
+  cols?: number;
+  className?: ClassName;
+}
+export const HStackComponent = ({
+  children,
+  className,
+  cols = 1,
+}: HStackProps) => (
+  <div
+    className={cn(
+      "_h-[calc(100vh*0.675-8px)] grid h-fit w-full grid-cols-1 xl:h-[calc(100vh*0.75-8px)]",
+      className,
+      { "lg:grid-cols-5": cols === 5 },
+      { "lg:grid-cols-4": cols === 4 },
+      { "lg:grid-cols-3": cols === 3 },
+      { "lg:grid-cols-2": cols === 2 },
+    )}
+  >
+    {children}
+  </div>
+);
+
+const XsCol = ({ children }: PropsWithChildren) => (
+  <div className="col-span-1 flex h-full w-full items-start justify-center">
     {children}
   </div>
 );
@@ -54,11 +78,13 @@ type THStack = typeof HStackComponent & {
   Title: typeof Title;
   SmCol: typeof SmCol;
   LgCol: typeof LgCol;
+  XsCol: typeof XsCol;
   Col: typeof Col;
 };
 export const HStack: THStack = Object.assign(HStackComponent, {
   Title,
   SmCol,
   LgCol,
+  XsCol,
   Col,
 });

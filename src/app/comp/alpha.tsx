@@ -1,12 +1,13 @@
 "use client";
 
 import { Spacing } from "@/ui/spacing";
-import { guid } from "@/utils/helpers";
 import { Button, Image } from "@nextui-org/react";
-import { memo, useCallback, Suspense } from "react"; // Import lazy and Suspense
+import { memo, useCallback, Suspense, useState } from "react"; // Import lazy and Suspense
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Flow } from "./flow";
 import { useThemeCtx } from "../ctx/theme";
+import { useRouter } from "next/navigation";
+import { useAuthCtx } from "../ctx/auth";
 
 // Dynamically import the Flow component
 
@@ -54,9 +55,16 @@ const MemoizedButton = memo((props: { onPress: VoidFunction }) => {
 MemoizedButton.displayName = "MemoizedButton";
 
 const Jumbotron = memo(() => {
+  const { user } = useAuthCtx();
+  const [authed] = useState(!!user);
+  const router = useRouter();
   const handlePress = useCallback(() => {
-    console.log(guid());
-  }, []);
+    if (authed) {
+      console.log("authed");
+      return;
+    }
+    router.push("/signin");
+  }, [router, authed]);
 
   return (
     <div className="relative ml-6 h-full w-full content-center space-y-12 md:ml-14 xl:ml-20">

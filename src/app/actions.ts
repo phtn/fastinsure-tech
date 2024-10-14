@@ -9,10 +9,22 @@ export interface ModeCookie {
   path: string;
 }
 
-export const setAuthKey = async (key: string) =>
-  cookies().set("fastinsure_auth_key", key, { secure: true });
+export const setArbitrary = async (key: string) => {
+  cookies().set("arbitrary--auth-key", key, { secure: true });
+  return "arbi-key-set";
+};
 
-export const getAuthKey = async () => cookies().get("fastinsure_auth_key");
+export const setAuthKey = async (key: string) => {
+  cookies().set("fastinsure--auth-key", key, { secure: true });
+  return "auth-key-set";
+};
+
+export const getAuthKey = async (key?: string) => {
+  const cstore = cookies();
+  const k = cstore.get(key ?? "fastinsure--auth-key")?.value;
+  console.log(k);
+  return k;
+};
 
 export const setTheme = async (theme: Modes) => {
   cookies().set("fastinsure_mode", theme, { secure: true, path: "/" });

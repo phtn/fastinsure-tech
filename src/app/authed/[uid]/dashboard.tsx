@@ -171,28 +171,3 @@ export const LogoIcon = () => {
     </Link>
   );
 };
-
-export const Overview = () => {
-  const arrtwo = [6, 9];
-  const arrfour = [1, 2, 3, 4];
-  return (
-    <>
-      <div className="mb-4 flex w-full gap-4">
-        {arrfour.map((i) => (
-          <StatPanel key={i} title="Users" tag="users" icon={UsersIcon}>
-            <StatPanelContent statValue={10} statKey="" />
-          </StatPanel>
-        ))}
-      </div>
-
-      <div className="flex flex-1 gap-2">
-        {arrtwo.map((i) => (
-          <div
-            key={"second" + i}
-            className="h-full w-full animate-pulse rounded-lg bg-gray-100 dark:bg-neutral-800"
-          ></div>
-        ))}
-      </div>
-    </>
-  );
-};

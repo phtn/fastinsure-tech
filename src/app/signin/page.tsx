@@ -1,3 +1,3 @@
-import { SignInContent } from "./content";
-const SignInPage = async () => <SignInContent />;
-export default SignInPage;
+import { SigninContent } from "./content";
+const SigninPage = async () => <SigninContent />;
+export default SigninPage;

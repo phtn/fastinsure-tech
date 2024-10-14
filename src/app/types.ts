@@ -9,3 +9,17 @@ export interface TextProps {
   children?: ReactNode;
   className?: ClassName;
 }
+
+export type MonthName =
+  | "January"
+  | "February"
+  | "March"
+  | "April"
+  | "May"
+  | "June"
+  | "July"
+  | "August"
+  | "September"
+  | "October"
+  | "November"
+  | "December";

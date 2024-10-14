@@ -9,7 +9,7 @@ export const StatPanel = (props: {
   children?: ReactNode;
 }) => {
   return (
-    <div className="bg-zap text-coal flex h-[130px] w-full flex-col rounded-xl border-[0.33px] border-neutral-400 p-4 shadow-lg">
+    <div className="flex h-[130px] w-full flex-col rounded-xl border-[0.33px] border-neutral-400 p-4 shadow-lg">
       <div className="flex h-full w-full justify-between">
         <div>
           <div className="leading-2 font-medium tracking-tight text-neutral-800">

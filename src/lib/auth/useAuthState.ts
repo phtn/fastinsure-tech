@@ -1,7 +1,8 @@
 import { errHandler } from "@/utils/helpers";
 import { type User, onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { auth } from ".";
+import { getAuthKey } from "@/app/actions";
 
 type AuthStateOptions = {
   onUserChanged?: (user: User | null) => Promise<void>;
@@ -11,10 +12,19 @@ export const useAuthState = (options?: AuthStateOptions) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [authKey, setAuthKeyState] = useState<string>();
 
   useEffect(() => {
+    getAuthKey().then(setAuthKeyState).catch(console.log);
+  }, []);
+
+  useEffect(() => {
+    // const onRefresh = useCallback(() => {
+    //   setAuthKeyState(getAuthKey())
+    // }, deps);
+
     setLoading(true);
-    const session = onAuthStateChanged(auth, (current) => {
+    const unsub = onAuthStateChanged(auth, (current) => {
       const handleUserChange = () => {
         if (options?.onUserChanged) {
           options
@@ -31,7 +41,7 @@ export const useAuthState = (options?: AuthStateOptions) => {
     });
 
     return () => {
-      session();
+      unsub();
     };
   }, [options]);
 
@@ -39,5 +49,6 @@ export const useAuthState = (options?: AuthStateOptions) => {
     user,
     loading,
     error,
+    authKey,
   };
 };
