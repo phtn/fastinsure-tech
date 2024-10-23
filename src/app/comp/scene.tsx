@@ -2,6 +2,7 @@
 import { Suspense } from "react";
 import { Model } from "./model";
 import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 // import { OrbitControls } from "@react-three/drei";
 
 export const JunoCraft = () => {
@@ -13,7 +14,7 @@ export const JunoCraft = () => {
           <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
           <pointLight position={[-5, -10, -10]} />
           <Model position={[2, 0, 8]} scale={[1, 1, 1]} />
-          {/* <OrbitControls /> */}
+          <OrbitControls />
         </Suspense>
       </Canvas>
     </div>

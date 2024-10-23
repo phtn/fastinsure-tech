@@ -22,8 +22,8 @@ export type TokenVerification = z.infer<typeof TokenVerificationSchema>;
 
 export const VerifyIdTokenSchema = z.object({
   idToken: z.string().or(z.undefined()),
-  uid: z.string(),
-  email: z.string().email().nullable(),
+  uid: z.string().nullable().or(z.undefined()),
+  email: z.string().email().nullable().or(z.undefined()),
 });
 export type VerifyIdToken = z.infer<typeof VerifyIdTokenSchema>;
 
@@ -58,3 +58,9 @@ export const devToken = {
     },
   },
 } satisfies TokenVerification;
+
+export const AgentCodeSchema = z.object({
+  key: z.string(),
+  url: z.string().url(),
+});
+export type AgentCode = z.infer<typeof AgentCodeSchema>;

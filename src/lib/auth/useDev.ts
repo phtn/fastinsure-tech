@@ -2,7 +2,7 @@ import { useState } from "react";
 import { getUsers } from "../conv/users";
 import type { ConvResponse } from "../conv/fetch";
 import { errHandler, settle } from "@/utils/helpers";
-import { devGet, devSet, ruConn } from "../secure/callers";
+import { devGet, devSet } from "../secure/callers";
 import { devToken } from "../secure/resource";
 
 export const useDev = () => {
@@ -19,9 +19,6 @@ export const useDev = () => {
       .finally(settle(setLoading));
   };
 
-  const ruSecure = () => {
-    ruConn().then(setDev).catch(errHandler(setLoading, setError));
-  };
   const testSet = () => {
     devSet(devToken).then(setDev).catch(errHandler(setLoading, setError));
   };
@@ -34,7 +31,6 @@ export const useDev = () => {
     error,
     users,
     loading,
-    ruSecure,
     testSet,
     testGet,
     dev,

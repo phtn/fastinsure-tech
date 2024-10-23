@@ -69,13 +69,15 @@ const ActionComp = ({ children, className }: CommonProps) => (
 
 interface BtnProps extends CommonProps {
   onPress: VoidFunction;
+  loading: boolean;
 }
-const Btn = ({ children, className, onPress }: BtnProps) => (
+const Btn = ({ children, className, loading, onPress }: BtnProps) => (
   <Button
     color="primary"
     className={cn("", className)}
     size={"md"}
     onPress={onPress}
+    isLoading={loading}
   >
     {children}
   </Button>

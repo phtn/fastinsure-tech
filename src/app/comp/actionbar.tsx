@@ -1,21 +1,52 @@
 "use client";
 
-import { CalendarIcon, HomeIcon, MailIcon, PencilIcon } from "lucide-react";
+import { CalendarIcon, HomeIcon, PencilIcon } from "lucide-react";
 
 import { Separator } from "@/ui/separator";
-// import { ModeToggle } from "@/components/mode-toggle";
 import { Dock, DockIcon } from "@/ui/dock";
-import { type HTMLAttributes } from "react";
+import { useCallback, type HTMLAttributes } from "react";
 import { useTooltip } from "../ctx/tooltip";
 import { Tooltip } from "@/ui/tooltip";
 
 import { ThemeSwitch } from "../ctx/theme";
+import { Badge, Spinner } from "@nextui-org/react";
+import { ServerStackIcon } from "@heroicons/react/24/solid";
+import { useServer } from "@/lib/dev/health";
+import { opts } from "@/utils/helpers";
 
 export type IconProps = HTMLAttributes<SVGElement>;
 
+const ServerIcon = (props: IconProps) => {
+  const { loading, liveness } = useServer();
+
+  const IconOptions = useCallback(() => {
+    const live = liveness?.data !== null || !loading;
+    const options = opts(
+      <ServerStackIcon className="size-5 text-background" {...props} />,
+      <Spinner className="size-4" size="sm" />,
+    );
+    return <>{options.get(live)}</>;
+  }, [liveness?.data, loading, props]);
+
+  return (
+    <Badge
+      size="sm"
+      color={liveness?.data !== "OK" || loading ? "warning" : "success"}
+      content=""
+      placement="bottom-right"
+      shape="circle"
+      className="text-teal-500"
+      showOutline={false}
+      isDot
+    >
+      <IconOptions />
+    </Badge>
+  );
+};
+
 const Icons = {
   calendar: (props: IconProps) => <CalendarIcon {...props} />,
-  email: (props: IconProps) => <MailIcon {...props} />,
+  server: () => <ServerIcon />,
   linkedin: (props: IconProps) => (
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
       <title>LinkedIn</title>
@@ -79,10 +110,10 @@ const DATA = {
         url: "#",
         icon: Icons.x,
       },
-      email: {
-        name: "Send Email",
+      server: {
+        name: "Server Status",
         url: "#",
-        icon: Icons.email,
+        icon: Icons.server,
       },
     },
   },

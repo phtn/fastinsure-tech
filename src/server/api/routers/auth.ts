@@ -7,9 +7,10 @@ import { proc, router } from "../trpc";
 import {
   devGet,
   devSet,
-  ruConn,
   verifyAuthKey,
   verifyIdToken,
+  getServerHealth,
+  createAgentCode,
 } from "@/lib/secure/handlers";
 import { asyncR } from "../utils";
 
@@ -20,10 +21,11 @@ export const authRouter = router({
   verifyAuthKey: proc
     .input(VerifyAuthKeySchema)
     .mutation(asyncR(verifyAuthKey)),
-  /*
-   * Test Re-up Server Connection
-   */
-  ruConn: proc.query(asyncR(ruConn)),
+  createAgentCode: proc
+    .input(VerifyIdTokenSchema)
+    .mutation(asyncR(createAgentCode)),
+  // Test Re-up Server Connection
+  getServerStatus: proc.query(asyncR(getServerHealth)),
   /* Test RDB */
   devSet: proc.input(TokenVerificationSchema).mutation(asyncR(devSet)),
   devGet: proc.query(asyncR(devGet)),

@@ -1,6 +1,6 @@
 import { errHandler } from "@/utils/helpers";
 import { type User, onAuthStateChanged } from "firebase/auth";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { auth } from ".";
 import { getAuthKey } from "@/app/actions";
 

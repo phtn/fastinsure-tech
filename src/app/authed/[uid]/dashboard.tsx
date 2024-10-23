@@ -20,7 +20,6 @@ import {
   ReceiptTextIcon,
   TruckIcon,
 } from "lucide-react";
-import { StatPanel, StatPanelContent } from "@/ui/stats";
 import { BeakerIcon } from "@heroicons/react/24/solid";
 import { useAuthCtx } from "@/app/ctx/auth";
 

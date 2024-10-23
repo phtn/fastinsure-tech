@@ -2,19 +2,27 @@
 
 import { env } from "@/env";
 import type {
+  AgentCode,
   AuthVerification,
   TokenVerification,
   VerifyAuthKey,
   VerifyIdToken,
 } from "./resource";
 
+export interface ServerStatus {
+  data: string;
+}
+
+const claimsUrl = "http://localhost:19818/v1/claims";
+const livenessUrl = "http://localhost:19818/livez";
 const url = env.RE_UP_SECURE_URL;
 const config = {
   post: {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": env.RE_UP_SECURE_API_KEY,
+      "Allow-Control-Allow-Origin": "*",
+      "X-API-Key": env.RE_UP_SECURE_API_KEY,
     },
   },
   get: {
@@ -42,13 +50,23 @@ export const verifyAuthKey = async (params: VerifyAuthKey) => {
   return response.json() as Promise<AuthVerification>;
 };
 
-export const ruConn = async () => {
-  const response = await fetch(url, {
-    ...config.get,
+export const createAgentCode = async (params: VerifyIdToken) => {
+  const response = await fetch(claimsUrl + "/create-code", {
+    ...config.post,
+    body: JSON.stringify(params),
   });
-  return response.json() as Promise<object>;
+  return response.json() as Promise<AgentCode>;
 };
 
+// SERVER STATUS
+export const getServerHealth = async () => {
+  const response = await fetch(livenessUrl, {
+    ...config.get,
+  });
+  return response.json() as Promise<ServerStatus>;
+};
+
+// DEBUG MODES
 export const devSet = async (params: TokenVerification) => {
   const response = await fetch(url + "/devSet", {
     ...config.post,
