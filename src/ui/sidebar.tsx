@@ -179,7 +179,7 @@ export const SidebarLink = (props: SidebarLinkProps) => {
         // bg-orange-500/10
         <div
           className={cn(
-            "rounded-xl p-1 text-foreground",
+            "rounded-xl p-1 text-primary",
             {
               "bg-warning text-white":
                 pathname.length >= 3 && props.link.href.includes(sub!),
@@ -188,10 +188,13 @@ export const SidebarLink = (props: SidebarLinkProps) => {
           )}
         >
           <IconComponent
-            className={cn("size-5 flex-shrink-0 stroke-1 drop-shadow-md", {
-              "stroke-[1.5px]":
-                pathname.length >= 3 && props.link.href.includes(sub!),
-            })}
+            className={cn(
+              "size-[1.5rem] shrink-0 stroke-1 text-zinc-950 drop-shadow-md",
+              {
+                "stroke-[1.5px]":
+                  pathname.length >= 3 && props.link.href.includes(sub!),
+              },
+            )}
           />
         </div>
       );
@@ -222,7 +225,7 @@ export const SidebarLink = (props: SidebarLinkProps) => {
     <Link
       href={props.link.href}
       className={cn(
-        "group/sidebar flex items-center justify-start gap-3 py-2 text-foreground",
+        "group/sidebar flex items-center justify-start gap-3 py-2 text-primary",
         props.className,
       )}
       {...props.props}

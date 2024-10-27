@@ -21,15 +21,15 @@ export const TokenVerificationSchema = z.object({
 export type TokenVerification = z.infer<typeof TokenVerificationSchema>;
 
 export const VerifyIdTokenSchema = z.object({
-  idToken: z.string().or(z.undefined()),
+  id_token: z.string().or(z.undefined()),
   uid: z.string().nullable().or(z.undefined()),
   email: z.string().email().nullable().or(z.undefined()),
 });
 export type VerifyIdToken = z.infer<typeof VerifyIdTokenSchema>;
 
 export const VerifyAuthKeySchema = z.object({
-  authKey: z.string(),
-  idToken: z.string(),
+  auth_key: z.string(),
+  id_token: z.string(),
   uid: z.string(),
   email: z.string().email().nullable(),
 });
@@ -64,3 +64,16 @@ export const AgentCodeSchema = z.object({
   url: z.string().url(),
 });
 export type AgentCode = z.infer<typeof AgentCodeSchema>;
+
+export const AccountTokenSchema = z.object({
+  id_token: z.string(),
+  email: z.string().email(),
+  uid: z.string(),
+});
+export type AccountToken = z.infer<typeof AccountTokenSchema>;
+
+export const AccountTokenResponseSchema = z.object({
+  key: z.string(),
+  token: z.string(),
+});
+export type AccountTokenResponse = z.infer<typeof AccountTokenResponseSchema>;

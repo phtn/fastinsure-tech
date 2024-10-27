@@ -4,10 +4,10 @@ import { Link, Tab, Tabs } from "@nextui-org/react";
 import { EmailSigninForm } from "./email";
 import { PhoneSigninForm } from "./phone";
 
-export const Form = () => {
+export const SigninForm = () => {
   return (
     <Tabs
-      size="lg"
+      size="md"
       radius="sm"
       className="w-full px-3 portrait:px-4"
       classNames={{

@@ -1,13 +1,7 @@
 "use client";
 
-import { Dev } from "./dev";
-import { AuthContent } from "./auth-scr";
+import { LoginModule } from "./login-module";
 
 export const SigninContent = () => {
-  return (
-    <div className="h-fit w-full space-y-12">
-      <Dev />
-      <AuthContent />
-    </div>
-  );
+  return <LoginModule />;
 };

@@ -53,7 +53,7 @@ export function VBar(props: { requests: IDMRequest[] | undefined }) {
     submitted,
   }));
   return (
-    <Card className="mb-10 h-fit w-full rounded-2xl bg-foreground/80">
+    <Card className="mb-10 h-fit w-full rounded-2xl bg-foreground">
       <CardHeader className="">
         <CardTitle className="text-sm leading-4">Request / Completed</CardTitle>
         <CardDescription className="font-mono text-[12px] font-light opacity-60">

@@ -5,16 +5,16 @@ import { errHandler, settle } from "@/utils/helpers";
 
 export const useManager = () => {
   const [loading, setLoading] = useState(false);
-  const [agentCode, setAgentCode] = useState<AgentCode | undefined>();
-  const getAgentCode = async (params: VerifyIdToken) => {
-    await createAgentCode(params)
+  const [agentCode, setAgentCode] = useState<{ data: AgentCode } | undefined>();
+  const newAgentCode = async (params: VerifyIdToken) => {
+    return await createAgentCode(params)
       .then(setAgentCode)
       .catch(errHandler(setLoading))
       .finally(settle(setLoading));
   };
 
   return {
-    getAgentCode,
+    newAgentCode,
     agentCode,
     loading,
   };

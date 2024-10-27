@@ -417,8 +417,8 @@ export const settle = (setLoading: Dispatch<SetStateAction<boolean>>) => () => {
 export const errHandler =
   <T extends Error>(
     setLoading: Dispatch<SetStateAction<boolean>>,
-    setError?: Dispatch<SetStateAction<T>>,
     message?: string,
+    setError?: Dispatch<SetStateAction<T>>,
   ) =>
   (e: T) => {
     onError(message ?? e.message);

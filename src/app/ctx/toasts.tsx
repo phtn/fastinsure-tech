@@ -36,7 +36,7 @@ export const Toasts = () => {
     <Toaster
       gutter={10}
       toastOptions={{
-        position: "top-center",
+        position: "top-right",
         duration: 3000,
         success: {
           style: {

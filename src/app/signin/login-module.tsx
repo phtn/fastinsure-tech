@@ -3,16 +3,16 @@ import { Chart } from "./chart";
 import { Screen } from "@/ui/screen";
 import { HStack } from "@/ui/hstack";
 
-export const AuthContent = () => (
+export const LoginModule = () => (
   <Screen>
     <Screen.PadSm />
     <Screen.Inverted>
       <Screen.Header>
         <Screen.Title dark>Partner Login</Screen.Title>
-        <Screen.Subtext>Sign in to your account to get started</Screen.Subtext>
+        <Screen.Subtext>Sign in email or phone number</Screen.Subtext>
       </Screen.Header>
 
-      <HStack>
+      <HStack cols={5}>
         <HStack.Col>
           <SignInModule />
         </HStack.Col>

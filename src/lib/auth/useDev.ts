@@ -15,15 +15,19 @@ export const useDev = () => {
     setLoading(true);
     await getUsers()
       .then(setUsers)
-      .catch(errHandler(setLoading, setError))
+      .catch(errHandler(setLoading, "Unable to fetch users."))
       .finally(settle(setLoading));
   };
 
   const testSet = () => {
-    devSet(devToken).then(setDev).catch(errHandler(setLoading, setError));
+    devSet(devToken)
+      .then(setDev)
+      .catch(errHandler(setLoading, "Server is unreachable.", setError));
   };
   const testGet = () => {
-    devGet().then(setDev).catch(errHandler(setLoading, setError));
+    devGet()
+      .then(setDev)
+      .catch(errHandler(setLoading, "Server is unreachable.", setError));
   };
 
   return {

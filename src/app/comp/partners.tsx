@@ -27,9 +27,9 @@ export const Partners = () => {
 
       <div className="pointer-events-none absolute top-0 flex h-[calc(100vh*0.5)] w-full items-center justify-end bg-gradient-to-r from-background/50 from-5% via-transparent via-15% to-transparent dark:from-background/50 dark:via-30% xl:h-[calc(100vh*0.40)]">
         <Image
-          alt="wormhole"
+          alt="back-wormhole"
           src="/svg/wormhole_back.svg"
-          className="relative -bottom-12 -right-[28.98vw] z-0 aspect-square w-auto rounded-none xl:h-[calc(100vh*0.5)]"
+          className="relative -bottom-12 -right-[28.76vw] z-0 aspect-square w-auto rounded-none xl:h-[calc(100vh*0.5)]"
         />
         <Image
           alt="wormhole"
@@ -38,7 +38,7 @@ export const Partners = () => {
           }
           className="relative -bottom-12 right-0 z-[200] aspect-square w-auto rounded-none xl:h-[calc(100vh*0.5)]"
         />
-        <div className="-rounded-l-md absolute bottom-12 right-0 z-[100] h-[calc(100vh*0.17)] w-[200px] bg-gradient-to-r from-background/90 to-background backdrop-blur-sm" />
+        <div className="-rounded-l-md absolute bottom-12 right-0 z-[100] h-[calc(100vh*0.17)] w-[178px] bg-gradient-to-r from-background/90 to-background backdrop-blur-sm" />
       </div>
     </div>
   );

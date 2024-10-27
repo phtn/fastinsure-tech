@@ -1,5 +1,6 @@
 "use server";
 
+import { type RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 
 export type Modes = "light" | "dark";
@@ -37,3 +38,13 @@ export const getTheme = async (): Promise<string> => {
 };
 
 export const deleteThemes = async () => cookies().delete("fastinsure_mode");
+
+export const setHCode = async (key: string) => {
+  cookies().set("fastinsure--hcode", key, { secure: true });
+  return `key set to ${key}`;
+};
+
+export const getHCode = async (): Promise<RequestCookie | undefined> => {
+  const hcode = cookies().get("fastinsure--hcode");
+  return hcode;
+};

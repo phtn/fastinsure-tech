@@ -1,26 +1,25 @@
 import { errHandler, settle } from "@/utils/helpers";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { ServerStatus } from "../secure/handlers";
 import { getServerStatus } from "../secure/callers";
 
 export const useServer = () => {
   const [loading, setLoading] = useState(false);
   const [liveness, setLiveness] = useState<ServerStatus | null>(null);
-  const checkServerStatus = useCallback(
-    async () => await getServerStatus(),
-    [],
-  );
+  // const checkServerStatus = useCallback(
+  //   async () => await getServerStatus(),
+  //   [],
+  // );
 
   useEffect(() => {
     setLoading(true);
-    checkServerStatus()
+    getServerStatus()
       .then(setLiveness)
-      .catch(errHandler(setLoading))
+      .catch(errHandler(setLoading, "Server is unreachable."))
       .finally(settle(setLoading));
-  }, [checkServerStatus]);
+  }, []);
 
   return {
-    checkServerStatus,
     liveness,
     loading,
   };

@@ -4,34 +4,48 @@ import { CalendarIcon, HomeIcon, PencilIcon } from "lucide-react";
 
 import { Separator } from "@/ui/separator";
 import { Dock, DockIcon } from "@/ui/dock";
-import { useCallback, type HTMLAttributes } from "react";
+import {
+  type PropsWithChildren,
+  useCallback,
+  useMemo,
+  type HTMLAttributes,
+} from "react";
 import { useTooltip } from "../ctx/tooltip";
 import { Tooltip } from "@/ui/tooltip";
 
 import { ThemeSwitch } from "../ctx/theme";
 import { Badge, Spinner } from "@nextui-org/react";
 import { ServerStackIcon } from "@heroicons/react/24/solid";
-import { useServer } from "@/lib/dev/health";
+import { useServer } from "@/lib/hooks/useServer";
 import { opts } from "@/utils/helpers";
+
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/ui/hover";
+import { type UID } from "../types";
+import { type MotionProps } from "framer-motion";
 
 export type IconProps = HTMLAttributes<SVGElement>;
 
 const ServerIcon = (props: IconProps) => {
   const { loading, liveness } = useServer();
 
+  const badgeColor = useMemo(
+    () => (liveness?.data !== "OK" || loading ? "warning" : "success"),
+    [liveness?.data, loading],
+  );
+
   const IconOptions = useCallback(() => {
-    const live = liveness?.data !== null || !loading;
+    const live = liveness?.data !== null;
     const options = opts(
       <ServerStackIcon className="size-5 text-background" {...props} />,
       <Spinner className="size-4" size="sm" />,
     );
     return <>{options.get(live)}</>;
-  }, [liveness?.data, loading, props]);
+  }, [liveness?.data, props]);
 
   return (
     <Badge
       size="sm"
-      color={liveness?.data !== "OK" || loading ? "warning" : "success"}
+      color={badgeColor}
       content=""
       placement="bottom-right"
       shape="circle"
@@ -46,7 +60,6 @@ const ServerIcon = (props: IconProps) => {
 
 const Icons = {
   calendar: (props: IconProps) => <CalendarIcon {...props} />,
-  server: () => <ServerIcon />,
   linkedin: (props: IconProps) => (
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
       <title>LinkedIn</title>
@@ -93,8 +106,8 @@ const DATA = {
     { href: "#", icon: HomeIcon, label: "Home" },
     { href: "#", icon: PencilIcon, label: "Blog" },
   ],
-  contact: {
-    social: {
+  quicklinks: {
+    users: {
       GitHub: {
         name: "GitHub",
         url: "#",
@@ -110,11 +123,13 @@ const DATA = {
         url: "#",
         icon: Icons.x,
       },
-      server: {
-        name: "Server Status",
-        url: "#",
-        icon: Icons.server,
-      },
+    },
+  },
+  system: {
+    server: {
+      name: "Server Status",
+      url: "#",
+      icon: ServerIcon,
     },
   },
 };
@@ -134,11 +149,11 @@ export function ActionBar() {
           orientation="vertical"
           className="h-1/3 bg-primary-400/60 py-2"
         />
-        {Object.entries(DATA.contact.social).map(([name, social]) => (
+        {Object.entries(DATA.quicklinks.users).map(([name, item]) => (
           <DockIcon key={name}>
             <Tooltip>
-              <social.icon className="size-4" />
-              <Tooltip.Animated {...props} id={name}>
+              <item.icon className="size-4" />
+              <Tooltip.Animated id={name} {...props}>
                 <Tooltip.Label>
                   <p>{name}</p>
                 </Tooltip.Label>
@@ -150,6 +165,12 @@ export function ActionBar() {
           orientation="vertical"
           className="h-1/3 bg-primary-400/60 py-2"
         />
+
+        <DockIcon>
+          <ServerHealth>
+            <ServerButton {...props} />
+          </ServerHealth>
+        </DockIcon>
         <DockIcon>
           <Tooltip>
             <ThemeSwitch />
@@ -162,5 +183,49 @@ export function ActionBar() {
         </DockIcon>
       </Dock>
     </div>
+  );
+}
+
+interface ActionButton {
+  hoveredIndex: UID;
+  motionProps: MotionProps;
+}
+
+function ServerButton(props: ActionButton) {
+  const { server } = DATA.system;
+  return (
+    <Tooltip>
+      <server.icon className="size-5" />
+      <Tooltip.Animated {...props} id={server.name}>
+        <Tooltip.Label>
+          <p>{server.name}</p>
+        </Tooltip.Label>
+      </Tooltip.Animated>
+    </Tooltip>
+  );
+}
+
+function ServerHealth({ children }: PropsWithChildren) {
+  return (
+    <HoverCard>
+      <HoverCardTrigger>{children}</HoverCardTrigger>
+      <HoverCardContent className="w-80">
+        <div className="flex justify-between space-x-4">
+          <ServerStackIcon className="size-8 stroke-1" />
+          <div className="space-y-1">
+            <h4 className="text-sm font-semibold">@nextjs</h4>
+            <p className="text-sm">
+              The React Framework – created and maintained by @vercel.
+            </p>
+            <div className="flex items-center pt-2">
+              <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />{" "}
+              <span className="text-muted-foreground text-xs">
+                Joined December 2021
+              </span>
+            </div>
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
   );
 }

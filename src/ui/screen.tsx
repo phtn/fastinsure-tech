@@ -11,21 +11,10 @@ interface TextProps {
   dark?: boolean;
 }
 
-const Title = ({ children, href, className, dark = false }: TextProps) => (
-  <Link href={href}>
-    <h2
-      className={cn(
-        "font-inst text-3xl font-semibold tracking-tight md:text-2xl xl:text-4xl",
-        { "text-background": dark },
-        className,
-      )}
-    >
-      {children}
-    </h2>
-  </Link>
-);
-const Subtext = ({ children, className }: TextProps) => (
-  <p className={cn("opacity-60", className)}>{children}</p>
+const Component = ({ children }: PropsWithChildren) => (
+  <div className="flex h-full w-full flex-col items-center overflow-y-auto overflow-x-clip bg-background pb-20 md:px-8 xl:h-screen xl:pb-0">
+    {children}
+  </div>
 );
 
 interface HeaderProps {
@@ -39,7 +28,7 @@ const HeaderComponent = ({ children, className, dark }: HeaderProps) => {
   return (
     <div
       className={cn(
-        "flex h-[calc(100vh*0.225)] w-full items-center justify-center p-4 font-inst text-background md:h-[calc(100vh*0.35)] lg:grid-cols-2 xl:h-[calc(100vh*0.175)] xl:p-12",
+        "flex w-full items-center justify-center p-4 font-inst text-background lg:grid-cols-2 xl:h-[calc(100vh*0.15)] xl:p-12",
         { "text-foreground": dark },
         className,
       )}
@@ -56,6 +45,24 @@ const HeaderComponent = ({ children, className, dark }: HeaderProps) => {
     </div>
   );
 };
+
+const Title = ({ children, href, className, dark = false }: TextProps) => (
+  <Link href={href}>
+    <h2
+      className={cn(
+        "font-inst text-2xl font-semibold tracking-tight md:text-xl xl:text-3xl",
+        { "text-background": dark },
+        className,
+      )}
+    >
+      {children}
+    </h2>
+  </Link>
+);
+const Subtext = ({ children, className }: TextProps) => (
+  <p className={cn("opacity-60", className)}>{children}</p>
+);
+
 type THeader = typeof HeaderComponent & {
   Title: typeof Title;
   Subtext: typeof Subtext;
@@ -66,14 +73,6 @@ export const Header: THeader = Object.assign(HeaderComponent, {
   Subtext,
 });
 
-const Component = ({ children }: PropsWithChildren) => (
-  <div className="flex h-full w-full flex-col items-center overflow-y-auto overflow-x-clip bg-background pb-20 md:px-8 xl:h-screen xl:pb-0">
-    {children}
-  </div>
-);
-
-//
-
 const PadSm = (props: { className?: ClassName }) => (
   <div className={cn(props.className ?? "h-[calc(100vh*0.075)]")} />
 );
@@ -82,7 +81,7 @@ const PadLg = (props: { className?: ClassName }) => (
 );
 
 const Inverted = ({ children }: PropsWithChildren) => (
-  <div className="h-full w-full rounded-[2.5rem] bg-foreground pb-10 xl:pb-0">
+  <div className="h-full w-full rounded-[2rem] bg-foreground pb-10 xl:pb-0">
     {children}
   </div>
 );

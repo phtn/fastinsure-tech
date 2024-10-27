@@ -8,8 +8,12 @@ export const verifyIdToken = asyncFn(api.auth.verifyIdToken);
 export const getAuthKeyCookie = asyncFn(getAuthKey);
 export const setAuthKeyCookie = asyncFn(setAuthKey);
 
+// SHARED
+export const getClaims = asyncFn(api.auth.getClaims);
+
 // MANAGER CLAIMS
 export const createAgentCode = asyncFn(api.auth.createAgentCode);
+export const createAccountToken = asyncFn(api.auth.createAccountToken);
 
 // SERVER STATUS
 export const getServerStatus = asyncFn(api.server.getServerStatus);

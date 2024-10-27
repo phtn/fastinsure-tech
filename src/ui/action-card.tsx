@@ -41,7 +41,7 @@ interface IconProps {
   className?: ClassName;
 }
 const Icon = (props: IconProps) => (
-  <div className="flex h-full items-center justify-center rounded-md">
+  <div className="h-full items-center justify-center rounded-md">
     {
       <props.icon
         className={cn(
@@ -54,7 +54,12 @@ const Icon = (props: IconProps) => (
 );
 
 const Title = ({ children, className }: CommonProps) => (
-  <p className={cn("font-sans font-medium tracking-tight", className)}>
+  <p
+    className={cn(
+      "whitespace-nowrap font-sans font-medium tracking-tight",
+      className,
+    )}
+  >
     {children}
   </p>
 );
@@ -75,7 +80,7 @@ const Btn = ({ children, className, loading, onPress }: BtnProps) => (
   <Button
     color="primary"
     className={cn("", className)}
-    size={"md"}
+    size={"sm"}
     onPress={onPress}
     isLoading={loading}
   >
@@ -93,20 +98,20 @@ const Label = ({ children, className }: CommonProps) => (
   </p>
 );
 
-const Icn = ({ children, className }: CommonProps) => (
+const BtnIcon = ({ children, className }: CommonProps) => (
   <div className={cn("shrink-0", className)}>{children}</div>
 );
 
-type TAction = typeof ActionComp & {
+type TButton = typeof ActionComp & {
   Btn: typeof Btn;
   Label: typeof Label;
-  Icn: typeof Icn;
+  BtnIcon: typeof BtnIcon;
 };
 
-export const Action: TAction = Object.assign(ActionComp, {
+export const Action: TButton = Object.assign(ActionComp, {
   Btn,
   Label,
-  Icn,
+  BtnIcon,
 });
 
 type TActionComp = typeof Component & {

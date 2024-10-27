@@ -15,7 +15,7 @@ const Title = ({ children, href, className, dark = false }: TextProps) => (
   <Link href={href}>
     <h2
       className={cn(
-        "font-inst text-xl font-medium tracking-tight",
+        "font-inter text-lg font-medium leading-none tracking-tight",
         { "text-background": dark },
         className,
       )}
@@ -67,7 +67,7 @@ export const Header: THeader = Object.assign(HeaderComponent, {
 });
 
 const Component = ({ children }: PropsWithChildren) => (
-  <div className="flex h-full w-full flex-col items-center overflow-y-auto overflow-x-clip bg-background xl:pb-0">
+  <div className="flex h-full w-full flex-col items-center overflow-x-clip overflow-y-scroll xl:pb-0">
     {children}
   </div>
 );
@@ -85,7 +85,7 @@ const Inverted = ({ children }: PropsWithChildren) => (
   </div>
 );
 const Diffused = ({ children }: PropsWithChildren) => (
-  <div className="h-full w-full space-y-6 rounded-[1.5rem] bg-gradient-to-b from-foreground/10 to-transparent xl:pb-0">
+  <div className="h-full w-full space-y-6 overflow-clip rounded-[1rem] bg-gradient-to-b from-foreground/10 to-transparent dark:bg-zinc-950 xl:pb-0">
     {children}
   </div>
 );

@@ -1,13 +1,13 @@
 "use client";
 
 import { HStack } from "@/ui/hstack";
+import { Stat } from "@/ui/stats";
 import { Widget } from "@/ui/widget";
 import { UsersIcon } from "@heroicons/react/24/solid";
 import { VBar } from "./overview/charts/vbar";
 import { CreateAgentCode, GetUserInfo } from "./overview/comp/actions";
-import { Stat } from "@/ui/stats";
 
-export const Overview = () => {
+export const ManagerOverview = () => {
   const arrfour = [1, 2, 3, 4];
   return (
     <div className="overflow-auto pb-20">
@@ -27,7 +27,7 @@ export const Overview = () => {
       <Widget>
         <Widget.Diffused>
           <Widget.Header>
-            <Widget.Title>Overview</Widget.Title>
+            <Widget.Title>Manager Overview</Widget.Title>
             <Widget.Subtext className="text-foreground">
               See how everything is going
             </Widget.Subtext>

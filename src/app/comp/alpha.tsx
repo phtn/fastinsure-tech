@@ -33,30 +33,33 @@ const MemoizedChevronIcon = memo(() => (
 ));
 MemoizedChevronIcon.displayName = "MemoizedChevronIcon";
 
-const MemoizedButton = memo((props: { onPress: VoidFunction }) => {
-  const handlePress = useCallback(() => {
-    props.onPress();
-  }, [props]);
+const MemoizedButton = memo(
+  (props: { onPress: VoidFunction; label: string }) => {
+    const handlePress = useCallback(() => {
+      props.onPress();
+    }, [props]);
 
-  return (
-    <Button
-      size="lg"
-      radius="full"
-      variant="shadow"
-      color="primary"
-      className=""
-      onPress={handlePress}
-    >
-      <div className="pr-4">Get Started</div>
-      <MemoizedChevronIcon />
-    </Button>
-  );
-});
+    return (
+      <Button
+        size="lg"
+        radius="full"
+        variant="shadow"
+        color="primary"
+        className=""
+        onPress={handlePress}
+      >
+        <div className="pr-4">{props.label}</div>
+        <MemoizedChevronIcon />
+      </Button>
+    );
+  },
+);
 MemoizedButton.displayName = "MemoizedButton";
 
 const Jumbotron = memo(() => {
   const { user } = useAuthCtx();
   const [authed] = useState(!!user);
+
   const router = useRouter();
   const handlePress = useCallback(() => {
     if (authed) {
@@ -74,7 +77,10 @@ const Jumbotron = memo(() => {
         <Spacing bold text="Engineering" />
       </div>
       <div>
-        <MemoizedButton onPress={handlePress} />
+        <MemoizedButton
+          onPress={handlePress}
+          label={authed ? "View Dashboard" : "Get Started"}
+        />
       </div>
     </div>
   );

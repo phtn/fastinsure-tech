@@ -101,7 +101,7 @@ export const Dashboard = ({ children }: DashboardProps) => {
       )}
     >
       <Sidebar open={open} setOpen={setOpen} animate={true}>
-        <SidebarBody className="justify-between gap-10 bg-foreground/5 backdrop-blur-3xl">
+        <SidebarBody className="justify-between gap-10 bg-zinc-400/5 backdrop-blur-3xl">
           <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
             <>
               <Logo />
@@ -131,7 +131,7 @@ export const Dashboard = ({ children }: DashboardProps) => {
           "bg-foreground/5": open,
         })}
       >
-        <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-3xl bg-background p-2 dark:bg-foreground md:p-4">
+        <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-3xl bg-background p-2 dark:bg-zinc-500 md:p-4">
           {children}
         </div>
       </div>
@@ -140,7 +140,7 @@ export const Dashboard = ({ children }: DashboardProps) => {
 };
 export const Logo = () => {
   return (
-    <Link href="#" className="relative z-20 flex items-center space-x-2 py-1">
+    <Link href="/" className="relative z-20 flex items-center space-x-2 py-1">
       <Image
         alt="admin-logo"
         src={"/svg/f.svg"}

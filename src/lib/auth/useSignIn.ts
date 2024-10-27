@@ -9,20 +9,22 @@ import { useState } from "react";
 import { auth } from "./";
 import { errHandler } from "@/utils/helpers";
 import { type SignInWithEmailAndPassword } from "./resource";
+import { verifyIdToken } from "../secure/callers";
+import { useRouter } from "next/navigation";
 
 export type SignInResponse = {
   idToken: string;
   user: User;
 };
 
-// Yo can you read this?
-
 export const useSignIn = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [idToken, setIdToken] = useState<string>();
   const [oauth, setOAuth] = useState<OAuthCredential | null>(null);
+  const [verified, setVerified] = useState(false);
+
+  const router = useRouter();
 
   const signWithEmail = async (params: SignInWithEmailAndPassword) => {
     setLoading(true);
@@ -32,23 +34,29 @@ export const useSignIn = () => {
       params.email,
       params.password,
     );
-    await userCredential.user
-      .getIdToken()
-      .then(setIdToken)
-      .catch(errHandler(setLoading));
+    const id_token = await userCredential.user.getIdToken();
+    const user = userCredential.user;
+    setUser(user);
 
-    setUser(userCredential.user);
+    const result = await verifyIdToken({
+      id_token,
+      uid: user?.uid,
+      email: user?.email,
+    });
+    if (result.data.verified) {
+      setVerified(result.data.verified);
+      router.push("/authed/" + user?.uid);
+    }
+
     setLoading(false);
+    console.log(result);
   };
 
   const signWithGoogle = async () => {
     setLoading(true);
     const provider = new GoogleAuthProvider();
     const userCredential = await signInWithPopup(auth, provider);
-    await userCredential.user
-      .getIdToken()
-      .then(setIdToken)
-      .catch(errHandler(setLoading));
+    await userCredential.user.getIdToken().catch(errHandler(setLoading));
     const oauthCredential =
       GoogleAuthProvider.credentialFromResult(userCredential);
     setUser(userCredential.user);
@@ -59,7 +67,7 @@ export const useSignIn = () => {
   return {
     signWithEmail,
     signWithGoogle,
-    idToken,
+    verified,
     loading,
     error,
     oauth,

@@ -32,7 +32,7 @@ export const useAuthState = (options?: AuthStateOptions) => {
             .then(() => {
               setUser(current);
             })
-            .catch(errHandler(setLoading, setError));
+            .catch(errHandler(setLoading, "Failed to load user.", setError));
         }
         setUser(current);
         setLoading(false);
