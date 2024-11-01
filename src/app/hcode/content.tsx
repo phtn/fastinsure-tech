@@ -1,33 +1,52 @@
 "use client";
-// import { useEffect } from "react";
-// import { useHCode } from "./useHCode";
 
 import { useHCode } from "@/lib/hooks/useHCode";
 import { Button, Image, Input } from "@nextui-org/react";
-
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useThemeCtx } from "../ctx/theme";
 import moment from "moment";
 import { HCodeDetails } from "./hcode-details";
 import { ShieldCheck } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { verifyHCode } from "../actions";
+import type { HCodeParams, HCodeResponse } from "@/lib/secure/resource";
+import { CheckIcon } from "@heroicons/react/24/outline";
 
 export interface HCodeContentProps {
-  code?: string;
-  grp?: string;
-  nonce?: string;
-  sha?: string;
+  code: string | undefined;
+  grp: string | undefined;
+  nonce: string | undefined;
+  sha: string | undefined;
 }
 export const HCodeContent = (params: HCodeContentProps) => {
   const { theme } = useThemeCtx();
-  const { decodeParams, verifyHCode, response } = useHCode();
+  const { decodeParams } = useHCode();
 
-  const decoded = useMemo(() => decodeParams(params), [decodeParams, params]);
+  const [response, setResponse] = useState<HCodeResponse | undefined>();
 
-  const handleVerify = useCallback(async () => {
-    await verifyHCode({ key_code: "", ...decoded });
-  }, [verifyHCode, decoded]);
+  const decoded = useMemo(
+    () => decodeParams(params),
+    [decodeParams, params],
+  ) as HCodeParams;
 
-  const valid_until = moment().from(Date.now() + (response?.expiry ?? 0));
+  const handleVerify = useCallback(
+    async (formData: FormData) => {
+      // idbwxr
+      const res = await verifyHCode(decoded, formData);
+      setResponse(res as HCodeResponse);
+      // setExpiry()
+    },
+    [decoded],
+  );
+  const expiry_date = Date.now() + (response?.expiry ?? 0);
+
+  const valid_until = moment(expiry_date).fromNow();
+
+  const router = useRouter();
+  const handleActivate = useCallback(() => {
+    router.push("/signin");
+  }, [router]);
 
   return (
     <main className="h-screen bg-background">
@@ -47,30 +66,48 @@ export const HCodeContent = (params: HCodeContentProps) => {
           </div>
           <HCodeDetails
             {...decoded}
-            expiry={response?.expiry ? valid_until : "Expired"}
+            expiry={response?.expiry ? valid_until : undefined}
+            verified={response?.verified ?? null}
           />
         </div>
         <div className="col-span-2 flex h-full w-full flex-col space-y-4 rounded-lg border-[0.33px] border-foreground/50 p-6">
           <header className="text-foreground/80">
             Enter your activation code:
           </header>
-          <div className="flex w-full flex-col space-y-6 py-8">
-            <Input size="lg" />
+          <div className="flex w-full flex-col">
+            <form
+              action={handleVerify}
+              className="flex w-full flex-col space-y-5 py-6"
+            >
+              <Input
+                size="lg"
+                name="key_code"
+                className="font-bold tracking-[1rem] text-foreground/80"
+                classNames={{
+                  input: "text-center uppercase",
+                }}
+              />
+              <Button
+                variant="shadow"
+                color={response?.verified ? "default" : "primary"}
+                type="submit"
+                className="flex w-full items-center space-x-2"
+                disabled={response?.verified}
+                size="lg"
+              >
+                {response?.verified ? "Verified" : "Verify"}
+                {response?.verified ? (
+                  <CheckIcon className="size-5 text-success-600" />
+                ) : null}
+              </Button>
+            </form>
             <Button
               variant="shadow"
-              color="primary"
+              color={response?.verified ? "primary" : "default"}
+              onPress={handleActivate}
+              disabled={!response?.verified}
+              className={cn({ "opacity-50": !response?.verified })}
               size="lg"
-              onPress={handleVerify}
-            >
-              Verify
-            </Button>
-            <Button
-              variant="flat"
-              color="default"
-              onPress={handleVerify}
-              size="lg"
-              disabled
-              className="opacity-50"
             >
               Activate
             </Button>

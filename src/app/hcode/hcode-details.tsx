@@ -1,8 +1,9 @@
 "use client";
+import { useHCode } from "@/lib/hooks/useHCode";
 import { CheckCircleIcon, StopCircleIcon } from "@heroicons/react/24/solid";
 import { Listbox, ListboxItem } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
-import { useMemo, type PropsWithChildren } from "react";
+import { useEffect, useMemo, type PropsWithChildren } from "react";
 
 interface HCodeStatus {
   id: string;
@@ -17,6 +18,7 @@ interface HCodeDetailsProps {
   nonce?: string | undefined;
   sha?: string | undefined;
   expiry: string | undefined;
+  verified: boolean | null;
 }
 
 export const HCodeDetails = ({
@@ -25,9 +27,11 @@ export const HCodeDetails = ({
   nonce,
   sha,
   expiry,
+  verified,
 }: HCodeDetailsProps) => {
   const pathname = usePathname();
   const valid_url = pathname === "/hcode";
+  const { checkStatuses } = useHCode();
 
   const status_data: HCodeStatus[] = useMemo(
     () => [
@@ -64,25 +68,38 @@ export const HCodeDetails = ({
       {
         id: "expiry",
         label: "Expiry",
-        value: expiry,
-        status: expiry !== "Expired",
+        value: expiry ?? "Expired",
+        status: !!expiry,
       },
       {
         id: "hcode",
         label: "Activation Code",
-        value: null,
-        status: false,
+        value: verified ? "Activation Code Verified" : null,
+        status: !!verified,
       },
     ],
-    [code, expiry, grp, nonce, sha, valid_url],
+    [code, expiry, grp, nonce, sha, valid_url, verified],
   );
+
+  const getStatuses = useMemo(
+    () => status_data.filter((item) => item.status).some((s) => !s),
+    [status_data],
+  );
+
+  useEffect(() => {
+    checkStatuses(getStatuses);
+  }, [checkStatuses, getStatuses]);
 
   return (
     <ListboxWrapper>
       <Listbox variant="faded" aria-label="HCode Details">
         {status_data.map(
           (item) => (
-            <ListboxItem key={item.id} startContent={startContent(item.status)}>
+            <ListboxItem
+              key={item.id}
+              textValue={item.label}
+              startContent={startContent(item.status)}
+            >
               <ListBoxContent label={item.label} value={item.value} />
             </ListboxItem>
           ),

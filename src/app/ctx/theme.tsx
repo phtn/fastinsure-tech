@@ -10,8 +10,7 @@ import {
 } from "react";
 import { getTheme, setTheme } from "../actions";
 import { type SwitchProps, VisuallyHidden, useSwitch } from "@nextui-org/react";
-import { SunIcon } from "@heroicons/react/24/outline";
-import { MoonIcon } from "@heroicons/react/24/solid";
+import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 interface ThemeProps {
   theme: string;
   toggleTheme: VoidFunction;
@@ -51,15 +50,9 @@ export const useThemeCtx = () => {
 
 export const ThemeSwitch = (props: SwitchProps) => {
   const { theme, toggleTheme } = useThemeCtx();
-  const darkMode = theme === "dark";
-  const {
-    Component,
-    slots,
-    isSelected = darkMode,
-    getBaseProps,
-    getInputProps,
-    getWrapperProps,
-  } = useSwitch(props);
+  const darkMode = useMemo(() => theme === "dark", [theme]);
+  const { Component, slots, getBaseProps, getInputProps, getWrapperProps } =
+    useSwitch(props);
 
   return (
     <div className="flex flex-col gap-2">
@@ -73,11 +66,11 @@ export const ThemeSwitch = (props: SwitchProps) => {
             class: [
               "h-6 w-6 p-0.5",
               "flex items-center justify-center",
-              "rounded-lg bg-background text-foreground hover:border-[0.33px] hover:border-background/60 hover:bg-foreground hover:text-background hover:dark:border-background/60",
+              "rounded-lg bg-foreground text-background hover:border-[0.33px] hover:border-background/60 hover:bg-foreground hover:text-background hover:dark:border-background/60",
             ],
           })}
         >
-          {isSelected ? (
+          {darkMode ? (
             <SunIcon className="size-3.5" />
           ) : (
             <MoonIcon className="size-3.5" />

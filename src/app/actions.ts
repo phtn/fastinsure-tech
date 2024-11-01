@@ -1,5 +1,7 @@
 "use server";
 
+import { verifyAgentCode } from "@/lib/secure/callers";
+import { type HCodeParams, HCodeParamsSchema } from "@/lib/secure/resource";
 import { type RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 
@@ -47,4 +49,22 @@ export const setHCode = async (key: string) => {
 export const getHCode = async (): Promise<RequestCookie | undefined> => {
   const hcode = cookies().get("fastinsure--hcode");
   return hcode;
+};
+
+export const verifyHCode = async (decoded: HCodeParams, formData: FormData) => {
+  const validatedFields = HCodeParamsSchema.safeParse({
+    key_code: formData.get("key_code")?.toString(),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const response = await verifyAgentCode({
+    ...validatedFields.data,
+    ...decoded,
+  });
+  return response.data;
 };

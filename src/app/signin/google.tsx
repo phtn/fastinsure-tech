@@ -1,5 +1,6 @@
 import { useAuthCtx } from "@/app/ctx/auth";
 import { Button } from "@nextui-org/button";
+import { Image } from "@nextui-org/react";
 import { type FormEvent } from "react";
 
 export const GoogleSignin = () => {
@@ -12,17 +13,19 @@ export const GoogleSignin = () => {
   return (
     <div className="flex w-full">
       <Button
-        variant="ghost"
+        variant="flat"
         isLoading={loading}
         onClick={handleOnPress}
-        className="flex h-14 w-full rounded-md border-[0.33px] border-foreground dark:border-foreground/50 sm:h-12"
+        className="flex h-14 w-full rounded-md border-[0.33px] border-foreground hover:bg-foreground/40 dark:border-foreground/40 sm:h-12"
       >
-        <div className="flex h-full w-full items-center justify-center space-x-4">
+        <div className="flex h-full w-full items-center justify-center gap-6">
           <p className="font-inst text-sm font-medium text-foreground/80">
             Continue with Google
           </p>
-          <div
-            className={`h-[48px] w-[48px] bg-[url('/svg/google.svg')] bg-center bg-no-repeat`}
+          <Image
+            alt="google-logo"
+            src="/svg/google.svg"
+            className={"size-5 drop-shadow-lg"}
           />
         </div>
       </Button>

@@ -23,8 +23,9 @@ const Component = ({ children, open, onOpenChange }: ComponentProps) => {
   );
 };
 
-const Handle = () => (
+const Handle = ({ close }: { close: VoidFunction }) => (
   <div
+    onClick={close}
     aria-hidden
     className="my-1 h-1.5 w-8 flex-shrink-0 cursor-pointer rounded-full bg-amber-600"
   />
@@ -33,16 +34,17 @@ const Handle = () => (
 interface ContentProps {
   children: ReactNode;
   title: string;
+  close: VoidFunction;
 }
 
-const Content = ({ children, title }: ContentProps) => (
+const Content = ({ children, title, close }: ContentProps) => (
   <div className="w-fit rounded-t-xl border-[0.33px] border-b-0 border-double border-foreground/80 bg-background">
     <div className="">
       <div className="mx-[0.66px] mt-[0.33px] flex h-16 items-start justify-between rounded-t-[11.33px] border-b-[0.33px] border-foreground/10 bg-foreground/80 p-3">
         <p className="px-2 py-1.5 font-semibold tracking-tight text-background/80">
           {title}
         </p>
-        <Handle />
+        <Handle close={close} />
       </div>
       <div className="px-4">{children}</div>
     </div>

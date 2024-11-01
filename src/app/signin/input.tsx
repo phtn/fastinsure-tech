@@ -15,7 +15,6 @@ export const InputForm = forwardRef<
   }
 >(({ ...props }, ref) => (
   <Input
-    color="primary"
     ref={ref}
     startContent={
       <props.icon className="mr-2 size-5 shrink-0 text-primary/40" />
@@ -41,13 +40,14 @@ export const InputForm = forwardRef<
     className="outline-none focus:outline-none"
     classNames={{
       mainWrapper: "px-4",
-      inputWrapper: "shadow-none w-full px-0 py-0 rounded-md",
+      inputWrapper: "shadow-none w-full px-0 py-0",
       innerWrapper:
-        "dark:bg-background/20 bg-foreground/5 shadow-none px-4 border-[0.33px border-slate-100 h-16 sm:h-12 rounded-xl",
-      input: cn("leading-none py-2 font-normal bg-pink-400 text-sm", {
+        "dark:bg-background/40 bg-foreground/15 shadow-none px-4 border-[0.33px border-slate-100 h-16 sm:h-12 rounded-lg",
+      input: cn("leading-none py-2 font-normal bg-foreground text-sm", {
         "tracking-[4px] font-mono": props.name === "password",
       }),
     }}
+    size="lg"
     {...props}
   />
 ));

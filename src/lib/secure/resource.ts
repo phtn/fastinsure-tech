@@ -79,7 +79,7 @@ export const AgentCodeSchema = z.object({
 export type AgentCode = z.infer<typeof AgentCodeSchema>;
 
 export const HCodeParamsSchema = z.object({
-  key_code: z.string(),
+  key_code: z.string().min(6).max(6),
   code: z.string().optional(),
   grp: z.string().optional(),
   nonce: z.string().optional(),
@@ -89,7 +89,8 @@ export type HCodeParams = z.infer<typeof HCodeParamsSchema>;
 
 export const HCodeResponseSchema = z.object({
   verified: z.boolean(),
-  expiry: z.number().optional(),
-  url: z.string().url().optional(),
+  expiry: z.number().or(z.undefined()),
+  url: z.string().url().or(z.undefined()),
+  group_code: z.string().or(z.undefined()),
 });
 export type HCodeResponse = z.infer<typeof HCodeResponseSchema>;

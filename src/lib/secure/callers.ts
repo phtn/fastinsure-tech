@@ -1,12 +1,12 @@
 "use server";
 
 import { api } from "@/trpc/server";
-import { getAuthKey, setAuthKey } from "@/app/actions";
+// import { getAuthKey, setAuthKey } from "@/app/actions";
 import { asyncFn } from "@/server/api/utils";
 
 export const verifyIdToken = asyncFn(api.auth.verifyIdToken);
-export const getAuthKeyCookie = asyncFn(getAuthKey);
-export const setAuthKeyCookie = asyncFn(setAuthKey);
+// export const getAuthKeyCookie = asyncFn(getAuthKey);
+// export const setAuthKeyCookie = asyncFn(setAuthKey);
 
 // SHARED
 export const getClaims = asyncFn(api.auth.getClaims);

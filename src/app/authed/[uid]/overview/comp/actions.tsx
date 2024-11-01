@@ -8,6 +8,7 @@ import { Button } from "@nextui-org/react";
 import { Square2StackIcon } from "@heroicons/react/24/solid";
 import { QrDetails } from "./qr-details";
 import { QrCodegen } from "./qr-codegen";
+import { toggleState } from "@/utils/helpers";
 
 export const CreateAgentCode = () => {
   const { user } = useAuthCtx();
@@ -19,9 +20,11 @@ export const CreateAgentCode = () => {
     setOpen(true);
   }, [newAgentCode, user]);
 
+  const handleToggleOpen = () => toggleState(setOpen);
+
   const QrViewer = memo(() => (
-    <Qr open={open} onOpenChange={() => setOpen(!open)}>
-      <Qr.Content title="Agent Code Generated">
+    <Qr open={open} onOpenChange={handleToggleOpen}>
+      <Qr.Content title="Agent Code Generated" close={handleToggleOpen}>
         <Qr.Body>
           <Qr.Code>
             <QrCodegen url={agentCode?.data.url} />
