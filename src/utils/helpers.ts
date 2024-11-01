@@ -25,6 +25,19 @@ export const degreesToRadians = (degrees: number | string): number => {
   return getRad(degrees);
 };
 
+export const rawUriDecoder = <T>(params: T) => {
+  return Object.entries(params as Record<string, string>).map(
+    ([key, value]) => ({
+      [key]: decodeRaw(encodeURIComponent(value ?? "")),
+    }),
+  );
+};
+
+const decodeRaw = (encoded: string) => {
+  let val = encoded.replace(/%20/g, "__P__");
+  val = decodeURIComponent(val);
+  return val.replace(/__P__/g, "+");
+};
 // export const createInvoiceNumber = (): string => {
 //   const regex = /-(.*)-/;
 //   const uid = uuidv4();

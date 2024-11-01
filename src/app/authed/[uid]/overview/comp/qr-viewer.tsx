@@ -38,37 +38,35 @@ interface ContentProps {
 const Content = ({ children, title }: ContentProps) => (
   <div className="w-fit rounded-t-xl border-[0.33px] border-b-0 border-double border-foreground/80 bg-background">
     <div className="">
-      <div className="mx-[0.66px] mb-4 mt-[0.33px] flex h-16 items-start justify-between rounded-t-[11.33px] border-b-[0.33px] border-foreground/10 bg-foreground/80 p-3">
+      <div className="mx-[0.66px] mt-[0.33px] flex h-16 items-start justify-between rounded-t-[11.33px] border-b-[0.33px] border-foreground/10 bg-foreground/80 p-3">
         <p className="px-2 py-1.5 font-semibold tracking-tight text-background/80">
           {title}
         </p>
         <Handle />
       </div>
-      <div className="p-4">{children}</div>
+      <div className="px-4">{children}</div>
     </div>
   </div>
 );
 
 const Body = ({ children }: PropsWithChildren) => (
-  <div className="flex w-fit items-center justify-between text-foreground">
+  <div className="flex w-fit items-start justify-between text-foreground">
     {children}
   </div>
 );
 
 const Code = ({ children }: PropsWithChildren) => (
-  <div className="relative flex h-64 w-72 items-center justify-center rounded-md border-[0px] border-foreground/20">
+  <div className="relative mx-1 my-6 flex h-64 w-72 items-center justify-center rounded-md border-[0.33px] border-foreground/20">
     {children}
   </div>
 );
 
 const Detail = ({ children }: PropsWithChildren) => (
-  <div className="flex h-64 w-[30rem] flex-col overflow-auto p-3">
-    {children}
-  </div>
+  <div className="h-[19rem] w-[30rem] overflow-auto py-4">{children}</div>
 );
 
 const Footer = ({ children }: PropsWithChildren) => (
-  <div className="w-[50.05rem] rounded-b-lg border-[0.33px] border-t-0 border-double border-foreground/80 bg-background/50 p-4 backdrop-blur-3xl">
+  <div className="w-[50.55rem] rounded-b-lg border-[0.33px] border-double border-foreground/80 bg-background/80 p-4 backdrop-blur-3xl dark:border-t-[0.33px] dark:border-t-foreground/30 dark:bg-background/50">
     <div className="mx-auto flex items-center justify-between">{children}</div>
   </div>
 );
@@ -78,12 +76,12 @@ interface UrlProps {
   children: ReactNode;
 }
 const Url = ({ url, children }: UrlProps) => (
-  <div className="mx-auto flex w-full items-center justify-between">
-    <div className="flex items-center gap-2 whitespace-nowrap border">
-      <CursorArrowRaysIcon className="size-5 text-foreground" />
+  <div className="mx-auto flex w-full items-center justify-between gap-2">
+    <div className="flex w-fit items-center gap-1 overflow-auto whitespace-nowrap">
+      <CursorArrowRaysIcon className="size-5 shrink-0 text-foreground" />
       <Link
         href={url ?? ""}
-        className="font-mono text-xs decoration-foreground/40 hover:underline hover:underline-offset-4"
+        className="font-mono text-xs text-foreground/80 decoration-foreground/40 hover:underline hover:underline-offset-4"
       >
         {url}
       </Link>

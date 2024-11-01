@@ -58,13 +58,6 @@ export const devToken = {
     },
   },
 } satisfies TokenVerification;
-
-export const AgentCodeSchema = z.object({
-  key: z.string(),
-  url: z.string().url(),
-});
-export type AgentCode = z.infer<typeof AgentCodeSchema>;
-
 export const AccountTokenSchema = z.object({
   id_token: z.string(),
   email: z.string().email(),
@@ -77,3 +70,26 @@ export const AccountTokenResponseSchema = z.object({
   token: z.string(),
 });
 export type AccountTokenResponse = z.infer<typeof AccountTokenResponseSchema>;
+
+export const AgentCodeSchema = z.object({
+  code: z.string(),
+  url: z.string().url(),
+  expiry: z.number(),
+});
+export type AgentCode = z.infer<typeof AgentCodeSchema>;
+
+export const HCodeParamsSchema = z.object({
+  key_code: z.string(),
+  code: z.string().optional(),
+  grp: z.string().optional(),
+  nonce: z.string().optional(),
+  sha: z.string().optional(),
+});
+export type HCodeParams = z.infer<typeof HCodeParamsSchema>;
+
+export const HCodeResponseSchema = z.object({
+  verified: z.boolean(),
+  expiry: z.number().optional(),
+  url: z.string().url().optional(),
+});
+export type HCodeResponse = z.infer<typeof HCodeResponseSchema>;

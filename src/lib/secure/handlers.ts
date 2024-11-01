@@ -9,6 +9,8 @@ import type {
   VerifyAuthKey,
   VerifyIdToken,
   AccountToken,
+  HCodeParams,
+  HCodeResponse,
 } from "./resource";
 import { createEndpoint } from "../utils";
 
@@ -17,6 +19,7 @@ export interface ServerStatus {
 }
 
 const livenessUrl = createEndpoint("/livez");
+const verifyAgentCodeUrl = createEndpoint("/verify-agent-code");
 const authUrl = createEndpoint("/v1/auth");
 const claimsUrl = createEndpoint("/v1/claims");
 const adminUrl = createEndpoint("/v1/admin");
@@ -60,6 +63,14 @@ export const createAgentCode = async (params: VerifyIdToken) => {
     body: JSON.stringify(params),
   });
   return response.json() as Promise<{ data: AgentCode }>;
+};
+
+export const verifyAgentCode = async (params: HCodeParams) => {
+  const response = await fetch(verifyAgentCodeUrl, {
+    ...config.post,
+    body: JSON.stringify(params),
+  });
+  return response.json() as Promise<{ data: HCodeResponse }>;
 };
 
 // SERVER STATUS

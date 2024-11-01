@@ -9,16 +9,18 @@ import type {
   CornerSquareType,
 } from "qr-code-styling";
 import QRCodeStyling from "qr-code-styling";
+import { useThemeCtx } from "@/app/ctx/theme";
 
-export const QrCodegen = (props: { key: string | undefined }) => {
-  const linkURL = `http://localhost:3000/hcode/${props.key}`;
+export const QrCodegen = (props: { url: string | undefined }) => {
+  const { theme } = useThemeCtx();
+  const light = theme === "light";
   const [options] = useState<Options>({
     width: 256,
     height: 256,
     type: "svg" as DrawType,
-    data: linkURL,
+    data: props.url,
     image: "/svg/logo.svg",
-    margin: 2,
+    margin: 1,
     qrOptions: {
       typeNumber: 0 as TypeNumber,
       mode: "Byte" as Mode,
@@ -28,7 +30,7 @@ export const QrCodegen = (props: { key: string | undefined }) => {
       hideBackgroundDots: true,
       imageSize: 0.5,
       margin: 0.5,
-      crossOrigin: "anonymous",
+      crossOrigin: "same-origin",
     },
     dotsOptions: {
       color: "#09090b",
@@ -59,12 +61,13 @@ export const QrCodegen = (props: { key: string | undefined }) => {
         rotation: 0,
         colorStops: [
           { offset: 0, color: "#475569" },
-          { offset: 1, color: "#a1a1aa" },
+          { offset: 1, color: "#64748b" },
         ],
       },
     },
     backgroundOptions: {
-      color: "transparent",
+      color: light ? "transparent" : "#d4d4d8",
+      round: 0.15,
       // gradient: {
       //   type: 'linear', // 'radial'
       //   rotation: 0,
@@ -86,5 +89,10 @@ export const QrCodegen = (props: { key: string | undefined }) => {
     qrCode.update(options);
   }, [qrCode, options]);
 
-  return <div className="" ref={ref} />;
+  return (
+    <div
+      className="h-72 rounded-md border-[0.33px] border-foreground/20 py-4"
+      ref={ref}
+    />
+  );
 };

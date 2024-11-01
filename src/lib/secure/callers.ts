@@ -13,6 +13,7 @@ export const getClaims = asyncFn(api.auth.getClaims);
 
 // MANAGER CLAIMS
 export const createAgentCode = asyncFn(api.auth.createAgentCode);
+export const verifyAgentCode = asyncFn(api.server.verifyAgentCode);
 export const createAccountToken = asyncFn(api.auth.createAccountToken);
 
 // SERVER STATUS

@@ -2,7 +2,7 @@ import { useAuthCtx } from "@/app/ctx/auth";
 import { useManager } from "@/lib/hooks/useManager";
 import { ActionCard, Action } from "@/ui/action-card";
 import { QrCodeIcon } from "@heroicons/react/24/outline";
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { Qr } from "./qr-viewer";
 import { Button } from "@nextui-org/react";
 import { Square2StackIcon } from "@heroicons/react/24/solid";
@@ -13,26 +13,24 @@ export const CreateAgentCode = () => {
   const { user } = useAuthCtx();
   const { newAgentCode, loading, agentCode } = useManager();
   const [open, setOpen] = useState(false);
-  const handleCreateAgentCode = async () => {
-    const idToken = await user?.getIdToken();
-    if (!idToken && !user) return;
-    const params = { idToken, uid: user?.uid, email: user?.email };
-    await newAgentCode(params);
 
-    if (agentCode) {
-      setOpen(true);
-    }
-  };
+  const handleCreateAgentCode = useCallback(async () => {
+    await newAgentCode(user);
+    setOpen(true);
+  }, [newAgentCode, user]);
 
   const QrViewer = memo(() => (
     <Qr open={open} onOpenChange={() => setOpen(!open)}>
       <Qr.Content title="Agent Code Generated">
         <Qr.Body>
           <Qr.Code>
-            <QrCodegen key={agentCode?.data.key} />
+            <QrCodegen url={agentCode?.data.url} />
           </Qr.Code>
           <Qr.Detail>
-            <QrDetails />
+            <QrDetails
+              key_code={agentCode?.data.code}
+              expiry={agentCode?.data.expiry}
+            />
           </Qr.Detail>
         </Qr.Body>
       </Qr.Content>

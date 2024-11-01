@@ -1,7 +1,7 @@
 import { factory, router } from "@/server/api/trpc";
 import { convexRouter } from "./routers/conv";
 import { authRouter } from "./routers/auth";
-import { serverRouter } from "./routers/health";
+import { serverRouter } from "./routers/server";
 
 export const appRouter = router({
   auth: authRouter,
