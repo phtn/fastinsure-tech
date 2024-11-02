@@ -6,7 +6,7 @@ import { useSignIn } from "@/lib/auth/useSignIn";
 import { useSignOut } from "@/lib/auth/useSignOut";
 // import { setAuthKeyCookie } from "@/lib/secure/callers";
 import { onAuthStateChanged, type User } from "firebase/auth";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -37,7 +37,7 @@ const AuthCtx = createContext<AuthCtxValues | null>(null);
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
   // const [authKey, setAuthKeyState] = useState<string | undefined>();
-  const router = useRouter();
+  // const router = useRouter();
 
   const { signWithEmail, signWithGoogle, loading } = useSignIn();
   const { pending } = useAuthVerification(user);
@@ -59,11 +59,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     onAuthStateChanged(auth, (current) => {
       setUser(current);
       if (!current) {
-        router.push("/");
+        // router.push("/");
         return;
       }
     });
-  }, [router]);
+  }, []);
 
   useEffect(() => {
     authState();

@@ -1,10 +1,11 @@
 "use client";
 
 import { Link, Tab, Tabs } from "@nextui-org/react";
-import { EmailSigninForm } from "./email";
-import { PhoneSigninForm } from "./phone";
+import { WithEmailForm } from "./email";
+import { WithPhoneForm } from "./phone";
+import { memo } from "react";
 
-export const SigninForm = () => {
+const SigninForm = () => {
   return (
     <Tabs
       size="md"
@@ -16,16 +17,16 @@ export const SigninForm = () => {
       }}
     >
       <Tab key="email" title="Email">
-        <EmailSigninForm />
+        <WithEmailForm />
       </Tab>
       <Tab key="phone" title="Phone">
-        <PhoneSigninForm />
+        <WithPhoneForm />
       </Tab>
     </Tabs>
   );
 };
 
-export const AuthSupport = () => (
+const AuthSupport = () => (
   <div className="flex w-full items-center justify-center space-x-4 pb-6 text-xs font-thin">
     <Link size="sm" className="font-normal delay-700">
       Sign up
@@ -36,3 +37,7 @@ export const AuthSupport = () => (
     </Link>
   </div>
 );
+
+export const Support = memo(AuthSupport);
+
+export const SignForm = memo(SigninForm);

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { verifyHCode } from "../actions";
 import type { HCodeParams, HCodeResponse } from "@/lib/secure/resource";
-import { CheckIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 export interface HCodeContentProps {
   code: string | undefined;
@@ -23,7 +23,8 @@ export const HCodeContent = (params: HCodeContentProps) => {
   const { theme } = useThemeCtx();
   const { decodeParams } = useHCode();
 
-  const [response, setResponse] = useState<HCodeResponse | undefined>();
+  const [verified, setVerified] = useState<boolean | undefined>();
+  const [expiry, setExpiry] = useState<number | undefined>();
 
   const decoded = useMemo(
     () => decodeParams(params),
@@ -33,13 +34,13 @@ export const HCodeContent = (params: HCodeContentProps) => {
   const handleVerify = useCallback(
     async (formData: FormData) => {
       // idbwxr
-      const res = await verifyHCode(decoded, formData);
-      setResponse(res as HCodeResponse);
-      // setExpiry()
+      const response = (await verifyHCode(decoded, formData)) as HCodeResponse;
+      setVerified(response?.verified);
+      setExpiry(response?.expiry);
     },
     [decoded],
   );
-  const expiry_date = Date.now() + (response?.expiry ?? 0);
+  const expiry_date = Date.now() + (expiry ?? 0);
 
   const valid_until = moment(expiry_date).fromNow();
 
@@ -48,13 +49,16 @@ export const HCodeContent = (params: HCodeContentProps) => {
     router.push("/signin");
   }, [router]);
 
+  // XGNOTP
+  // http://localhost:3000/hcode?code=dsbe0xb4baab53d3&grp=tdJ2wJNNpnQIAiS+dNJGZyYqszatqVPQSX0dCpYSPBo=&nonce=21&sha=lPewWBRb5DmkfA+NadWubOcj
+
   return (
     <main className="h-screen bg-background">
       <Header theme={theme} />
       <div className="p-10">
         <header className="flex items-center space-x-2 text-foreground/70">
-          <ShieldCheck className="size-7 stroke-1 text-foreground" />
-          <span className="text-2xl font-semibold text-foreground">
+          <ShieldCheck className="size-7 fill-foreground stroke-1 text-background" />
+          <span className="text-2xl font-semibold tracking-tight text-foreground">
             Account Activation
           </span>
         </header>
@@ -66,13 +70,21 @@ export const HCodeContent = (params: HCodeContentProps) => {
           </div>
           <HCodeDetails
             {...decoded}
-            expiry={response?.expiry ? valid_until : undefined}
-            verified={response?.verified ?? null}
+            expiry={expiry ? valid_until : undefined}
+            verified={verified ?? null}
           />
         </div>
         <div className="col-span-2 flex h-full w-full flex-col space-y-4 rounded-lg border-[0.33px] border-foreground/50 p-6">
-          <header className="text-foreground/80">
-            Enter your activation code:
+          <header className="flex justify-center">
+            {verified ? (
+              <span className="font-semibold text-foreground">
+                Verification Successful!
+              </span>
+            ) : (
+              <span className="text-foreground/80">
+                Enter your activation code:
+              </span>
+            )}
           </header>
           <div className="flex w-full flex-col">
             <form
@@ -88,29 +100,49 @@ export const HCodeContent = (params: HCodeContentProps) => {
                 }}
               />
               <Button
-                variant="shadow"
-                color={response?.verified ? "default" : "primary"}
+                variant={verified ? "flat" : "shadow"}
+                color={verified ? "default" : "primary"}
                 type="submit"
-                className="flex w-full items-center space-x-2"
-                disabled={response?.verified}
-                size="lg"
+                className={cn(
+                  "flex w-full items-center space-x-2 transition-all duration-500 ease-out",
+                  { "bg-transparent": verified },
+                )}
+                disabled={verified}
+                size={verified ? "md" : "lg"}
               >
-                {response?.verified ? "Verified" : "Verify"}
-                {response?.verified ? (
+                {verified ? "Verified" : "Verify"}
+                {verified ? (
                   <CheckIcon className="size-5 text-success-600" />
                 ) : null}
               </Button>
             </form>
-            <Button
-              variant="shadow"
-              color={response?.verified ? "primary" : "default"}
-              onPress={handleActivate}
-              disabled={!response?.verified}
-              className={cn({ "opacity-50": !response?.verified })}
-              size="lg"
-            >
-              Activate
-            </Button>
+            <div className="flex w-full flex-col items-center space-y-6">
+              <Button
+                variant={verified ? "shadow" : "flat"}
+                color={verified ? "primary" : "default"}
+                onPress={handleActivate}
+                disabled={!verified}
+                className={cn("w-fit rounded-full font-medium", {
+                  "bg-transparent opacity-30": !verified,
+                  "animate-enter": verified,
+                })}
+                size={!verified ? "md" : "lg"}
+              >
+                <div className="pr-4">Activate your account</div>
+                <div className="-mr-3.5 flex size-8 items-center justify-center rounded-full bg-background">
+                  <ChevronRightIcon className="size-3 text-foreground" />
+                </div>
+              </Button>
+              <div
+                className={cn("rounded-xl bg-foreground/5 px-4 py-2 text-xs", {
+                  hidden: !verified,
+                  "animate-enter delay-700": verified,
+                })}
+              >
+                <span className="px-2 text-foreground/80">Next step:</span>
+                Account creation
+              </div>
+            </div>
           </div>
         </div>
         <div className="spaece-x-4 col-span-2 flex h-full w-full rounded-lg border-[0.33px] border-foreground/50 p-6">
@@ -122,7 +154,7 @@ export const HCodeContent = (params: HCodeContentProps) => {
 };
 
 const Header = (props: { theme: string }) => (
-  <div className="flex h-[calc(100vh*0.1)] w-full items-center space-x-4 border-b-[0.33px] border-foreground/60 pl-6 md:pl-14 xl:pl-20">
+  <div className="flex h-[calc(100vh*0.1)] w-full items-center space-x-4 border-b-[0.33px] border-foreground/20 pl-6 md:pl-14 xl:pl-20">
     <div className="flex size-[24px] items-center justify-center rounded-full border-1 border-primary/40 xl:size-[32px]">
       <Image
         alt=""

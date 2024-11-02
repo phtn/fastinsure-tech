@@ -51,6 +51,10 @@ export const getHCode = async (): Promise<RequestCookie | undefined> => {
   return hcode;
 };
 
+export const deleteHCode = async () => {
+  cookies().delete("fastinsure--hcode");
+};
+
 export const verifyHCode = async (decoded: HCodeParams, formData: FormData) => {
   const validatedFields = HCodeParamsSchema.safeParse({
     key_code: formData.get("key_code")?.toString(),

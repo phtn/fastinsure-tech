@@ -11,6 +11,7 @@ import { errHandler } from "@/utils/helpers";
 import { type SignInWithEmailAndPassword } from "./resource";
 import { verifyIdToken } from "../secure/callers";
 import { useRouter } from "next/navigation";
+import { deleteHCode, getHCode } from "@/app/actions";
 
 export type SignInResponse = {
   idToken: string;
@@ -29,6 +30,7 @@ export const useSignIn = () => {
   const signWithEmail = async (params: SignInWithEmailAndPassword) => {
     setLoading(true);
     setError(null);
+
     const userCredential = await signInWithEmailAndPassword(
       auth,
       params.email,
@@ -38,18 +40,22 @@ export const useSignIn = () => {
     const user = userCredential.user;
     setUser(user);
 
+    const hcodeCookie = await getHCode();
+
     const result = await verifyIdToken({
       id_token,
       uid: user?.uid,
       email: user?.email,
+      group_code: hcodeCookie && String(hcodeCookie),
     });
     if (result.data.verified) {
       setVerified(result.data.verified);
+      if (hcodeCookie) {
+        await deleteHCode();
+      }
       router.push("/authed/" + user?.uid);
     }
-
     setLoading(false);
-    console.log(result);
   };
 
   const signWithGoogle = async () => {

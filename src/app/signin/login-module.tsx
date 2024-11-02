@@ -1,9 +1,10 @@
-import { SignInModule } from "./signin";
+import { Signin } from "./signin";
 import { Chart } from "./chart";
 import { Screen } from "@/ui/screen";
 import { HStack } from "@/ui/hstack";
+import { memo } from "react";
 
-export const LoginModule = () => (
+const LoginModule = () => (
   <Screen>
     <Screen.PadSm />
     <Screen.Inverted>
@@ -14,7 +15,7 @@ export const LoginModule = () => (
 
       <HStack cols={5}>
         <HStack.Col>
-          <SignInModule />
+          <Signin />
         </HStack.Col>
 
         <HStack.Col lg>
@@ -26,3 +27,5 @@ export const LoginModule = () => (
     <Screen.PadLg />
   </Screen>
 );
+
+export const AuthComponent = memo(LoginModule);

@@ -68,7 +68,7 @@ export const HCodeDetails = ({
       {
         id: "expiry",
         label: "Expiry",
-        value: expiry ?? "Expired",
+        value: !expiry ? "❔❔❔" : "Expired",
         status: !!expiry,
       },
       {
@@ -119,7 +119,7 @@ const ListBoxContent = (props: {
   label: string;
   value: string | boolean | number | null | undefined;
 }) => (
-  <div className="flex w-full items-center justify-between whitespace-nowrap border-b border-dashed border-foreground/20">
+  <div className="flex w-full items-center justify-between whitespace-nowrap border-b border-dashed border-foreground/20 py-1">
     <p className="font-semibold text-foreground/90">{props.label}</p>
     <p className="font-jet text-foreground/80">{props.value}</p>
   </div>

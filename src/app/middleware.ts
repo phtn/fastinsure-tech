@@ -4,6 +4,14 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  if (pathname === "/hcode") {
+    return NextResponse.next();
+  }
+
+  if (pathname.startsWith("/authed/")) {
+    console.log("authed access");
+  }
+
   const re = /^\/authed\/([^/]+)$/;
   const match = re.exec(pathname);
 
@@ -16,5 +24,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/authed/:uid*"],
+  matcher: ["/authed/:uid*", "/hcode"],
 };

@@ -2,12 +2,16 @@
 
 import { Separator } from "@/ui/separator";
 import { Dock, DockIcon } from "@/ui/dock";
-import { type HTMLAttributes, useEffect, useMemo, type ReactNode } from "react";
-import { useTooltip } from "../ctx/tooltip";
-import { Tooltip } from "@/ui/tooltip";
+import {
+  type HTMLAttributes,
+  useEffect,
+  useMemo,
+  type ReactNode,
+  useState,
+} from "react";
 
 import { ThemeSwitch, useThemeCtx } from "../ctx/theme";
-import { Badge, Image } from "@nextui-org/react";
+import { Badge, Image, Link } from "@nextui-org/react";
 import { ServerStackIcon, UserIcon } from "@heroicons/react/24/solid";
 import {
   BellIcon,
@@ -17,8 +21,6 @@ import {
 import { useServer } from "@/lib/hooks/useServer";
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/ui/hover";
-import { type UID } from "../types";
-import { type MotionProps } from "framer-motion";
 import type { ServerStatus } from "@/lib/secure/handlers";
 import { cn } from "@/lib/utils";
 
@@ -73,18 +75,36 @@ const DATA = {
 
 export function ActionBar() {
   const { liveness, checkServerStatus } = useServer();
+  const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
-    checkServerStatus().catch(console.error);
-  }, [checkServerStatus]);
-  const { hoveredIndex, motionProps } = useTooltip();
-  const props = { hoveredIndex, motionProps };
+    // Define the reconnect function
+
+    // Attempt to reconnect immediately if not connected
+    if (!liveness) {
+      checkServerStatus().catch(console.error);
+    }
+
+    // Set up the interval
+    const intervalId = setInterval(() => {
+      if (!liveness) {
+        checkServerStatus().catch(console.error);
+        setElapsed((prev) => prev + 1);
+      }
+    }, 1000);
+
+    // Cleanup on unmount
+    return () => clearInterval(intervalId);
+  }, [liveness, checkServerStatus]);
+
   return (
     <div className="fixed bottom-6 right-6 z-[300] flex h-fit w-fit flex-col items-center justify-center text-background">
       <Dock direction="middle">
         {DATA.navbar.map((item) => (
           <DockIcon key={item.label}>
-            <item.icon className="size-4" />
+            <Link href={item.href} className="group text-background">
+              <item.icon className="size-4 group-hover:fill-foreground/80" />
+            </Link>
           </DockIcon>
         ))}
         <Separator
@@ -93,14 +113,7 @@ export function ActionBar() {
         />
         {Object.entries(DATA.quicklinks.alerts).map(([name, item]) => (
           <DockIcon key={name}>
-            <Tooltip>
-              <item.icon className="size-4 fill-foreground/50" />
-              <Tooltip.Animated id={name} {...props}>
-                <Tooltip.Label>
-                  <p>{name}</p>
-                </Tooltip.Label>
-              </Tooltip.Animated>
-            </Tooltip>
+            <item.icon className="size-4 fill-foreground/50" />
           </DockIcon>
         ))}
         <Separator
@@ -110,18 +123,18 @@ export function ActionBar() {
 
         <DockIcon>
           <ServerHealth liveness={liveness}>
-            <ServerButton {...props} liveness={liveness!} />
+            {!liveness ? (
+              <p className="font-jet text-[13px] font-medium">
+                {elapsed}
+                <span className="text-[10px] font-thin">s</span>
+              </p>
+            ) : (
+              <ServerButton liveness={liveness} />
+            )}
           </ServerHealth>
         </DockIcon>
         <DockIcon>
-          <Tooltip>
-            <ThemeSwitch />
-            <Tooltip.Animated id={8} {...props}>
-              <Tooltip.Label>
-                <p>Theme</p>
-              </Tooltip.Label>
-            </Tooltip.Animated>
-          </Tooltip>
+          <ThemeSwitch />
         </DockIcon>
       </Dock>
     </div>
@@ -129,23 +142,12 @@ export function ActionBar() {
 }
 
 interface ActionButton {
-  hoveredIndex: UID;
-  motionProps: MotionProps;
   liveness: ServerStatus | undefined;
 }
 
 function ServerButton(props: ActionButton) {
   const { server } = DATA.system;
-  return (
-    <Tooltip>
-      <server.icon className="size-5" liveness={props.liveness} />
-      <Tooltip.Animated {...props} id={server.name}>
-        <Tooltip.Label>
-          <p>{server.name}</p>
-        </Tooltip.Label>
-      </Tooltip.Animated>
-    </Tooltip>
-  );
+  return <server.icon className="size-5" liveness={props.liveness} />;
 }
 
 interface ServerHealthData {

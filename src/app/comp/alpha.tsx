@@ -1,7 +1,7 @@
 "use client";
 
 import { Spacing } from "@/ui/spacing";
-import { Button, Image } from "@nextui-org/react";
+import { Button, Image, Link } from "@nextui-org/react";
 import { memo, useCallback, Suspense, useState } from "react"; // Import lazy and Suspense
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Flow } from "./flow";
@@ -72,7 +72,11 @@ const Jumbotron = memo(() => {
   return (
     <div className="relative ml-6 h-full w-full content-center space-y-12 md:ml-14 xl:ml-20">
       <div>
-        <Spacing text="TECH DRIVEN" />
+        <Link
+          href={`http://localhost:3000/hcode?code=dsbe0xb4baab53d3&grp=tdJ2wJNNpnQIAiS+dNJGZyYqszatqVPQSX0dCpYSPBo=&nonce=21&sha=lPewWBRb5DmkfA+NadWubOcj`}
+        >
+          <Spacing text="TECH DRIVEN" />
+        </Link>
         <Spacing bold text="Business" />
         <Spacing bold text="Engineering" />
       </div>

@@ -7,7 +7,7 @@ import {
 } from "./schema";
 import { InputForm } from "./input";
 import { GoogleSignin } from "./google";
-import { type FormEvent, useCallback, useState } from "react";
+import { type FormEvent, memo, useCallback, useState } from "react";
 import { Button } from "@nextui-org/react";
 import { ArrowRightEndOnRectangleIcon } from "@heroicons/react/24/outline";
 import { useAuthCtx } from "@/app/ctx/auth";
@@ -87,3 +87,6 @@ export const EmailSigninForm = () => {
     </form>
   );
 };
+
+export const WithEmailForm = memo(EmailSigninForm);
+WithEmailForm.displayName = "WithEmailForm";

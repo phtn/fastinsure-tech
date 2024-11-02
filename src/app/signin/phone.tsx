@@ -1,5 +1,5 @@
 import { Badge, Button, Input } from "@nextui-org/react";
-import { type ChangeEvent, useCallback, useMemo, useState } from "react";
+import { type ChangeEvent, memo, useCallback, useMemo, useState } from "react";
 import { DevicePhoneMobileIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
 
@@ -120,3 +120,5 @@ export const PhoneSigninForm = () => {
     </form>
   );
 };
+
+export const WithPhoneForm = memo(PhoneSigninForm);

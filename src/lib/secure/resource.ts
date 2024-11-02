@@ -24,6 +24,7 @@ export const VerifyIdTokenSchema = z.object({
   id_token: z.string().or(z.undefined()),
   uid: z.string().nullable().or(z.undefined()),
   email: z.string().email().nullable().or(z.undefined()),
+  group_code: z.string().optional(),
 });
 export type VerifyIdToken = z.infer<typeof VerifyIdTokenSchema>;
 

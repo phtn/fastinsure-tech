@@ -9,9 +9,7 @@ export const useServer = () => {
 
   const checkServerStatus = useCallback(
     async () =>
-      await getServerStatus()
-        .then(setLiveness)
-        .catch(errHandler(setLoading, "Server is unreachable.")),
+      await getServerStatus().then(setLiveness).catch(errHandler(setLoading)),
     [],
   );
 
