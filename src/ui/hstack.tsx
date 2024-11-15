@@ -15,8 +15,9 @@ export const HStackComponent = ({
 }: HStackProps) => (
   <div
     className={cn(
-      "_h-[calc(100vh*0.675-8px)] grid h-fit w-full grid-cols-1 xl:h-[calc(100vh*0.75-8px)]",
+      "grid h-full w-full grid-cols-1",
       className,
+      { "lg:grid-cols-6": cols === 6 },
       { "lg:grid-cols-5": cols === 5 },
       { "lg:grid-cols-4": cols === 4 },
       { "lg:grid-cols-3": cols === 3 },
@@ -57,8 +58,8 @@ const Col = ({ children, lg = false, className }: ColProps) => {
     <div
       ref={ref}
       className={cn(
-        "flex h-full w-full translate-y-24 items-start justify-center px-6 text-background/80 opacity-0 transition-all delay-200 duration-500 ease-out lg:col-span-2 portrait:hidden",
-        { "flex-col justify-start delay-300 lg:col-span-3 xl:pr-20": lg },
+        "h-full w-full translate-y-24 text-background/80 opacity-0 transition-all delay-200 duration-500 ease-out portrait:hidden",
+        { "flex-col justify-start delay-300 lg:col-span-3": lg },
         { "translate-y-0 opacity-100": inView },
         className,
       )}

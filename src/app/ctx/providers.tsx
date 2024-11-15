@@ -4,6 +4,7 @@ import { Toasts } from "./toasts";
 import { AuthProvider } from "./auth";
 import { Theme } from "./theme";
 import { ActionBar } from "../comp/actionbar";
+import { Snackbar } from "@/ui/sonner";
 
 export const Providers = ({ children }: PropsWithChildren) => {
   return (
@@ -13,7 +14,7 @@ export const Providers = ({ children }: PropsWithChildren) => {
           {children}
           <ActionBar />
           <Toasts />
-          {/* <Snackbar /> */}
+          <Snackbar />
         </AuthProvider>
       </NextUIProvider>
     </Theme>

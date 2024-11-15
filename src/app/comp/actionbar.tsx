@@ -12,17 +12,19 @@ import {
 
 import { ThemeSwitch, useThemeCtx } from "../ctx/theme";
 import { Badge, Image, Link } from "@nextui-org/react";
-import { ServerStackIcon, UserIcon } from "@heroicons/react/24/solid";
+import { CircleStackIcon, SlashIcon } from "@heroicons/react/24/solid";
 import {
   BellIcon,
   ChatBubbleBottomCenterIcon,
-  HomeIcon,
+  CheckIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
 import { useServer } from "@/lib/hooks/useServer";
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/ui/hover";
 import type { ServerStatus } from "@/lib/secure/handlers";
 import { cn } from "@/lib/utils";
+import type { DualIcon } from "../types";
 
 export type IconProps = HTMLAttributes<SVGElement> & {
   liveness?: ServerStatus;
@@ -33,21 +35,23 @@ const ServerIcon = (props: IconProps) => {
     <Badge
       size="sm"
       color={props.liveness?.data !== "OK" ? "warning" : "success"}
-      content=""
+      content={
+        <CheckIcon className="size-2.5 shrink-0 stroke-[1.5px] text-foreground" />
+      }
       placement="bottom-right"
       shape="circle"
-      className="text-teal-500"
+      className="size-3 text-teal-500"
       showOutline={false}
       isDot
     >
-      <ServerStackIcon className="size-5 text-background" {...props} />
+      <CircleStackIcon className="size-5 text-background" {...props} />
     </Badge>
   );
 };
 
 const DATA = {
   navbar: [
-    { href: "/", icon: HomeIcon, label: "Home" },
+    { href: "/", icon: SlashIcon, label: "Home" },
     { href: "#", icon: UserIcon, label: "Profile" },
   ],
   quicklinks: {
@@ -98,13 +102,11 @@ export function ActionBar() {
   }, [liveness, checkServerStatus]);
 
   return (
-    <div className="fixed bottom-6 right-6 z-[300] flex h-fit w-fit flex-col items-center justify-center text-background">
+    <div className="fixed bottom-8 right-8 z-[300] flex h-fit w-fit flex-col items-center justify-center text-background">
       <Dock direction="middle">
         {DATA.navbar.map((item) => (
           <DockIcon key={item.label}>
-            <Link href={item.href} className="group text-background">
-              <item.icon className="size-4 group-hover:fill-foreground/80" />
-            </Link>
+            <Icon href={item.href} icon={item.icon} />
           </DockIcon>
         ))}
         <Separator
@@ -113,7 +115,7 @@ export function ActionBar() {
         />
         {Object.entries(DATA.quicklinks.alerts).map(([name, item]) => (
           <DockIcon key={name}>
-            <item.icon className="size-4 fill-foreground/50" />
+            <Icon href={item.url} icon={item.icon} />
           </DockIcon>
         ))}
         <Separator
@@ -140,6 +142,19 @@ export function ActionBar() {
     </div>
   );
 }
+
+interface DockIcon {
+  href: string;
+  icon: DualIcon;
+}
+const Icon = (props: DockIcon) => (
+  <Link
+    href={props.href}
+    className="group flex size-6 items-center justify-center rounded-lg text-background transition-colors duration-300 ease-out hover:bg-foreground dark:hover:bg-background"
+  >
+    <props.icon className="size-4 fill-background stroke-2 group-hover:dark:fill-foreground" />
+  </Link>
+);
 
 interface ActionButton {
   liveness: ServerStatus | undefined;

@@ -8,17 +8,18 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import { getTheme, setTheme } from "../actions";
+import { getTheme, type Modes, setTheme } from "../actions";
 import { type SwitchProps, VisuallyHidden, useSwitch } from "@nextui-org/react";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
+
 interface ThemeProps {
-  theme: string;
+  theme: Modes;
   toggleTheme: VoidFunction;
 }
 const ThemeCtx = createContext<ThemeProps | null>(null);
 
 export const Theme = ({ children }: PropsWithChildren) => {
-  const [theme, setThemeState] = useState<string>("light");
+  const [theme, setThemeState] = useState<Modes>("light");
 
   useEffect(() => {
     getTheme().then(setThemeState).catch(console.log);
@@ -66,7 +67,7 @@ export const ThemeSwitch = (props: SwitchProps) => {
             class: [
               "h-6 w-6 p-0.5",
               "flex items-center justify-center",
-              "rounded-lg bg-foreground text-background hover:border-[0.33px] hover:border-background/60 hover:bg-foreground hover:text-background hover:dark:border-background/60",
+              "rounded-lg text-background hover:bg-foreground dark:text-foreground dark:hover:bg-background",
             ],
           })}
         >

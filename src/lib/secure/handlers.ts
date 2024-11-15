@@ -6,13 +6,15 @@ import type {
   AuthVerification,
   AccountTokenResponse,
   TokenVerification,
-  VerifyAuthKey,
   VerifyIdToken,
   AccountToken,
   HCodeParams,
   HCodeResponse,
+  UserRecord,
+  GetUser,
 } from "./resource";
 import { createEndpoint } from "../utils";
+import { getRefresh } from "@/app/actions";
 
 export interface ServerStatus {
   data: string;
@@ -23,6 +25,7 @@ const verifyAgentCodeUrl = createEndpoint("/verify-agent-code");
 const authUrl = createEndpoint("/v1/auth");
 const claimsUrl = createEndpoint("/v1/claims");
 const adminUrl = createEndpoint("/v1/admin");
+
 const config = {
   post: {
     method: "POST",
@@ -42,24 +45,38 @@ const config = {
 };
 
 export const verifyIdToken = async (params: VerifyIdToken) => {
+  const refresh = await getRefresh();
+  if (!refresh) return;
   const response = await fetch(authUrl + "/verify-id-token", {
     ...config.post,
+    headers: {
+      ...config.post.headers,
+      "X-Refresh-Token": refresh,
+    },
     body: JSON.stringify(params),
   });
   return response.json() as Promise<{ data: AuthVerification }>;
 };
 
-export const verifyAuthKey = async (params: VerifyAuthKey) => {
-  const response = await fetch(authUrl + "/verify-auth-key", {
+export const getUser = async (params: GetUser) => {
+  const response = await fetch(authUrl + "/get-user", {
     ...config.post,
+    headers: {
+      ...config.post.headers,
+      "X-Refresh-Token": String(await getRefresh()),
+    },
     body: JSON.stringify(params),
   });
-  return response.json() as Promise<AuthVerification>;
+  return response.json() as Promise<{ data: UserRecord }>;
 };
 
 export const createAgentCode = async (params: VerifyIdToken) => {
   const response = await fetch(claimsUrl + "/create-code", {
     ...config.post,
+    headers: {
+      ...config.post.headers,
+      "X-Refresh-Token": String(await getRefresh()),
+    },
     body: JSON.stringify(params),
   });
   return response.json() as Promise<{ data: AgentCode }>;
@@ -68,6 +85,10 @@ export const createAgentCode = async (params: VerifyIdToken) => {
 export const verifyAgentCode = async (params: HCodeParams) => {
   const response = await fetch(verifyAgentCodeUrl, {
     ...config.post,
+    headers: {
+      ...config.post.headers,
+      "X-Refresh-Token": String(await getRefresh()),
+    },
     body: JSON.stringify(params),
   });
   return response.json() as Promise<{ data: HCodeResponse }>;
@@ -84,6 +105,9 @@ export const getServerHealth = async () => {
 export const createAccountToken = async (params: AccountToken) => {
   const response = await fetch(adminUrl + "/create-account-token", {
     ...config.post,
+    headers: {
+      "X-Refresh-Token": String(await getRefresh()),
+    },
     body: JSON.stringify(params),
   });
   return response.json() as Promise<AccountTokenResponse>;
@@ -92,15 +116,23 @@ export const createAccountToken = async (params: AccountToken) => {
 export const getClaims = async (params: VerifyIdToken) => {
   const response = await fetch(authUrl + "/get-claims", {
     ...config.post,
+    headers: {
+      ...config.post.headers,
+      "X-Refresh-Token": String(await getRefresh()),
+    },
     body: JSON.stringify(params),
   });
-  return response.json() as Promise<{ data: unknown }>;
+  return response.json() as Promise<{ data: UserRecord }>;
 };
 
 // DEBUG MODES
 export const devSet = async (params: TokenVerification) => {
   const response = await fetch(authUrl + "/dev-set", {
     ...config.post,
+    headers: {
+      ...config.post.headers,
+      "X-Refresh-Token": String(await getRefresh()),
+    },
     body: JSON.stringify(params),
   });
   return response.json() as Promise<object>;

@@ -1,19 +1,19 @@
 import {
   AccountTokenSchema,
+  GetUserSchema,
   TokenVerificationSchema,
-  VerifyAuthKeySchema,
   VerifyIdTokenSchema,
 } from "@/lib/secure/resource";
 import { proc, router } from "../trpc";
 import {
   devGet,
   devSet,
-  verifyAuthKey,
   verifyIdToken,
   getServerHealth,
   createAgentCode,
   getClaims,
   createAccountToken,
+  getUser,
 } from "@/lib/secure/handlers";
 import { asyncR } from "../utils";
 
@@ -21,9 +21,7 @@ export const authRouter = router({
   verifyIdToken: proc
     .input(VerifyIdTokenSchema)
     .mutation(asyncR(verifyIdToken)),
-  verifyAuthKey: proc
-    .input(VerifyAuthKeySchema)
-    .mutation(asyncR(verifyAuthKey)),
+  getUser: proc.input(GetUserSchema).mutation(asyncR(getUser)),
   createAgentCode: proc
     .input(VerifyIdTokenSchema)
     .mutation(asyncR(createAgentCode)),

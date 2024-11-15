@@ -39,9 +39,16 @@ export type VerifyAuthKey = z.infer<typeof VerifyAuthKeySchema>;
 export const AuthVerificationSchema = z.object({
   key: z.string().optional(),
   verified: z.boolean(),
-  exp: z.number().optional(),
+  expiry: z.number().optional(),
+  is_active: z.boolean(),
 });
 export type AuthVerification = z.infer<typeof AuthVerificationSchema>;
+
+export const GetUserSchema = z.object({
+  id_token: z.string(),
+  uid: z.string(),
+});
+export type GetUser = z.infer<typeof GetUserSchema>;
 
 export const devToken = {
   auth_time: Date.now(),
@@ -95,3 +102,25 @@ export const HCodeResponseSchema = z.object({
   group_code: z.string().or(z.undefined()),
 });
 export type HCodeResponse = z.infer<typeof HCodeResponseSchema>;
+
+const UserMetadataSchema = z.object({
+  CreationTimestamp: z.number(),
+  LastLogInTimestamp: z.number(),
+  LastRefreshTimestamp: z.number(),
+});
+export const UserRecordSchema = z.object({
+  email: z.string().email(),
+  providerId: z.string(),
+  rawId: z.string(),
+  photoURL: z.string().url().optional().nullable(),
+  CustomClaims: z.record(z.boolean()).nullable(),
+  Disabled: z.boolean(),
+  EmailVerified: z.boolean(),
+  ProviderUserInfo: z.array(z.record(z.string().or(z.number()))),
+  TokensValidAfterMillis: z.number(),
+  UserMetadata: UserMetadataSchema,
+  TenantID: z.string(),
+  MultiFactor: z.object({ EnrolledFactors: z.any().nullable() }),
+});
+
+export type UserRecord = z.infer<typeof UserRecordSchema>;

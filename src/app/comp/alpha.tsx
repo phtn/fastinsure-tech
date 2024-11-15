@@ -63,11 +63,10 @@ const Jumbotron = memo(() => {
   const router = useRouter();
   const handlePress = useCallback(() => {
     if (authed) {
-      router.push(`/authed/${user?.uid}`);
-      return;
+      return router.push(`/dashboard`);
     }
     router.push("/signin");
-  }, [router, authed, user?.uid]);
+  }, [router, authed]);
 
   return (
     <div className="relative ml-6 h-full w-full content-center space-y-12 md:ml-14 xl:ml-20">

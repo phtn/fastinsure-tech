@@ -25,7 +25,7 @@ const Title = ({ children, href, className, dark = false }: TextProps) => (
   </Link>
 );
 const Subtext = ({ children, className }: TextProps) => (
-  <p className={cn("opacity-60", className)}>{children}</p>
+  <p className={cn("text-sm opacity-60", className)}>{children}</p>
 );
 
 interface HeaderProps {
@@ -47,8 +47,8 @@ const HeaderComponent = ({ children, className, dark }: HeaderProps) => {
       <div
         ref={ref}
         className={cn(
-          "flex h-full w-full translate-y-12 flex-col items-start justify-center px-2 opacity-0 transition-all duration-500 ease-out",
-          { "translate-y-0 opacity-100": inView },
+          "flex h-full w-full flex-col items-start justify-center px-2 opacity-0 transition-all duration-500 ease-out translate-y-12",
+          { "opacity-100 translate-y-0": inView },
         )}
       >
         {children}
@@ -85,12 +85,17 @@ const Inverted = ({ children }: PropsWithChildren) => (
   </div>
 );
 const Diffused = ({ children }: PropsWithChildren) => (
-  <div className="h-full w-full space-y-6 overflow-clip rounded-[1rem] bg-gradient-to-b from-foreground/10 to-transparent dark:bg-zinc-950 xl:pb-0">
+  <div className="h-full w-full space-y-6 overflow-clip rounded-[1rem] bg-gradient-to-b from-foreground/10 to-transparent backdrop-blur-sm dark:bg-zinc-950 xl:pb-0">
     {children}
   </div>
 );
 const Base = ({ children }: PropsWithChildren) => (
   <div className="h-full w-full rounded-[2.5rem] bg-transparent pb-10 xl:pb-0">
+    {children}
+  </div>
+);
+const BaseII = ({ children }: PropsWithChildren) => (
+  <div className="h-full w-full rounded-[1rem] bg-transparent pb-10 backdrop-blur-lg xl:pb-0">
     {children}
   </div>
 );
@@ -107,8 +112,8 @@ const Flex = ({ relative, children }: FlexProps) => {
       ref={ref}
       className={cn(
         "flex h-fit w-full items-center justify-evenly space-x-12 px-16",
-        "&first:delay-200 &last:delay-500 translate-y-24 opacity-0 drop-shadow-lg transition-all duration-500 ease-out",
-        { "translate-y-0 opacity-100": inView },
+        "&first:delay-200 &last:delay-500 opacity-0 drop-shadow-lg transition-all duration-500 ease-out translate-y-24",
+        { "opacity-100 translate-y-0": inView },
         {
           relative: relative,
         },
@@ -128,6 +133,7 @@ type TScreen = typeof Component & {
   Inverted: typeof Inverted;
   Diffused: typeof Diffused;
   Base: typeof Base;
+  BaseII: typeof BaseII;
   Flex: typeof Flex;
 };
 
@@ -140,5 +146,6 @@ export const Widget: TScreen = Object.assign(Component, {
   Inverted,
   Diffused,
   Base,
+  BaseII,
   Flex,
 });

@@ -1,29 +1,33 @@
 import { useCallback, useState } from "react";
 import { createAgentCode } from "../secure/callers";
-import type { AgentCode, VerifyIdToken } from "../secure/resource";
+import type { AgentCode, UserRecord, VerifyIdToken } from "../secure/resource";
 import { errHandler } from "@/utils/helpers";
-import { type User } from "firebase/auth";
-import { onSuccess } from "@/app/ctx/toasts";
+import { onError, onSuccess } from "@/app/ctx/toasts";
+import { getSession } from "@/app/actions";
 
 export const useManager = () => {
   const [loading, setLoading] = useState(false);
   const [agentCode, setAgentCode] = useState<{ data: AgentCode } | undefined>();
 
   const getAgentCode = useCallback(async (code: { data: AgentCode }) => {
-    setAgentCode(code);
+    if (code) {
+      setAgentCode(code);
+      return onSuccess("Agent Code Generated");
+    }
     setLoading(false);
-    onSuccess("Agent Code Generated");
+    return onError("Unable to generate code.");
   }, []);
 
   const newAgentCode = useCallback(
-    async (user: User | null) => {
-      const id_token = await user?.getIdToken();
+    async (user: UserRecord | null) => {
+      const id_token = await getSession();
       if (!id_token && !user) return;
       const params: VerifyIdToken = {
         id_token,
-        uid: user?.uid,
+        uid: user?.rawId,
         email: user?.email,
       };
+      console.table(params);
       return await createAgentCode(params)
         .then(getAgentCode)
         .catch(errHandler(setLoading));

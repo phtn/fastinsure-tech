@@ -12,7 +12,7 @@ interface TextProps {
 }
 
 const Component = ({ children }: PropsWithChildren) => (
-  <div className="flex h-full w-full flex-col items-center overflow-y-auto overflow-x-clip bg-background pb-20 md:px-8 xl:h-screen xl:pb-0">
+  <div className="relative flex h-full w-full flex-col items-center overflow-y-auto overflow-x-clip bg-background md:px-8 xl:h-screen">
     {children}
   </div>
 );
@@ -96,6 +96,12 @@ const Base = ({ children }: PropsWithChildren) => (
   </div>
 );
 
+const Default = ({ children }: PropsWithChildren) => (
+  <div className="relative z-50 h-full w-full rounded-[2.5rem] bg-foreground">
+    {children}
+  </div>
+);
+
 interface FlexProps {
   children: ReactNode;
   relative?: boolean;
@@ -129,6 +135,7 @@ type TScreen = typeof Component & {
   Inverted: typeof Inverted;
   Diffused: typeof Diffused;
   Base: typeof Base;
+  Default: typeof Default;
   Flex: typeof Flex;
 };
 
@@ -141,5 +148,6 @@ export const Screen: TScreen = Object.assign(Component, {
   Inverted,
   Diffused,
   Base,
+  Default,
   Flex,
 });

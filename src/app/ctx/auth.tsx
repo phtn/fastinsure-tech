@@ -1,94 +1,121 @@
 "use client";
 
 import { auth } from "@/lib/auth";
-import { type SignInWithEmailAndPassword } from "@/lib/auth/resource";
+import { useRouter } from "next/navigation";
 import { useSignIn } from "@/lib/auth/useSignIn";
 import { useSignOut } from "@/lib/auth/useSignOut";
-// import { setAuthKeyCookie } from "@/lib/secure/callers";
-import { onAuthStateChanged, type User } from "firebase/auth";
-// import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
 import {
   createContext,
+  type Dispatch,
+  type SetStateAction,
   useCallback,
-  // useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
   type PropsWithChildren,
 } from "react";
-// import { onSuccess } from "./toasts";
-// import { getAuthKey } from "../actions";
-import { useAuthVerification } from "@/lib/auth/useAuthVerification";
+import { errHandler } from "@/utils/helpers";
+import { getUser } from "@/lib/secure/callers";
+import type { GetUser, UserRecord } from "@/lib/secure/resource";
+import { getUserRecord } from "../actions";
+
+type Claim = Record<string, boolean> | null;
 
 interface AuthCtxValues {
-  user: User | null;
+  user: UserRecord | null;
   loading: boolean;
-  signWithEmail: (params: SignInWithEmailAndPassword) => Promise<void>;
   signWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
-  // authKey: string | undefined;
-  // setAuthKey: (key: string) => Promise<string>;
-  pending: boolean;
+  filterActiveClaims: (c: Claim) => string[];
+  setClaims: Dispatch<SetStateAction<string[]>>;
+  claims: string[];
+  getUserInfo: (p: GetUser) => void;
+  uid: string | undefined;
 }
 
 const AuthCtx = createContext<AuthCtxValues | null>(null);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [user, setUser] = useState<User | null>(null);
-  // const [authKey, setAuthKeyState] = useState<string | undefined>();
-  // const router = useRouter();
+  const [user, setUser] = useState<UserRecord | null>(null);
+  const [claims, setClaims] = useState<string[]>([]);
+  const [updating, setUpdating] = useState(false);
+  const [uid, setUID] = useState<string | undefined>();
+  const router = useRouter();
 
-  const { signWithEmail, signWithGoogle, loading } = useSignIn();
-  const { pending } = useAuthVerification(user);
-  const { signOut } = useSignOut();
+  const filterActiveClaims = useCallback((customClaims: Claim) => {
+    if (!customClaims) return [];
 
-  // useEffect(() => {
-  //   getAuthKey("fastinsure--auth-key").then(setAuthKeyState).catch(console.log);
-  // }, []);
-
-  // const setAuthKey = useCallback(async (key: string) => {
-  //   const status = await setAuthKeyCookie(key);
-  //   if (typeof status === "string") {
-  //     onSuccess(status);
-  //   }
-  //   return status;
-  // }, []);
-
-  const authState = useCallback(() => {
-    onAuthStateChanged(auth, (current) => {
-      setUser(current);
-      if (!current) {
-        // router.push("/");
-        return;
-      }
-    });
+    return Object.entries(customClaims)
+      .filter(([_, v]) => v)
+      .map(([k]) => k);
   }, []);
 
+  const getUserInfo = useCallback(
+    async (params: GetUser) => {
+      const result = await getUser(params);
+      setUser(result.data);
+      setUID(result.data.rawId);
+
+      if (claims?.length === 0) {
+        setClaims(filterActiveClaims(result.data.CustomClaims));
+      }
+    },
+    [claims, filterActiveClaims],
+  );
+
   useEffect(() => {
-    authState();
-  }, [authState]);
+    getUserRecord()
+      .then((data) => {
+        if (data) {
+          console.table(data);
+          setClaims(filterActiveClaims(data.CustomClaims));
+          setUser(data);
+        }
+      })
+      .catch(console.error);
+  }, [filterActiveClaims]);
+
+  const { signWithGoogle, loading } = useSignIn();
+  const { signOut } = useSignOut();
+
+  useEffect(() => {
+    setUpdating(true);
+    const authState = onAuthStateChanged(
+      auth,
+      (current) => {
+        setUID(current?.uid);
+      },
+      errHandler(setUpdating),
+    );
+
+    return authState;
+  }, [user, router]);
 
   const stableValues = useMemo(
     () => ({
-      user: user ?? null,
-      loading,
-      pending,
-      signWithEmail,
+      user,
+      uid,
+      loading: loading && updating,
       signWithGoogle,
       signOut,
-      // authKey,
-      // setAuthKey,
+      filterActiveClaims,
+      setClaims,
+      claims,
+      getUserInfo,
     }),
     [
-      // authKey,
-      // setAuthKey,
-      pending,
+      uid,
+      filterActiveClaims,
       user,
       loading,
-      signWithEmail,
       signWithGoogle,
       signOut,
+      updating,
+      setClaims,
+      claims,
+      getUserInfo,
     ],
   );
 

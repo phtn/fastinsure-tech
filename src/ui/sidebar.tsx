@@ -1,12 +1,29 @@
 "use client";
 import { cn } from "@/lib/utils";
 import Link, { type LinkProps } from "next/link";
-import React, { useState, createContext, useContext, useCallback } from "react";
+import {
+  useState,
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+} from "react";
+import type {
+  ComponentProps,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+} from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AcademicCapIcon, UserIcon } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import { type DualIcon } from "@/app/types";
-import Image from "next/image";
+import { Image } from "@nextui-org/react";
+import {
+  getSidebarAnimate,
+  setSidebarAnimate,
+  type SidebarAnimate,
+} from "@/app/actions";
 
 export interface Links {
   label: string;
@@ -19,8 +36,8 @@ export interface Links {
 
 interface SidebarContextProps {
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  animate: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  animate: SidebarAnimate;
 }
 
 const SidebarContext = createContext<SidebarContextProps | undefined>(
@@ -35,24 +52,36 @@ export const useSidebar = () => {
   return context;
 };
 
+interface SidebarProviderValues {
+  children: ReactNode;
+  open: boolean;
+  setOpen?: Dispatch<SetStateAction<boolean>>;
+  animate?: SidebarAnimate;
+}
+
 export const SidebarProvider = ({
   children,
   open: openProp,
   setOpen: setOpenProp,
-  animate = true,
-}: {
-  children: React.ReactNode;
-  open?: boolean;
-  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  animate?: boolean;
-}) => {
+}: SidebarProviderValues) => {
   const [openState, setOpenState] = useState(false);
+  const [animate, setAnimate] = useState<SidebarAnimate>("auto");
 
   const open = openProp ?? openState;
   const setOpen = setOpenProp ?? setOpenState;
 
+  const sidebarState = useCallback(async () => {
+    const animateState = (await getSidebarAnimate()) as SidebarAnimate;
+    if (!animateState) await setSidebarAnimate("auto");
+    setAnimate(animateState);
+  }, []);
+
+  useEffect(() => {
+    sidebarState().catch(console.error);
+  }, [sidebarState]);
+
   return (
-    <SidebarContext.Provider value={{ open, setOpen, animate: animate }}>
+    <SidebarContext.Provider value={{ open, setOpen, animate }}>
       {children}
     </SidebarContext.Provider>
   );
@@ -63,12 +92,7 @@ export const Sidebar = ({
   open,
   setOpen,
   animate,
-}: {
-  children: React.ReactNode;
-  open?: boolean;
-  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  animate?: boolean;
-}) => {
+}: SidebarProviderValues) => {
   return (
     <SidebarProvider open={open} setOpen={setOpen} animate={animate}>
       {children}
@@ -76,11 +100,11 @@ export const Sidebar = ({
   );
 };
 
-export const SidebarBody = (props: React.ComponentProps<typeof motion.div>) => {
+export const SidebarBody = (props: ComponentProps<typeof motion.div>) => {
   return (
     <>
       <DesktopSidebar {...props} />
-      <MobileSidebar {...(props as React.ComponentProps<"div">)} />
+      <MobileSidebar {...(props as ComponentProps<"div">)} />
     </>
   );
 };
@@ -89,7 +113,7 @@ export const DesktopSidebar = ({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof motion.div>) => {
+}: ComponentProps<typeof motion.div>) => {
   const { open, setOpen, animate } = useSidebar();
   return (
     <>
@@ -99,7 +123,7 @@ export const DesktopSidebar = ({
           className,
         )}
         animate={{
-          width: animate ? (open ? "300px" : "60px") : "300px",
+          width: animate === "auto" ? (open ? "300px" : "60px") : "300px",
         }}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -115,13 +139,13 @@ export const MobileSidebar = ({
   className,
   children,
   ...props
-}: React.ComponentProps<"div">) => {
+}: ComponentProps<"div">) => {
   const { open, setOpen } = useSidebar();
   return (
     <>
       <div
         className={cn(
-          "flex h-10 w-full flex-row items-center justify-between bg-foreground/0 px-4 py-4 dark:bg-foreground/70 md:hidden",
+          "flex h-10 w-full flex-row items-center justify-between px-4 py-4 md:hidden",
         )}
         {...props}
       >
@@ -173,13 +197,11 @@ export const SidebarLink = (props: SidebarLinkProps) => {
 
   const renderIcon = useCallback(() => {
     if (props.link.icon.type === "icon") {
-      // This is a DualIcon component
       const IconComponent = props.link.icon.content;
       return (
-        // bg-orange-500/10
         <div
           className={cn(
-            "rounded-xl p-1 text-primary",
+            "rounded-xl p-1",
             {
               "bg-warning text-white":
                 pathname.length >= 3 && props.link.href.includes(sub!),
@@ -189,10 +211,14 @@ export const SidebarLink = (props: SidebarLinkProps) => {
         >
           <IconComponent
             className={cn(
-              "size-[1.5rem] shrink-0 stroke-1 text-zinc-950 drop-shadow-md",
+              "size-[1.5rem] shrink-0 stroke-1 text-primary-300 drop-shadow-md dark:text-primary-500",
               {
-                "stroke-[1.5px]":
-                  pathname.length >= 3 && props.link.href.includes(sub!),
+                "stroke-[1.5px] text-secondary dark:text-secondary-300":
+                  pathname.length >= 2 && props.link.href.includes(sub!),
+              },
+              {
+                "stroke-[1.5px] text-secondary dark:text-secondary-300":
+                  pathname.length <= 2 && `/${pathname[1]}` === props.link.href,
               },
             )}
           />
@@ -203,8 +229,6 @@ export const SidebarLink = (props: SidebarLinkProps) => {
         <Image
           src={props.link.icon.content as string}
           alt={props.link.label}
-          width={28}
-          height={28}
           className={cn("size-7 flex-shrink-0 rounded-full", {
             "filter-primary":
               pathname.length >= 3 && props.link.href.includes(sub!),
@@ -218,14 +242,14 @@ export const SidebarLink = (props: SidebarLinkProps) => {
     props.link.label,
     props.className,
     sub,
-    pathname.length,
+    pathname,
   ]);
 
   return (
     <Link
       href={props.link.href}
       className={cn(
-        "group/sidebar flex items-center justify-start gap-3 py-2 text-primary",
+        "group/sidebar flex items-center justify-start gap-3 py-2",
         props.className,
       )}
       {...props.props}
@@ -234,18 +258,23 @@ export const SidebarLink = (props: SidebarLinkProps) => {
 
       <motion.span
         animate={{
-          display: animate ? (open ? "inline-block" : "none") : "inline-block",
-          opacity: animate ? (open ? 1 : 0) : 1,
+          display:
+            animate === "auto"
+              ? open
+                ? "inline-block"
+                : "none"
+              : "inline-block",
+          opacity: animate === "auto" ? (open ? 1 : 0) : 1,
         }}
         className={cn(
-          "!m-0 inline-block whitespace-pre rounded-lg px-3 py-1 font-inst text-sm font-medium tracking-tight text-foreground transition duration-200 group-hover/sidebar:translate-x-0.5 group-hover/sidebar:bg-foreground group-hover/sidebar:text-background dark:text-background",
+          "!m-0 inline-block whitespace-pre rounded-lg px-3 py-1 font-inst font-medium tracking-tight text-primary-300 transition-all duration-300 transform-gpu group-hover/sidebar:bg-primary-50/20 group-hover/sidebar:text-primary-100 group-hover/sidebar:translate-x-0.5 dark:text-primary-600 dark:group-hover/sidebar:bg-primary-900/20 dark:group-hover/sidebar:text-primary-900",
           {
-            "font-medium text-warning":
-              pathname.length >= 3 && props.link.href.includes(sub!),
+            "font-medium text-secondary dark:text-secondary-800":
+              pathname.length >= 2 && props.link.href.includes(sub!),
           },
           {
-            "font-medium text-warning":
-              pathname.length <= 2 && props.link.href.includes(pathname[1]!),
+            "font-medium text-secondary dark:text-secondary-800":
+              pathname.length <= 2 && `/${pathname[1]}` === props.link.href,
           },
         )}
       >

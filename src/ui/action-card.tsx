@@ -11,7 +11,16 @@ interface CommonProps {
 }
 
 const Component = ({ children }: PropsWithChildren) => (
-  <div className="h-fit w-full cursor-pointer overflow-clip rounded-xl transition-all duration-300 ease-out hover:shadow-lg">
+  <div
+    className={cn(
+      "h-fit w-full cursor-pointer overflow-clip",
+      "hover:border-foreground hover:shadow-lg",
+      "rounded-md border-[0.33px] border-foreground",
+      "transition-all duration-300 ease-out",
+      "bg-gradient-to-tr from-stone-300/20 via-zinc-300/40 to-slate-300/20",
+      "dark:border-primary-500/50 dark:from-primary-100",
+    )}
+  >
     <div className="flex h-full items-center space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-6">
       {children}
     </div>
@@ -26,8 +35,8 @@ const Header = ({ children, className, dark }: CommonProps) => {
       <div
         ref={ref}
         className={cn(
-          "flex h-full w-full translate-y-12 flex-col items-start justify-center px-2 leading-none opacity-0 transition-all duration-500 ease-out",
-          { "translate-y-0 opacity-100": inView },
+          "flex h-full w-full flex-col items-start justify-center space-y-0.5 px-2 leading-none opacity-0 transition-all duration-500 ease-out translate-y-12",
+          { "opacity-100 translate-y-0": inView },
         )}
       >
         {children}
@@ -65,7 +74,7 @@ const Title = ({ children, className }: CommonProps) => (
 );
 
 const Subtext = ({ children, className }: CommonProps) => (
-  <p className={cn("text-xs opacity-60", className)}>{children}</p>
+  <p className={cn("text-xs font-light opacity-80", className)}>{children}</p>
 );
 
 const ActionComp = ({ children, className }: CommonProps) => (

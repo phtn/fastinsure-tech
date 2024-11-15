@@ -5,7 +5,7 @@ import { api } from "@/trpc/server";
 import { asyncFn } from "@/server/api/utils";
 
 export const verifyIdToken = asyncFn(api.auth.verifyIdToken);
-// export const getAuthKeyCookie = asyncFn(getAuthKey);
+export const getUser = asyncFn(api.auth.getUser);
 // export const setAuthKeyCookie = asyncFn(setAuthKey);
 
 // SHARED

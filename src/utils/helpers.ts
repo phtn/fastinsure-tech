@@ -38,6 +38,14 @@ const decodeRaw = (encoded: string) => {
   val = decodeURIComponent(val);
   return val.replace(/__P__/g, "+");
 };
+
+export const passwordSecure = (name: string, secure: boolean) => {
+  if (name === "password" && secure) {
+    return "password";
+  }
+  return "text";
+};
+
 // export const createInvoiceNumber = (): string => {
 //   const regex = /-(.*)-/;
 //   const uid = uuidv4();
@@ -110,6 +118,18 @@ export const opts = (...args: ReactElement[]) => {
     [false, args[1]],
   ]);
 };
+
+export function mapUnion<T extends string | number | symbol>() {
+  return {
+    build: <V>(entries: { [K in T]: V }): Map<T, V> => {
+      const map = new Map<T, V>();
+      (Object.entries(entries) as [T, V][]).forEach(([key, value]) => {
+        map.set(key, value);
+      });
+      return map;
+    },
+  };
+}
 
 export const decimal = (
   num: string | number | undefined,

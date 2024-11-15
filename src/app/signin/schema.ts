@@ -10,22 +10,24 @@ export const EmailAndPasswordSchema = z.object({
 
 export type EmailAndPassword = z.infer<typeof EmailAndPasswordSchema>;
 
-export interface InputField<TName> {
+export interface IInputField<TName> {
+  icon: DualIcon;
   name: keyof TName;
   label?: string;
   type: HTMLInputTypeAttribute;
-  icon: DualIcon;
 }
 
-export const loginFields: InputField<EmailAndPassword>[] = [
+export const loginFields: IInputField<EmailAndPassword>[] = [
   {
     name: "email",
     type: "email",
     icon: EnvelopeIcon,
+    label: "email-input",
   },
   {
     name: "password",
     type: "password",
     icon: LockClosedIcon,
+    label: "password-input",
   },
 ];

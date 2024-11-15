@@ -22,7 +22,7 @@ export const Partners = () => {
     [],
   );
   return (
-    <div className="relative my-24 h-[calc(100vh*0.3)] content-center bg-background xl:h-[calc(100vh*0.5)]">
+    <div className="relative my-24 h-[calc(100vh*0.3)] content-center xl:h-[calc(100vh*0.5)]">
       <Marquee />
 
       <div className="pointer-events-none absolute top-0 flex h-[calc(100vh*0.5)] w-full items-center justify-end bg-gradient-to-r from-background/50 from-5% via-transparent via-15% to-transparent dark:from-background/50 dark:via-30% xl:h-[calc(100vh*0.40)]">

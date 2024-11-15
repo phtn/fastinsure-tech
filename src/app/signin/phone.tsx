@@ -1,7 +1,8 @@
-import { Badge, Button, Input } from "@nextui-org/react";
+import { Badge, Button } from "@nextui-org/react";
 import { type ChangeEvent, memo, useCallback, useMemo, useState } from "react";
-import { DevicePhoneMobileIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, DevicePhoneMobileIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
+import { InputField } from "@/ui/input";
 
 export const PhoneSigninForm = () => {
   // const [selected, setSelected] = useState("login");
@@ -53,13 +54,16 @@ export const PhoneSigninForm = () => {
       isValidPhone ? (
         <Badge
           size="sm"
-          content=""
+          content={
+            <CheckIcon className="size-2.5 shrink-0 stroke-[1.5px] text-foreground" />
+          }
           shape="circle"
           showOutline={false}
           placement="bottom-right"
           color={isValidPhone ? "success" : "warning"}
+          className="size-3"
         >
-          <DevicePhoneMobileIcon className="size-5 animate-enter text-primary" />
+          <DevicePhoneMobileIcon className="size-5 animate-enter text-background" />
         </Badge>
       ) : (
         <div className="size-4" />
@@ -68,50 +72,30 @@ export const PhoneSigninForm = () => {
   );
   return (
     <form className="flex w-full flex-col gap-2 gap-y-4 space-y-6 py-2 xl:gap-6">
-      <div className="h-fit w-full space-y-6 md:space-y-4">
-        <div className="px-4 font-inst text-sm">Type your phone number</div>
-        <Input
+      <div className="h-fit w-full space-y-6 md:space-y-6">
+        <div className="px-4 font-inst text-sm">Type in your phone number</div>
+        <InputField
           className={cn("font-mono font-medium", {
             "opacity-100": phoneNumber !== "",
           })}
-          classNames={{
-            mainWrapper: "px-4",
-            inputWrapper: "shadow-none w-full px-0 py-0",
-            innerWrapper:
-              "dark:bg-background/40 bg-foreground/15 shadow-none px-4 border-[0.33px border-slate-100 h-16 sm:h-12 rounded-lg",
-            input: cn(
-              "leading-none py-2 font-normal bg-foreground text-sm",
-              {},
-            ),
-          }}
-          startContent={
-            <p
-              className={cn(
-                "mr-2 text-lg font-medium leading-none text-foreground",
-                {
-                  "opacity-100": phoneNumber !== "",
-                },
-              )}
-            >
-              +63
-            </p>
-          }
+          start={DevicePhoneMobileIcon}
           size="lg"
-          radius="md"
-          placeholder="9..."
+          placeholder="91.."
           type="phone"
           value={phoneNumber}
           onChange={handlePhoneChange}
-          endContent={ValidPhone}
+          end={ValidPhone}
         />
       </div>
-      <div className="space-y-4 px-5 text-sm">
+      <div className="px-5 py-11 text-sm">
         <Button
+          fullWidth
+          size="lg"
           type="submit"
+          variant="shadow"
           color="primary"
-          isLoading={false}
-          disabled={!isValidPhone}
-          className="flex h-14 w-full items-center space-x-4 rounded-md sm:h-12"
+          disabled={isValidPhone}
+          className="h-14 items-center space-x-4 rounded-md bg-background font-inst text-sm font-medium text-foreground hover:bg-background/80 sm:h-12"
         >
           <div>Sign in with phone</div>
           <DevicePhoneMobileIcon className="mx-2 size-5 shrink-0" />

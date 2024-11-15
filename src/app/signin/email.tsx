@@ -1,92 +1,74 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  type EmailAndPassword,
-  EmailAndPasswordSchema,
-  loginFields,
-} from "./schema";
-import { InputForm } from "./input";
+import { loginFields } from "./schema";
+import { InputComponent } from "./input";
 import { GoogleSignin } from "./google";
-import { type FormEvent, memo, useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { Button } from "@nextui-org/react";
 import { ArrowRightEndOnRectangleIcon } from "@heroicons/react/24/outline";
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useRouter } from "next/navigation";
+import { getSession, signUserWithEmail } from "../actions";
+import { type UserRecord } from "@/lib/secure/resource";
+import { useAuthCtx } from "../ctx/auth";
 
 export const EmailSigninForm = () => {
-  const [secure, setSecure] = useState(true);
-
-  const form = useForm<EmailAndPassword>({
-    resolver: zodResolver(EmailAndPasswordSchema),
-    defaultValues: {},
-  });
-
-  const { handleSubmit, formState, register } = form;
-  const { isValid, isDirty } = formState;
-
-  const { signWithEmail, loading } = useAuthCtx();
-
-  const toggleSecure = useCallback((e: FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setSecure((s) => !s);
-  }, []);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { setClaims, filterActiveClaims, getUserInfo } = useAuthCtx();
 
   const InputFields = useCallback(
     () => (
-      <div className="mt-3 h-fit space-y-6 sm:mt-1 sm:space-y-4 xl:mt-4 xl:space-y-6">
+      <div className="h-fit space-y-2">
         {loginFields.map((field) => (
-          <InputForm
-            {...field}
-            {...register(field.name)}
-            valid={isValid}
-            dirty={isDirty}
-            loading={false}
-            fn={toggleSecure}
-            key={field.name}
-            type={
-              field.name === "password"
-                ? secure
-                  ? "password"
-                  : "text"
-                : "text"
-            }
-          />
+          <InputComponent {...field} key={field.name} />
         ))}
       </div>
     ),
-    [isDirty, isValid, register, secure, toggleSecure],
+    [],
   );
 
-  const onSubmit = useCallback(
-    async (data: EmailAndPassword) => {
-      await signWithEmail(data);
+  const handleSignin = useCallback(
+    async (formData: FormData) => {
+      setLoading(true);
+      const result = (await signUserWithEmail(formData)) as UserRecord;
+      if (result) {
+        const customClaims = filterActiveClaims(result.CustomClaims);
+        setClaims(customClaims);
+        const session = await getSession();
+        if (!session) return;
+        getUserInfo({ id_token: session, uid: result.rawId });
+        router.push("/dashboard");
+      }
     },
-    [signWithEmail],
+    [router, filterActiveClaims, setClaims, getUserInfo],
   );
 
   return (
     <form
-      className="flex flex-col gap-y-4 space-y-6 py-2 xl:gap-10"
-      onSubmit={handleSubmit(onSubmit)}
+      action={handleSignin}
+      className="flex flex-col space-y-3 py-2 xl:gap-10"
     >
       <InputFields />
 
       <div className="space-y-4 px-3 text-sm">
-        <Button
-          fullWidth
-          type="submit"
-          color="primary"
-          isLoading={loading}
-          disabled={!isValid}
-          className="h-14 items-center space-x-4 rounded-md font-inst font-medium sm:h-12"
-        >
-          <div>Sign in</div>
-          <ArrowRightEndOnRectangleIcon className="mx-2 size-6 shrink-0" />
-        </Button>
+        <Submit loading={loading} />
         <GoogleSignin />
       </div>
     </form>
   );
 };
 
+const Submit = (props: { label?: string; loading: boolean }) => (
+  <Button
+    fullWidth
+    size="lg"
+    type="submit"
+    variant="shadow"
+    color="primary"
+    isLoading={props.loading}
+    className="h-14 items-center space-x-4 rounded-md bg-background font-inst text-sm font-medium text-foreground hover:bg-background/80 sm:h-12"
+  >
+    <div>{props.label ?? "Sign in"}</div>
+    <ArrowRightEndOnRectangleIcon className="mx-2 size-5 shrink-0" />
+  </Button>
+);
+
 export const WithEmailForm = memo(EmailSigninForm);
-WithEmailForm.displayName = "WithEmailForm";
