@@ -116,15 +116,15 @@ export const signUserWithEmail = async (formData: FormData) => {
     validatedFields.data.email,
     validatedFields.data.password,
   );
-  const id_token = await userCredential.user.getIdToken();
+  const id_token = await userCredential.user.getIdToken(true);
   const user = userCredential.user;
-  const refresh_token = user.refreshToken;
+  const refresh = await userCredential.user.getIdTokenResult(true);
 
   cookies().set("fastinsure--session", id_token, {
     ...defaultOpts,
     path: "/",
   });
-  cookies().set("fastinsure--refresh", refresh_token, {
+  cookies().set("fastinsure--refresh", refresh.token, {
     ...defaultOpts,
     path: "/",
   });

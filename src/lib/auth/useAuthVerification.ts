@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { verifyIdToken } from "../secure/callers";
 import { type User } from "firebase/auth";
-import { errHandler, settle } from "@/utils/helpers";
+import { Err, settle } from "@/utils/helpers";
 import { type AuthVerification } from "../secure/resource";
 
 export const useAuthVerification = (user: User | null) => {
@@ -25,7 +25,7 @@ export const useAuthVerification = (user: User | null) => {
         if (!data) return;
         setServerified({ ...data });
       })
-      .catch(errHandler(setPending))
+      .catch(Err(setPending))
       .finally(settle(setPending));
   }, [verifyIdTokenFn]);
 

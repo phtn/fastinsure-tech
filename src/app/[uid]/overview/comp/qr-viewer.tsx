@@ -1,4 +1,3 @@
-import { CursorArrowRaysIcon } from "@heroicons/react/24/solid";
 import { VisuallyHidden } from "@nextui-org/react";
 import Link from "next/link";
 import type { PropsWithChildren, ReactNode } from "react";
@@ -63,13 +62,15 @@ const Body = ({ children }: PropsWithChildren) => (
 );
 
 const Code = ({ children }: PropsWithChildren) => (
-  <div className="relative mx-1 my-6 flex h-64 w-72 items-center justify-center rounded-md border-[0.33px] border-foreground/20">
+  <div className="relative mx-1 my-6 flex h-64 w-72 items-center justify-center border-y-[0.33px] border-foreground/20">
     {children}
   </div>
 );
 
 const Detail = ({ children }: PropsWithChildren) => (
-  <div className="h-[19rem] w-[30rem] overflow-auto py-4">{children}</div>
+  <div className="h-[19rem] w-[30rem] space-y-2 overflow-auto py-4">
+    {children}
+  </div>
 );
 
 const Footer = ({ children }: PropsWithChildren) => (
@@ -85,10 +86,9 @@ interface UrlProps {
 const Url = ({ url, children }: UrlProps) => (
   <div className="mx-auto flex w-full items-center justify-between gap-2">
     <div className="flex w-fit items-center gap-1 overflow-auto whitespace-nowrap">
-      <CursorArrowRaysIcon className="size-5 shrink-0 text-foreground" />
       <Link
         href={url ?? ""}
-        className="font-mono text-xs text-foreground/80 decoration-foreground/40 hover:underline hover:underline-offset-4"
+        className="font-mono text-xs font-light text-foreground/80 decoration-foreground hover:underline hover:underline-offset-4"
       >
         {url}
       </Link>

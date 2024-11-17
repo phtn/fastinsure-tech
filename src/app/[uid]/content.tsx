@@ -1,5 +1,5 @@
 "use client";
-import { Dashboard } from "./dashboard";
+
 import { Overview } from "./overview";
 import { useCallback } from "react";
 import { opts } from "@/utils/helpers";
@@ -7,7 +7,7 @@ import { ManagerOverview } from "./m-overview";
 import { Loader } from "@/ui/loader";
 import { useAuthCtx } from "@/app/ctx/auth";
 
-export const AuthedContent = () => {
+export const DashboardContent = () => {
   const { claims, loading } = useAuthCtx();
 
   const OverviewOptions = useCallback(() => {
@@ -16,5 +16,13 @@ export const AuthedContent = () => {
     return <>{options.get(!!is_manager)}</>;
   }, [claims]);
 
-  return <Dashboard>{loading ? <Loader /> : <OverviewOptions />}</Dashboard>;
+  if (loading) {
+    return <Loader />;
+  }
+
+  return (
+    <main>
+      <OverviewOptions />
+    </main>
+  );
 };

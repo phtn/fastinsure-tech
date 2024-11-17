@@ -1,10 +1,3 @@
-import { AuthedContent } from "./content";
-// export interface AuthedPageProps {
-//   params: {
-//     uid: string | undefined;
-//   };
-// }
-const AuthedPage = async () => {
-  return <AuthedContent />;
-};
-export default AuthedPage;
+import { DashboardContent } from "./content";
+const DashboardPage = async () => <DashboardContent />;
+export default DashboardPage;

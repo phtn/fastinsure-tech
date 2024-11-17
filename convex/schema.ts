@@ -1,42 +1,70 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { user_schema } from "./users/d";
+import { request_schema } from "./requests/d";
+import { auto_schema } from "./autos/d";
+import { address_schema } from "./contact/d";
 
 export default defineSchema({
-  users: defineTable({
-    active: v.boolean(),
-    agent_code: v.string(),
-    branch_code: v.string(),
-    completed_count: v.float64(),
-    display_name: v.string(),
-    draft_count: v.float64(),
-    email: v.string(),
-    fast_points: v.float64(),
-    last_login: v.string(),
-    phone: v.string(),
-    photo_url: v.string(),
-    role: v.string(),
-    setup_complete: v.boolean(),
-    setup_progress: v.float64(),
-    submitted_count: v.float64(),
-    uid: v.string(),
-    updated_at: v.string(),
-    user_data: v.object({
-      address: v.object({
-        city: v.string(),
-        country: v.string(),
-        line1: v.string(),
-        line2: v.string(),
-        postal_code: v.string(),
-        state: v.string(),
-      }),
-      email: v.string(),
-      first_name: v.string(),
-      last_name: v.string(),
-      middle_name: v.string(),
-      phone: v.string(),
-      uid: v.string(),
-      updated_at: v.string(),
-    }),
-    verified: v.boolean(),
-  }),
+  users: defineTable(user_schema)
+    .index("by_uid", [
+      "uid",
+      "account_id",
+      "email",
+      "phone_number",
+      "photo_url",
+      "fast_score",
+      "fullname",
+      "nickname",
+    ])
+    .index("by_email", ["email", "fullname", "group_code", "uid", "account_id"])
+    .index("by_role", [
+      "role",
+      "fullname",
+      "group_code",
+      "email",
+      "phone_number",
+    ]),
+
+  addresses: defineTable(address_schema)
+    .index("by_address_id", ["address_id", "city", "country"])
+    .index("by_country", ["country", "city", "address_id"]),
+
+  requests: defineTable(request_schema)
+    .index("by_request_id", [
+      "request_id",
+      "policy_id",
+      "agent_name",
+      "assured_id",
+      "assured_fullname",
+      "status",
+      "amount",
+    ])
+    .index("by_agent_id", [
+      "policy_id",
+      "agent_id",
+      "agent_name",
+      "assured_id",
+      "assured_fullname",
+      "status",
+      "amount",
+    ])
+    .index("by_underwriter_id", [
+      "policy_id",
+      "agent_name",
+      "assured_id",
+      "assured_fullname",
+      "underwriter_id",
+      "status",
+      "amount",
+    ]),
+
+  autos: defineTable(auto_schema).index("by_policy_id", [
+    "policy_id",
+    "make",
+    "model",
+    "year",
+    "body",
+    "type",
+  ]),
 });

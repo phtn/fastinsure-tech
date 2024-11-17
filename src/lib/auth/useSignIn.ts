@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { useState } from "react";
 import { auth } from "./";
-import { errHandler } from "@/utils/helpers";
+import { Err } from "@/utils/helpers";
 
 export type SignInResponse = {
   idToken: string;
@@ -22,7 +22,7 @@ export const useSignIn = () => {
     setLoading(true);
     const provider = new GoogleAuthProvider();
     const userCredential = await signInWithPopup(auth, provider);
-    await userCredential.user.getIdToken().catch(errHandler(setLoading));
+    await userCredential.user.getIdToken().catch(Err(setLoading));
     const oauthCredential =
       GoogleAuthProvider.credentialFromResult(userCredential);
     setUser(userCredential.user);

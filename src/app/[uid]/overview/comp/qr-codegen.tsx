@@ -91,7 +91,7 @@ export const QrCodegen = (props: { url: string | undefined }) => {
 
   return (
     <div
-      className="h-72 rounded-md border-[0.33px] border-foreground/20 py-4"
+      className="h-72 border-x-[0.33px] border-foreground/20 py-4"
       ref={ref}
     />
   );

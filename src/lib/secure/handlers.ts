@@ -106,6 +106,7 @@ export const createAccountToken = async (params: AccountToken) => {
   const response = await fetch(adminUrl + "/create-account-token", {
     ...config.post,
     headers: {
+      ...config.post.headers,
       "X-Refresh-Token": String(await getRefresh()),
     },
     body: JSON.stringify(params),

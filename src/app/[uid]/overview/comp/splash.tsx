@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { guid } from "@/utils/helpers";
+import { Header } from "@dashboard/components/header";
 
 export const Splash = () => {
   const { theme } = useThemeCtx();
@@ -61,11 +62,7 @@ export const Splash = () => {
       )}
     >
       <Lines />
-      <div className="relative z-50 h-full w-full p-6">
-        <header className="font-inst text-xl font-medium text-foreground opacity-100">
-          Hello, BrightOne!
-        </header>
-      </div>
+      <Header title="Overview" />
     </div>
   );
 };

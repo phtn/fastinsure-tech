@@ -137,7 +137,7 @@ export default {
       themes: {
         light: {
           colors: {
-            default: "#FAFAFA",
+            default: "#E1E2E2",
             background: "#FAFAFA",
             foreground: "#1B1F22",
             primary: {

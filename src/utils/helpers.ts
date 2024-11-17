@@ -215,7 +215,7 @@ export const toggleState = (
   setState((prevState) => !prevState);
 };
 
-export const fileType = (file_type: string | undefined): string => {
+export const getFileType = (file_type: string | undefined): string => {
   if (!file_type) {
     return "";
   }
@@ -447,18 +447,6 @@ export const settle = (setLoading: Dispatch<SetStateAction<boolean>>) => () => {
   setLoading(false);
 };
 
-export const errHandler =
-  <T extends Error>(
-    setLoading: Dispatch<SetStateAction<boolean>>,
-    message?: string,
-    setError?: Dispatch<SetStateAction<T>>,
-  ) =>
-  (e: T) => {
-    onError(message ?? e.message);
-    setLoading(false);
-    if (setError) setError(e);
-  };
-
 export const warnHandler =
   <T extends Error>(
     setLoading: Dispatch<SetStateAction<boolean>>,
@@ -635,3 +623,35 @@ export const svgToPath = (svg: string) => {
   const p1 = svg.indexOf('"', p0 + 3);
   return svg.substring(p0 + 3, p1);
 };
+
+export const errHandler =
+  <T>(
+    setLoading: Dispatch<SetStateAction<boolean>>,
+    setError?: Dispatch<SetStateAction<T>>,
+  ) =>
+  (e: T) => {
+    onError("Panic!");
+    setLoading(false);
+    if (setError) setError(e);
+  };
+export const Err =
+  <T extends Error | null | undefined>(
+    setLoading: Dispatch<SetStateAction<boolean>>,
+    msg?: string,
+  ) =>
+  (e: T) => {
+    onError(msg ?? `Error: ${e?.name}`);
+    setLoading(false);
+  };
+
+export const Ok =
+  (setLoading: Dispatch<SetStateAction<boolean>>, ...args: string[]) =>
+  () => {
+    setLoading(false);
+    onSuccess(`${args[0]} ${args[1] ?? ""}`);
+  };
+
+export const onSettle =
+  (setLoading: Dispatch<SetStateAction<boolean>>) => () => {
+    setLoading(false);
+  };

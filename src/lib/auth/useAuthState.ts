@@ -1,4 +1,4 @@
-import { errHandler } from "@/utils/helpers";
+import { Err } from "@/utils/helpers";
 import { type User, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from ".";
@@ -10,7 +10,6 @@ type AuthStateOptions = {
 
 export const useAuthState = (options?: AuthStateOptions) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<unknown>(null);
   const [user, setUser] = useState<User | null>(null);
   const [authKey, setAuthKeyState] = useState<string>();
 
@@ -32,7 +31,7 @@ export const useAuthState = (options?: AuthStateOptions) => {
             .then(() => {
               setUser(current);
             })
-            .catch(errHandler(setLoading, "Failed to load user.", setError));
+            .catch(Err(setLoading));
         }
         setUser(current);
         setLoading(false);
@@ -48,7 +47,6 @@ export const useAuthState = (options?: AuthStateOptions) => {
   return {
     user,
     loading,
-    error,
     authKey,
   };
 };

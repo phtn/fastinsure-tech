@@ -7,6 +7,7 @@ import {
   useContext,
   useCallback,
   useEffect,
+  useMemo,
 } from "react";
 import type {
   ComponentProps,
@@ -25,7 +26,7 @@ import {
   type SidebarAnimate,
 } from "@/app/actions";
 
-export interface Links {
+export interface NavItem {
   label: string;
   href: string;
   icon: {
@@ -67,8 +68,8 @@ export const SidebarProvider = ({
   const [openState, setOpenState] = useState(false);
   const [animate, setAnimate] = useState<SidebarAnimate>("auto");
 
-  const open = openProp ?? openState;
-  const setOpen = setOpenProp ?? setOpenState;
+  const open = useMemo(() => openProp ?? openState, [openProp, openState]);
+  const setOpen = useMemo(() => setOpenProp ?? setOpenState, [setOpenProp]);
 
   const sidebarState = useCallback(async () => {
     const animateState = (await getSidebarAnimate()) as SidebarAnimate;
@@ -185,27 +186,25 @@ export const MobileSidebar = ({
   );
 };
 
-interface SidebarLinkProps {
-  link: Links;
+interface NavProps extends NavItem {
   className?: string;
   props?: LinkProps;
 }
-export const SidebarLink = (props: SidebarLinkProps) => {
+export const SidebarNav = (props: NavProps) => {
   const { open, animate } = useSidebar();
   const pathname = usePathname().split("/");
   const sub = pathname[2];
 
   const renderIcon = useCallback(() => {
-    if (props.link.icon.type === "icon") {
-      const IconComponent = props.link.icon.content;
+    if (props.icon.type === "icon") {
+      const IconComponent = props.icon.content;
       return (
         <div
           className={cn(
             "rounded-xl p-1",
-            {
-              "bg-warning text-white":
-                pathname.length >= 3 && props.link.href.includes(sub!),
-            },
+            // {
+            //   "text-white": pathname.length >= 3 && props.href.includes(sub!),
+            // },
             props.className,
           )}
         >
@@ -213,12 +212,12 @@ export const SidebarLink = (props: SidebarLinkProps) => {
             className={cn(
               "size-[1.5rem] shrink-0 stroke-1 text-primary-300 drop-shadow-md dark:text-primary-500",
               {
-                "stroke-[1.5px] text-secondary dark:text-secondary-300":
-                  pathname.length >= 2 && props.link.href.includes(sub!),
+                "stroke-[1.5px] text-secondary dark:text-secondary":
+                  pathname.length >= 2 && props.href.includes(sub!),
               },
               {
-                "stroke-[1.5px] text-secondary dark:text-secondary-300":
-                  pathname.length <= 2 && `/${pathname[1]}` === props.link.href,
+                "stroke-[1.5px] text-secondary dark:text-secondary":
+                  pathname.length <= 2 && `/${pathname[1]}` === props.href,
               },
             )}
           />
@@ -227,27 +226,19 @@ export const SidebarLink = (props: SidebarLinkProps) => {
     } else {
       return (
         <Image
-          src={props.link.icon.content as string}
-          alt={props.link.label}
+          src={props.icon.content as string}
+          alt={props.label}
           className={cn("size-7 flex-shrink-0 rounded-full", {
-            "filter-primary":
-              pathname.length >= 3 && props.link.href.includes(sub!),
+            "filter-primary": pathname.length >= 3 && props.href.includes(sub!),
           })}
         />
       );
     }
-  }, [
-    props.link.icon,
-    props.link.href,
-    props.link.label,
-    props.className,
-    sub,
-    pathname,
-  ]);
+  }, [props, sub, pathname]);
 
   return (
     <Link
-      href={props.link.href}
+      href={props.href}
       className={cn(
         "group/sidebar flex items-center justify-start gap-3 py-2",
         props.className,
@@ -270,15 +261,15 @@ export const SidebarLink = (props: SidebarLinkProps) => {
           "!m-0 inline-block whitespace-pre rounded-lg px-3 py-1 font-inst font-medium tracking-tight text-primary-300 transition-all duration-300 transform-gpu group-hover/sidebar:bg-primary-50/20 group-hover/sidebar:text-primary-100 group-hover/sidebar:translate-x-0.5 dark:text-primary-600 dark:group-hover/sidebar:bg-primary-900/20 dark:group-hover/sidebar:text-primary-900",
           {
             "font-medium text-secondary dark:text-secondary-800":
-              pathname.length >= 2 && props.link.href.includes(sub!),
+              pathname.length >= 2 && props.href.includes(sub!),
           },
           {
             "font-medium text-secondary dark:text-secondary-800":
-              pathname.length <= 2 && `/${pathname[1]}` === props.link.href,
+              pathname.length <= 2 && `/${pathname[1]}` === props.href,
           },
         )}
       >
-        {props.link.label}
+        {props.label}
       </motion.span>
     </Link>
   );

@@ -117,15 +117,15 @@ const detail_data: TQrDetail[] = [
     indicator: indicator(true),
     content: (
       <ItemContent>
-        <div className="my-4 font-inter font-medium tracking-tight text-foreground">
+        <div className="my-2 font-inter font-light tracking-tight text-primary-400">
           You have successfully created an agent code!
         </div>
         <ol className="list-inside list-decimal space-y-3">
           <li className="pb-2">
-            <span className="whitespace-nowrap font-inst font-semibold text-slate-300">
+            <span className="whitespace-nowrap font-medium text-foreground">
               Retrieve Generated Code Details:
             </span>
-            <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-foreground/10 py-4 pl-6">
+            <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-primary-100/50 py-4 pl-6">
               <li>
                 The <Strong text="Agent Code" /> (a unique identifier for
                 activation).

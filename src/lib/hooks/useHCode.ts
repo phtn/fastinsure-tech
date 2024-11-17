@@ -4,7 +4,7 @@ import { type RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { useCallback, useState } from "react";
 import { verifyAgentCode } from "../secure/callers";
 import type { HCodeResponse, HCodeParams } from "../secure/resource";
-import { errHandler, rawUriDecoder } from "@/utils/helpers";
+import { Err, rawUriDecoder } from "@/utils/helpers";
 import type { HCodeContentProps } from "@/app/hcode/content";
 import { setHCode } from "@/app/actions";
 
@@ -42,7 +42,7 @@ export const useHCode = () => {
         console.log(`${params.key_code}--${result.data.group_code}`);
         return setHCodeCookie(
           `${params.key_code}--${result.data.group_code}`,
-        ).catch(errHandler(setLoading, "Unable to save cookie"));
+        ).catch(Err(setLoading, "Unable to save cookie"));
       }
       onError("Verification Failed");
       setLoading(false);
