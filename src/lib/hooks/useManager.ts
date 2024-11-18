@@ -1,9 +1,10 @@
 import { useCallback, useState } from "react";
 import { createAgentCode } from "../secure/callers";
-import type { AgentCode, UserRecord, VerifyIdToken } from "../secure/resource";
+import type { AgentCode, VerifyIdToken } from "../secure/resource";
 import { errHandler } from "@/utils/helpers";
 import { onError, onSuccess } from "@/app/ctx/toasts";
 import { getSession } from "@/app/actions";
+import { type User } from "firebase/auth";
 
 export const useManager = () => {
   const [loading, setLoading] = useState(false);
@@ -19,12 +20,12 @@ export const useManager = () => {
   }, []);
 
   const newAgentCode = useCallback(
-    async (user: UserRecord | null) => {
+    async (user: User | null) => {
       const id_token = await getSession();
       if (!id_token && !user) return;
       const params: VerifyIdToken = {
         id_token,
-        uid: user?.rawId,
+        uid: user?.uid,
         email: user?.email,
       };
       console.table(params);

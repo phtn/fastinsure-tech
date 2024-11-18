@@ -6,9 +6,10 @@ import { opts } from "@/utils/helpers";
 import { ManagerOverview } from "./m-overview";
 import { Loader } from "@/ui/loader";
 import { useAuthCtx } from "@/app/ctx/auth";
+import { NeoOverview } from "./neo-overview";
 
 export const DashboardContent = () => {
-  const { claims, loading } = useAuthCtx();
+  const { claims, loading, registered } = useAuthCtx();
 
   const OverviewOptions = useCallback(() => {
     const is_manager = claims?.some((el) => el === "manager" || el === "admin");
@@ -16,13 +17,23 @@ export const DashboardContent = () => {
     return <>{options.get(!!is_manager)}</>;
   }, [claims]);
 
+  const RegisteredOptions = useCallback(() => {
+    const is_registered = !loading && registered;
+    const options = opts(<OverviewOptions />, <NeoOverview />);
+    return <>{options.get(is_registered)}</>;
+  }, [OverviewOptions, loading, registered]);
+
   if (loading) {
     return <Loader />;
   }
 
+  if (!loading && !registered) {
+    return <NeoOverview />;
+  }
+
   return (
     <main>
-      <OverviewOptions />
+      <RegisteredOptions />
     </main>
   );
 };

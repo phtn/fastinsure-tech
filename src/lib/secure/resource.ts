@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+export const UserRoleSchema = z.union([
+  z.literal("admin"),
+  z.literal("manager"),
+  z.literal("agent"),
+  z.literal("agent2"),
+  z.literal("underwriter"),
+]);
+export type UserRole = z.infer<typeof UserRoleSchema>;
+
 const ProviderSchema = z.object({
   sign_in_provider: z.string(),
   tenant: z.string(),

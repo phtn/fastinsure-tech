@@ -1,7 +1,7 @@
 "use client";
 
 import { Link, Tab, Tabs } from "@nextui-org/react";
-import { WithEmailForm } from "./email";
+import { EmailSigninForm } from "./email";
 import { WithPhoneForm } from "./phone";
 import { memo } from "react";
 
@@ -19,7 +19,7 @@ const SigninForm = () => {
       }}
     >
       <Tab key="email" title="Email">
-        <WithEmailForm />
+        <EmailSigninForm />
       </Tab>
       <Tab key="phone" title="Phone">
         <WithPhoneForm />

@@ -4,7 +4,7 @@ import { Image } from "@nextui-org/react";
 import { type FormEvent } from "react";
 
 export const GoogleSignin = () => {
-  const { signWithGoogle, loading } = useAuthCtx();
+  const { signWithGoogle, googleSigning } = useAuthCtx();
   const handleOnPress = async (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     await signWithGoogle();
@@ -14,7 +14,7 @@ export const GoogleSignin = () => {
     <div className="flex w-full">
       <Button
         variant="flat"
-        isLoading={loading}
+        isLoading={googleSigning}
         onClick={handleOnPress}
         className="flex h-14 w-full rounded-md border-[0.33px] border-foreground bg-background/10 hover:bg-background/15 dark:border-foreground/40 sm:h-12"
       >

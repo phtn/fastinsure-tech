@@ -12,6 +12,10 @@ export function middleware(req: NextRequest) {
     return NextResponse.rewrite(new URL(`/${uid}`, req.url));
   }
 
+  // if (req.nextUrl.pathname === "/signin" && uid) {
+  //   return NextResponse.redirect(new URL(`/dashboard`, req.url));
+  // }
+
   return NextResponse.next();
 }
 

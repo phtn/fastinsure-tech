@@ -1,6 +1,6 @@
 "use server";
 
-import { getClaims, getUser, verifyAgentCode } from "@/lib/secure/callers";
+import { getUser, verifyAgentCode } from "@/lib/secure/callers";
 import {
   type HCodeParams,
   HCodeParamsSchema,
@@ -8,9 +8,6 @@ import {
 } from "@/lib/secure/resource";
 import { type RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
-import { EmailAndPasswordSchema } from "./signin/schema";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/auth";
 import { env } from "@/env";
 
 export type Modes = "light" | "dark" | "system";
@@ -40,7 +37,18 @@ export const getRefresh = async () => {
   return refresh;
 };
 
+export const setUID = async (uid: string | undefined) => {
+  if (uid) {
+    return cookies().set("fastinsure--uid", uid, {
+      ...defaultOpts,
+      path: "/",
+    });
+  }
+};
 export const getUID = async () => cookies().get("fastinsure--uid")?.value;
+export const deleteUID = async () => {
+  cookies().delete("fastinsure--uid");
+};
 
 export const setAuthKey = async (key: string) => {
   cookies().set("fastinsure--auth-key", key, defaultOpts);
@@ -99,59 +107,21 @@ export const verifyHCode = async (decoded: HCodeParams, formData: FormData) => {
   return response.data;
 };
 
-export const signUserWithEmail = async (formData: FormData) => {
-  const validatedFields = EmailAndPasswordSchema.safeParse({
-    email: formData.get("email")?.toString(),
-    password: formData.get("password")?.toString(),
-  });
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    };
+export const setIdToken = async (idToken: string | undefined) => {
+  if (idToken) {
+    cookies().set("fastinsure--session", idToken, {
+      ...defaultOpts,
+      path: "/",
+    });
   }
-
-  const userCredential = await signInWithEmailAndPassword(
-    auth,
-    validatedFields.data.email,
-    validatedFields.data.password,
-  );
-  const id_token = await userCredential.user.getIdToken(true);
-  const user = userCredential.user;
-  const refresh = await userCredential.user.getIdTokenResult(true);
-
-  cookies().set("fastinsure--session", id_token, {
-    ...defaultOpts,
-    path: "/",
-  });
-  cookies().set("fastinsure--refresh", refresh.token, {
-    ...defaultOpts,
-    path: "/",
-  });
-  cookies().set("fastinsure--uid", user.uid, {
-    ...defaultOpts,
-    path: "/",
-  });
-
-  const hcodeCookie = await getHCode();
-
-  const group_code = hcodeCookie?.value.split("--")[1];
-
-  const verification_payload = {
-    id_token,
-    uid: user?.uid,
-    email: user?.email,
-    group_code,
-  };
-
-  const result = await getClaims(verification_payload);
-
-  if (result.data.rawId) {
-    if (hcodeCookie) {
-      await deleteHCode();
-    }
+};
+export const setRefresh = async (refreshToken: string | undefined) => {
+  if (refreshToken) {
+    cookies().set("fastinsure--refresh", refreshToken, {
+      ...defaultOpts,
+      path: "/",
+    });
   }
-  return result.data;
 };
 
 export const getSession = async () => {
@@ -165,10 +135,6 @@ export const deleteSession = async () => {
 
 export const deleteRefresh = async () => {
   cookies().delete("fastinsure--refresh");
-};
-
-export const deleteUID = async () => {
-  cookies().delete("fastinsure--uid");
 };
 
 export type SidebarAnimate = "auto" | "manual";

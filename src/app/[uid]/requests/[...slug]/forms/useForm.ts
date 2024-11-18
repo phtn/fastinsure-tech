@@ -9,7 +9,7 @@ import { guid } from "@/utils/helpers";
 import { useFile } from "./useFile";
 
 export const useForm = () => {
-  const { uid } = useAuthCtx();
+  const { user } = useAuthCtx();
   const { request } = useVex();
   const { selectedFile } = useFile();
   const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ export const useForm = () => {
       console.table({
         ...initialRequestData,
         assured_id: guid(),
-        agent_id: uid,
+        agent_id: user?.uid,
         files,
       });
       // request
@@ -52,7 +52,7 @@ export const useForm = () => {
       //   .then(Ok(setLoading, "Request submitted!"))
       //   .catch(Err(setLoading, "Failed to submit request."));
     },
-    [uid, request.storage, selectedFile],
+    [user?.uid, request.storage, selectedFile],
   );
 
   const insertRequest = useCallback(
@@ -83,11 +83,11 @@ export const useForm = () => {
       } as InsertRequest;
 
       request
-        .create({ ...validatedRequestFields, agent_id: uid })
+        .create({ ...validatedRequestFields, agent_id: user?.uid })
         .then(Ok(setLoading, "1 category added."))
         .catch(Err(setLoading, "Failed to add category."));
     },
-    [uid, request],
+    [user?.uid, request],
   );
 
   return { loading, insertRequest, initializeRequest };

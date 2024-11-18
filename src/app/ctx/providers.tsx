@@ -7,14 +7,14 @@ import { Vex } from "./convex";
 
 export const Providers = ({ children }: PropsWithChildren) => {
   return (
-    <Vex>
-      <NextUIProvider>
+    <NextUIProvider>
+      <Vex>
         <AuthProvider>
           {children}
           <ActionBar />
           <Toasts />
         </AuthProvider>
-      </NextUIProvider>
-    </Vex>
+      </Vex>
+    </NextUIProvider>
   );
 };

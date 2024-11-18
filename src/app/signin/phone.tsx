@@ -1,6 +1,6 @@
-import { Badge, Button } from "@nextui-org/react";
-import { type ChangeEvent, memo, useCallback, useMemo, useState } from "react";
-import { CheckIcon, DevicePhoneMobileIcon } from "@heroicons/react/24/outline";
+import { Button } from "@nextui-org/react";
+import { type ChangeEvent, memo, useCallback, useState } from "react";
+import { DevicePhoneMobileIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
 import { InputField } from "@/ui/input";
 
@@ -49,27 +49,27 @@ export const PhoneSigninForm = () => {
   //   [isValidPhone],
   // );
 
-  const ValidPhone = useMemo(
-    () =>
-      isValidPhone ? (
-        <Badge
-          size="sm"
-          content={
-            <CheckIcon className="size-2.5 shrink-0 stroke-[1.5px] text-foreground" />
-          }
-          shape="circle"
-          showOutline={false}
-          placement="bottom-right"
-          color={isValidPhone ? "success" : "warning"}
-          className="size-3"
-        >
-          <DevicePhoneMobileIcon className="size-5 animate-enter text-background" />
-        </Badge>
-      ) : (
-        <div className="size-4" />
-      ),
-    [isValidPhone],
-  );
+  // const ValidPhone = useMemo(
+  //   () =>
+  //     isValidPhone ? (
+  //       <Badge
+  //         size="sm"
+  //         content={
+  //           <CheckIcon className="size-2.5 shrink-0 stroke-[1.5px] text-foreground" />
+  //         }
+  //         shape="circle"
+  //         showOutline={false}
+  //         placement="bottom-right"
+  //         color={isValidPhone ? "success" : "warning"}
+  //         className="size-3"
+  //       >
+  //         <DevicePhoneMobileIcon className="size-5 animate-enter text-background" />
+  //       </Badge>
+  //     ) : (
+  //       <div className="size-4" />
+  //     ),
+  //   [isValidPhone],
+  // );
   return (
     <form className="flex w-full flex-col gap-2 gap-y-4 space-y-6 py-2 xl:gap-6">
       <div className="h-fit w-full space-y-6 md:space-y-6">
@@ -79,12 +79,10 @@ export const PhoneSigninForm = () => {
             "opacity-100": phoneNumber !== "",
           })}
           start={DevicePhoneMobileIcon}
-          size="lg"
           placeholder="91.."
           type="phone"
           value={phoneNumber}
           onChange={handlePhoneChange}
-          end={ValidPhone}
         />
       </div>
       <div className="px-5 py-11 text-sm">
