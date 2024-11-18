@@ -1,30 +1,15 @@
 "use server";
 
-import { google } from "googleapis";
-import { type JWT } from "google-auth-library";
 import { env } from "@/env";
 import { type RawDocument } from "@/lib/docai/resource";
-
-const getAuthClient = (): Promise<JWT | Error> => {
-  const serviceAccount = JSON.parse(env.ADC) as object;
-  const auth = new google.auth.GoogleAuth({
-    credentials: serviceAccount,
-    scopes: ["https://www.googleapis.com/auth/cloud-platform"],
-  });
-  return auth.getClient() as Promise<JWT>;
-};
+import { initializeGoogleAuth } from "./utils";
 
 export const processDocument = async (rawDocument: RawDocument) => {
-  const client = (await getAuthClient()) as JWT;
+  const { docaiClient } = await initializeGoogleAuth();
 
-  if (!client) return;
+  if (!docaiClient) return;
 
-  const documentai = google.documentai({
-    version: "v1",
-    auth: client,
-  });
-
-  return await documentai.projects.locations.processors
+  return await docaiClient.projects.locations.processors
     .process({
       name: `projects/${env.PROJECT_ID}/locations/${env.PROCESSOR_LOC}/processors/${env.CR_PROCESSOR}`,
       requestBody: {

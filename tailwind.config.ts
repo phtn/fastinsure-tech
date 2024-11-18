@@ -54,11 +54,11 @@ export default {
         enter: {
           "0%": {
             opacity: "0",
-            transform: "translateZ(0) scale(0.95)",
+            transform: "translateZ(0) scale(0.90)",
           },
           "60%": {
             opacity: "0.75",
-            transform: "translateZ(0) scale(1.02)",
+            transform: "translateZ(0) scale(1.04)",
             backfaceVisibility: "hidden",
             webkitFontSmoothing: "antialiased",
           },

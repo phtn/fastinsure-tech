@@ -45,10 +45,13 @@ const DashboardLayout = ({ children }: PropsWithChildren) => {
             />
             <Button
               size="sm"
-              variant="ghost"
-              color="secondary"
+              variant="faded"
+              color="warning"
               onPress={signOut}
-              className={cn("hidden w-16 border-[0.33px]", { flex: open })}
+              className={cn(
+                "hidden w-16 border-0 font-inter font-medium tracking-tight",
+                { flex: open },
+              )}
             >
               Sign out
             </Button>
@@ -56,7 +59,10 @@ const DashboardLayout = ({ children }: PropsWithChildren) => {
         </SidebarBody>
       </Sidebar>
       <div
-        className={cn("flex flex-1 bg-foreground dark:bg-background/90", {})}
+        className={cn(
+          "relative z-[100] flex flex-1 bg-foreground drop-shadow-lg dark:bg-background/90",
+          {},
+        )}
       >
         <div className="_dark:bg-background relative flex h-full w-full flex-1 flex-col gap-2 rounded-tl-3xl border-l-[0.33px] border-foreground/15 bg-background p-2 md:p-4">
           {children}

@@ -7,10 +7,14 @@ import { CreateAgentCode, CreateRequest } from "./comp/actions";
 import { Splash } from "./comp/splash";
 import { useAuthCtx } from "@/app/ctx/auth";
 import { useRequest } from "../hooks/useRequest";
+// import { Action } from "@/ui/action-card";
+// import { CatIcon } from "lucide-react";
 
 export const ManagerOverview = () => {
   const { user } = useAuthCtx();
+
   const create = useRequest();
+
   return (
     <div className="overflow-auto pb-6">
       <Splash />
@@ -23,6 +27,20 @@ export const ManagerOverview = () => {
                 <Widget.Title>Hello, {user?.email}</Widget.Title>
                 <CreateAgentCode />
                 <CreateRequest {...create} />
+                {/* <SpecialAction
+                  title="Git Fucked"
+                  subtext="we ball"
+                  icon={CatIcon}
+                >
+                  <Action>
+                    <Action.Btn
+                      onPress={() => console.log("fuck!")}
+                      loading={false}
+                    >
+                      <Action.Label>GET</Action.Label>
+                    </Action.Btn>
+                  </Action>
+                </SpecialAction> */}
               </div>
             </HStack.XsCol>
             <HStack.XsCol>

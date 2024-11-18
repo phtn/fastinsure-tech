@@ -10,5 +10,5 @@ export const createEndpoint = (endpoint: string) => {
   if (env.NODE_ENV === "development") {
     return env.RE_UP_SECURE_DEV_URL + endpoint;
   }
-  return env.RE_UP_SECURE_URL + endpoint;
+  return env.RE_UP_SECURE_DEV_URL + endpoint;
 };

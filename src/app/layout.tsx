@@ -4,7 +4,6 @@ import { Inter, JetBrains_Mono, Instrument_Sans } from "next/font/google";
 import { Providers } from "./ctx/providers";
 import { type PropsWithChildren } from "react";
 import { type Metadata } from "next";
-import { Theme } from "./ctx/theme";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -33,9 +32,9 @@ export default function RootLayout({ children }: PropsWithChildren) {
       lang="en"
       className={`${instrument.variable} ${inter.variable} ${jet.variable} ${GeistSans.variable} antialiased`}
     >
-      <Theme>
+      <body>
         <Providers>{children}</Providers>
-      </Theme>
+      </body>
     </html>
   );
 }

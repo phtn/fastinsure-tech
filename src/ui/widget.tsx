@@ -15,7 +15,7 @@ const Title = ({ children, href, className, dark = false }: TextProps) => (
   <Link href={href}>
     <h2
       className={cn(
-        "font-arc leading-none",
+        "font-arc text-sm leading-none",
         { "text-background": dark },
         className,
       )}

@@ -27,6 +27,7 @@ import {
 import { Err, Ok } from "@/utils/helpers";
 import { verifyIdToken } from "@/lib/secure/callers";
 import {
+  deleteAuthClient,
   deleteRefresh,
   deleteSession,
   deleteUID,
@@ -115,16 +116,18 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       GoogleAuthProvider.credentialFromResult(userCredential);
     setOAuth(oauthCredential);
     setGoogleSigning(false);
-  }, []);
+    router.push("/dashboard");
+  }, [router]);
 
   const signOut = useCallback(async () => {
-    await deleteSession();
-    await deleteRefresh();
-    await deleteUID();
     await logout(auth)
       .then(Ok(setLoading, "Signed out."))
       .catch(Err(setLoading, "Error signing out."));
     router.push("/");
+    await deleteSession();
+    await deleteRefresh();
+    await deleteUID();
+    await deleteAuthClient();
   }, [router]);
 
   useEffect(() => {

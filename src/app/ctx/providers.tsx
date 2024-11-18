@@ -4,17 +4,20 @@ import { Toasts } from "./toasts";
 import { AuthProvider } from "./auth";
 import { ActionBar } from "../comp/actionbar";
 import { Vex } from "./convex";
+import { Theme } from "./theme";
 
 export const Providers = ({ children }: PropsWithChildren) => {
   return (
     <NextUIProvider>
-      <Vex>
-        <AuthProvider>
-          {children}
-          <ActionBar />
-          <Toasts />
-        </AuthProvider>
-      </Vex>
+      <Theme>
+        <Vex>
+          <AuthProvider>
+            {children}
+            <ActionBar />
+            <Toasts />
+          </AuthProvider>
+        </Vex>
+      </Theme>
     </NextUIProvider>
   );
 };

@@ -2,7 +2,7 @@
 
 import { Label } from "@/ui/label";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
-import { Circle, CircleOffIcon } from "lucide-react";
+import { CircleOffIcon, CheckIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import {
@@ -37,7 +37,7 @@ export const RadioGroupItem = forwardRef<
   <RadioGroupPrimitive.Item
     ref={ref}
     className={cn(
-      "focus-visible:ring-ring aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+      "border_ aspect-square h-4 w-4 rounded-full border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50",
       className,
     )}
     {...props}
@@ -47,8 +47,8 @@ export const RadioGroupItem = forwardRef<
         <CircleOffIcon className="size-2.5 text-current" />
       </RadioGroupPrimitive.Indicator>
     ) : (
-      <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
-        <Circle className="h-2.5 w-2.5 fill-current text-current" />
+      <RadioGroupPrimitive.Indicator className="">
+        <CheckIcon className="-mr-1.5 -mt-1 size-6 animate-enter stroke-[1.5px] text-secondary-500 drop-shadow-sm dark:text-secondary" />
       </RadioGroupPrimitive.Indicator>
     )}
   </RadioGroupPrimitive.Item>
@@ -62,14 +62,18 @@ type ServiceTypeFields = RadioFields<ServiceType, InsertRequest>;
 interface RadioCardProps {
   name: keyof InsertRequest;
   items: PolicyTypeFields[] | PolicyCoverageFields[] | ServiceTypeFields[];
-  horizontal?: boolean;
+  orientation?: "vertical" | "horizontal";
 }
 export const RadioGroupCard = forwardRef<
   ElementRef<typeof RadioGroupPrimitive.Root>,
   ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> & RadioCardProps
 >(({ className, ...props }, ref) => (
   <RadioGroup
-    className={cn("gap-0", { flex: props.horizontal }, className)}
+    className={cn(
+      "gap-0 transition-all duration-300 ease-out transform-gpu hover:shadow-md",
+      { flex: props.orientation === "horizontal" },
+      className,
+    )}
     defaultValue={props?.items?.[0]?.title}
     ref={ref}
     {...props}
@@ -80,9 +84,9 @@ export const RadioGroupCard = forwardRef<
         className={cn(
           "relative flex w-full items-start p-4 tracking-wide shadow-sm shadow-black/5",
           "bg-primary-50 dark:bg-transparent/10 dark:backdrop-blur-xl",
-          "border-y border-r border-dashed border-primary-400 border-l-transparent first:rounded-s-md first:border-l first:border-l-primary-400 last:rounded-e-md last:border-r dark:border-primary-500",
-          "has-[[data-state=checked]]:bg-warning-300/20 has-[[data-state=checked]]:dark:bg-background",
-          "has-[[data-state=checked]]:border-double has-[[data-state=checked]]:border-x-primary-400",
+          "border-y border-r border-dashed border-primary-300/80 border-l-transparent first:rounded-s-md first:border-l first:border-l-primary-400 last:rounded-e-md last:border-r dark:border-primary-500",
+          "has-[[data-state=checked]]:bg-warning-200/20 has-[[data-state=checked]]:dark:bg-background",
+          "has-[[data-state=checked]]:border-double has-[[data-state=checked]]:border-primary-400",
           "has-[[data-state=checked]]:before:border-r-transparent",
           "dark:border-primary-300",
         )}
@@ -96,11 +100,14 @@ export const RadioGroupCard = forwardRef<
         />
         <div className="mr-2 flex grow items-start gap-2">
           <item.icon
-            className={cn("-mt-1 size-5 shrink-0 stroke-1", {
-              "opacity-50": item.disabled,
-            })}
+            className={cn(
+              "-ml-2 -mt-1 size-5 shrink-0 stroke-1 text-primary-700",
+              {
+                "opacity-50": item.disabled,
+              },
+            )}
           />
-          <div className="grid h-10 grow gap-2">
+          <div className="pointer-events-none grid h-10 grow gap-2">
             <Label
               htmlFor={item.name}
               className={cn("font-inter font-semibold capitalize opacity-80", {
@@ -112,7 +119,7 @@ export const RadioGroupCard = forwardRef<
             </Label>
             <p
               id={`${item.title}-description`}
-              className="pointer-events-none max-w-[50ch] whitespace-nowrap text-xs font-light tracking-tight opacity-60"
+              className="pointer-events-none max-w-[50ch] whitespace-nowrap text-xs font-light tracking-tight opacity-80"
             >
               {item.disabled ? "Not available" : item.description}
             </p>

@@ -256,13 +256,13 @@ export const FastFieldGroup = forwardRef<
 >(({ className, type, ...props }, ref) => (
   <div
     className={cn(
-      "w-full overflow-hidden rounded-md border border-primary-200 bg-slate-300/15 dark:border-primary-300",
+      "w-full overflow-hidden rounded-md border border-primary-200 bg-slate-300/15 shadow-sm shadow-primary-200 transition-all duration-300 ease-out transform-gpu hover:shadow-md dark:border-primary-300",
       {
         hidden: props.hidden,
       },
     )}
   >
-    <div className="full flex h-8 items-center border-b-[0.33px] border-dotted border-primary-300 px-2 font-inter text-xs font-semibold tracking-tight text-primary-800">
+    <div className="full flex h-10 items-center border-b-[0.33px] border-dotted border-primary-300 px-2 font-inter text-sm font-semibold tracking-tighter text-primary-800">
       {props.group}
     </div>
     <div className="flex w-full">
@@ -321,7 +321,7 @@ export const FastFile = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div
         className={cn(
-          "relative flex size-full flex-col items-center justify-center space-y-1 rounded-xl border border-dashed border-primary-300 bg-background",
+          "relative flex size-full flex-col items-center justify-center space-y-1 rounded-xl border border-dashed border-primary-300 bg-background shadow-sm shadow-primary-200 transition-all duration-300 ease-out transform-gpu hover:shadow-sm",
           className,
         )}
       >

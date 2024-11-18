@@ -11,7 +11,7 @@ import {
 } from "react";
 
 const labelVariants = cva(
-  "text-xs tracking-tight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+  "text-sm tracking-tight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
 );
 
 const Label = forwardRef<

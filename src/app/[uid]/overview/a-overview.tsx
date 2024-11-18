@@ -3,7 +3,7 @@
 import { HStack } from "@/ui/hstack";
 import { Widget } from "@/ui/widget";
 import { VBar } from "./charts/vbar";
-import { CreateRequest, GetUserInfo } from "./comp/actions";
+import { CreateRequest } from "./comp/actions";
 import { Splash } from "./comp/splash";
 import { useRequest } from "../hooks/useRequest";
 
@@ -25,7 +25,6 @@ export const AgentOverview = () => {
             <HStack.XsCol>
               <div className="h-full w-full space-y-4 text-foreground">
                 <CreateRequest {...create} />
-                <GetUserInfo />
               </div>
             </HStack.XsCol>
             <HStack.XsCol>

@@ -149,8 +149,32 @@ interface ScanDetailProps {
   size: number | undefined;
 }
 export const ScanDetail = ({ elapsed, format, size }: ScanDetailProps) => (
-  <div className="flex h-12 w-full items-center border-[0.33px] border-primary/20 px-2 text-xs font-light uppercase">
-    {size?.toFixed(2) ?? null}mb | {format} | {elapsed ?? null}
+  <div className="border-[0.33px]a grid h-12 w-full grid-cols-4 border-primary/20 px-2 text-sm font-light">
+    <DetailItem
+      value={size ? `${size?.toFixed(2)}mb` : null}
+      label={"file size"}
+    />
+    <DetailItem value={format} label={"file format"} />
+    <DetailItem value={elapsed ? `${elapsed}s` : null} label={"scan time"} />
+  </div>
+);
+
+const DetailItem = (props: {
+  value: string | number | null | undefined;
+  label?: string;
+}) => (
+  <div
+    className={cn(
+      "border-r_ flex items-center justify-start border-primary-300",
+      "font-jet",
+    )}
+  >
+    {props.value ? (
+      <div className="animate-enter space-y-1.5 leading-none">
+        <p className="font-medium">{props.value}</p>
+        <p className="text-[10px] font-light tracking-tight">{props.label}</p>
+      </div>
+    ) : null}
   </div>
 );
 

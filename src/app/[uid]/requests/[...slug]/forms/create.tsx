@@ -10,7 +10,8 @@ import {
   PaperAirplaneIcon,
   SparklesIcon,
   UserIcon,
-} from "@heroicons/react/24/outline";
+  TruckIcon,
+} from "@heroicons/react/24/solid";
 import { Button, Spinner } from "@nextui-org/react";
 import type {
   InsertRequest,
@@ -19,7 +20,6 @@ import type {
   ServiceType,
 } from "convex/requests/d";
 import {
-  CarFrontIcon,
   CatIcon,
   CrossIcon,
   PlaneTakeoffIcon,
@@ -93,7 +93,7 @@ function RequestComponent() {
           <RadioGroupCard
             name="policy_type"
             items={request_policy_types}
-            horizontal
+            orientation="horizontal"
           />
         </CardGroup>
         {/* <HSeparator /> */}
@@ -104,14 +104,14 @@ function RequestComponent() {
                 <RadioGroupCard
                   name="policy_coverage"
                   items={request_policy_coverage}
-                  horizontal
+                  orientation="horizontal"
                 />
               </CardGroup>
               <CardGroup title="Service Type">
                 <RadioGroupCard
                   name="service_type"
                   items={request_service_type}
-                  horizontal
+                  orientation="horizontal"
                 />
               </CardGroup>
             </div>
@@ -213,14 +213,14 @@ const request_service_type: RadioFields<ServiceType, InsertRequest>[] = [
 const request_policy_coverage: RadioFields<PolicyCoverage, InsertRequest>[] = [
   {
     title: "compulsory",
-    icon: CarFrontIcon,
+    icon: TruckIcon,
     name: "policy_coverage",
     type: "radio",
     description: "CTPL Coverage",
   },
   {
     title: "comprehensive",
-    icon: CarFrontIcon,
+    icon: TruckIcon,
     name: "policy_coverage",
     type: "radio",
     description: "Full Coverage",
@@ -230,7 +230,7 @@ const request_policy_coverage: RadioFields<PolicyCoverage, InsertRequest>[] = [
 const request_policy_types: RadioFields<PolicyType, InsertRequest>[] = [
   {
     title: "auto",
-    icon: CarFrontIcon,
+    icon: TruckIcon,
     name: "policy_type",
     type: "radio",
     description: "Motor vehicles",

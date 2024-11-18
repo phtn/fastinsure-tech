@@ -36,9 +36,9 @@ export const Theme = ({ children }: PropsWithChildren) => {
 
   return (
     <ThemeCtx.Provider value={stableValues}>
-      <body className={`bg-background text-foreground ${theme}`}>
+      <main className={`bg-background text-foreground ${theme}`}>
         {children}
-      </body>
+      </main>
     </ThemeCtx.Provider>
   );
 };

@@ -2,7 +2,7 @@ import { useAuthCtx } from "@/app/ctx/auth";
 import { useManager } from "@/lib/hooks/useManager";
 import { ActionCard, Action } from "@/ui/action-card";
 import { QrCodeIcon } from "@heroicons/react/24/outline";
-import { useCallback, useState } from "react";
+import { type ReactNode, useCallback, useState } from "react";
 import { Qr } from "./qr-viewer";
 import { Button } from "@nextui-org/react";
 import { Square2StackIcon } from "@heroicons/react/24/solid";
@@ -10,6 +10,7 @@ import { QrDetails } from "./qr-details";
 import { QrCodegen } from "./qr-codegen";
 import { copyFn, toggleState } from "@/utils/helpers";
 import { FileSymlinkIcon } from "lucide-react";
+import { type DualIcon } from "@/app/types";
 
 export const CreateAgentCode = () => {
   const { user } = useAuthCtx();
@@ -77,26 +78,26 @@ export const CreateAgentCode = () => {
   );
 };
 
-export const GetUserInfo = () => {
-  const { user } = useAuthCtx();
-  const getAccessToken = async () => {
-    if (user) {
-      console.table({ id: "ligma" });
-    }
-  };
-
+interface SpecialActionProps {
+  title?: string;
+  subtext?: string;
+  icon: DualIcon;
+  children: ReactNode;
+}
+export const SpecialAction = ({
+  title,
+  subtext,
+  icon,
+  children,
+}: SpecialActionProps) => {
   return (
     <ActionCard>
-      <ActionCard.Icon icon={QrCodeIcon} />
+      <ActionCard.Icon icon={icon} />
       <ActionCard.Header>
-        <ActionCard.Title>Get User Info</ActionCard.Title>
-        <ActionCard.Subtext>On development mode only</ActionCard.Subtext>
+        <ActionCard.Title>{title}</ActionCard.Title>
+        <ActionCard.Subtext>{subtext}</ActionCard.Subtext>
       </ActionCard.Header>
-      <Action>
-        <Action.Btn onPress={getAccessToken} loading={false}>
-          <Action.Label>GET</Action.Label>
-        </Action.Btn>
-      </Action>
+      {children}
     </ActionCard>
   );
 };

@@ -19,7 +19,7 @@ export const Logo = (props: { open: boolean }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className={cn(
-          "whitespace-nowrap px-4 font-jet text-xs tracking-widest text-primary-600",
+          "whitespace-nowrap px-4 font-jet text-xs tracking-widest text-primary-300",
           { hidden: !props.open },
         )}
       >

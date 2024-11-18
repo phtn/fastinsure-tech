@@ -9,6 +9,7 @@ import {
 import { type RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 import { env } from "@/env";
+import { GoogleAuth } from "google-auth-library";
 
 export type Modes = "light" | "dark" | "system";
 export interface ModeCookie {
@@ -148,4 +149,22 @@ export const setSidebarAnimate = async (animate: SidebarAnimate) => {
 export const getSidebarAnimate = async () => {
   const animate = cookies().get("fastinsure--sidebar-animate")?.value;
   return animate;
+};
+
+export const googleAuthClient = async () => {
+  const scopes: string[] = ["https://www.googleapis.com/auth/cloud-platform"];
+  const credentials = JSON.parse(env.ADC) as object;
+  const auth = new GoogleAuth({
+    credentials,
+    scopes,
+  });
+  return await auth.getClient();
+};
+
+export const getAuthClient = async () => {
+  return cookies().get("fastinsure--ocr-proc")?.value;
+};
+
+export const deleteAuthClient = async () => {
+  cookies().delete("fastinsure--ocr-proc");
 };

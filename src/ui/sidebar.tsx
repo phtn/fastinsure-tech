@@ -6,7 +6,6 @@ import {
   createContext,
   useContext,
   useCallback,
-  useEffect,
   useMemo,
 } from "react";
 import type {
@@ -20,11 +19,6 @@ import { AcademicCapIcon, UserIcon } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import { type DualIcon } from "@/app/types";
 import { Image } from "@nextui-org/react";
-import {
-  getSidebarAnimate,
-  setSidebarAnimate,
-  type SidebarAnimate,
-} from "@/app/actions";
 
 export interface NavItem {
   label: string;
@@ -38,7 +32,7 @@ export interface NavItem {
 interface SidebarContextProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  animate: SidebarAnimate;
+  animate: boolean;
 }
 
 const SidebarContext = createContext<SidebarContextProps | undefined>(
@@ -57,7 +51,7 @@ interface SidebarProviderValues {
   children: ReactNode;
   open: boolean;
   setOpen?: Dispatch<SetStateAction<boolean>>;
-  animate?: SidebarAnimate;
+  animate?: boolean;
 }
 
 export const SidebarProvider = ({
@@ -66,20 +60,10 @@ export const SidebarProvider = ({
   setOpen: setOpenProp,
 }: SidebarProviderValues) => {
   const [openState, setOpenState] = useState(false);
-  const [animate, setAnimate] = useState<SidebarAnimate>("auto");
+  const [animate] = useState<boolean>(true);
 
   const open = useMemo(() => openProp ?? openState, [openProp, openState]);
   const setOpen = useMemo(() => setOpenProp ?? setOpenState, [setOpenProp]);
-
-  const sidebarState = useCallback(async () => {
-    const animateState = (await getSidebarAnimate()) as SidebarAnimate;
-    if (!animateState) await setSidebarAnimate("auto");
-    setAnimate(animateState);
-  }, []);
-
-  useEffect(() => {
-    sidebarState().catch(console.error);
-  }, [sidebarState]);
 
   return (
     <SidebarContext.Provider value={{ open, setOpen, animate }}>
@@ -119,15 +103,44 @@ export const DesktopSidebar = ({
   return (
     <>
       <motion.div
+        onClick={() => setOpen(!open)}
+        animate={{
+          x: animate ? (open ? 293 : 55) : 290,
+        }}
+        transition={{ duration: 0.285, bounceDamping: 1, bounceStiffness: 1 }}
+        className={cn(
+          "absolute top-0 z-50 my-6 h-[calc(100vh/12)] w-[20px] cursor-w-resize rounded-full bg-primary-50/50 dark:bg-primary-200/80",
+          { "cursor-e-resize": !open },
+          {
+            "transition-colors duration-500 ease-out dark:hover:bg-primary-300/80":
+              open,
+          },
+        )}
+      />
+      <motion.div
+        onClick={() => setOpen(!open)}
+        animate={{
+          x: animate ? (open ? 270 : 30) : 290,
+        }}
+        transition={{ duration: 0.275, bounceDamping: 1, bounceStiffness: 1 }}
+        className={cn(
+          "group absolute bottom-12 z-50 my-6 h-[calc(100vh/6)] w-[35px] cursor-w-resize rounded-lg bg-transparent",
+          { "cursor-e-resize": !open },
+          "flex justify-end",
+        )}
+      >
+        <div className="h-full w-[8px] rounded-full bg-transparent transition-all duration-500 ease-out translate-x-1 transform-gpu group-hover:bg-primary-50/50 group-hover:-translate-x-0.5 dark:group-hover:bg-primary-200" />
+      </motion.div>
+      <motion.div
         className={cn(
           "hidden h-full w-[300px] flex-shrink-0 px-4 py-4 md:flex md:flex-col",
           className,
         )}
         animate={{
-          width: animate === "auto" ? (open ? "300px" : "60px") : "300px",
+          width: animate ? (open ? "300px" : "60px") : "300px",
         }}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
+        // onMouseEnter={() => setOpen(true)}
+        // onMouseLeave={() => setOpen(false)}
         {...props}
       >
         {children}
@@ -249,13 +262,8 @@ export const SidebarNav = (props: NavProps) => {
 
       <motion.span
         animate={{
-          display:
-            animate === "auto"
-              ? open
-                ? "inline-block"
-                : "none"
-              : "inline-block",
-          opacity: animate === "auto" ? (open ? 1 : 0) : 1,
+          display: animate ? (open ? "inline-block" : "none") : "inline-block",
+          opacity: animate ? (open ? 1 : 0) : 1,
         }}
         className={cn(
           "!m-0 inline-block whitespace-pre rounded-lg px-3 py-1 font-inst font-medium tracking-tight text-primary-300 transition-all duration-300 transform-gpu group-hover/sidebar:bg-primary-50/20 group-hover/sidebar:text-primary-100 group-hover/sidebar:translate-x-0.5 dark:text-primary-600 dark:group-hover/sidebar:bg-primary-900/20 dark:group-hover/sidebar:text-primary-900",

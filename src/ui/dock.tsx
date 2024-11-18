@@ -28,8 +28,8 @@ export interface DockProps extends VariantProps<typeof dockVariants> {
   children: React.ReactNode;
 }
 
-const DEFAULT_MAGNIFICATION = 60;
-const DEFAULT_DISTANCE = 140;
+const DEFAULT_MAGNIFICATION = 50;
+const DEFAULT_DISTANCE = 100;
 
 const dockVariants = cva(
   "bg-foreground/80 dark:bg-foreground backdrop-blur-xl mx-auto flex h-[42px] w-max gap-2 rounded-xl border border-primary-400/60 py-2 px-0 backdrop-blur-md",
