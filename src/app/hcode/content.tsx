@@ -74,7 +74,7 @@ export const HCodeContent = (params: HCodeContentProps) => {
             verified={verified ?? null}
           />
         </div>
-        <div className="col-span-2 flex h-full w-full flex-col space-y-4 rounded-lg border-[0.33px] border-foreground/50 p-6">
+        <div className="col-span-2 flex h-full w-full flex-col space-y-4 rounded-lg border-[0.33px] border-primary-300 p-6">
           <header className="flex justify-center">
             {verified ? (
               <span className="font-semibold text-foreground">
@@ -94,14 +94,15 @@ export const HCodeContent = (params: HCodeContentProps) => {
               <Input
                 size="lg"
                 name="key_code"
-                className="font-bold tracking-[1rem] text-foreground/80"
+                className="rounded-md border border-dashed border-primary-300 bg-primary-100/20 font-bold tracking-[1rem] text-foreground/80"
                 classNames={{
                   input: "text-center uppercase",
                 }}
               />
               <Button
-                variant={verified ? "flat" : "shadow"}
+                variant={verified ? "flat" : "solid"}
                 color={verified ? "default" : "primary"}
+                radius="sm"
                 type="submit"
                 className={cn(
                   "flex w-full items-center space-x-2 transition-all duration-500 ease-out",
@@ -145,7 +146,7 @@ export const HCodeContent = (params: HCodeContentProps) => {
             </div>
           </div>
         </div>
-        <div className="spaece-x-4 col-span-2 flex h-full w-full rounded-lg border-[0.33px] border-foreground/50 p-6">
+        <div className="spaece-x-4 col-span-2 flex h-full w-full rounded-lg border-[0.33px] border-primary-300 p-6">
           <Image alt="branch-logo" src="svg/f.svg" />
         </div>
       </div>
@@ -154,7 +155,7 @@ export const HCodeContent = (params: HCodeContentProps) => {
 };
 
 const Header = (props: { theme: string }) => (
-  <div className="flex h-[calc(100vh*0.1)] w-full items-center space-x-4 border-b-[0.33px] border-foreground/20 pl-6 md:pl-14 xl:pl-20">
+  <div className="flex h-[calc(100vh*0.1)] w-full items-center space-x-4 border-b-[0.33px] border-foreground/20 pl-6 md:pl-10">
     <div className="flex size-[24px] items-center justify-center rounded-full border-1 border-primary/40 xl:size-[32px]">
       <Image
         alt=""

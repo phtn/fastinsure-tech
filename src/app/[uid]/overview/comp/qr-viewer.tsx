@@ -31,7 +31,7 @@ const Handle = ({ close }: { close: VoidFunction }) => (
   <div
     onClick={close}
     aria-hidden
-    className="my-1 h-1.5 w-8 flex-shrink-0 cursor-pointer rounded-full bg-amber-600"
+    className="my-1 h-1.5 w-8 flex-shrink-0 cursor-pointer rounded-full bg-amber-600 transition-colors duration-300 ease-in hover:bg-warning"
   />
 );
 

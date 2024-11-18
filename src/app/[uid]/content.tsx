@@ -1,19 +1,19 @@
 "use client";
 
-import { Overview } from "./overview";
+import { AgentOverview } from "./overview/a-overview";
 import { useCallback } from "react";
 import { opts } from "@/utils/helpers";
-import { ManagerOverview } from "./m-overview";
+import { ManagerOverview } from "./overview/m-overview";
 import { Loader } from "@/ui/loader";
 import { useAuthCtx } from "@/app/ctx/auth";
-import { NeoOverview } from "./neo-overview";
+import { NeoOverview } from "./overview/n-overview";
 
 export const DashboardContent = () => {
   const { claims, loading, registered } = useAuthCtx();
 
   const OverviewOptions = useCallback(() => {
     const is_manager = claims?.some((el) => el === "manager" || el === "admin");
-    const options = opts(<ManagerOverview />, <Overview />);
+    const options = opts(<ManagerOverview />, <AgentOverview />);
     return <>{options.get(!!is_manager)}</>;
   }, [claims]);
 

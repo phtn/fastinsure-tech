@@ -35,7 +35,7 @@ const Header = ({ children, className, dark }: CommonProps) => {
       <div
         ref={ref}
         className={cn(
-          "flex h-full w-full flex-col items-start justify-center space-y-0.5 px-2 leading-none opacity-0 transition-all duration-500 ease-out translate-y-12",
+          "flex h-full w-full flex-col items-start justify-center space-y-1 px-2 leading-none opacity-0 transition-all duration-500 ease-out translate-y-12",
           { "opacity-100 translate-y-0": inView },
         )}
       >
@@ -74,7 +74,7 @@ const Title = ({ children, className }: CommonProps) => (
 );
 
 const Subtext = ({ children, className }: CommonProps) => (
-  <p className={cn("text-xs font-light opacity-80", className)}>{children}</p>
+  <p className={cn("text-xs font-light", className)}>{children}</p>
 );
 
 const ActionComp = ({ children, className }: CommonProps) => (

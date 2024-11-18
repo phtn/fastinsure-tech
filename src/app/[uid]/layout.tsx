@@ -6,7 +6,7 @@ import { UserIcon } from "@heroicons/react/24/solid";
 import { Button } from "@nextui-org/react";
 import { type PropsWithChildren, useState } from "react";
 import { Logo } from "./components";
-import { useNav } from "./hooks";
+import { useNav } from "./hooks/useNav";
 
 const DashboardLayout = ({ children }: PropsWithChildren) => {
   const { user, signOut } = useAuthCtx();

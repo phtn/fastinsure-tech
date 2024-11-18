@@ -68,7 +68,9 @@ export const HCodeDetails = ({
       {
         id: "expiry",
         label: "Expiry",
-        value: !expiry ? "❔❔❔" : "Expired",
+        value: !expiry
+          ? "Activation code is required to get expiry date."
+          : "Expired",
         status: !!expiry,
       },
       {
@@ -110,7 +112,7 @@ export const HCodeDetails = ({
   );
 };
 const ListboxWrapper = ({ children }: PropsWithChildren) => (
-  <div className="w-full rounded-b-small border-[0.33px] border-foreground/60 px-1 py-2">
+  <div className="w-full rounded-b-small border-[0.33px] border-primary-300 px-1 py-2">
     {children}
   </div>
 );

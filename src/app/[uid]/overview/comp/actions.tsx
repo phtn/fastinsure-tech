@@ -1,14 +1,15 @@
 import { useAuthCtx } from "@/app/ctx/auth";
 import { useManager } from "@/lib/hooks/useManager";
 import { ActionCard, Action } from "@/ui/action-card";
-import { Bars3BottomRightIcon, QrCodeIcon } from "@heroicons/react/24/outline";
-import { memo, useCallback, useState } from "react";
+import { QrCodeIcon } from "@heroicons/react/24/outline";
+import { useCallback, useState } from "react";
 import { Qr } from "./qr-viewer";
 import { Button } from "@nextui-org/react";
 import { Square2StackIcon } from "@heroicons/react/24/solid";
 import { QrDetails } from "./qr-details";
 import { QrCodegen } from "./qr-codegen";
-import { toggleState } from "@/utils/helpers";
+import { copyFn, toggleState } from "@/utils/helpers";
+import { FileSymlinkIcon } from "lucide-react";
 
 export const CreateAgentCode = () => {
   const { user } = useAuthCtx();
@@ -22,38 +23,49 @@ export const CreateAgentCode = () => {
 
   const handleToggleOpen = () => toggleState(setOpen);
 
-  const QrViewer = memo(() => (
-    <Qr open={open} onOpenChange={handleToggleOpen}>
-      <Qr.Content title="Agent Code Generated" close={handleToggleOpen}>
-        <Qr.Body>
-          <Qr.Code>
-            <QrCodegen url={agentCode?.data.url} />
-          </Qr.Code>
-          <Qr.Detail>
-            <QrDetails
-              key_code={agentCode?.data.code}
-              expiry={agentCode?.data.expiry}
-            />
-          </Qr.Detail>
-        </Qr.Body>
-      </Qr.Content>
-      <Qr.Footer>
-        <Qr.Url url={agentCode?.data.url}>
-          <Button size="sm" variant="ghost" isIconOnly className="border-0">
-            <Square2StackIcon className="size-5 text-foreground" />
-          </Button>
-        </Qr.Url>
-      </Qr.Footer>
-    </Qr>
-  ));
+  const QrViewer = () => {
+    const handleCopyUrl = (text: string) => () =>
+      copyFn({ name: "Activation URL", text });
+    return (
+      <Qr open={open} onOpenChange={handleToggleOpen}>
+        <Qr.Content title="Agent Code Generated" close={handleToggleOpen}>
+          <Qr.Body>
+            <Qr.Code>
+              <QrCodegen url={agentCode?.data.url} />
+            </Qr.Code>
+            <Qr.Detail>
+              <QrDetails
+                key_code={agentCode?.data.code}
+                expiry={agentCode?.data.expiry}
+              />
+            </Qr.Detail>
+          </Qr.Body>
+        </Qr.Content>
+        <Qr.Footer>
+          <Qr.Url url={agentCode?.data.url}>
+            <Button
+              size="sm"
+              variant="ghost"
+              isIconOnly
+              className="border-0"
+              onPress={handleCopyUrl(agentCode?.data.url ?? "")}
+            >
+              <Square2StackIcon className="size-5 text-primary-600" />
+            </Button>
+          </Qr.Url>
+        </Qr.Footer>
+      </Qr>
+    );
+  };
+
   QrViewer.displayName = "Qr";
 
   return (
     <ActionCard>
       <ActionCard.Icon icon={QrCodeIcon} />
       <ActionCard.Header>
-        <ActionCard.Title>Create Agent Code</ActionCard.Title>
-        <ActionCard.Subtext>Create a new agent code</ActionCard.Subtext>
+        <ActionCard.Title>Create User Code</ActionCard.Title>
+        <ActionCard.Subtext>Generate code for a new user.</ActionCard.Subtext>
       </ActionCard.Header>
       <Action>
         <Action.Btn onPress={handleCreateAgentCode} loading={loading}>
@@ -64,30 +76,6 @@ export const CreateAgentCode = () => {
     </ActionCard>
   );
 };
-
-// export const HealthCheck = () => {
-//   const { user } = useAuthCtx();
-//   const handleHealthCheck = async () => {
-//     const idToken = await user?.getIdToken();
-//     if (!idToken) return;
-//     await healthCheck();
-//   };
-
-//   return (
-//     <ActionCard>
-//       <ActionCard.Icon icon={QrCodeIcon} />
-//       <ActionCard.Header>
-//         <ActionCard.Title>Create Agent Code</ActionCard.Title>
-//         <ActionCard.Subtext>Create a new agent code</ActionCard.Subtext>
-//       </ActionCard.Header>
-//       <Action>
-//         <Action.Btn onPress={healthCheck}>
-//           <Action.Label>Create</Action.Label>
-//         </Action.Btn>
-//       </Action>
-//     </ActionCard>
-//   );
-// };
 
 export const GetUserInfo = () => {
   const { user } = useAuthCtx();
@@ -113,16 +101,19 @@ export const GetUserInfo = () => {
   );
 };
 
-export const CreateRequest = () => {
+export const CreateRequest = (props: {
+  createRequest: VoidFunction;
+  loading: boolean;
+}) => {
   return (
     <ActionCard>
-      <ActionCard.Icon icon={Bars3BottomRightIcon} />
+      <ActionCard.Icon icon={FileSymlinkIcon} />
       <ActionCard.Header>
         <ActionCard.Title>Create Request</ActionCard.Title>
         <ActionCard.Subtext>New policy request</ActionCard.Subtext>
       </ActionCard.Header>
       <Action>
-        <Action.Btn onPress={() => console.log(null)} loading={false}>
+        <Action.Btn onPress={props.createRequest} loading={props.loading}>
           <Action.Label>Create</Action.Label>
         </Action.Btn>
       </Action>

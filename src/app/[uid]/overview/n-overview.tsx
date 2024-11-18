@@ -2,11 +2,13 @@
 
 import { HStack } from "@/ui/hstack";
 import { Widget } from "@/ui/widget";
-import { VBar } from "./overview/charts/vbar";
-import { CreateAgentCode, GetUserInfo } from "./overview/comp/actions";
-import { Splash } from "./overview/comp/splash";
+import { VBar } from "./charts/vbar";
+import { CreateAgentCode, CreateRequest } from "./comp/actions";
+import { Splash } from "./comp/splash";
+import { useRequest } from "../hooks/useRequest";
 
 export const NeoOverview = () => {
+  const create = useRequest();
   return (
     <div className="overflow-auto pb-6">
       <Splash />
@@ -18,7 +20,7 @@ export const NeoOverview = () => {
               <div className="h-full w-full space-y-4 text-foreground">
                 <Widget.Title>Welcome Neophyte</Widget.Title>
                 <CreateAgentCode />
-                <GetUserInfo />
+                <CreateRequest {...create} />
               </div>
             </HStack.XsCol>
             <HStack.XsCol>

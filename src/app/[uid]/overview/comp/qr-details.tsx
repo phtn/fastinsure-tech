@@ -1,19 +1,27 @@
 import { type DualIcon } from "@/app/types";
 import {
   BookOpenIcon,
+  ChevronDoubleDownIcon,
   ChevronLeftIcon,
   ClockIcon,
   InformationCircleIcon,
   QrCodeIcon,
 } from "@heroicons/react/24/outline";
-import { ChevronDoubleLeftIcon } from "@heroicons/react/24/solid";
+import {
+  ChevronDoubleLeftIcon,
+  ExclamationTriangleIcon,
+  Square2StackIcon,
+} from "@heroicons/react/24/solid";
 import {
   Accordion,
   AccordionItem,
+  Button,
   type AccordionItemIndicatorProps,
 } from "@nextui-org/react";
 import type { PropsWithChildren, ReactElement, ReactNode } from "react";
 import moment from "moment";
+import { CircleCheckBigIcon } from "lucide-react";
+import { copyFn } from "@/utils/helpers";
 
 interface QrDetailsProps {
   key_code: string | undefined;
@@ -34,14 +42,20 @@ export const QrDetails = (props: QrDetailsProps) => {
     sameElse: "MM/DD/YYYY h:mm a",
   });
 
+  const handleCopyCode = (text: string) => () => copyFn({ name: text, text });
+
   return (
     <Accordion
       className="group"
       itemClasses={{
-        title: "text-sm font-semibold font-inst",
+        title: "text-sm font-medium font-inter tracking-tight",
+        subtitle: "text-xs tracking-tighter font-light",
         trigger:
-          "border-b-[0.33px] data-[open]:rounded-md data-[open]:bg-zinc-100/40 border-foreground/20 hover:rounded-md group-hover:border-background px-3 transition-all duration-300 ease-out hover:bg-foreground/10",
+          "border-b-[0.33px] data-[open]:rounded-md data-[open]:bg-zinc-100/40 border-foreground/20 hover:rounded-md group-hover:border-background px-3 transition-all duration-300 ease-out hover:bg-primary-100/40",
+
         base: "h-fit",
+        content:
+          "bg-gradient-to-r from-primary-100/5 via-primary-100/30 to-primar-100/5",
       }}
       showDivider={false}
     >
@@ -52,6 +66,7 @@ export const QrDetails = (props: QrDetailsProps) => {
           startContent={
             <item.startContent className="size-5 text-foreground/60" />
           }
+          disableIndicatorAnimation={item.animateIndicator}
           indicator={
             item.id === "code"
               ? indicator(false, props.key_code)
@@ -62,12 +77,47 @@ export const QrDetails = (props: QrDetailsProps) => {
           title={item.title}
           subtitle={item.id === "expiry" ? validity : null}
         >
-          {item.content}
+          {item.id === "code" ? (
+            <CodeContent>
+              <p>{props.key_code}</p>
+              <div>
+                <Button
+                  size="sm"
+                  radius="none"
+                  className="h-9 rounded-e-md border-[0.33px] border-primary font-inter font-medium"
+                  variant="solid"
+                  color="primary"
+                  onPress={handleCopyCode(props.key_code!)}
+                >
+                  <span>copy</span>
+                  <Square2StackIcon className="size-5 text-primary-50" />
+                </Button>
+              </div>
+            </CodeContent>
+          ) : item.id === "expiry" ? (
+            <ExpiryContent>This activation code {expiry}</ExpiryContent>
+          ) : (
+            item.content
+          )}
         </AccordionItem>
       ))}
     </Accordion>
   );
 };
+
+const CodeContent = ({ children }: PropsWithChildren) => (
+  <div className="font-arc mx-10 my-1 flex h-10 w-fit items-center">
+    <div className="flex h-9 items-center space-x-6 rounded-md border border-primary-500 bg-primary-50 py-2 pl-4 font-semibold tracking-widest drop-shadow-lg">
+      {children}
+    </div>
+  </div>
+);
+const ExpiryContent = ({ children }: PropsWithChildren) => (
+  <div className="font-arc mx-10 flex h-10 w-fit items-center space-x-4 rounded-md border border-primary bg-primary-50 px-4 text-sm font-medium text-primary drop-shadow-lg">
+    <ExclamationTriangleIcon className="size-5 animate-pulse text-warning" />
+    <span>{children}</span>
+  </div>
+);
 
 const indicator = (icons: boolean, value?: string | number) => {
   const DoubleLeft = () => (
@@ -83,9 +133,9 @@ const indicator = (icons: boolean, value?: string | number) => {
         )
     : ({ isOpen }: AccordionItemIndicatorProps) =>
         isOpen ? (
-          <DoubleLeft />
+          <ChevronDoubleDownIcon className="size-4 text-foreground/50" />
         ) : (
-          <p className="rounded-lg bg-foreground/70 px-2 py-1 text-sm font-medium text-background drop-shadow-sm">
+          <p className="rounded-md bg-primary-100/5 px-2 py-1 text-xs tracking-wide text-primary-800 drop-shadow-sm">
             {value}
           </p>
         );
@@ -106,8 +156,9 @@ interface TQrDetail {
   title: string;
   subtitle?: string;
   indicator: ({ isOpen }: AccordionItemIndicatorProps) => ReactElement;
-  content: ReactNode;
+  content?: ReactNode | string;
   startContent: DualIcon;
+  animateIndicator: boolean;
 }
 const detail_data: TQrDetail[] = [
   {
@@ -115,14 +166,19 @@ const detail_data: TQrDetail[] = [
     title: "Instructions",
     startContent: InformationCircleIcon,
     indicator: indicator(true),
+    animateIndicator: false,
     content: (
       <ItemContent>
-        <div className="my-2 font-inter font-light tracking-tight text-primary-400">
-          You have successfully created an agent code!
+        <div className="font-arc my-4 flex w-full items-center justify-center space-x-2 rounded-md bg-primary px-4 py-3 font-bold leading-none text-primary-50">
+          <p>You have successfully created an agent code!</p>
+          <CircleCheckBigIcon className="size-4 text-white" />
+        </div>
+        <div className="text-primar mb-3 flex h-10 items-center font-inter text-xs tracking-tight">
+          Good to know:
         </div>
         <ol className="list-inside list-decimal space-y-3">
           <li className="pb-2">
-            <span className="whitespace-nowrap font-medium text-foreground">
+            <span className="whitespace-nowrap font-inst font-semibold text-primary">
               Retrieve Generated Code Details:
             </span>
             <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-primary-100/50 py-4 pl-6">
@@ -141,10 +197,10 @@ const detail_data: TQrDetail[] = [
             </ul>
           </li>
           <li className="pb-2">
-            <span className="font-inst font-semibold text-slate-300">
+            <span className="whitespace-nowrap font-inst font-semibold text-primary">
               Agent Activation:
             </span>
-            <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-foreground/10 py-4 pl-6">
+            <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-primary-100/50 py-4 pl-6">
               <li>
                 Remind the agent to visit the activation page using the provided
                 <Strong text=" URL Link." />
@@ -157,10 +213,10 @@ const detail_data: TQrDetail[] = [
             </ul>
           </li>
           <li className="pb-2">
-            <span className="font-inst font-semibold text-slate-300">
+            <span className="whitespace-nowrap font-inst font-semibold text-primary">
               Monitor Activation Status:
             </span>
-            <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-foreground/10 py-4 pl-6">
+            <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-primary-100/50 py-4 pl-6">
               <li>
                 <span>
                   You can track the status of agent activations within your
@@ -176,21 +232,18 @@ const detail_data: TQrDetail[] = [
   },
   {
     id: "code",
-    title: "Agent Code",
+    title: "Activation Code",
     subtitle: "Valid until 2023-01-01",
     startContent: QrCodeIcon,
     indicator: indicator(false),
-    content: (
-      <ItemContent>
-        This is the generated code: <strong>1234567890</strong>
-      </ItemContent>
-    ),
+    animateIndicator: true,
   },
   {
     id: "expiry",
     title: "Valid Until",
     subtitle: "Valid until 2023-01-01",
     startContent: ClockIcon,
+    animateIndicator: true,
     indicator: indicator(false, "1234567890"),
     content: (
       <ItemContent>
@@ -204,9 +257,13 @@ const detail_data: TQrDetail[] = [
     subtitle: "View previous codes",
     startContent: BookOpenIcon,
     indicator: indicator(true),
+    animateIndicator: false,
     content: (
       <ItemContent>
-        This is the generated code: <strong>1234567890</strong>
+        <span className="text-xs font-light">
+          We&apos;re working on completing our documentation:{" "}
+          <strong>wo_id:890</strong>
+        </span>
       </ItemContent>
     ),
   },
