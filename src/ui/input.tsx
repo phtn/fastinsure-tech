@@ -9,7 +9,6 @@ import {
 import { AsteriskIcon } from "lucide-react";
 import type { ClassName, DualIcon } from "@/app/types";
 import { mapUnion, opts, passwordSecure, toggleState } from "@/utils/helpers";
-import type { RequestFields } from "@/app/dashboard/requests/[...slug]/forms/create";
 import {
   EyeIcon,
   EyeSlashIcon,
@@ -17,6 +16,7 @@ import {
   PhotoIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "@nextui-org/react";
+import { type RequestFields } from "@/app/dashboard/requests/create/[...slug]/forms/create";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: DualIcon;

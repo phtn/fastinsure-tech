@@ -14,6 +14,7 @@ interface HeaderProps {
 export const Header = ({ title, sm, xs }: HeaderProps) => {
   const pathname = usePathname();
   const crumbs = pathname.split("/");
+  console.table(crumbs);
   return (
     <div
       className={cn(
@@ -35,15 +36,18 @@ export const Header = ({ title, sm, xs }: HeaderProps) => {
             {title}
           </motion.p>
         </Link>
-        <SlashIcon
-          className={cn("hidden size-5 stroke-1 opacity-30", {
-            flex: crumbs[3],
-          })}
-        />
+        <SlashIcon className={cn("flex size-5 stroke-1 opacity-30", {})} />
         <div className="flex h-6 items-center gap-3">
-          <span className="rounded-md bg-default/60 px-1.5 py-1 font-mono text-[10px] uppercase leading-3">
-            {crumbs[3]}
-          </span>
+          <motion.span
+            initial={{ opacity: 0, x: -2 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: 2, ease: "easeOut" }}
+            className="rounded-md bg-default/60 px-1.5 py-1 font-mono text-[10px] uppercase leading-3"
+          >
+            {crumbs[1] === "dashboard" && !crumbs[2]
+              ? "home"
+              : (crumbs[3] ?? "all")}
+          </motion.span>
           <SlashIcon
             className={cn("hidden size-5 stroke-1 opacity-30", {
               flex: crumbs[4],

@@ -72,7 +72,7 @@ const a_navs: NavItem[] = [
   },
   {
     label: "Requests",
-    href: "/dashboard/requests",
+    href: "/dashboard/requests/all",
     icon: { type: "icon", content: TableCellsIcon },
   },
   {

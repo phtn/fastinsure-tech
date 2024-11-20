@@ -16,7 +16,7 @@ import type {
   PolicyType,
   ServiceType,
 } from "convex/requests/d";
-import type { RadioFields } from "@/app/dashboard/requests/[...slug]/forms/create";
+import type { RadioFields } from "@/app/dashboard/requests/create/[...slug]/forms/create";
 
 export const RadioGroup = forwardRef<
   ComponentRef<typeof RadioGroupPrimitive.Root>,

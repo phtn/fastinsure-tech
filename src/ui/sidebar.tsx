@@ -77,16 +77,13 @@ export const DesktopSidebar = ({
         onClick={toggle}
         initial={{ x: 56 }}
         animate={{
-          x: open ? 293 : 55,
+          x: open ? 293 : 54,
         }}
         transition={{ duration: 0.285, bounceDamping: 1, bounceStiffness: 1 }}
         className={cn(
           "absolute top-0 z-50 my-6 h-[calc(100vh/12)] w-[20px] cursor-w-resize rounded-full bg-primary-50/50 dark:bg-primary-200/80",
           { "cursor-e-resize": !open },
-          {
-            "transition-colors duration-500 ease-out dark:hover:bg-primary-300/80":
-              open,
-          },
+          "transition-colors duration-500 ease-out dark:hover:bg-primary-300/80",
         )}
       />
       <motion.button
@@ -96,7 +93,7 @@ export const DesktopSidebar = ({
         }}
         transition={{ duration: 0.275, bounceDamping: 1, bounceStiffness: 1 }}
         className={cn(
-          "group absolute bottom-12 z-50 my-6 h-[calc(100vh/6)] w-[35px] cursor-w-resize rounded-lg bg-transparent",
+          "group absolute bottom-12 z-50 my-6 h-[calc(100vh/6)] w-[35px] cursor-w-resize rounded-full bg-transparent",
           { "cursor-e-resize": !open },
           "flex justify-end",
         )}
@@ -138,7 +135,7 @@ const UserNavs = () => {
   const SidebarNavs = useCallback(() => {
     if (!navs) return;
     return (
-      <div>
+      <div className="space-y-2">
         {navs.map((nav, idx) => (
           <SidebarNav key={`${nav.id}_${idx}`} {...nav} href={nav.href} />
         ))}
@@ -154,6 +151,7 @@ const UserSection = (props: { open: boolean }) => {
   return (
     <section className="flex items-center space-x-4 whitespace-nowrap">
       <SidebarNav
+        className="text-xs tracking-wide text-chalk"
         href="/dashboard/account"
         label={user?.email ?? "Profile"}
         icon={{
@@ -165,12 +163,10 @@ const UserSection = (props: { open: boolean }) => {
       <Button
         size="sm"
         variant="faded"
-        color="warning"
         onPress={signOut}
-        className={cn(
-          "hidden w-16 border-0 font-inter font-medium tracking-tight",
-          { flex: props.open },
-        )}
+        className={cn("hidden w-16 border-0 font-inst text-chalk/80", {
+          flex: props.open,
+        })}
       >
         Sign out
       </Button>
@@ -202,7 +198,7 @@ export const SidebarNav = (props: NavProps) => {
         >
           <IconComponent
             className={cn(
-              "size-[1.5rem] shrink-0 stroke-1 text-primary-300 drop-shadow-md dark:text-primary-500",
+              "dark:hover:text-300 transision-all size-[1.5rem] shrink-0 stroke-1 text-primary-300 drop-shadow-md duration-300 ease-out transform-gpu hover:text-primary-200 dark:text-primary-500",
               {
                 "stroke-[1.5px] text-secondary dark:text-secondary":
                   pathname.length >= 2 && props.href.includes(sub!),
@@ -234,7 +230,7 @@ export const SidebarNav = (props: NavProps) => {
     <Link
       href={props.href}
       className={cn(
-        "group/sidebar flex items-center justify-start gap-3 py-2",
+        "group/sidebar flex items-center justify-start gap-3 py-2 hover:text-chalk",
         props.className,
       )}
       {...props.props}
