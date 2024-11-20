@@ -13,7 +13,7 @@ const Component = ({ children, open, onOpenChange }: ComponentProps) => {
     <Drawer.Root open={open} onOpenChange={onOpenChange}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-foreground/10" />
-        <Drawer.Content className="fixed bottom-14 left-0 right-0 mt-28 flex h-fit flex-col rounded-t-xl bg-transparent px-[5.5rem] outline-none">
+        <Drawer.Content className="fixed bottom-14 left-0 right-0 z-[70] mt-28 flex h-fit flex-col rounded-t-xl bg-transparent px-[5.5rem] outline-none">
           <VisuallyHidden>
             <Drawer.Title>QR Viewer</Drawer.Title>
             <Drawer.Description>

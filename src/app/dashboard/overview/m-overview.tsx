@@ -2,18 +2,15 @@
 
 import { HStack } from "@/ui/hstack";
 import { Widget } from "@/ui/widget";
-import { VBar } from "./charts/vbar";
-import { CreateAgentCode, CreateRequest } from "./comp/actions";
+import { CreateAgentCode } from "./comp/actions";
 import { Splash } from "./comp/splash";
-import { useAuthCtx } from "@/app/ctx/auth";
-import { useRequest } from "../hooks/useRequest";
+import type { OverviewProps } from "./types";
+// import { useRequest } from "../hooks/useRequest";
 // import { Action } from "@/ui/action-card";
 // import { CatIcon } from "lucide-react";
 
-export const ManagerOverview = () => {
-  const { user } = useAuthCtx();
-
-  const create = useRequest();
+export const ManagerOverview = ({ user }: OverviewProps) => {
+  // const create = useRequest();
 
   return (
     <div className="overflow-auto pb-6">
@@ -26,7 +23,7 @@ export const ManagerOverview = () => {
               <div className="h-full w-full space-y-4 text-foreground">
                 <Widget.Title>Hello, {user?.email}</Widget.Title>
                 <CreateAgentCode />
-                <CreateRequest {...create} />
+                {/* <CreateRequest {...create} /> */}
                 {/* <SpecialAction
                   title="Git Fucked"
                   subtext="we ball"
@@ -44,14 +41,10 @@ export const ManagerOverview = () => {
               </div>
             </HStack.XsCol>
             <HStack.XsCol>
-              <div className="h-full w-full text-background">
-                <VBar requests={[]} />
-              </div>
+              <div className="h-full w-full text-background"></div>
             </HStack.XsCol>
             <HStack.XsCol>
-              <div className="h-full w-full text-background">
-                <VBar requests={[]} />
-              </div>
+              <div className="h-full w-full text-background"></div>
             </HStack.XsCol>
           </HStack>
         </Widget.BaseII>

@@ -209,7 +209,7 @@ function ServerHealth({ children, liveness }: ServerHealthProps) {
       <HoverCardTrigger>{children}</HoverCardTrigger>
       <HoverCardContent
         side="top"
-        className="mb-4 mr-6 w-80 overflow-clip rounded-xl p-0"
+        className="mb-4 mr-8 w-80 overflow-clip rounded-xl p-0"
       >
         {server_health_data.map((item) => (
           <div

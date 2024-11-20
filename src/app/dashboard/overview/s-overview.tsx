@@ -2,13 +2,12 @@
 
 import { HStack } from "@/ui/hstack";
 import { Widget } from "@/ui/widget";
-import { VBar } from "./charts/vbar";
-import { CreateAgentCode, CreateRequest } from "./comp/actions";
+import { CreateAgentCode } from "./comp/actions";
 import { Splash } from "./comp/splash";
-import { useRequest } from "../hooks/useRequest";
+// import { useRequest } from "../hooks/useRequest";
 
 export const ManagerOverview = () => {
-  const create = useRequest();
+  // const create = useRequest();
   return (
     <div className="overflow-auto pb-6">
       <Splash />
@@ -20,18 +19,14 @@ export const ManagerOverview = () => {
               <div className="h-full w-full space-y-4 text-foreground">
                 <Widget.Title>Manager Overview</Widget.Title>
                 <CreateAgentCode />
-                <CreateRequest {...create} />
+                {/* <CreateRequest {...create} /> */}
               </div>
             </HStack.XsCol>
             <HStack.XsCol>
-              <div className="h-full w-full text-background">
-                <VBar requests={[]} />
-              </div>
+              <div className="h-full w-full text-background"></div>
             </HStack.XsCol>
             <HStack.XsCol>
-              <div className="h-full w-full text-background">
-                <VBar requests={[]} />
-              </div>
+              <div className="h-full w-full text-background"></div>
             </HStack.XsCol>
           </HStack>
         </Widget.BaseII>

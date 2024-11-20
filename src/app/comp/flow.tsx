@@ -40,14 +40,14 @@ Node.displayName = "Node";
 const MemoizedBeamEffect = memo(BeamEffect);
 
 export function Flow({ className }: { className?: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const div1Ref = useRef<HTMLDivElement>(null);
-  const div2Ref = useRef<HTMLDivElement>(null);
-  const div3Ref = useRef<HTMLDivElement>(null);
-  const div4Ref = useRef<HTMLDivElement>(null);
-  const div5Ref = useRef<HTMLDivElement>(null);
-  const div6Ref = useRef<HTMLDivElement>(null);
-  const div7Ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const div1Ref = useRef<HTMLDivElement | null>(null);
+  const div2Ref = useRef<HTMLDivElement | null>(null);
+  const div3Ref = useRef<HTMLDivElement | null>(null);
+  const div4Ref = useRef<HTMLDivElement | null>(null);
+  const div5Ref = useRef<HTMLDivElement | null>(null);
+  const div6Ref = useRef<HTMLDivElement | null>(null);
+  const div7Ref = useRef<HTMLDivElement | null>(null);
 
   // Use useMemo to ensure refs array is stable
   const refs = useMemo(() => [div1Ref, div2Ref, div3Ref, div4Ref, div5Ref], []);

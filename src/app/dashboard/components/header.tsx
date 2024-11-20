@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { SlashIcon } from "@heroicons/react/24/outline";
 import { Link } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 
 interface HeaderProps {
   title: string;
@@ -26,7 +27,13 @@ export const Header = ({ title, sm, xs }: HeaderProps) => {
           href={`/dashboard/${title}`}
           className="font-inter text-xl font-semibold capitalize tracking-tighter text-foreground opacity-100"
         >
-          {title}
+          <motion.p
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2, delay: 1.5, ease: "easeOut" }}
+          >
+            {title}
+          </motion.p>
         </Link>
         <SlashIcon
           className={cn("hidden size-5 stroke-1 opacity-30", {

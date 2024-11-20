@@ -3,8 +3,10 @@ import { LoginField } from "./input";
 import { GoogleSignin } from "./google";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "@nextui-org/react";
+import { Button, Image, Link } from "@nextui-org/react";
 import { useAuthCtx } from "../ctx/auth";
+import { cn } from "@/lib/utils";
+import { Support } from "./tabs";
 
 export const EmailSigninForm = () => {
   const { signUserWithEmail, loading } = useAuthCtx();
@@ -23,9 +25,17 @@ export const EmailSigninForm = () => {
   return (
     <form
       onSubmit={handleSubmit(creds)}
-      className="flex flex-col space-y-3 py-2 xl:gap-10"
+      className="mx-12 flex h-fit flex-col items-end space-y-6 py-8"
     >
-      <div className="h-fit space-y-2">
+      <div className="flex h-14 w-2/3 items-end justify-start px-3 text-xl font-semibold tracking-tight">
+        <header>Sign in with email</header>
+      </div>
+      <div
+        className={cn(
+          "shadow-primary-primary-200 flex h-full w-2/3 flex-col overflow-hidden rounded-lg shadow-sm",
+          "transition-all duration-500 ease-out transform-gpu hover:shadow-md",
+        )}
+      >
         {loginFields.map((field) => (
           <LoginField
             start={field.icon}
@@ -33,40 +43,60 @@ export const EmailSigninForm = () => {
             icon={field.icon}
             title={field.label}
             type={field.type}
-            {...register(field.name)}
+            className={cn(
+              {
+                "w-full rounded-b-none rounded-t-lg border border-b-0 border-[#1B1F22]/30":
+                  field.name === "email",
+              },
+              {
+                "border-x-double rounded-b-lg rounded-t-none border border-[#1B1F22]/30":
+                  field.name === "password",
+              },
+              "bg-[#fafafa]",
+            )}
+            {...register(field.name === "email" ? "email" : "password")}
           />
         ))}
       </div>
-      <div className="space-y-4 px-3 text-sm">
+      <div className="w-2/3 space-y-2 p-4 text-sm">
         <Button
+          radius="sm"
           type="submit"
-          variant="shadow"
-          color="primary"
+          variant="flat"
           isLoading={loading}
-          className="h-14 items-center space-x-4 rounded-md bg-background font-inst text-sm font-semibold text-foreground hover:bg-background/80 sm:h-12"
+          className="bg-void text-chalk h-[rem] w-full items-center space-x-4 font-inst text-sm font-semibold sm:h-12"
           fullWidth
         >
           <div>Sign in</div>
         </Button>
+        <div className="flex h-8 items-center justify-center text-xs">
+          <p>or</p>
+        </div>
         <GoogleSignin />
+
+        <div className="flex h-8 items-center justify-center text-xs"></div>
+
+        <Support />
       </div>
     </form>
   );
 };
 
-// const Submit = (props: { label?: string; loading: boolean }) => (
-//   <Button
-//     fullWidth
-//     size="lg"
-//     type="submit"
-//     variant="shadow"
-//     color="primary"
-//     isLoading={props.loading}
-//     className="h-14 items-center space-x-4 rounded-md bg-background font-inst text-sm font-medium text-foreground hover:bg-background/80 sm:h-12"
-//   >
-//     <div>{props.label ?? "Sign in"}</div>
-//     <ArrowRightEndOnRectangleIcon className="mx-2 size-5 shrink-0" />
-//   </Button>
-// );
-
-// export const WithEmailForm = memo(EmailSigninForm);
+export const SigninHeader = () => (
+  <div className="absolute left-0 top-0 z-[70] flex h-[calc(100vh*0.15)] w-full items-center space-x-4 pl-8">
+    <div className="flex size-[24px] items-center justify-center rounded-full border-[0.33px] border-[#1B1F22]/50 bg-[#1B1F22]/10 xl:size-[32px]">
+      <Link className="/">
+        <Image
+          alt=""
+          src="/svg/logo_dark.svg"
+          className="size-[12px] rounded-none xl:size-[16px]"
+        />
+      </Link>
+    </div>
+    <Link className="/">
+      <h1 className="font-inst font-medium text-[#1B1F22] drop-shadow-lg xl:text-lg">
+        FastInsure Technologies
+      </h1>
+    </Link>
+  </div>
+);

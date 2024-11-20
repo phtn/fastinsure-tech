@@ -58,9 +58,9 @@ const Col = ({ children, lg = false, className }: ColProps) => {
     <div
       ref={ref}
       className={cn(
-        "h-full w-full translate-y-24 text-background/80 opacity-0 transition-all delay-200 duration-500 ease-out portrait:hidden",
+        "h-full w-full text-background/80 opacity-0 transition-all delay-200 duration-500 ease-out translate-y-24 portrait:hidden",
         { "flex-col justify-start delay-300 lg:col-span-3": lg },
-        { "translate-y-0 opacity-100": inView },
+        { "opacity-100 translate-y-0": inView },
         className,
       )}
     >
@@ -88,4 +88,42 @@ export const HStack: THStack = Object.assign(HStackComponent, {
   LgCol,
   XsCol,
   Col,
+});
+
+interface ColPropsII {
+  lg?: boolean;
+  children?: ReactNode;
+  className?: ClassName;
+}
+const ColII = ({ children, lg = false, className }: ColPropsII) => {
+  const ref = useRef<HTMLDivElement>(null);
+  // const inView = useInView(ref, { once: true });
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "h-full w-full text-background/80 portrait:hidden",
+        { "flex-col justify-start lg:col-span-3": lg },
+        // { "translate-y-0 opacity-100": inView },
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+};
+
+type THStackII = typeof HStackComponent & {
+  Title: typeof Title;
+  SmCol: typeof SmCol;
+  LgCol: typeof LgCol;
+  XsCol: typeof XsCol;
+  ColII: typeof ColII;
+};
+export const HStackII: THStackII = Object.assign(HStackComponent, {
+  Title,
+  SmCol,
+  LgCol,
+  XsCol,
+  ColII,
 });

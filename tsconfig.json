@@ -31,8 +31,7 @@
       "@ctx/*": ["./src/app/ctx/*"],
       "@lib/*": ["src/lib/*"],
       "test-utils": ["./src/utils/test-utils"],
-      "utils": ["./src/utils"],
-      "@dashboard/*": ["src/app/[uid]/*"]
+      "utils": ["./src/utils"]
     }
   },
   "include": [

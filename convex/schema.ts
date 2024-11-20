@@ -1,5 +1,4 @@
 import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
 import { user_schema } from "./users/d";
 import { request_schema } from "./requests/d";
 import { auto_schema } from "./autos/d";
@@ -9,8 +8,8 @@ export default defineSchema({
   users: defineTable(user_schema)
     .index("by_uid", [
       "uid",
-      "account_id",
       "email",
+      "account_id",
       "phone_number",
       "photo_url",
       "fast_score",

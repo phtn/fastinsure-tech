@@ -9,8 +9,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import { getTheme, type Modes, setTheme } from "../actions";
-import { type SwitchProps, VisuallyHidden, useSwitch } from "@nextui-org/react";
-import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
+import { Switch } from "@nextui-org/react";
 
 interface ThemeProps {
   theme: Modes;
@@ -36,9 +35,9 @@ export const Theme = ({ children }: PropsWithChildren) => {
 
   return (
     <ThemeCtx.Provider value={stableValues}>
-      <main className={`bg-background text-foreground ${theme}`}>
+      <body className={`bg-background text-foreground ${theme}`}>
         {children}
-      </main>
+      </body>
     </ThemeCtx.Provider>
   );
 };
@@ -49,15 +48,16 @@ export const useThemeCtx = () => {
   return context;
 };
 
-export const ThemeSwitch = (props: SwitchProps) => {
-  const { theme, toggleTheme } = useThemeCtx();
-  const darkMode = useMemo(() => theme === "dark", [theme]);
-  const { Component, slots, getBaseProps, getInputProps, getWrapperProps } =
-    useSwitch(props);
+export const ThemeSwitch = () => {
+  const { toggleTheme } = useThemeCtx();
+  // const darkMode = useMemo(() => theme === "dark", [theme]);
+  // const { Component, slots, getBaseProps, getInputProps, getWrapperProps } =
+  //   useSwitch(props);
 
   return (
     <div className="flex flex-col gap-2">
-      <Component {...getBaseProps()}>
+      <Switch size="sm" color="primary" onChange={toggleTheme} />
+      {/* <Component {...getBaseProps()}>
         <VisuallyHidden>
           <input {...getInputProps()} onChange={toggleTheme} />
         </VisuallyHidden>
@@ -77,7 +77,7 @@ export const ThemeSwitch = (props: SwitchProps) => {
             <MoonIcon className="size-3.5" />
           )}
         </div>
-      </Component>
+      </Component> */}
     </div>
   );
 };

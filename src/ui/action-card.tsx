@@ -1,6 +1,6 @@
 import type { ClassName, DualIcon } from "@/app/types";
 import { cn } from "@/lib/utils";
-import { Button } from "@nextui-org/react";
+import { Button, Link } from "@nextui-org/react";
 import { useInView } from "framer-motion";
 import { type PropsWithChildren, type ReactNode, useRef } from "react";
 
@@ -65,7 +65,7 @@ const Icon = (props: IconProps) => (
 const Title = ({ children, className }: CommonProps) => (
   <p
     className={cn(
-      "whitespace-nowrap font-sans font-medium tracking-tight",
+      "whitespace-nowrap font-sans font-medium tracking-tight text-foreground",
       className,
     )}
   >
@@ -74,7 +74,9 @@ const Title = ({ children, className }: CommonProps) => (
 );
 
 const Subtext = ({ children, className }: CommonProps) => (
-  <p className={cn("text-xs font-light", className)}>{children}</p>
+  <p className={cn("text-xs font-light text-foreground", className)}>
+    {children}
+  </p>
 );
 
 const ActionComp = ({ children, className }: CommonProps) => (
@@ -116,9 +118,38 @@ type TButton = typeof ActionComp & {
   Label: typeof Label;
   BtnIcon: typeof BtnIcon;
 };
-
 export const Action: TButton = Object.assign(ActionComp, {
   Btn,
+  Label,
+  BtnIcon,
+});
+
+interface BtnLinkProps extends CommonProps {
+  loading: boolean;
+  href: string;
+}
+
+const BtnLink = ({ children, className, loading, href }: BtnLinkProps) => (
+  <Button
+    href={href}
+    as={Link}
+    size={"sm"}
+    color="primary"
+    isLoading={loading}
+    className={cn("", className)}
+  >
+    {children}
+  </Button>
+);
+
+type TButtonLink = typeof ActionComp & {
+  BtnLink: typeof BtnLink;
+  Label: typeof Label;
+  BtnIcon: typeof BtnIcon;
+};
+
+export const ActionLink: TButtonLink = Object.assign(ActionComp, {
+  BtnLink,
   Label,
   BtnIcon,
 });
@@ -128,6 +159,7 @@ type TActionComp = typeof Component & {
   Title: typeof Title;
   Subtext: typeof Subtext;
   Action: typeof Action;
+  ActionLink: typeof ActionLink;
   Icon: typeof Icon;
 };
 
@@ -136,5 +168,41 @@ export const ActionCard: TActionComp = Object.assign(Component, {
   Title,
   Subtext,
   Action,
+  ActionLink,
+  Icon,
+});
+
+const ComponentII = ({ children }: PropsWithChildren) => (
+  <div
+    className={cn(
+      "h-96 w-full cursor-pointer overflow-clip",
+      "_border-[0.33px] rounded-xl border-foreground",
+      "transition-all duration-300 ease-out",
+      "bg-gradient-to-b from-stone-50/10 via-zinc-300/50 to-slate-100/10",
+      "dark:border-primary-500/50 dark:from-primary-100",
+      "ml-4",
+    )}
+  >
+    <div className="flex h-full items-center space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-6">
+      {children}
+    </div>
+  </div>
+);
+
+type TBigActionComp = typeof Component & {
+  Header: typeof Header;
+  Title: typeof Title;
+  Subtext: typeof Subtext;
+  Action: typeof Action;
+  ActionLink: typeof ActionLink;
+  Icon: typeof Icon;
+};
+
+export const BigActionCard: TBigActionComp = Object.assign(ComponentII, {
+  Header,
+  Title,
+  Subtext,
+  Action,
+  ActionLink,
   Icon,
 });

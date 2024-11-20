@@ -46,7 +46,7 @@ export const RequestsDefaultContent = () => {
 const Content = () => (
   <Tabs size="md" color="primary" variant="underlined">
     <Tab key={"all"} title="All">
-      <div className="size-56 bg-primary" />
+      <div className="size-full bg-primary" />
     </Tab>
     <Tab key={"submitted"} title="Submitted">
       <div className="size-10 bg-primary" />

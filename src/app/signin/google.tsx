@@ -13,19 +13,21 @@ export const GoogleSignin = () => {
   return (
     <div className="flex w-full">
       <Button
+        size="lg"
         variant="flat"
+        radius="sm"
         isLoading={googleSigning}
         onClick={handleOnPress}
-        className="flex h-14 w-full rounded-md border-[0.33px] border-foreground bg-background/10 hover:bg-background/15 dark:border-foreground/40 sm:h-12"
+        className="shadow-void hover: flex w-full bg-[#fafafa]/50 drop-shadow-lg hover:opacity-100"
       >
         <div className="flex h-full w-full items-center justify-center gap-6">
-          <p className="font-inst text-sm font-medium text-background/80">
+          <p className="text-void font-inst text-sm font-medium">
             Continue with Google
           </p>
           <Image
             alt="google-logo"
             src="/svg/google.svg"
-            className={"size-5 drop-shadow-lg"}
+            className={"shadow-void size-5 drop-shadow-lg"}
           />
         </div>
       </Button>

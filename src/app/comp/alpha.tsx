@@ -61,6 +61,9 @@ const Jumbotron = memo(() => {
 
   const router = useRouter();
   const handlePress = useCallback(() => {
+    if (typeof window !== "undefined") {
+      router.prefetch("/signin");
+    }
     if (user) {
       return router.push(`/dashboard`);
     }

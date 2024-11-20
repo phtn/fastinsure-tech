@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
 
 export interface AnimatedBeamProps {
   className?: string;
-  containerRef: RefObject<HTMLElement>; // Container ref
-  fromRef: RefObject<HTMLElement>;
-  toRef: RefObject<HTMLElement>;
+  containerRef: RefObject<HTMLElement | null>; // Container ref
+  fromRef: RefObject<HTMLElement | null>;
+  toRef: RefObject<HTMLElement | null>;
   curvature?: number;
   reverse?: boolean;
   pathColor?: string;
@@ -66,7 +66,7 @@ export const BeamEffect: React.FC<AnimatedBeamProps> = ({
             y1: ["0%", "0%"],
             y2: ["0%", "0%"],
           },
-    [reverse]
+    [reverse],
   );
 
   useEffect(() => {
@@ -135,7 +135,7 @@ export const BeamEffect: React.FC<AnimatedBeamProps> = ({
       y1: "0%",
       y2: "0%",
     }),
-    []
+    [],
   );
 
   const animate = useMemo(
@@ -145,7 +145,7 @@ export const BeamEffect: React.FC<AnimatedBeamProps> = ({
       y1: gradientCoordinates.y1,
       y2: gradientCoordinates.y2,
     }),
-    [gradientCoordinates]
+    [gradientCoordinates],
   );
 
   // Use a stable transition object
@@ -166,8 +166,8 @@ export const BeamEffect: React.FC<AnimatedBeamProps> = ({
       height={svgDimensions.height}
       xmlns="http://www.w3.org/2000/svg"
       className={cn(
-        "pointer-events-none absolute left-0 top-0 transform-gpu stroke-2",
-        className
+        "pointer-events-none absolute left-0 top-0 stroke-2 transform-gpu",
+        className,
       )}
       viewBox={`0 0 ${svgDimensions.width} ${svgDimensions.height}`}
     >

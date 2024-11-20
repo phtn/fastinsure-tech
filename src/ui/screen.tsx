@@ -36,8 +36,8 @@ const HeaderComponent = ({ children, className, dark }: HeaderProps) => {
       <div
         ref={ref}
         className={cn(
-          "flex h-full w-full -translate-y-12 flex-col items-start justify-center px-6 opacity-0 transition-all duration-500 ease-out xl:px-12",
-          { "translate-y-0 opacity-100": inView },
+          "flex h-full w-full flex-col items-start justify-center px-6 opacity-0 transition-all duration-500 ease-out -translate-y-12 xl:px-12",
+          { "opacity-100 translate-y-0": inView },
         )}
       >
         {children}
@@ -102,6 +102,12 @@ const Default = ({ children }: PropsWithChildren) => (
   </div>
 );
 
+const Dark = ({ children }: PropsWithChildren) => (
+  <div className="border-void/60 relative -bottom-10 z-50 h-[calc(65vh)] w-screen overflow-hidden border border-y-[0.33px] bg-[#1b1f22]/80">
+    {children}
+  </div>
+);
+
 interface FlexProps {
   children: ReactNode;
   relative?: boolean;
@@ -114,8 +120,8 @@ const Flex = ({ relative, children }: FlexProps) => {
       ref={ref}
       className={cn(
         "flex h-fit w-full items-center justify-evenly space-x-12 px-16",
-        "&first:delay-200 &last:delay-500 translate-y-24 opacity-0 drop-shadow-lg transition-all duration-500 ease-out",
-        { "translate-y-0 opacity-100": inView },
+        "&first:delay-200 &last:delay-500 opacity-0 drop-shadow-lg transition-all duration-500 ease-out translate-y-24",
+        { "opacity-100 translate-y-0": inView },
         {
           relative: relative,
         },
@@ -137,6 +143,7 @@ type TScreen = typeof Component & {
   Base: typeof Base;
   Default: typeof Default;
   Flex: typeof Flex;
+  Dark: typeof Dark;
 };
 
 export const Screen: TScreen = Object.assign(Component, {
@@ -150,4 +157,5 @@ export const Screen: TScreen = Object.assign(Component, {
   Base,
   Default,
   Flex,
+  Dark,
 });

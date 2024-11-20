@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import { Model } from "./model";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, type Vector3 } from "@react-three/fiber";
 import { useGLMotion } from "./useGLMotion";
+import type { Euler, EulerOrder } from "three";
 
 export const Scene = () => {
   const { rotY } = useGLMotion();
@@ -13,14 +14,42 @@ export const Scene = () => {
           <ambientLight intensity={1.5} />
           <spotLight position={[1, 10, 10]} angle={0.1} penumbra={1} />
           <pointLight position={[0, 10, 10]} intensity={1.5} />
+
           <Model
-            position={[0.8, -9, -20]}
-            rotation={[-1.5, rotY, 3.14]}
-            // x: pitch , y: roll, z: yaw
-            scale={[0.5, 0.5, 0.5]}
+            position={
+              [0.8, -9, -20] as (
+                | number
+                | Vector3
+                | [x: number, y: number, z: number]
+              ) &
+                Vector3
+            }
+            rotation={
+              [-1.5, rotY, 3.14] as (
+                | number
+                | Euler
+                | [
+                    x: number,
+                    y: number,
+                    z: number,
+                    order?: EulerOrder | undefined,
+                  ]
+              ) &
+                Euler
+            }
+            scale={
+              [0.5, 0.5, 0.5] as (
+                | number
+                | Vector3
+                | [x: number, y: number, z: number]
+              ) &
+                Vector3
+            }
           />
         </Suspense>
       </Canvas>
     </div>
   );
 };
+
+// x: pitch , y: roll, z: yaw

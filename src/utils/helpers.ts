@@ -40,6 +40,7 @@ const decodeRaw = (encoded: string) => {
 };
 
 export const passwordSecure = (name: string, secure: boolean) => {
+  if (name === "email") return "email";
   if (name === "password" && secure) {
     return "password";
   }
@@ -121,7 +122,8 @@ export const opts = (...args: ReactElement[]) => {
 
 export function mapUnion<T extends string | number | symbol>() {
   return {
-    build: <V>(entries: { [K in T]: V }): Map<T, V> => {
+    // Record<[K in T], V> Record<keyof T, V>
+    build: <V>(entries: Record<T, V>): Map<T, V> => {
       const map = new Map<T, V>();
       (Object.entries(entries) as [T, V][]).forEach(([key, value]) => {
         map.set(key, value);

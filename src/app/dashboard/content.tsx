@@ -9,26 +9,26 @@ import { useAuthCtx } from "@/app/ctx/auth";
 import { NeoOverview } from "./overview/n-overview";
 
 export const DashboardContent = () => {
-  const { claims, loading, registered } = useAuthCtx();
+  const { claims, loading, user, registered } = useAuthCtx();
 
   const OverviewOptions = useCallback(() => {
     const is_manager = claims?.some((el) => el === "manager" || el === "admin");
-    const options = opts(<ManagerOverview />, <AgentOverview />);
+    const options = opts(<ManagerOverview user={user} />, <AgentOverview />);
     return <>{options.get(!!is_manager)}</>;
-  }, [claims]);
+  }, [claims, user]);
 
   const RegisteredOptions = useCallback(() => {
     const is_registered = !loading && registered;
-    const options = opts(<OverviewOptions />, <NeoOverview />);
+    const options = opts(<OverviewOptions />, <NeoOverview user={user} />);
     return <>{options.get(is_registered)}</>;
-  }, [OverviewOptions, loading, registered]);
+  }, [OverviewOptions, loading, registered, user]);
 
   if (loading) {
     return <Loader />;
   }
 
   if (!loading && !registered) {
-    return <NeoOverview />;
+    return <NeoOverview user={user} />;
   }
 
   return (

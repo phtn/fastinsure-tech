@@ -128,6 +128,10 @@ export default {
         // Meter
         "i-br-md-m": "inset -15px -30px 40px -20px rgba(175, 175, 175, 0.8)",
       },
+      colors: {
+        void: "#1b1f22",
+        chalk: "#fafafa",
+      },
     },
   },
   darkMode: "class",

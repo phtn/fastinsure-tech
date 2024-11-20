@@ -76,8 +76,8 @@ export function HyperText({
 
   return (
     <div
-      className="flex scale-100 cursor-pointer overflow-hidden rounded-xl bg-foreground/80 p-2 backdrop-blur-xl"
-      onMouseEnter={triggerAnimation}
+      className="flex overflow-hidden bg-transparent px-2"
+      onLoad={triggerAnimation}
     >
       <AnimatePresence mode="sync">
         {displayText?.map((letter, i) => (

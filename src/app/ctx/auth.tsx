@@ -34,10 +34,12 @@ import {
   getHCode,
   setIdToken,
   setRefresh,
+  setUID,
 } from "@/app/actions";
 
 import { type EmailAndPassword } from "../signin/schema";
 import { type UserRole } from "@/lib/secure/resource";
+import { onError } from "./toasts";
 
 interface AuthCtxValues {
   loading: boolean;
@@ -82,7 +84,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       const u = userCredential?.user;
       if (u) {
         setUser(u);
-
+        router.push("/dashboard");
         await initVerification(
           u,
           setClaims,
@@ -90,8 +92,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
           setRegistered,
           setLoading,
         );
-
-        router.push(`/dashboard`);
+      } else {
+        onError("Unable to sign in.");
+        setLoading(false);
       }
     },
     [router],
@@ -103,6 +106,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const userCredential = await signInWithPopup(auth, provider);
     const u = userCredential.user;
     if (u) {
+      router.push("/dashboard");
       setUser(u);
       await initVerification(
         u,
@@ -116,19 +120,17 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       GoogleAuthProvider.credentialFromResult(userCredential);
     setOAuth(oauthCredential);
     setGoogleSigning(false);
-    router.push("/dashboard");
   }, [router]);
 
   const signOut = useCallback(async () => {
     await logout(auth)
       .then(Ok(setLoading, "Signed out."))
       .catch(Err(setLoading, "Error signing out."));
-    router.push("/");
     await deleteSession();
     await deleteRefresh();
     await deleteUID();
     await deleteAuthClient();
-  }, [router]);
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -144,7 +146,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
             setRegistered,
             setLoading,
           ).catch(Err(setLoading));
-          router.push(`/dashboard`);
         } else {
           setUser(null);
           router.push("/");
@@ -203,9 +204,10 @@ const initVerification = async (
   setClaims(filterActiveClaims(customClaims));
   setUserRecord(record);
 
-  const hcodeCookie = await getHCode();
-  const group_code = hcodeCookie?.value.split("--")[1] ?? "";
+  const hcode = await getHCode();
+  const group_code = hcode?.split("--")[1] ?? "";
 
+  await setUID(u.uid);
   await setIdToken(id_token);
   await setRefresh(refresh);
   const payload: VerificationPayload = {

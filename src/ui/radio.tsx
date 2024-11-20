@@ -7,7 +7,7 @@ import { CircleOffIcon, CheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   type ComponentPropsWithoutRef,
-  type ElementRef,
+  type ComponentRef,
   forwardRef,
 } from "react";
 import type {
@@ -16,10 +16,10 @@ import type {
   PolicyType,
   ServiceType,
 } from "convex/requests/d";
-import type { RadioFields } from "@/app/[uid]/requests/[...slug]/forms/create";
+import type { RadioFields } from "@/app/dashboard/requests/[...slug]/forms/create";
 
 export const RadioGroup = forwardRef<
-  ElementRef<typeof RadioGroupPrimitive.Root>,
+  ComponentRef<typeof RadioGroupPrimitive.Root>,
   ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
 >(({ className, ...props }, ref) => (
   <RadioGroupPrimitive.Root
@@ -31,7 +31,7 @@ export const RadioGroup = forwardRef<
 RadioGroup.displayName = RadioGroupPrimitive.Root.displayName;
 
 export const RadioGroupItem = forwardRef<
-  ElementRef<typeof RadioGroupPrimitive.Item>,
+  ComponentRef<typeof RadioGroupPrimitive.Item>,
   ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
 >(({ className, ...props }, ref) => (
   <RadioGroupPrimitive.Item
@@ -65,7 +65,7 @@ interface RadioCardProps {
   orientation?: "vertical" | "horizontal";
 }
 export const RadioGroupCard = forwardRef<
-  ElementRef<typeof RadioGroupPrimitive.Root>,
+  ComponentRef<typeof RadioGroupPrimitive.Root>,
   ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> & RadioCardProps
 >(({ className, ...props }, ref) => (
   <RadioGroup

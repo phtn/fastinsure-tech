@@ -1,6 +1,13 @@
 import { useGLTF } from "@react-three/drei";
 import { type GLTF } from "three-stdlib";
-import type { Material, Mesh } from "three";
+import type {
+  EulerOrder,
+  Group,
+  Material,
+  Mesh,
+  Object3DEventMap,
+} from "three";
+import type { Euler, ReactProps, Vector3 } from "@react-three/fiber";
 
 type GLTFResult = GLTF & {
   nodes: Record<string, Mesh>;
@@ -8,8 +15,20 @@ type GLTFResult = GLTF & {
 };
 
 const shuttle = "/threed/space_shuttle.glb";
-
-export const Model = (props: JSX.IntrinsicElements["group"]) => {
+export const Model = (
+  props: ReactProps<Group<Object3DEventMap>> & {
+    position: (number | Vector3 | [x: number, y: number, z: number]) & Vector3;
+  } & {
+    rotation: (
+      | number
+      | Euler
+      | [x: number, y: number, z: number, order?: EulerOrder | undefined]
+    ) &
+      Euler;
+  } & {
+    scale: (number | Vector3 | [x: number, y: number, z: number]) & Vector3;
+  },
+) => {
   const { nodes, materials } = useGLTF(shuttle) as GLTFResult;
 
   return (

@@ -6,7 +6,6 @@ import {
   HCodeParamsSchema,
   type UserRecord,
 } from "@/lib/secure/resource";
-import { type RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 import { env } from "@/env";
 import { GoogleAuth } from "google-auth-library";
@@ -25,8 +24,9 @@ const defaultOpts = {
 };
 
 export const getUserRecord = async (): Promise<UserRecord | undefined> => {
-  const id_token = cookies().get("fastinsure--session")?.value;
-  const uid = cookies().get("fastinsure--uid")?.value;
+  const cookieStore = await cookies();
+  const id_token = cookieStore.get("fastinsure--session")?.value;
+  const uid = cookieStore.get("fastinsure--uid")?.value;
   if (!id_token || !uid) return;
   const result = await getUser({ id_token, uid });
   if (!result) return;
@@ -34,60 +34,72 @@ export const getUserRecord = async (): Promise<UserRecord | undefined> => {
 };
 
 export const getRefresh = async () => {
-  const refresh = cookies().get("fastinsure--refresh")?.value;
+  const cookieStore = await cookies();
+  const refresh = cookieStore.get("fastinsure--refresh")?.value;
   return refresh;
 };
 
-export const setUID = async (uid: string | undefined) => {
-  if (uid) {
-    return cookies().set("fastinsure--uid", uid, {
-      ...defaultOpts,
-      path: "/",
-    });
-  }
+export const setUID = async (uid: string) => {
+  const cookieStore = await cookies();
+  cookieStore.set("fastinsure--uid", uid, {
+    ...defaultOpts,
+    path: "/",
+  });
 };
-export const getUID = async () => cookies().get("fastinsure--uid")?.value;
+
+export const getUID = async () => {
+  const cookieStore = await cookies();
+  return cookieStore.get("fastinsure--uid")?.value;
+};
 export const deleteUID = async () => {
-  cookies().delete("fastinsure--uid");
+  const cookieStore = await cookies();
+  cookieStore.delete("fastinsure--uid");
 };
 
 export const setAuthKey = async (key: string) => {
-  cookies().set("fastinsure--auth-key", key, defaultOpts);
+  const cookieStore = await cookies();
+  cookieStore.set("fastinsure--auth-key", key, defaultOpts);
   return "auth-key-set";
 };
 
 export const getAuthKey = async (key?: string) => {
-  const cstore = cookies();
-  const k = cstore.get(key ?? "fastinsure--auth-key")?.value;
-  console.log(k);
-  return k;
+  const cookieStore = await cookies();
+  return cookieStore.get(key ?? "fastinsure--auth-key")?.value;
 };
 
 export const setTheme = async (theme: Modes) => {
-  cookies().set("fastinsure_mode", theme, { ...defaultOpts, path: "/" });
+  const cookieStore = await cookies();
+  cookieStore.set("fastinsure_mode", theme, { ...defaultOpts, path: "/" });
   return `mode set to ${theme}`;
 };
 
 export const getTheme = async (): Promise<Modes> => {
+  const cookieStore = await cookies();
   const light = "light";
-  const mode = cookies().get("fastinsure_mode")?.value as Modes;
+  const mode = cookieStore.get("fastinsure_mode")?.value as Modes;
   return mode ?? light;
 };
 
-export const deleteThemes = async () => cookies().delete("fastinsure_mode");
+export const deleteThemes = async () => {
+  const cookieStore = await cookies();
+  return cookieStore.delete("fastinsure_mode");
+};
 
 export const setHCode = async (key: string) => {
-  cookies().set("fastinsure--hcode", key, { ...defaultOpts, path: "/" });
+  const cookieStore = await cookies();
+  cookieStore.set("fastinsure--hcode", key, { ...defaultOpts, path: "/" });
   return `key set to ${key}`;
 };
 
-export const getHCode = async (): Promise<RequestCookie | undefined> => {
-  const hcode = cookies().get("fastinsure--hcode");
+export const getHCode = async () => {
+  const cookieStore = await cookies();
+  const hcode = cookieStore.get("fastinsure--hcode")?.value;
   return hcode;
 };
 
 export const deleteHCode = async () => {
-  cookies().delete("fastinsure--hcode");
+  const cookieStore = await cookies();
+  cookieStore.delete("fastinsure--hcode");
 };
 
 export const verifyHCode = async (decoded: HCodeParams, formData: FormData) => {
@@ -109,16 +121,18 @@ export const verifyHCode = async (decoded: HCodeParams, formData: FormData) => {
 };
 
 export const setIdToken = async (idToken: string | undefined) => {
+  const cookieStore = await cookies();
   if (idToken) {
-    cookies().set("fastinsure--session", idToken, {
+    cookieStore.set("fastinsure--session", idToken, {
       ...defaultOpts,
       path: "/",
     });
   }
 };
 export const setRefresh = async (refreshToken: string | undefined) => {
+  const cookieStore = await cookies();
   if (refreshToken) {
-    cookies().set("fastinsure--refresh", refreshToken, {
+    cookieStore.set("fastinsure--refresh", refreshToken, {
       ...defaultOpts,
       path: "/",
     });
@@ -126,28 +140,33 @@ export const setRefresh = async (refreshToken: string | undefined) => {
 };
 
 export const getSession = async () => {
-  const value = cookies().get("fastinsure--session")?.value;
+  const cookieStore = await cookies();
+  const value = cookieStore.get("fastinsure--session")?.value;
   return value;
 };
 
 export const deleteSession = async () => {
-  cookies().delete("fastinsure--session");
+  const cookieStore = await cookies();
+  cookieStore.delete("fastinsure--session");
 };
 
 export const deleteRefresh = async () => {
-  cookies().delete("fastinsure--refresh");
+  const cookieStore = await cookies();
+  cookieStore.delete("fastinsure--refresh");
 };
 
 export type SidebarAnimate = "auto" | "manual";
 export const setSidebarAnimate = async (animate: SidebarAnimate) => {
-  cookies().set("fastinsure--sidebar-animate", animate, {
+  const cookieStore = await cookies();
+  cookieStore.set("fastinsure--sidebar-animate", animate, {
     ...defaultOpts,
     path: "/dashboard",
   });
 };
 
 export const getSidebarAnimate = async () => {
-  const animate = cookies().get("fastinsure--sidebar-animate")?.value;
+  const cookieStore = await cookies();
+  const animate = cookieStore.get("fastinsure--sidebar-animate")?.value;
   return animate;
 };
 
@@ -161,10 +180,12 @@ export const googleAuthClient = async () => {
   return await auth.getClient();
 };
 
-export const getAuthClient = async () => {
-  return cookies().get("fastinsure--ocr-proc")?.value;
+export const deleteAuthClient = async () => {
+  const cookieStore = await cookies();
+  cookieStore.delete("fastinsure--ocr-proc");
 };
 
-export const deleteAuthClient = async () => {
-  cookies().delete("fastinsure--ocr-proc");
-};
+// export const getAuthClient = async () => {
+//   const cookieStore = await cookies();
+//   return cookieStore.get("fastinsure--ocr-proc")?.value;
+// };

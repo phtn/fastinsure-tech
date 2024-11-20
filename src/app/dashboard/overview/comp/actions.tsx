@@ -1,8 +1,8 @@
 import { useAuthCtx } from "@/app/ctx/auth";
 import { useManager } from "@/lib/hooks/useManager";
-import { ActionCard, Action } from "@/ui/action-card";
-import { QrCodeIcon } from "@heroicons/react/24/outline";
-import { type ReactNode, useCallback, useState } from "react";
+import { ActionCard, Action, ActionLink } from "@/ui/action-card";
+import { BookOpenIcon, QrCodeIcon } from "@heroicons/react/24/outline";
+import { useCallback, useState } from "react";
 import { Qr } from "./qr-viewer";
 import { Button } from "@nextui-org/react";
 import { Square2StackIcon } from "@heroicons/react/24/solid";
@@ -82,13 +82,17 @@ interface SpecialActionProps {
   title?: string;
   subtext?: string;
   icon: DualIcon;
-  children: ReactNode;
+  href: string;
+  label: string;
+  loading: boolean;
 }
 export const SpecialAction = ({
   title,
   subtext,
   icon,
-  children,
+  href,
+  label,
+  loading,
 }: SpecialActionProps) => {
   return (
     <ActionCard>
@@ -97,7 +101,11 @@ export const SpecialAction = ({
         <ActionCard.Title>{title}</ActionCard.Title>
         <ActionCard.Subtext>{subtext}</ActionCard.Subtext>
       </ActionCard.Header>
-      {children}
+      <Action>
+        <ActionLink.BtnLink href={href} loading={loading}>
+          <Action.Label>{label}</Action.Label>
+        </ActionLink.BtnLink>
+      </Action>
     </ActionCard>
   );
 };
@@ -116,6 +124,26 @@ export const CreateRequest = (props: {
       <Action>
         <Action.Btn onPress={props.createRequest} loading={props.loading}>
           <Action.Label>Create</Action.Label>
+        </Action.Btn>
+      </Action>
+    </ActionCard>
+  );
+};
+
+export const Documentation = (props: {
+  fn: VoidFunction;
+  loading: boolean;
+}) => {
+  return (
+    <ActionCard>
+      <ActionCard.Icon icon={BookOpenIcon} />
+      <ActionCard.Header>
+        <ActionCard.Title>Read Documentation</ActionCard.Title>
+        <ActionCard.Subtext>Need help?</ActionCard.Subtext>
+      </ActionCard.Header>
+      <Action>
+        <Action.Btn onPress={props.fn} loading={props.loading}>
+          <Action.Label>View Docs</Action.Label>
         </Action.Btn>
       </Action>
     </ActionCard>

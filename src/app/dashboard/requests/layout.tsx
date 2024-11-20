@@ -1,5 +1,5 @@
 import { type PropsWithChildren } from "react";
-import { Header } from "@dashboard/components/header";
+import { Header } from "@/app/dashboard/components/header";
 
 export default function RequestsLayout({ children }: PropsWithChildren) {
   return (

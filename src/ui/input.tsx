@@ -6,10 +6,10 @@ import {
   useState,
   useCallback,
 } from "react";
-import { AsteriskIcon, LoaderCircle } from "lucide-react";
+import { AsteriskIcon } from "lucide-react";
 import type { ClassName, DualIcon } from "@/app/types";
 import { mapUnion, opts, passwordSecure, toggleState } from "@/utils/helpers";
-import type { RequestFields } from "@/app/[uid]/requests/[...slug]/forms/create";
+import type { RequestFields } from "@/app/dashboard/requests/[...slug]/forms/create";
 import {
   EyeIcon,
   EyeSlashIcon,
@@ -64,15 +64,18 @@ const inputRadius = mapUnion<InputSize>().build({
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   ({ className, ...props }, ref) => {
     const [secure, setSecure] = useState(false);
+    // const [mask, setMask] = useState<string>("");
+    // const [chmap, setChmap] = useState<number[]>([]);
+    // const [userInput, setUserInput] = useState("");
 
     const toggleSecure = () => toggleState(setSecure);
 
     const inputType = useMemo(
-      () => passwordSecure(props.name!, secure),
+      () => passwordSecure(props.name ?? "password", secure),
       [secure, props.name],
     );
     const IconOptions = useCallback(() => {
-      const iconclass = "size-5 shrink-0 text-primary";
+      const iconclass = "size-5 shrink-0 text-[#1b1f22]/50";
       const options = opts(
         <EyeSlashIcon className={iconclass} />,
         <EyeIcon className={iconclass} />,
@@ -82,9 +85,11 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
     const StartContent = useCallback(
       (prop: { className?: ClassName }) => {
-        const StartIcon = (icon: { className?: ClassName }) =>
-          props.icon &&
-          ((<props.icon className={icon.className} />) as JSX.Element);
+        const StartIcon = (icon: { className?: ClassName }) => {
+          if (props.icon) {
+            return <props.icon className={icon.className} />;
+          }
+        };
         const isPassword = props.name === "password" && !secure;
         const options = opts(
           <LockOpenIcon className={prop.className} />,
@@ -105,33 +110,85 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         ),
       [props.sz, secure, props.name],
     );
-    //● ⏺⬤⬢
+    //● ●⏺⬤⬢●
 
-    // const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    //   if (e.currentTarget.id === "password") {
-    //     const raw = e.target.value;
-    //     const count = raw.length;
-    //     const value = !secure ? e.target.value : pval;
-    //     setPval(value);
-    //     const dots = "●".repeat(count);
-    //     setMask(dots);
-    //   }
+    // const chars =
+    //   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/";
+    // const createCharMap = () => {
+    //   return chars.split("").reduce(
+    //     (acc, char) => {
+    //       acc[char] = "●"; // Using a larger circle character
+    //       return acc;
+    //     },
+    //     {} as Record<string, string>,
+    //   );
+    // };
+    // const handlePasswordChange = useCallback(
+    //   (e: ChangeEvent<HTMLInputElement>) => {
+    //     let charlist: string[] = [];
+    //     if (e.currentTarget.id === "password") {
+    //       const r = e.target.value;
+    //       if (!secure) {
+    //         charlist = r.split("");
+    //         if (charlist.length > 0) {
+    //           const last = charlist[charlist.length - 1];
+    //           if (last) {
+    //             setChmap((prev) => [...prev, chars.indexOf(last)]);
+    //           }
+    //           setMask("●".repeat(chmap.length));
+    //         }
+    //       }
+    //     }
+    //   },
+    //   [secure, chmap.length],
+    // );
+
+    // const handlePrintMap = () => {
+    //   const char = chmap.map((e) => chars.charAt(e));
+    //   console.table([...chmap, ...char]);
+    //   console.log(mask);
     // };
 
+    // const handleUserInput = useCallback(
+    //   (e: ChangeEvent<HTMLInputElement>) => {
+    //     if (e.currentTarget.id === "password") {
+    //       const r = e.target.value;
+    //       if (!secure) {
+    //         setUserInput((prev) => prev + r);
+    //       }
+    //     }
+    //   },
+    //   [secure],
+    // );
+
+    // const charlist = chars.split("");
+    // const printCollection = useCallback(() => {
+    //   if (userInput) {
+    //     const data = userInput.split("").map((ch, idx) => ({
+    //       idx,
+    //       pos: charlist.indexOf(ch) + 1,
+    //       ch,
+    //     }));
+    //     console.table(data);
+    //   }
+    // }, [charlist, userInput]);
+
     return (
-      <div className="space-y-0">
-        <div className="relative">
+      <div className="w-full space-y-0">
+        <div className="relative w-full">
           <Input
-            ref={ref}
             id={props.name}
+            ref={ref}
             type={inputType}
             value={props.value}
             name={props.name}
-            security="●"
             onChange={props.onChange}
             placeholder={props.placeholder}
-            {...props}
-            className={cn("bg-primary-300 text-primary", className, classNames)}
+            className={cn(
+              className,
+              classNames,
+              "w-full rounded-none bg-[#fafafa]/80 text-[#1b1f22]",
+            )}
           />
           <div className="pointer-events-none absolute inset-y-0 start-1 flex items-center justify-center ps-3 peer-disabled:opacity-50">
             {props.start ? (
@@ -143,21 +200,12 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             aria-label={"end-icon"}
           >
             <div className="absolute inset-y-0 flex items-center justify-center pe-3 text-primary peer-disabled:opacity-50">
-              {props.loading ? (
-                <LoaderCircle
-                  className="animate-spin"
-                  size={16}
-                  strokeWidth={2}
-                  aria-hidden="true"
-                  role="presentation"
-                />
-              ) : props.name === "password" ? (
+              {props.name === "password" ? (
                 <Button
                   isIconOnly
                   variant="flat"
                   className={cn(
                     "rounded-full border-0 bg-transparent hover:bg-transparent",
-                    className,
                   )}
                   onClick={toggleSecure}
                 >
