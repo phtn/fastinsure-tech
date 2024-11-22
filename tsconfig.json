@@ -28,6 +28,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@vex/*": ["./convex/_generated/*"],
+      "@convex/*": ["./convex/*"],
       "@ctx/*": ["./src/app/ctx/*"],
       "@lib/*": ["src/lib/*"],
       "test-utils": ["./src/utils/test-utils"],

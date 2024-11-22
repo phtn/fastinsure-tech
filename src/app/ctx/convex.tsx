@@ -7,9 +7,11 @@ import {
   useMutation,
   useQuery,
 } from "convex/react";
-import type { InsertRequest, SelectRequest } from "convex/requests/d";
+import type { InsertRequest, SelectRequest } from "@convex/requests/d";
+import type { InsertSubject } from "@convex/subjects/d";
+import type { InsertAuto } from "@convex/autos/d";
 // import { generateUrl } from "convex/requests/storage";
-import { createContext, useContext, type PropsWithChildren } from "react";
+import { createContext, type PropsWithChildren, useContext } from "react";
 
 const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
 
@@ -28,6 +30,22 @@ interface VexCtxValues {
     // delete: {
     //   byId: (id: string) => Promise<null>;
     // };
+  };
+  subject: {
+    create: (
+      args: InsertSubject,
+    ) => Promise<(string & { __tableName: "subjects" }) | null>;
+    get: {
+      byId: (id: string) => Promise<InsertSubject | null>;
+    };
+  };
+  auto: {
+    create: (
+      args: InsertAuto,
+    ) => Promise<(string & { __tableName: "autos" }) | null>;
+    get: {
+      byId: (id: string) => Promise<InsertAuto | null>;
+    };
   };
 }
 
@@ -48,7 +66,31 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
     },
   };
 
-  return <VexCtx.Provider value={{ request }}>{children}</VexCtx.Provider>;
+  const createSubject = useMutation(api.subjects.create.default);
+  const getSubjectById = useMutation(api.subjects.get.byId);
+
+  const subject = {
+    create: (args: InsertSubject) => createSubject(args),
+    get: {
+      byId: (id: string) => getSubjectById({ subject_id: id }),
+    },
+  };
+
+  const createAuto = useMutation(api.autos.create.default);
+  const getAutoById = useMutation(api.autos.get.byId);
+
+  const auto = {
+    create: (args: InsertAuto) => createAuto(args),
+    get: {
+      byId: (id: string) => getAutoById({ vehicle_id: id }),
+    },
+  };
+
+  return (
+    <VexCtx.Provider value={{ request, subject, auto }}>
+      {children}
+    </VexCtx.Provider>
+  );
 };
 
 const VexCtx = createContext<VexCtxValues | null>(null);

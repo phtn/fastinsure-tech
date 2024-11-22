@@ -30,7 +30,7 @@ export const AuthForm = () => (
 
 const Presentation = () => (
   <HStack.Col lg>
-    <div className="h-full w-full border bg-background">
+    <div className="h-full w-full bg-background">
       <HStack.Title>
         <div className="text-center">Remote Monitoring</div>
       </HStack.Title>

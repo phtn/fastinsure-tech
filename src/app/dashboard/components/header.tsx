@@ -14,7 +14,6 @@ interface HeaderProps {
 export const Header = ({ title, sm, xs }: HeaderProps) => {
   const pathname = usePathname();
   const crumbs = pathname.split("/");
-  console.table(crumbs);
   return (
     <div
       className={cn(

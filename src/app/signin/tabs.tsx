@@ -32,14 +32,14 @@ const AuthSupport = () => (
   <div className="flex w-full items-center justify-center space-x-4 pb-6 text-xs tracking-tight opacity-70">
     <Link
       size="sm"
-      className="cursor-pointer font-normal text-background decoration-background/40 underline-offset-4 hover:underline"
+      className="cursor-pointer font-normal decoration-background/40 underline-offset-4 hover:underline"
     >
       <p>Sign up</p>
     </Link>
     <p className="text-center font-light">|</p>
     <Link
       size="sm"
-      className="cursor-pointer font-normal text-background decoration-background/40 underline-offset-4 hover:underline"
+      className="cursor-pointer font-normal decoration-background/40 underline-offset-4 hover:underline"
     >
       <p>Account Recovery</p>
     </Link>

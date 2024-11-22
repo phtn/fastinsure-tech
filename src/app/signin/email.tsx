@@ -25,14 +25,14 @@ export const EmailSigninForm = () => {
   return (
     <form
       onSubmit={handleSubmit(creds)}
-      className="mx-12 flex h-fit flex-col items-end space-y-6 py-8"
+      className="mx-12 flex h-fit flex-col items-end space-y-6 py-8 text-primary"
     >
       <div className="flex h-14 w-2/3 items-end justify-start px-3 text-xl font-semibold tracking-tight">
         <header>Sign in with email</header>
       </div>
       <div
         className={cn(
-          "shadow-primary-primary-200 flex h-full w-2/3 flex-col overflow-hidden rounded-lg shadow-sm",
+          "flex h-full w-2/3 flex-col overflow-hidden rounded-md border-[0.33px] border-primary-300 shadow-sm shadow-primary-200",
           "transition-all duration-500 ease-out transform-gpu hover:shadow-md",
         )}
       >
@@ -45,11 +45,11 @@ export const EmailSigninForm = () => {
             type={field.type}
             className={cn(
               {
-                "w-full rounded-b-none rounded-t-lg border border-b-0 border-[#1B1F22]/30":
+                "w-full rounded-b-none rounded-t-lg border-b-0 border-primary":
                   field.name === "email",
               },
               {
-                "border-x-double rounded-b-lg rounded-t-none border border-[#1B1F22]/30":
+                "border-x-double rounded-b-lg rounded-t-none border-t-[0.33px] border-primary-300":
                   field.name === "password",
               },
               "bg-[#fafafa]",
@@ -62,9 +62,10 @@ export const EmailSigninForm = () => {
         <Button
           radius="sm"
           type="submit"
-          variant="flat"
+          variant="solid"
+          color="primary"
           isLoading={loading}
-          className="bg-void text-chalk h-[rem] w-full items-center space-x-4 font-inst text-sm font-semibold sm:h-12"
+          className="h-[rem] w-full items-center space-x-4 font-inst text-sm font-semibold sm:h-12"
           fullWidth
         >
           <div>Sign in</div>

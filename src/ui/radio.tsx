@@ -16,7 +16,7 @@ import type {
   PolicyType,
   ServiceType,
 } from "convex/requests/d";
-import type { RadioFields } from "@/app/dashboard/requests/create/[...slug]/forms/create";
+import type { RadioFields } from "@/app/dashboard/request/create/forms/fields";
 
 export const RadioGroup = forwardRef<
   ComponentRef<typeof RadioGroupPrimitive.Root>,
@@ -37,7 +37,7 @@ export const RadioGroupItem = forwardRef<
   <RadioGroupPrimitive.Item
     ref={ref}
     className={cn(
-      "border_ aspect-square h-4 w-4 rounded-full border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50",
+      "aspect-square size-4 rounded-full border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50",
       className,
     )}
     {...props}

@@ -5,18 +5,30 @@ import {
   useMemo,
   useState,
   useCallback,
+  type ChangeEvent,
 } from "react";
 import { AsteriskIcon } from "lucide-react";
 import type { ClassName, DualIcon } from "@/app/types";
-import { mapUnion, opts, passwordSecure, toggleState } from "@/utils/helpers";
+import {
+  copyFn,
+  mapUnion,
+  opts,
+  passwordSecure,
+  toggleState,
+} from "@/utils/helpers";
 import {
   EyeIcon,
   EyeSlashIcon,
   LockOpenIcon,
-  PhotoIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "@nextui-org/react";
-import { type RequestFields } from "@/app/dashboard/requests/create/[...slug]/forms/create";
+import { PhotoIcon, Square2StackIcon } from "@heroicons/react/24/solid";
+
+import { type InsertFields } from "@/app/dashboard/request/create/forms/fields";
+import type { InsertAddress } from "convex/addresses/d";
+import type { InsertSubject } from "convex/subjects/d";
+import type { InsertAuto } from "@convex/autos/d";
+import type { FieldValues, UseFormRegister } from "react-hook-form";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: DualIcon;
@@ -27,7 +39,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     <input
       type={type}
       className={cn(
-        "flex w-full bg-background/5 px-3 py-2 text-sm ring-offset-primary-400 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:border-dashed disabled:bg-slate-300/20 disabled:opacity-50 disabled:drop-shadow-md",
+        "flex w-full bg-background/5 px-3 py-2 text-sm ring-offset-primary-400 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-xs placeholder:text-slate-400/90 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:border-dashed disabled:bg-slate-300/20 disabled:opacity-50 disabled:drop-shadow-md",
         className,
       )}
       ref={ref}
@@ -187,7 +199,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             className={cn(
               className,
               classNames,
-              "w-full rounded-none bg-[#fafafa]/80 text-[#1b1f22]",
+              "w-full rounded-none bg-background",
             )}
           />
           <div className="pointer-events-none absolute inset-y-0 start-1 flex items-center justify-center ps-3 peer-disabled:opacity-50">
@@ -293,10 +305,14 @@ export const FastLight = forwardRef<HTMLInputElement, InputProps>(
   ),
 );
 FastLight.displayName = "FastLight";
-
+type GroupFields =
+  | InsertFields<InsertSubject>[]
+  | InsertFields<InsertAddress>[]
+  | InsertFields<InsertAuto>[];
 interface FieldGroupProps {
   group: string;
-  items: RequestFields[];
+  items: GroupFields;
+  register: UseFormRegister<FieldValues>;
 }
 export const FastFieldGroup = forwardRef<
   HTMLInputElement,
@@ -324,7 +340,7 @@ export const FastFieldGroup = forwardRef<
               <div className="flex items-center px-2">
                 <span
                   className={cn(
-                    "mt-[1.5px] font-inter text-xs capitalize tracking-tighter dark:text-primary-800",
+                    "mt-[1.5px] font-inter text-xs capitalize tracking-tighter text-foreground/80 dark:text-primary-800",
                     { "opacity-60": item.disabled },
                   )}
                 >
@@ -346,12 +362,13 @@ export const FastFieldGroup = forwardRef<
             </div>
           </section>
           <Input
-            ref={ref}
             {...item}
             id={item.name}
+            {...props.register(item.name)}
+            ref={ref}
             className={cn(
-              "font-arc tracking-wide text-foreground placeholder:text-xs",
               "h-[48px] bg-background",
+              "font-arc font-medium tracking-wide text-foreground placeholder:text-xs",
               "ring-offset-primary-300 focus-visible:ring-offset-0",
               className,
             )}
@@ -364,6 +381,131 @@ export const FastFieldGroup = forwardRef<
 ));
 FastFieldGroup.displayName = "FastFieldGroup";
 
+interface FieldGroupIIProps {
+  group: string;
+  changeFn?: (e: ChangeEvent<HTMLInputElement>) => void;
+  changeField?: keyof InsertAddress;
+  register: UseFormRegister<FieldValues>;
+  listOne: GroupFields;
+  listTwo: GroupFields;
+}
+export const FastFieldGroupII = forwardRef<
+  HTMLInputElement,
+  InputProps & FieldGroupIIProps
+>(({ className, type, ...props }, ref) => (
+  <div
+    className={cn(
+      "w-full overflow-hidden rounded-md border border-primary-200 bg-slate-300/15 shadow-sm shadow-primary-200 transition-all duration-300 ease-out transform-gpu hover:shadow-md dark:border-primary-300",
+      {
+        hidden: props.hidden,
+      },
+    )}
+  >
+    <div className="full flex h-10 items-center border-b-[0.33px] border-dotted border-primary-300 px-2 font-inter text-sm font-semibold tracking-tighter text-primary-800">
+      {props.group}
+    </div>
+    <div className="flex w-full border-b-[0.33px] border-dotted border-primary-300">
+      {props.listOne.map((item) => (
+        <div
+          key={item.name}
+          className="flex h-[48px] w-full border-r-[0.33px] border-dashed border-primary-400/60 last:border-r-0"
+        >
+          <section className="relative flex h-12 items-center">
+            <div className="flex h-full w-fit items-center bg-background">
+              <div className="flex items-center px-2">
+                <span
+                  className={cn(
+                    "mt-[1.5px] font-inter text-xs capitalize tracking-tighter text-foreground/80 dark:text-primary-800",
+                    { "opacity-60": item.disabled },
+                  )}
+                >
+                  {item.title}
+                </span>
+                {item.required ? (
+                  <AsteriskIcon
+                    className={cn(
+                      "-mr-2 -mt-1 ml-0.5 size-4 text-danger-400 dark:text-danger-600",
+                      {
+                        "opacity-50": item.disabled,
+                      },
+                    )}
+                  />
+                ) : (
+                  "  "
+                )}
+              </div>
+            </div>
+          </section>
+          <Input
+            {...item}
+            id={item.name}
+            {...props.register(item.name)}
+            ref={ref}
+            className={cn(
+              "h-[48px] bg-background",
+              "font-arc font-medium tracking-wide text-foreground placeholder:font-normal",
+              "ring-offset-primary-300 focus-visible:ring-offset-0",
+              className,
+            )}
+            type={type}
+          />
+        </div>
+      ))}
+    </div>
+    <div className="flex w-full">
+      {props.listTwo.map((item) => (
+        <div
+          key={item.name}
+          className="flex h-[48px] w-full border-r-[0.33px] border-dashed border-primary-400/60 last:border-r-0"
+        >
+          <section className="relative flex h-12 items-center">
+            <div className="flex h-full w-fit items-center bg-background">
+              <div className="flex items-center px-2">
+                <span
+                  className={cn(
+                    "mt-[1.5px] font-inter text-xs capitalize tracking-tighter text-foreground/80 dark:text-primary-800",
+                    { "opacity-60": item.disabled },
+                  )}
+                >
+                  {item.title}
+                </span>
+                {item.required ? (
+                  <AsteriskIcon
+                    className={cn(
+                      "-mr-2 -mt-1 ml-0.5 size-4 text-danger-400 dark:text-danger-600",
+                      {
+                        "opacity-50": item.disabled,
+                      },
+                    )}
+                  />
+                ) : (
+                  "  "
+                )}
+              </div>
+            </div>
+          </section>
+          <Input
+            {...item}
+            id={item.name}
+            {...props.register(item.name)}
+            onChange={
+              item.name === props.changeField ? props.changeFn : props.onChange
+            }
+            className={cn(
+              "h-[48px] bg-background",
+              "font-arc font-medium tracking-wide text-foreground placeholder:font-normal",
+              "ring-offset-primary-300 focus-visible:ring-offset-0",
+              className,
+            )}
+            type={type}
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+));
+FastFieldGroupII.displayName = "FastFieldGroupII";
+
 export const FastFile = forwardRef<HTMLInputElement, InputProps>(
   ({ className, ...props }, ref) => {
     return (
@@ -374,7 +516,7 @@ export const FastFile = forwardRef<HTMLInputElement, InputProps>(
         )}
       >
         <PhotoIcon className="size-8 stroke-1 text-primary-500" />
-        <p className="font-arc text-xs opacity-80">
+        <p className="font-inst text-xs font-medium opacity-80">
           {props.placeholder ?? "Drag & drop image or click here."}
         </p>
 
@@ -395,23 +537,46 @@ export const InputFieldName = forwardRef<
   HTMLInputElement,
   InputProps & { label: string | undefined; index: number }
 >(({ className, type, label, index, ...props }, ref) => {
+  const handleCopyValue = useCallback(async () => {
+    await copyFn({
+      name: props.defaultValue as string,
+      text: props.defaultValue as string,
+    });
+  }, [props.defaultValue]);
   return (
     <div
       className={cn(
-        "focus-within:ring-ring border-ash flex h-16 items-center rounded-xl border-[0.0px] bg-white pr-[3px] ring-offset-blue-400 focus-within:ring-1 focus-within:ring-offset-1 dark:bg-indigo-200/20",
+        "focus-within:ring-ring group flex h-fit flex-col border-b-[0.33px] border-primary-300 bg-transparent pr-[3px] pt-2 ring-offset-primary-300 focus-within:ring-0 focus-within:ring-offset-1",
         className,
       )}
     >
-      <p className="text-clay/60 mx-4 text-xs">{index + 1}</p>
-      <span className="text-clay w-64 text-xs font-medium uppercase leading-none">
-        {label}
-      </span>
+      <section className="flex h-10 w-full items-center justify-between">
+        <div className="flex items-center space-x-4 px-3">
+          <p className="text-xs text-primary-500">{index + 1}</p>
+          <span className="font-inter text-xs capitalize leading-none tracking-tighter opacity-60">
+            {label}
+          </span>
+        </div>
+        <div>
+          <Button
+            size="sm"
+            variant="ghost"
+            color="primary"
+            radius="sm"
+            onPress={handleCopyValue}
+            className="hidden border-0 group-hover:flex"
+          >
+            copy
+            <Square2StackIcon className="size-4" />
+          </Button>
+        </div>
+      </section>
 
       <input
         {...props}
         type={type}
         ref={ref}
-        className="shadow-i-br-lg/80 border-ash bg-paper m-1 w-full rounded-lg border-0 p-3 font-mono text-[15px] uppercase tracking-widest text-zinc-600 placeholder:text-slate-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full bg-transparent p-3 ps-8 font-jet uppercase tracking-widest text-foreground/80 placeholder:text-slate-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
       />
     </div>
   );

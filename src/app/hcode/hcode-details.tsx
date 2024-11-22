@@ -1,9 +1,9 @@
 "use client";
-import { useHCode } from "@/lib/hooks/useHCode";
 import { CheckCircleIcon, StopCircleIcon } from "@heroicons/react/24/solid";
 import { Listbox, ListboxItem } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, type PropsWithChildren } from "react";
+import { useHCode } from "./useHCode";
 
 interface HCodeStatus {
   id: string;
@@ -13,8 +13,8 @@ interface HCodeStatus {
 }
 
 interface HCodeDetailsProps {
-  code?: string | undefined;
-  grp?: string | undefined;
+  key_code?: string | undefined;
+  group?: string | undefined;
   nonce?: string | undefined;
   sha?: string | undefined;
   expiry: string | undefined;
@@ -22,8 +22,8 @@ interface HCodeDetailsProps {
 }
 
 export const HCodeDetails = ({
-  code,
-  grp,
+  key_code,
+  group,
   nonce,
   sha,
   expiry,
@@ -44,14 +44,14 @@ export const HCodeDetails = ({
       {
         id: "key",
         label: "Key",
-        value: code,
-        status: !!code,
+        value: key_code,
+        status: !!key_code,
       },
       {
-        id: "grp",
-        label: "Grp",
-        value: grp,
-        status: !!grp,
+        id: "group",
+        label: "Group",
+        value: group,
+        status: !!group,
       },
       {
         id: "nonce",
@@ -80,7 +80,7 @@ export const HCodeDetails = ({
         status: !!verified,
       },
     ],
-    [code, expiry, grp, nonce, sha, valid_url, verified],
+    [key_code, expiry, group, nonce, sha, valid_url, verified],
   );
 
   const getStatuses = useMemo(
@@ -112,9 +112,7 @@ export const HCodeDetails = ({
   );
 };
 const ListboxWrapper = ({ children }: PropsWithChildren) => (
-  <div className="w-full rounded-b-small border-[0.33px] border-primary-300 px-1 py-2">
-    {children}
-  </div>
+  <div className="w-full px-4 py-2">{children}</div>
 );
 
 const ListBoxContent = (props: {

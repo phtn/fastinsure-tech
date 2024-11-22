@@ -52,7 +52,7 @@ const ServerIcon = (props: IconProps) => {
 const DATA = {
   navbar: [
     { href: "/", icon: SlashIcon, label: "Home" },
-    { href: "#", icon: UserIcon, label: "Profile" },
+    { href: "/dashboard/account", icon: UserIcon, label: "Profile" },
   ],
   quicklinks: {
     alerts: {

@@ -130,7 +130,6 @@ const UserNavs = () => {
   const { claims } = useAuthCtx();
   const { getUserNavs } = useNav();
   const navs: NavItem[] | undefined = getUserNavs(claims);
-  console.log(claims);
 
   const SidebarNavs = useCallback(() => {
     if (!navs) return;

@@ -2,7 +2,8 @@ import { defineSchema, defineTable } from "convex/server";
 import { user_schema } from "./users/d";
 import { request_schema } from "./requests/d";
 import { auto_schema } from "./autos/d";
-import { address_schema } from "./contact/d";
+import { address_schema } from "./addresses/d";
+import { subject_schema } from "./subjects/d";
 
 export default defineSchema({
   users: defineTable(user_schema)
@@ -34,8 +35,7 @@ export default defineSchema({
       "request_id",
       "policy_id",
       "agent_name",
-      "assured_id",
-      "assured_fullname",
+      "subject_id",
       "status",
       "amount",
     ])
@@ -43,27 +43,40 @@ export default defineSchema({
       "policy_id",
       "agent_id",
       "agent_name",
-      "assured_id",
-      "assured_fullname",
+      "subject_id",
       "status",
       "amount",
     ])
     .index("by_underwriter_id", [
       "policy_id",
       "agent_name",
-      "assured_id",
-      "assured_fullname",
+      "subject_id",
       "underwriter_id",
       "status",
       "amount",
+    ])
+    .index("by_assured_name", [
+      "assured_name",
+      "subject_id",
+      "policy_id",
+      "policy_type",
+      "policy_coverage",
+      "vehicle_id",
     ]),
 
-  autos: defineTable(auto_schema).index("by_policy_id", [
-    "policy_id",
+  autos: defineTable(auto_schema).index("by_vehicle_id", [
+    "vehicle_id",
     "make",
     "model",
     "year",
-    "body",
+    "body_type",
     "type",
+  ]),
+
+  subjects: defineTable(subject_schema).index("by_subject_id", [
+    "subject_id",
+    "firstname",
+    "lastname",
+    "middlename",
   ]),
 });

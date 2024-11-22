@@ -2,11 +2,11 @@
 import { onError, onSuccess } from "@/app/ctx/toasts";
 import { type RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { useCallback, useState } from "react";
-import { verifyAgentCode } from "../secure/callers";
-import type { HCodeResponse, HCodeParams } from "../secure/resource";
 import { Err, rawUriDecoder } from "@/utils/helpers";
 import type { HCodeContentProps } from "@/app/hcode/content";
 import { setHCode } from "@/app/actions";
+import type { HCodeParams, HCodeResponse } from "@/lib/secure/resource";
+import { verifyAgentCode } from "@/lib/secure/callers";
 
 export const useHCode = () => {
   const [loading, setLoading] = useState(true);
@@ -39,9 +39,9 @@ export const useHCode = () => {
       if (result.data.verified) {
         onSuccess("Verified Agent Code");
         // console.log(result.data);
-        console.log(`${params.key_code}--${result.data.group_code}`);
+        console.log(`${params.code}--${result.data.group_code}`);
         return setHCodeCookie(
-          `${params.key_code}--${result.data.group_code}`,
+          `${params.code}--${result.data.group_code}`,
         ).catch(Err(setLoading, "Unable to save cookie"));
       }
       onError("Verification Failed");

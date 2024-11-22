@@ -1,10 +1,10 @@
 import { mutation } from "@vex/server";
-import { insert_request_schema } from "./d";
+import { subject_schema } from "./d";
 
 const create = mutation({
-  args: insert_request_schema,
+  args: subject_schema,
   handler: async ({ db }, data) =>
-    await db.insert("requests", {
+    await db.insert("subjects", {
       ...data,
       updated_at: Date.now(),
     }),

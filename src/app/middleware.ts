@@ -13,9 +13,20 @@ export function middleware(req: NextRequest) {
     }
   }
 
+  if (req.nextUrl.pathname === "/signin") {
+    if (uid) {
+      return NextResponse.redirect("/dashboard");
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/profile/:path*", "/settings/:path*"], // Match specific paths
+  matcher: [
+    "/dashboard/:path*",
+    "/profile/:path*",
+    "/settings/:path*",
+    "/signin",
+  ], // Match specific paths
 };

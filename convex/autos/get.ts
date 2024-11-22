@@ -8,10 +8,10 @@ export const all = query({
 });
 
 export const byId = mutation({
-  args: { policy_id: v.string() },
-  handler: async ({ db }, { policy_id }) =>
+  args: { vehicle_id: v.string() },
+  handler: async ({ db }, { vehicle_id }) =>
     await db
       .query("autos")
-      .withIndex("by_policy_id", (q) => q.eq("policy_id", policy_id))
+      .withIndex("by_vehicle_id", (q) => q.eq("vehicle_id", vehicle_id))
       .first(),
 });

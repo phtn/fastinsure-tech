@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Link, Tab, Tabs } from "@nextui-org/react";
+import { Button, Tab, Tabs } from "@nextui-org/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { CircleHelpIcon } from "lucide-react";
 import {
@@ -12,6 +12,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { guid } from "@/utils/helpers";
 
 export interface RequestTabItem {
   id: string | number;
@@ -26,6 +27,11 @@ export const RequestTabs = ({ children }: PropsWithChildren) => {
   const pathname = usePathname().split("/")[3];
   const [selected, setSelected] = useState<string>(pathname!);
   const router = useRouter();
+
+  const handleCreateNewRequest = useCallback(() => {
+    const request_id = guid();
+    router.push(`/dashboard/request/create?rid=${request_id}`);
+  }, [router]);
 
   const tabs: RequestTabItem[] = useMemo(
     () => [
@@ -89,12 +95,11 @@ export const RequestTabs = ({ children }: PropsWithChildren) => {
       </div>
       <div className="absolute -top-10 right-4 z-50 flex items-center space-x-4">
         <Button
-          as={Link}
           size="md"
           radius="sm"
           variant="solid"
           className="w-fit bg-primary-800 text-primary-50"
-          href={`/dashboard/requests/create/`}
+          onPress={handleCreateNewRequest}
         >
           <PlusIcon className="size-4" />
           <p className="font-inter text-xs font-medium tracking-tight text-primary-100">

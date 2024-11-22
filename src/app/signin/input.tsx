@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { InputField, type InputFieldProps } from "@/ui/input";
-import { cn } from "@nextui-org/react";
+import { cn } from "@/lib/utils";
 
 export const LoginField = forwardRef<HTMLInputElement, InputFieldProps>(
   ({ className, type, ...props }, ref) => {
@@ -10,7 +10,6 @@ export const LoginField = forwardRef<HTMLInputElement, InputFieldProps>(
         ref={ref}
         type={type}
         name={props.name}
-        {...props}
         className={cn(className, "w-full")}
       />
     );

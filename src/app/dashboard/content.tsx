@@ -10,6 +10,7 @@ import { NeoOverview } from "./overview/n-overview";
 
 export const DashboardContent = () => {
   const { claims, loading, user, registered } = useAuthCtx();
+  console.log(registered, claims);
 
   const OverviewOptions = useCallback(() => {
     const is_manager = claims?.some((el) => el === "manager" || el === "admin");

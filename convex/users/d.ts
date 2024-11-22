@@ -10,7 +10,7 @@ export const user_schema = v.object({
   total_completed: v.optional(v.number()),
   total_voided: v.optional(v.number()),
   email: v.optional(v.string()),
-  fast_score: v.number(),
+  fast_score: v.optional(v.number()),
   firstname: v.optional(v.string()),
   fullname: v.optional(v.string()),
   lastname: v.optional(v.string()),
