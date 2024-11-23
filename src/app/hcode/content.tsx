@@ -38,7 +38,6 @@ export const HCodeContent = () => {
 
   const handleVerify = useCallback(
     async (formData: FormData) => {
-      // idbwxr
       const response = (await verifyHCode(decoded, formData)) as HCodeResponse;
       setVerified(response?.verified);
       setExpiry(response?.expiry);

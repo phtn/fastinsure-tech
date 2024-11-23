@@ -50,6 +50,7 @@ export const AuthVerificationSchema = z.object({
   verified: z.boolean(),
   expiry: z.number().optional(),
   is_active: z.boolean(),
+  group_code: z.string().optional(),
 });
 export type AuthVerification = z.infer<typeof AuthVerificationSchema>;
 
@@ -133,3 +134,17 @@ export const UserRecordSchema = z.object({
 });
 
 export type UserRecord = z.infer<typeof UserRecordSchema>;
+
+export const ActivateUserSchema = z.object({
+  id_token: z.string(),
+  uid: z.string(),
+  email: z.string().or(z.undefined()),
+  hcode: z.string(),
+});
+export type ActivateUser = z.infer<typeof ActivateUserSchema>;
+
+export const ActivateUserResponseSchema = z.object({
+  group_code: z.string(),
+  valid: z.boolean(),
+});
+export type ActivateUserResponse = z.infer<typeof ActivateUserResponseSchema>;

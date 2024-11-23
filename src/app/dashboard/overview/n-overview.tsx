@@ -3,7 +3,6 @@
 import { HStack } from "@/ui/hstack";
 import { Widget } from "@/ui/widget";
 import { Splash } from "./comp/splash";
-import type { OverviewProps } from "./types";
 import { motion } from "framer-motion";
 import { HyperText } from "@/ui/hypertext";
 import { SpecialAction } from "./comp/actions";
@@ -14,16 +13,29 @@ import {
 } from "@heroicons/react/24/outline";
 import { BigActionCard } from "@/ui/action-card";
 import { FireIcon } from "@heroicons/react/24/solid";
-import { Button } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
+import { useAuthCtx } from "@/app/ctx/auth";
+import { useCallback } from "react";
+import { activateAccount } from "@/app/actions";
 
-export const NeoOverview = ({ user }: OverviewProps) => {
+export const NeoOverview = () => {
+  const { user } = useAuthCtx();
+  // const handleVerification = useCallback(async () => {
+  //   const vresult = await verifyCurrentUser(user);
+  //   console.log(vresult);
+  // }, [verifyCurrentUser, user]);
+
+  const handleActivation = useCallback(async (data: FormData) => {
+    await activateAccount(data);
+  }, []);
+
   return (
     <div className="overflow-auto pb-6">
       <Splash text={""}>
-        <div className="absolute top-0 z-[60] flex h-1/2 w-1/3 items-center border-primary px-12 font-inst text-2xl delay-1000">
+        <div className="absolute top-4 z-[60] flex h-1/2 w-1/3 items-center border-primary px-12 font-inst text-2xl delay-1000">
           {user ? `Hello, ${user?.displayName}!` : null}
         </div>
-        <div className="absolute bottom-6 z-[60] h-1/2 w-full px-12">
+        <div className="absolute bottom-0 z-[60] h-1/2 w-full px-12">
           <motion.section
             initial={{ height: "0%" }}
             animate={{ height: "66%" }}
@@ -55,31 +67,49 @@ export const NeoOverview = ({ user }: OverviewProps) => {
                 </motion.div>
               </div>
               <div className="flex w-[calc(50vw)] items-center justify-between space-x-4 px-4 pt-5">
-                <div className="flex h-10 w-80 items-center overflow-x-hidden rounded-md bg-void/5 px-4 font-inst text-[10px] font-thin tracking-wide backdrop-blur-xl">
-                  <p className="w-fit whitespace-nowrap"> _id: {user?.uid}</p>
-                </div>
-                <div className="flex h-12 w-fit items-center space-x-8 whitespace-nowrap pl-28">
-                  <p className="font-thin opacity-40">&middot;</p>
-                  <p className="font-jet text-xs font-light uppercase tracking-wider">
-                    Next step:
-                  </p>
-                  <Button variant="solid" color="primary" size="md" radius="sm">
-                    Activate your account
-                  </Button>
-                </div>
+                <form action={handleActivation}>
+                  <div className="flex h-12 w-fit items-center space-x-1.5 whitespace-nowrap">
+                    <Input
+                      size="sm"
+                      radius="sm"
+                      name="hcode"
+                      placeholder="code"
+                      className="h-[2.175rem] w-32 rounded-md border border-primary-500 bg-primary-50 font-bold tracking-[0.25rem] text-foreground/80"
+                      classNames={{
+                        input: "text-center uppercase",
+                      }}
+                    />
+                    <Button
+                      size="sm"
+                      radius="sm"
+                      variant="solid"
+                      color="primary"
+                      className="h-[2.175rem] w-32 px-2 font-inter font-medium"
+                      type="submit"
+                    >
+                      Activate now
+                    </Button>
+                    <Input
+                      size="sm"
+                      name="email"
+                      className="hidden"
+                      defaultValue={user?.email ?? ""}
+                    />
+                  </div>
+                </form>
               </div>
             </motion.div>
           </motion.section>
         </div>
       </Splash>
-      <div className="mx-2 h-4 backdrop-blur-xl" />
+      {/* <div className="mx-2 h-4 backdrop-blur-xl" /> */}
       <Widget>
         <Widget.BaseII>
           <HStack cols={3} className="gap-4 px-4">
             <HStack.XsCol>
-              <div className="h-full w-full space-y-4 text-foreground">
+              <div className="h-full w-full space-y-[0px] text-foreground">
                 <Widget.Title>
-                  <p className="decoration-slice px-4 font-bold tracking-wide underline decoration-secondary/80 decoration-4 underline-offset-[6px]">
+                  <p className="decoration-slice px-4 py-6 font-bold tracking-wide underline decoration-primary-400 decoration-2 underline-offset-[6px]">
                     Start here
                   </p>
                 </Widget.Title>

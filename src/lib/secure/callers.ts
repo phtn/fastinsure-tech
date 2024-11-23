@@ -6,6 +6,7 @@ import { asyncFn } from "@/server/api/utils";
 
 export const verifyIdToken = asyncFn(api.auth.verifyIdToken);
 export const getUser = asyncFn(api.auth.getUser);
+export const activateUser = asyncFn(api.auth.activateUser);
 // export const setAuthKeyCookie = asyncFn(setAuthKey);
 
 // SHARED

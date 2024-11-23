@@ -110,8 +110,8 @@ export const SpecialAction = ({
   );
 };
 
-export const CreateRequest = (props: {
-  createRequest: VoidFunction;
+export const CreateRequest = (create: {
+  request: VoidFunction;
   loading: boolean;
 }) => {
   return (
@@ -122,7 +122,7 @@ export const CreateRequest = (props: {
         <ActionCard.Subtext>New policy request</ActionCard.Subtext>
       </ActionCard.Header>
       <Action>
-        <Action.Btn onPress={props.createRequest} loading={props.loading}>
+        <Action.Btn onPress={create.request} loading={create.loading}>
           <Action.Label>Create</Action.Label>
         </Action.Btn>
       </Action>
@@ -144,6 +144,30 @@ export const Documentation = (props: {
       <Action>
         <Action.Btn onPress={props.fn} loading={props.loading}>
           <Action.Label>View Docs</Action.Label>
+        </Action.Btn>
+      </Action>
+    </ActionCard>
+  );
+};
+
+export const GenericAction = (props: {
+  fn: VoidFunction;
+  loading: boolean;
+  icon: DualIcon;
+  title: string;
+  subtext?: string;
+  label: string;
+}) => {
+  return (
+    <ActionCard>
+      <ActionCard.Icon icon={props.icon} />
+      <ActionCard.Header>
+        <ActionCard.Title>{props.title}</ActionCard.Title>
+        <ActionCard.Subtext>{props.subtext}</ActionCard.Subtext>
+      </ActionCard.Header>
+      <Action>
+        <Action.Btn onPress={props.fn} loading={props.loading}>
+          <Action.Label>{props.label}</Action.Label>
         </Action.Btn>
       </Action>
     </ActionCard>

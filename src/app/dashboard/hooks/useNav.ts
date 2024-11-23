@@ -1,11 +1,12 @@
-import { type UserRole } from "@/lib/secure/resource";
+import { useAuthCtx } from "@/app/ctx/auth";
 import { type NavItem } from "@/ui/sidebar";
 import {
+  ShieldCheckIcon,
   Squares2X2Icon,
   TableCellsIcon,
   UsersIcon,
 } from "@heroicons/react/24/solid";
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 // const f_navs: NavItem[] = [
 //   {
@@ -28,25 +29,7 @@ import { useCallback } from "react";
 //   },
 // ];
 
-const m_navs: NavItem[] = [
-  {
-    label: "Overview",
-    href: "/dashboard",
-    icon: { type: "icon", content: Squares2X2Icon },
-  },
-  {
-    label: "Requests",
-    href: "/dashboard/requests",
-    icon: { type: "icon", content: TableCellsIcon },
-  },
-  {
-    label: "Agents",
-    href: "#",
-    icon: { type: "icon", content: UsersIcon },
-  },
-];
-
-const a_navs: NavItem[] = [
+export const a_navs: NavItem[] = [
   {
     label: "Overview",
     href: "/dashboard",
@@ -75,60 +58,89 @@ const u_navs: NavItem[] = [
     href: "/dashboard/requests",
     icon: { type: "icon", content: TableCellsIcon },
   },
-  {
-    label: "Agents",
-    href: "#",
-    icon: { type: "icon", content: UsersIcon },
-  },
-];
-
-const n_navs: NavItem[] = [
-  {
-    label: "Activation",
-    href: "/dashboard",
-    icon: { type: "icon", content: Squares2X2Icon },
-  },
-];
-
-const s_navs: NavItem[] = [
-  {
-    label: "Overview",
-    href: "/dashboard",
-    icon: { type: "icon", content: Squares2X2Icon },
-  },
-  {
-    label: "Requests",
-    href: "/dashboard/requests",
-    icon: { type: "icon", content: TableCellsIcon },
-  },
-  {
-    label: "Agents",
-    href: "#",
-    icon: { type: "icon", content: UsersIcon },
-  },
 ];
 
 export const useNav = () => {
-  const getUserNavs = useCallback((claims: UserRole[] | null) => {
-    if (!claims || claims.length < 1) {
-      return n_navs;
-    }
+  const [navs, setNavs] = useState<NavItem[] | undefined>();
 
+  const n_navs: NavItem[] = useMemo(
+    () => [
+      {
+        label: "Activation",
+        href: "/dashboard",
+        icon: { type: "icon", content: ShieldCheckIcon },
+      },
+    ],
+    [],
+  );
+
+  const s_navs: NavItem[] = useMemo(
+    () => [
+      {
+        label: "Overview",
+        href: "/dashboard",
+        icon: { type: "icon", content: Squares2X2Icon },
+      },
+      {
+        label: "Requests",
+        href: "/dashboard/requests",
+        icon: { type: "icon", content: TableCellsIcon },
+      },
+      {
+        label: "Team",
+        href: "/dashboard/team",
+        icon: { type: "icon", content: UsersIcon },
+      },
+    ],
+    [],
+  );
+
+  const m_navs: NavItem[] = useMemo(
+    () => [
+      {
+        label: "Overview",
+        href: "/dashboard",
+        icon: { type: "icon", content: Squares2X2Icon },
+      },
+      {
+        label: "Requests",
+        href: "/dashboard/requests",
+        icon: { type: "icon", content: TableCellsIcon },
+      },
+      {
+        label: "Team",
+        href: "/dashboard/team",
+        icon: { type: "icon", content: UsersIcon },
+      },
+    ],
+    [],
+  );
+
+  const { claims } = useAuthCtx();
+  const getUserNavs = useCallback(() => {
+    console.log(claims);
+    if (!claims || claims.length < 1) {
+      return setNavs(n_navs);
+    }
     claims.forEach((claim) => {
       switch (claim) {
         case "admin":
-          return s_navs;
+          return setNavs(s_navs);
         case "manager":
-          return m_navs;
+          return setNavs(m_navs);
         case "agent":
-          return a_navs;
+          return setNavs(n_navs);
         case "underwriter":
-          return u_navs;
+          return setNavs(u_navs);
         default:
-          return n_navs;
+          return setNavs(n_navs);
       }
     });
-  }, []);
+  }, [claims, m_navs, s_navs, n_navs]);
 
-  return { getUserNavs };
+  useEffect(() => {
+    getUserNavs();
+  }, [getUserNavs]);
+
+  return { navs };
 };

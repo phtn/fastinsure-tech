@@ -12,6 +12,8 @@ import type {
   HCodeResponse,
   UserRecord,
   GetUser,
+  ActivateUser,
+  ActivateUserResponse,
 } from "./resource";
 import { createEndpoint } from "../utils";
 import { getRefresh } from "@/app/actions";
@@ -124,6 +126,20 @@ export const getClaims = async (params: VerifyIdToken) => {
     body: JSON.stringify(params),
   });
   return response.json() as Promise<{ data: UserRecord }>;
+};
+
+export const activateUser = async (params: ActivateUser) => {
+  const refresh = await getRefresh();
+  if (!refresh) return;
+  const response = await fetch(authUrl + "/activate-user", {
+    ...config.post,
+    headers: {
+      ...config.post.headers,
+      "X-Refresh-Token": refresh,
+    },
+    body: JSON.stringify(params),
+  });
+  return response.json() as Promise<{ data: ActivateUserResponse }>;
 };
 
 // DEBUG MODES

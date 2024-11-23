@@ -12,7 +12,7 @@ export const AgentOverview = () => {
       <Widget>
         <Widget.Diffused>
           <Widget.Header>
-            <Widget.Title>Overview</Widget.Title>
+            <Widget.Title>Agent verview</Widget.Title>
             <Widget.Subtext className="text-foreground">
               See how everything is going
             </Widget.Subtext>

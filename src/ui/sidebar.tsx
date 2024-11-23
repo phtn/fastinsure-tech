@@ -2,9 +2,13 @@
 import { cn } from "@/lib/utils";
 import Link, { type LinkProps } from "next/link";
 import { useState, createContext, useContext, useCallback } from "react";
-import type { ComponentProps, PropsWithChildren } from "react";
+import type { ComponentProps, PropsWithChildren, ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { AcademicCapIcon, UserIcon } from "@heroicons/react/24/outline";
+import {
+  AcademicCapIcon,
+  UserIcon,
+  UsersIcon,
+} from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import { type DualIcon } from "@/app/types";
 import { Button, Image } from "@nextui-org/react";
@@ -52,7 +56,10 @@ export const SidebarProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
-export const Sidebar = ({ children }: PropsWithChildren) => {
+interface SidebarProps {
+  children: ReactNode;
+}
+export const Sidebar = ({ children }: SidebarProps) => {
   return <SidebarProvider>{children}</SidebarProvider>;
 };
 
@@ -115,7 +122,7 @@ export const DesktopSidebar = ({
         {...props}
       >
         <>
-          <div>
+          <div className="space-y-4">
             <LogoComponent />
             <UserNavs />
           </div>
@@ -127,10 +134,7 @@ export const DesktopSidebar = ({
 };
 
 const UserNavs = () => {
-  const { claims } = useAuthCtx();
-  const { getUserNavs } = useNav();
-  const navs: NavItem[] | undefined = getUserNavs(claims);
-
+  const { navs } = useNav();
   const SidebarNavs = useCallback(() => {
     if (!navs) return;
     return (
@@ -148,24 +152,43 @@ const UserNavs = () => {
 const UserSection = (props: { open: boolean }) => {
   const { user, signOut } = useAuthCtx();
   return (
-    <section className="flex items-center space-x-4 whitespace-nowrap">
-      <SidebarNav
-        className="text-xs tracking-wide text-chalk"
+    <section className="relative left-0 -ml-4 flex size-16 items-center whitespace-nowrap">
+      <Link
         href="/dashboard/account"
-        label={user?.email ?? "Profile"}
-        icon={{
-          type: user?.photoURL ? "image" : "icon",
-          content: user?.photoURL ?? UserIcon,
-        }}
-      />
+        className="absolute flex size-16 items-center justify-center"
+      >
+        {user?.photoURL ? (
+          <Image
+            alt="admin-logo"
+            src={user?.photoURL}
+            className="z-[100] animate-enter"
+            width={28}
+            height={28}
+          />
+        ) : (
+          <UsersIcon className="size-4" />
+        )}
+      </Link>
 
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className={cn(
+          "ml-16 flex flex-shrink whitespace-nowrap px-2 font-jet text-xs tracking-widest text-primary-300",
+        )}
+      >
+        {user?.displayName ?? user?.email}
+      </motion.span>
       <Button
         size="sm"
         variant="faded"
         onPress={signOut}
-        className={cn("hidden w-16 border-0 font-inst text-chalk/80", {
-          flex: props.open,
-        })}
+        className={cn(
+          "hidden w-14 border-0 font-inst font-light tracking-tighter text-chalk/80",
+          {
+            flex: props.open,
+          },
+        )}
       >
         Sign out
       </Button>

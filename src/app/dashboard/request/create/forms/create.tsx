@@ -205,6 +205,11 @@ function RequestComponent() {
               <CardGroup title="Hidden Info">
                 <div className="space-y-8">
                   <Input
+                    label="group_code"
+                    name="group_code"
+                    defaultValue={""}
+                  />
+                  <Input
                     label="request_id"
                     name="request_id"
                     defaultValue={request_id ?? undefined}
@@ -234,7 +239,12 @@ function RequestComponent() {
           >
             <ViewOptions />
             <div className="flex items-center justify-between px-2">
-              <ScanDetail format={format} size={size} elapsed={elapsed} />
+              <ScanDetail
+                format={format}
+                size={size}
+                elapsed={elapsed}
+                ents={result?.length}
+              />
               <ScanButton
                 loading={loading}
                 imageData={imageData}

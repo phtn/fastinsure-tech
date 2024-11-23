@@ -152,15 +152,19 @@ interface ScanDetailProps {
   elapsed: number;
   format: string | undefined;
   size: number | undefined;
+  ents: number | undefined;
 }
-export const ScanDetail = ({ elapsed, format, size }: ScanDetailProps) => (
+export const ScanDetail = ({
+  elapsed,
+  ents,
+  format,
+  size,
+}: ScanDetailProps) => (
   <div className="border-[0.33px]a grid h-12 w-full grid-cols-4 border-primary/20 px-2 text-xs font-light">
-    <DetailItem
-      value={size ? `${size?.toFixed(2)}mb` : null}
-      label={"file size"}
-    />
-    <DetailItem value={format} label={"file format"} />
-    <DetailItem value={elapsed ? `${elapsed}s` : null} label={"scan time"} />
+    <DetailItem value={size ? `${size?.toFixed(2)}mb` : null} label={"size"} />
+    <DetailItem value={format} label={"format"} />
+    <DetailItem value={elapsed ? `${elapsed}s` : null} label={"elapsed"} />
+    <DetailItem value={ents ? `${ents}` : null} label={"items"} />
   </div>
 );
 

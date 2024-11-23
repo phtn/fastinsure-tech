@@ -1,5 +1,6 @@
 import {
   AccountTokenSchema,
+  ActivateUserSchema,
   GetUserSchema,
   TokenVerificationSchema,
   VerifyIdTokenSchema,
@@ -14,6 +15,7 @@ import {
   getClaims,
   createAccountToken,
   getUser,
+  activateUser,
 } from "@/lib/secure/handlers";
 import { asyncR } from "../utils";
 
@@ -29,6 +31,7 @@ export const authRouter = router({
   createAccountToken: proc
     .input(AccountTokenSchema)
     .mutation(asyncR(createAccountToken)),
+  activateUser: proc.input(ActivateUserSchema).mutation(asyncR(activateUser)),
   // Test Re-up Server Connection
   getServerStatus: proc.query(asyncR(getServerHealth)),
 

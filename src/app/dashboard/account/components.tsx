@@ -33,7 +33,7 @@ export const AccountSummary = (props: AccountDetailProps) => {
 export const TabComponent = () => (
   <Tabs size="md" color="primary" variant="underlined">
     <Tab key={"activity"} title="Activity">
-      <div className="size-96 bg-void" />
+      <div className="h-96 w-full bg-void" />
     </Tab>
     <Tab key={"messages"} title="Messages">
       <div className="size-10 bg-primary" />

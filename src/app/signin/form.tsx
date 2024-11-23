@@ -16,9 +16,7 @@ export const EmailForm = () => {
   });
 
   const creds = useCallback(
-    async (data: EmailAndPassword) => {
-      await signUserWithEmail(data);
-    },
+    async (data: EmailAndPassword) => signUserWithEmail(data),
     [signUserWithEmail],
   );
 

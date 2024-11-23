@@ -1,7 +1,8 @@
 "use server";
 
-import { getUser, verifyAgentCode } from "@/lib/secure/callers";
+import { activateUser, getUser, verifyAgentCode } from "@/lib/secure/callers";
 import {
+  ActivateUserSchema,
   type HCodeParams,
   HCodeParamsSchema,
   type UserRecord,
@@ -185,7 +186,17 @@ export const deleteAuthClient = async () => {
   cookieStore.delete("fastinsure--ocr-proc");
 };
 
-// export const getAuthClient = async () => {
-//   const cookieStore = await cookies();
-//   return cookieStore.get("fastinsure--ocr-proc")?.value;
-// };
+export const activateAccount = async (data: FormData) => {
+  const id_token = await getSession();
+  const uid = await getUID();
+
+  const validatedParams = ActivateUserSchema.safeParse({
+    hcode: data.get("hcode"),
+    email: data.get("email"),
+  });
+
+  if (validatedParams.success) {
+    if (!id_token || !uid) return;
+    return await activateUser({ ...validatedParams.data, id_token, uid });
+  }
+};

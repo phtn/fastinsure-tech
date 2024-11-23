@@ -237,19 +237,19 @@ export const FastField = forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => (
     <div
       className={cn(
-        "flex h-[50px] w-full items-center border-b-[0.33px] border-primary-400 bg-primary-100 pl-3 ps-2 shadow-default/30 drop-shadow-sm focus-within:border focus-within:border-warning focus-within:ring-offset-0 active:border-warning",
+        "_bg-primary-100 _border-b-[0.33px] flex h-[50px] w-full items-center border-primary-300 pl-3 ps-2 focus-within:border-[0.33px] focus-within:border-warning focus-within:ring-offset-0 active:border-warning",
         className,
       )}
     >
       {props.icon ? (
-        <props.icon className="size-5 shrink-0 stroke-1 text-foreground/60" />
+        <props.icon className="ml-2 size-5 shrink-0 stroke-1 text-foreground/60" />
       ) : null}
 
       <input
         {...props}
         type={type}
         ref={ref}
-        className="placeholder:text-clay/50 h-[42px] w-full rounded-md bg-transparent px-2 font-sans text-[16px] font-normal tracking-normal focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+        className="placeholder:text-clay/50 h-[42px] w-full rounded-md bg-transparent px-2 ps-4 font-sans text-[16px] font-normal tracking-normal focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
       />
     </div>
   ),
@@ -392,7 +392,7 @@ interface FieldGroupIIProps {
 export const FastFieldGroupII = forwardRef<
   HTMLInputElement,
   InputProps & FieldGroupIIProps
->(({ className, type, ...props }, ref) => (
+>(({ className, type, ...props }, _ref) => (
   <div
     className={cn(
       "w-full overflow-hidden rounded-md border border-primary-200 bg-slate-300/15 shadow-sm shadow-primary-200 transition-all duration-300 ease-out transform-gpu hover:shadow-md dark:border-primary-300",
@@ -440,7 +440,7 @@ export const FastFieldGroupII = forwardRef<
             {...item}
             id={item.name}
             {...props.register(item.name)}
-            ref={ref}
+            // ref={ref}
             className={cn(
               "h-[48px] bg-background",
               "font-arc font-medium tracking-wide text-foreground placeholder:font-normal",
@@ -488,6 +488,7 @@ export const FastFieldGroupII = forwardRef<
             {...item}
             id={item.name}
             {...props.register(item.name)}
+            // ref={ref}
             onChange={
               item.name === props.changeField ? props.changeFn : props.onChange
             }

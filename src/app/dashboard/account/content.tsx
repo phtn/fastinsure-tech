@@ -6,7 +6,7 @@ import { useAuthCtx } from "@/app/ctx/auth";
 import { cn } from "@/lib/utils";
 
 export const AccountContent = () => {
-  const { user } = useAuthCtx();
+  const { user, signOut } = useAuthCtx();
 
   return (
     <main className="h-screen overflow-y-scroll bg-background pb-56">
@@ -28,11 +28,23 @@ export const AccountContent = () => {
             <Button
               size="md"
               radius="sm"
-              variant="flat"
+              variant="solid"
               color="primary"
               className="px-4 font-medium"
             >
               Edit Profile
+            </Button>
+            <Button
+              size="md"
+              radius="sm"
+              variant="flat"
+              color="default"
+              className="group w-fit"
+              onPress={signOut}
+            >
+              <p className="font-inter text-xs font-medium tracking-tighter">
+                Sign out
+              </p>
             </Button>
           </div>
         </div>
@@ -56,7 +68,7 @@ export const AccountContent = () => {
         group_code={"group"}
       />
       <div className="w-full pb-24">
-        <div className="_border-t-[0.33px] h-96 w-full border-void/20">
+        <div className="h-96 w-full border-void/20">
           <TabComponent />
         </div>
       </div>

@@ -15,7 +15,7 @@ const Component = ({ children }: PropsWithChildren) => (
     className={cn(
       "h-fit w-full cursor-pointer overflow-clip",
       "hover:border-foreground hover:shadow-lg",
-      "rounded-md border-[0.33px] border-foreground",
+      "rounded-md border-[0.33px] border-primary-300",
       "transition-all duration-300 ease-out",
       "bg-gradient-to-tr from-stone-300/20 via-zinc-300/40 to-slate-300/20",
       "dark:border-primary-500/50 dark:from-primary-100",
@@ -176,14 +176,14 @@ const ComponentII = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
       "h-96 w-full cursor-pointer overflow-clip",
-      "_border-[0.33px] rounded-xl border-foreground",
+      "_border-[0.33px] rounded-b-xl border-foreground",
       "transition-all duration-300 ease-out",
       "bg-gradient-to-b from-stone-50/10 via-zinc-300/50 to-slate-100/10",
-      "dark:border-primary-500/50 dark:from-primary-100",
+      "dark:border-primary-500/50 dark:from-zinc-500/10 dark:via-zinc-400/40 dark:to-slate-300/10",
       "ml-4",
     )}
   >
-    <div className="flex h-full items-center space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-6">
+    <div className="flex h-full items-center space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-8">
       {children}
     </div>
   </div>

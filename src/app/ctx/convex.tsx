@@ -11,7 +11,14 @@ import type { InsertRequest, SelectRequest } from "@convex/requests/d";
 import type { InsertSubject } from "@convex/subjects/d";
 import type { InsertAuto } from "@convex/autos/d";
 // import { generateUrl } from "convex/requests/storage";
-import { createContext, type PropsWithChildren, useContext } from "react";
+import {
+  createContext,
+  type PropsWithChildren,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
+import type { InsertUser, SelectUser, UpdateUser } from "@convex/users/d";
 
 const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
 
@@ -47,6 +54,19 @@ interface VexCtxValues {
       byId: (id: string) => Promise<InsertAuto | null>;
     };
   };
+  usr: {
+    create: (
+      args: InsertUser,
+    ) => Promise<(string & { __tableName: "users" }) | null>;
+    get: {
+      byId: (id: string) => Promise<InsertUser | null>;
+    };
+    update: (
+      args: UpdateUser,
+    ) => Promise<(string & { __tableName: "users" }) | null>;
+  };
+  vxuser: SelectUser | null;
+  getVxuser: (uid: string | undefined) => Promise<void>;
 }
 
 const VexCtxProvider = ({ children }: PropsWithChildren) => {
@@ -86,8 +106,33 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
     },
   };
 
+  const createUser = useMutation(api.users.create.default);
+  const getUserById = useMutation(api.users.get.byId);
+  const updateUser = useMutation(api.users.update.update);
+
+  const usr = {
+    create: (args: InsertUser) => createUser(args),
+    get: {
+      byId: (id: string) => getUserById({ uid: id }),
+    },
+    update: (args: UpdateUser) => updateUser(args),
+  };
+
+  const [vxuser, setVxuser] = useState<SelectUser | null>(null);
+
+  const getVxuser = useCallback(
+    async (uid: string | undefined) => {
+      if (!uid) return;
+      const vx = await usr.get.byId(uid);
+      // console.log(vx);
+      setVxuser(vx);
+      return;
+    },
+    [usr.get],
+  );
+
   return (
-    <VexCtx.Provider value={{ request, subject, auto }}>
+    <VexCtx.Provider value={{ request, subject, auto, usr, vxuser, getVxuser }}>
       {children}
     </VexCtx.Provider>
   );

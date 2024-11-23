@@ -7,29 +7,25 @@ import { ManagerOverview } from "./overview/m-overview";
 import { Loader } from "@/ui/loader";
 import { useAuthCtx } from "@/app/ctx/auth";
 import { NeoOverview } from "./overview/n-overview";
+// import { useNav } from "./hooks/useNav";
 
-export const DashboardContent = () => {
-  const { claims, loading, user, registered } = useAuthCtx();
-  console.log(registered, claims);
+export const Dashboard = () => {
+  const { claims, loading, registered } = useAuthCtx();
 
   const OverviewOptions = useCallback(() => {
     const is_manager = claims?.some((el) => el === "manager" || el === "admin");
-    const options = opts(<ManagerOverview user={user} />, <AgentOverview />);
+    const options = opts(<ManagerOverview />, <AgentOverview />);
     return <>{options.get(!!is_manager)}</>;
-  }, [claims, user]);
+  }, [claims]);
 
   const RegisteredOptions = useCallback(() => {
     const is_registered = !loading && registered;
-    const options = opts(<OverviewOptions />, <NeoOverview user={user} />);
+    const options = opts(<OverviewOptions />, <NeoOverview />);
     return <>{options.get(is_registered)}</>;
-  }, [OverviewOptions, loading, registered, user]);
+  }, [OverviewOptions, loading, registered]);
 
   if (loading) {
     return <Loader />;
-  }
-
-  if (!loading && !registered) {
-    return <NeoOverview user={user} />;
   }
 
   return (
@@ -38,3 +34,5 @@ export const DashboardContent = () => {
     </main>
   );
 };
+
+// export const Dashboard = memo(DashboardContent);

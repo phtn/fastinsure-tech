@@ -1,7 +1,7 @@
 "use client";
 
 import { auth } from "@/lib/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   GoogleAuthProvider,
   type OAuthCredential,
@@ -23,6 +23,7 @@ import {
   useState,
   type PropsWithChildren,
   useEffect,
+  type FC,
 } from "react";
 import { Err, Ok } from "@/utils/helpers";
 import { verifyIdToken } from "@/lib/secure/callers";
@@ -38,8 +39,10 @@ import {
 } from "@/app/actions";
 
 import { type EmailAndPassword } from "../signin/schema";
-import { type UserRole } from "@/lib/secure/resource";
-import { onError } from "./toasts";
+import type { AuthVerification, UserRole } from "@/lib/secure/resource";
+import { onError, onSuccess } from "./toasts";
+import { Loader } from "@/ui/loader";
+import { useVex } from "./convex";
 
 interface AuthCtxValues {
   loading: boolean;
@@ -52,6 +55,7 @@ interface AuthCtxValues {
   userRecord: IdTokenResult | null;
   oauth: OAuthCredential | null;
   claims: UserRole[] | null;
+  verifyCurrentUser: (u: User | null) => Promise<AuthVerification | undefined>;
 }
 
 interface VerificationPayload {
@@ -73,6 +77,60 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [registered, setRegistered] = useState<boolean>(false);
   const router = useRouter();
 
+  const verifyCurrentUser = useCallback(async (u: User | null) => {
+    if (!u) return;
+    const id_token = await u.getIdToken();
+    const payload: VerificationPayload = {
+      id_token,
+      uid: u.uid,
+      email: u.email,
+    };
+
+    const vresult = await verifyIdToken(payload);
+    return vresult?.data;
+    // const existingUser = await usr.get.byId(u.uid);
+    // if (!existingUser) {
+    //   await usr.create({
+    //     uid: u.uid,
+    //     email: u.email ?? "",
+    //     nickname: u.displayName ?? "",
+    //     is_active: true,
+    //     is_verified: false,
+    //     photo_url: u.photoURL ?? "",
+    //     phone_number: u.phoneNumber ?? "",
+    //   });
+    // }
+    // if (
+    //   existingUser?.group_code &&
+    //   vresult?.group_code &&
+    //   existingUser.group_code !== vresult.group_code
+    // ) {
+    //   await usr.update({ uid: u.uid, group_code: vresult.group_code });
+    // }
+  }, []);
+
+  const cleanUpCookies = useCallback(async () => {
+    await deleteSession();
+    await deleteRefresh();
+    await deleteUID();
+    await deleteAuthClient();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      setLoading(true);
+      if (u) {
+        setLoading(false);
+        setUser(u);
+      } else {
+        setLoading(false);
+        cleanUpCookies().catch(Err);
+        router.push("/");
+      }
+    });
+    return () => unsubscribe();
+  }, [router, cleanUpCookies]);
+
   const signUserWithEmail = useCallback(
     async ({ email, password }: EmailAndPassword) => {
       setLoading(true);
@@ -84,7 +142,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       const u = userCredential?.user;
       if (u) {
         setUser(u);
-        router.push("/dashboard");
+        onSuccess("Authentication successful!");
         await initVerification(
           u,
           setClaims,
@@ -97,7 +155,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         setLoading(false);
       }
     },
-    [router],
+    [],
   );
 
   const signWithGoogle = useCallback(async () => {
@@ -106,7 +164,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const userCredential = await signInWithPopup(auth, provider);
     const u = userCredential.user;
     if (u) {
-      router.push("/dashboard");
       setUser(u);
       await initVerification(
         u,
@@ -120,45 +177,15 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       GoogleAuthProvider.credentialFromResult(userCredential);
     setOAuth(oauthCredential);
     setGoogleSigning(false);
-  }, [router]);
+  }, []);
 
   const signOut = useCallback(async () => {
     await logout(auth)
       .then(Ok(setLoading, "Signed out."))
       .catch(Err(setLoading, "Error signing out."));
-    await deleteSession();
-    await deleteRefresh();
-    await deleteUID();
-    await deleteAuthClient();
-  }, []);
-
-  useEffect(() => {
-    setLoading(true);
-    const authState = onAuthStateChanged(
-      auth,
-      (u) => {
-        if (u) {
-          setUser(u);
-          initVerification(
-            u,
-            setClaims,
-            setUserRecord,
-            setRegistered,
-            setLoading,
-          ).catch(Err(setLoading));
-        } else {
-          setUser(null);
-          router.push("/");
-        }
-        setLoading(false);
-      },
-      Err(setLoading),
-    );
-
-    return () => {
-      authState();
-    };
-  }, [user, router]);
+    await cleanUpCookies();
+    router.push("/");
+  }, [router, cleanUpCookies]);
 
   const stableValues = useMemo(
     () => ({
@@ -171,6 +198,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       googleSigning,
       signWithGoogle,
       signUserWithEmail,
+      verifyCurrentUser,
       loading,
     }),
     [
@@ -183,6 +211,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       googleSigning,
       signWithGoogle,
       signUserWithEmail,
+      verifyCurrentUser,
       loading,
     ],
   );
@@ -219,9 +248,11 @@ const initVerification = async (
 
   const result = await verifyIdToken(payload);
   if (result?.data) {
+    console.table(result.data);
     if (result.data.key !== "neo") {
       setRegistered(true);
     }
+    return result.data;
   }
   setLoading(false);
 };
@@ -239,4 +270,55 @@ export const useAuthCtx = () => {
   const context = useContext(AuthCtx);
   if (!context) throw new Error("User context is null");
   return context;
+};
+
+export const withAuth = (Component: FC) => {
+  const SecuredComponent = () => {
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const { usr } = useVex();
+    const checkUser = useCallback(
+      async (u: User | null) => {
+        if (!u) return;
+        const exists = await usr.get.byId(u.uid);
+        if (!exists) {
+          await usr.create({
+            uid: u.uid,
+            email: u.email ?? "",
+            nickname: u.displayName ?? "",
+            is_active: true,
+            is_verified: false,
+            photo_url: u.photoURL ?? "",
+            phone_number: u.phoneNumber ?? "",
+          });
+        }
+      },
+      [usr],
+    );
+    useEffect(() => {
+      setLoading(true);
+      const authState = onAuthStateChanged(auth, (u) => {
+        if (u) {
+          router.push("/dashboard");
+          setLoading(false);
+          checkUser(u).catch(Err);
+        } else if (pathname === "/signin") {
+          router.push("/signin");
+          setLoading(false);
+        } else {
+          router.push("/");
+          setLoading(false);
+        }
+      });
+      return () => authState();
+    }, [router, pathname, checkUser]);
+
+    if (loading) return <Loader />;
+
+    return <Component />;
+  };
+
+  return SecuredComponent;
 };
