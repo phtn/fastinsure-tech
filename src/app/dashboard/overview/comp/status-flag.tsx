@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface FlagProps {
   metric: boolean;
-  label: string[];
+  label: (string | undefined)[];
 }
 export const Flag = ({ metric, label }: FlagProps) => {
   return (

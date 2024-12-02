@@ -1,62 +1,40 @@
-import {
-  type EmailAndPassword,
-  EmailAndPasswordSchema,
-  loginFields,
-} from "./schema";
+import { type EmailAndPassword, loginFields } from "./schema";
 import { GoogleSignin } from "./google";
-import { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "@nextui-org/react";
+import { Button, Link } from "@nextui-org/react";
 import { useAuthCtx } from "../ctx/auth";
 import { cn } from "@/lib/utils";
-import { Support } from "./tabs";
 import { FastField } from "@/ui/input";
-import { onWarn } from "../ctx/toasts";
-// import { useRouter } from "next/navigation";
-// import { Err } from "@/utils/helpers";
 
 export const EmailSigninForm = () => {
   const { signUserWithEmail, loading } = useAuthCtx();
-  // const router = useRouter();
-
+  const defaultValues = { email: "", password: "" };
   const { register } = useForm<EmailAndPassword>({
-    defaultValues: { email: "", password: "" },
+    defaultValues,
   });
 
-  // const creds = useCallback(
-  //   async (data: EmailAndPassword) => {
-  //     await signUserWithEmail(data)
-  //       .then(() => {
-  //         router.push("/dashboard");
-  //       })
-  //       .catch(Err);
+  // const signInAction = useCallback(
+  //   async (state: UserCredential | null, data: FormData) => {
+  //     const validatedLoginData = EmailAndPasswordSchema.safeParse({
+  //       email: data.get("email"),
+  //       password: data.get("password"),
+  //     });
+  //     if (validatedLoginData.success) {
+  //       await signUserWithEmail(data);
+  //     }
+  //     if (validatedLoginData.error) {
+  //       onWarn("Invalid credentials.");
+  //     }
   //   },
-  //   [signUserWithEmail, router],
+  //   [signUserWithEmail],
   // );
-
-  const signInAction = useCallback(
-    async (data: FormData) => {
-      const validatedLoginData = EmailAndPasswordSchema.safeParse({
-        email: data.get("email"),
-        password: data.get("password"),
-      });
-      if (validatedLoginData.success) {
-        await signUserWithEmail({ ...validatedLoginData.data });
-      }
-      if (validatedLoginData.error) {
-        onWarn("Invalid credentials.");
-      }
-    },
-    [signUserWithEmail],
-  );
 
   return (
     <form
-      action={signInAction}
-      // onSubmit={handleSubmit(creds)}
+      action={signUserWithEmail}
       className="flex h-full w-full flex-col items-end text-primary"
     >
-      <div className="h-full w-[calc(33vw)] space-y-6 border-x-[0.33px] border-primary-300 px-10 py-8">
+      <div className="h-full w-[calc(25vw)] space-y-6 border-x-[0.33px] border-primary px-10 py-8 dark:bg-zinc-900">
         <div className="flex h-14 w-full items-end justify-start px-2 font-inter text-2xl font-semibold tracking-tighter">
           <header>Sign in</header>
         </div>
@@ -112,3 +90,21 @@ export const EmailSigninForm = () => {
     </form>
   );
 };
+
+const Support = () => (
+  <div className="flex w-full items-center justify-center space-x-4 pb-6 text-xs tracking-tight opacity-70">
+    <Link
+      size="sm"
+      className="cursor-pointer font-normal decoration-background/40 underline-offset-4 hover:underline"
+    >
+      <p>Sign up</p>
+    </Link>
+    <p className="text-center font-light">|</p>
+    <Link
+      size="sm"
+      className="cursor-pointer font-normal decoration-background/40 underline-offset-4 hover:underline"
+    >
+      <p>Account Recovery</p>
+    </Link>
+  </div>
+);

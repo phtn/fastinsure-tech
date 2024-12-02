@@ -14,8 +14,8 @@ import type { InsertAuto } from "@convex/autos/d";
 import {
   createContext,
   type PropsWithChildren,
-  useCallback,
   useContext,
+  useMemo,
   useState,
 } from "react";
 import type { InsertUser, SelectUser, UpdateUser } from "@convex/users/d";
@@ -59,80 +59,83 @@ interface VexCtxValues {
       args: InsertUser,
     ) => Promise<(string & { __tableName: "users" }) | null>;
     get: {
-      byId: (id: string) => Promise<InsertUser | null>;
+      byId: (id: string) => Promise<SelectUser | null>;
     };
-    update: (
-      args: UpdateUser,
-    ) => Promise<(string & { __tableName: "users" }) | null>;
+    update: (args: UpdateUser) => Promise<void>;
   };
-  vxuser: SelectUser | null;
-  getVxuser: (uid: string | undefined) => Promise<void>;
+  updating: boolean;
 }
 
 const VexCtxProvider = ({ children }: PropsWithChildren) => {
+  const [updating] = useState<boolean>(false);
+
   const createRequest = useMutation(api.requests.create.default);
   const getAllRequests = useQuery(api.requests.get.all);
   const getRequestById = useMutation(api.requests.get.byId);
   const generateUrl = useMutation(api.requests.storage.generateUrl);
 
-  const request = {
-    create: (args: InsertRequest) => createRequest(args),
-    get: {
-      all: () => getAllRequests,
-      byId: (id: string) => getRequestById({ request_id: id }),
-    },
-    storage: {
-      generateUrl,
-    },
-  };
+  const request = useMemo(
+    () => ({
+      create: (args: InsertRequest) => createRequest(args),
+      get: {
+        all: () => getAllRequests,
+        byId: (id: string) => getRequestById({ request_id: id }),
+      },
+      storage: {
+        generateUrl,
+      },
+    }),
+    [createRequest, getAllRequests, getRequestById, generateUrl],
+  );
 
   const createSubject = useMutation(api.subjects.create.default);
   const getSubjectById = useMutation(api.subjects.get.byId);
 
-  const subject = {
-    create: (args: InsertSubject) => createSubject(args),
-    get: {
-      byId: (id: string) => getSubjectById({ subject_id: id }),
-    },
-  };
+  const subject = useMemo(
+    () => ({
+      create: (args: InsertSubject) => createSubject(args),
+      get: {
+        byId: (id: string) => getSubjectById({ subject_id: id }),
+      },
+    }),
+    [createSubject, getSubjectById],
+  );
 
   const createAuto = useMutation(api.autos.create.default);
   const getAutoById = useMutation(api.autos.get.byId);
 
-  const auto = {
-    create: (args: InsertAuto) => createAuto(args),
-    get: {
-      byId: (id: string) => getAutoById({ vehicle_id: id }),
-    },
-  };
+  const auto = useMemo(
+    () => ({
+      create: (args: InsertAuto) => createAuto(args),
+      get: {
+        byId: (id: string) => getAutoById({ vehicle_id: id }),
+      },
+    }),
+    [createAuto, getAutoById],
+  );
 
   const createUser = useMutation(api.users.create.default);
   const getUserById = useMutation(api.users.get.byId);
   const updateUser = useMutation(api.users.update.update);
 
-  const usr = {
-    create: (args: InsertUser) => createUser(args),
-    get: {
-      byId: (id: string) => getUserById({ uid: id }),
-    },
-    update: (args: UpdateUser) => updateUser(args),
-  };
-
-  const [vxuser, setVxuser] = useState<SelectUser | null>(null);
-
-  const getVxuser = useCallback(
-    async (uid: string | undefined) => {
-      if (!uid) return;
-      const vx = await usr.get.byId(uid);
-      // console.log(vx);
-      setVxuser(vx);
-      return;
-    },
-    [usr.get],
+  const usr = useMemo(
+    () => ({
+      create: async (args: InsertUser) => await createUser(args),
+      get: {
+        byId: async (id: string) => await getUserById({ uid: id }),
+      },
+      update: async (args: UpdateUser) => {
+        const exists = await getUserById({ uid: args.uid });
+        if (exists) {
+          await updateUser(args);
+        }
+      },
+    }),
+    [createUser, getUserById, updateUser],
   );
 
   return (
-    <VexCtx.Provider value={{ request, subject, auto, usr, vxuser, getVxuser }}>
+    <VexCtx.Provider value={{ request, subject, auto, usr, updating }}>
       {children}
     </VexCtx.Provider>
   );

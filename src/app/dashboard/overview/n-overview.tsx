@@ -5,7 +5,7 @@ import { Widget } from "@/ui/widget";
 import { Splash } from "./comp/splash";
 import { motion } from "framer-motion";
 import { HyperText } from "@/ui/hypertext";
-import { SpecialAction } from "./comp/actions";
+import { GenericAction } from "./comp/actions";
 import {
   BookOpenIcon,
   ShieldCheckIcon,
@@ -15,25 +15,72 @@ import { BigActionCard } from "@/ui/action-card";
 import { FireIcon } from "@heroicons/react/24/solid";
 import { Button, Input } from "@nextui-org/react";
 import { useAuthCtx } from "@/app/ctx/auth";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { activateAccount } from "@/app/actions";
+import { useVex } from "@/app/ctx/convex";
+import { verifyUser } from "@/lib/secure/callers/auth";
+import { onWarn } from "@/app/ctx/toasts";
+import Json from "@/ui/json";
 
 export const NeoOverview = () => {
-  const { user } = useAuthCtx();
-  // const handleVerification = useCallback(async () => {
-  //   const vresult = await verifyCurrentUser(user);
-  //   console.log(vresult);
-  // }, [verifyCurrentUser, user]);
+  const { user, claims } = useAuthCtx();
+  const { usr } = useVex();
+  const [json, setJson] = useState<object | null>({});
 
-  const handleActivation = useCallback(async (data: FormData) => {
-    await activateAccount(data);
-  }, []);
+  const handleVerification = useCallback(async () => {
+    await verifyUser({ uid: user?.uid });
+  }, [user?.uid]);
+
+  const getUsr = useCallback(() => {
+    setJson({ payload: "test" });
+    if (!user?.uid) {
+      setJson({ uid: user?.uid });
+      return;
+    }
+    const vx = usr.get.byId(user.uid);
+    setJson(vx);
+  }, [user?.uid, usr.get]);
+
+  const getCustomClaims = useCallback(async () => {
+    if (!user) {
+      onWarn("User is null");
+      return;
+    }
+    const claims = (await user?.getIdTokenResult()).claims;
+    setJson(claims);
+  }, [user]);
+
+  const getStoredClaims = useCallback(() => {
+    setJson(claims);
+  }, [claims]);
+
+  // OKPMFX
+
+  const handleActivation = useCallback(
+    async (data: FormData) => {
+      const result = await activateAccount(data);
+      if (result) {
+        if (!user?.uid) {
+          console.log("no creds", user?.uid);
+          return;
+        }
+        await usr.update({ uid: user?.uid, group_code: result.group_code });
+        await verifyUser({ uid: user.uid });
+      }
+      console.log(result);
+    },
+    [user?.uid, usr],
+  );
+
+  // const getServerHealth = useCallback(async () => {
+  //   await ServerHealthCheck();
+  // }, []);
 
   return (
     <div className="overflow-auto pb-6">
       <Splash text={""}>
         <div className="absolute top-4 z-[60] flex h-1/2 w-1/3 items-center border-primary px-12 font-inst text-2xl delay-1000">
-          {user ? `Hello, ${user?.displayName}!` : null}
+          {user ? `Hello, ${user?.displayName ?? user?.email}!` : null}
         </div>
         <div className="absolute bottom-0 z-[60] h-1/2 w-full px-12">
           <motion.section
@@ -80,8 +127,6 @@ export const NeoOverview = () => {
                       }}
                     />
                     <Button
-                      size="sm"
-                      radius="sm"
                       variant="solid"
                       color="primary"
                       className="h-[2.175rem] w-32 px-2 font-inter font-medium"
@@ -109,32 +154,32 @@ export const NeoOverview = () => {
             <HStack.XsCol>
               <div className="h-full w-full space-y-[0px] text-foreground">
                 <Widget.Title>
-                  <p className="decoration-slice px-4 py-6 font-bold tracking-wide underline decoration-primary-400 decoration-2 underline-offset-[6px]">
+                  <p className="decoration-slice p-4 font-bold tracking-wide underline decoration-primary-400 decoration-2 underline-offset-[6px]">
                     Start here
                   </p>
                 </Widget.Title>
-                <SpecialAction
+                <GenericAction
                   loading={false}
-                  label="Read"
-                  href="#"
-                  subtext="Basic use and features."
-                  title="Introduction"
+                  label="Run test"
+                  fn={handleVerification}
+                  subtext="User verification testing"
+                  title="Verification Test"
                   icon={WindowIcon}
                 />
-                <SpecialAction
+                <GenericAction
                   loading={false}
-                  label="Read"
-                  href="#"
-                  subtext="Need help?"
-                  title="Documentation"
+                  label="Get Info"
+                  fn={getUsr}
+                  subtext="Fetch Convex."
+                  title="Get User Info"
                   icon={BookOpenIcon}
                 />
-                <SpecialAction
+                <GenericAction
                   loading={false}
-                  label="Read"
-                  href="#"
-                  subtext="Learn how we use your data."
-                  title="Privacy Policy"
+                  label="Fetch"
+                  fn={getCustomClaims}
+                  subtext="Claims determines users access privileges."
+                  title="Fetch Custom Claims"
                   icon={ShieldCheckIcon}
                 />
               </div>
@@ -150,10 +195,21 @@ export const NeoOverview = () => {
                     </BigActionCard.Subtext>
                   </BigActionCard.Header>
                   <div className="flex h-72 w-96 items-start justify-start pr-4 pt-4 font-inst text-xs">
-                    <div className="size-full rounded-lg bg-chalk drop-shadow dark:bg-chalk/60"></div>
+                    <div className="size-full rounded-lg bg-chalk p-4 drop-shadow dark:bg-chalk/60">
+                      <Button
+                        variant="flat"
+                        color="primary"
+                        size="md"
+                        onPress={getStoredClaims}
+                      >
+                        Get Stored Claims
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                <div className="h-full w-full rounded-lg bg-void"></div>
+                <div className="h-full w-full flex-grow-0 overflow-scroll rounded-lg bg-void">
+                  <Json src={{ ...json }} theme="ashes" />
+                </div>
               </BigActionCard>
             </HStack.SmCol>
           </HStack>

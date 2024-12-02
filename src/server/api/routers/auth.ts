@@ -2,7 +2,9 @@ import {
   AccountTokenSchema,
   ActivateUserSchema,
   GetUserSchema,
+  OnSigninVerificationSchema,
   TokenVerificationSchema,
+  UserVerificationSchema,
   VerifyIdTokenSchema,
 } from "@/lib/secure/resource";
 import { proc, router } from "../trpc";
@@ -18,8 +20,15 @@ import {
   activateUser,
 } from "@/lib/secure/handlers";
 import { asyncR } from "../utils";
+import { auth } from "./index";
 
 export const authRouter = router({
+  verifyUser: proc
+    .input(UserVerificationSchema)
+    .mutation(asyncR(auth.verifyUser)),
+  verifyOnSignin: proc
+    .input(OnSigninVerificationSchema)
+    .mutation(asyncR(auth.verifyOnSignin)),
   verifyIdToken: proc
     .input(VerifyIdTokenSchema)
     .mutation(asyncR(verifyIdToken)),

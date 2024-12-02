@@ -1,5 +1,5 @@
-const enc = new TextEncoder();
-const dec = new TextDecoder();
+export const enc = new TextEncoder();
+export const dec = new TextDecoder();
 
 async function getKeyFromPassword(password: string) {
   const keyMaterial = await crypto.subtle.importKey(
@@ -87,3 +87,10 @@ export async function decrypt(encryptedData: string, password: string) {
 //     console.error("Encryption error:", error);
 //   }
 // }
+
+export const btoa = (string: string) => {
+  if (typeof window === "undefined") {
+    return Buffer.from(string).toString("base64");
+  }
+  return window.btoa(string);
+};

@@ -1,21 +1,22 @@
 import { errHandler } from "@/utils/helpers";
 import { useCallback, useState } from "react";
-import type { ServerStatus } from "../secure/handlers";
-import { getServerStatus } from "../secure/callers";
+import { getLivez } from "../secure/callers/server";
+import { type LivezResponse } from "../secure/resource";
 
 export const useServer = () => {
   const [loading, setLoading] = useState(false);
-  const [liveness, setLiveness] = useState<ServerStatus | null>(null);
+  const [livez, setLivez] = useState<LivezResponse | null>(null);
+
+  console.log(livez?.Status);
 
   const checkServerStatus = useCallback(
-    async () =>
-      await getServerStatus().then(setLiveness).catch(errHandler(setLoading)),
+    async () => await getLivez().then(setLivez).catch(errHandler(setLoading)),
     [],
   );
 
   return {
     checkServerStatus,
     loading,
-    liveness,
+    livez,
   };
 };

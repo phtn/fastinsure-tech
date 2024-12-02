@@ -20,9 +20,11 @@ const config = {
         fixStyle: "inline-type-imports",
       },
     ],
+    "no-unused-varls": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
+        args: "all",
         argsIgnorePattern: "^_",
         varsIgnorePattern: "^_",
       },

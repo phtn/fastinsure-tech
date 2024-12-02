@@ -6,7 +6,7 @@ import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface HyperTextProps {
-  text: string;
+  text: string | undefined;
   duration?: number;
   framerProps?: Variants;
   className?: string;
@@ -30,7 +30,7 @@ export function HyperText({
   className,
   animateOnLoad = true,
 }: HyperTextProps) {
-  const initialState = text.split("");
+  const initialState = text && text.length > 0 ? text.split("") : [];
   const [displayText, setDisplayText] = useState<(string | undefined)[]>(
     initialState ?? [],
   );
@@ -51,7 +51,7 @@ export function HyperText({
           isFirstRender.current = false;
           return;
         }
-        if (iterations.current < text.length) {
+        if (text && iterations.current < text.length) {
           const iterate = (t: string[]) =>
             t?.map((l, i) =>
               l === " "
@@ -68,7 +68,7 @@ export function HyperText({
           clearInterval(interval);
         }
       },
-      duration / (text.length * 10),
+      text ? duration / (text.length * 10) : 0,
     );
     // Clean up interval on unmount
     return () => clearInterval(interval);

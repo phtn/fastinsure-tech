@@ -2,56 +2,35 @@
 
 import { HStack } from "@/ui/hstack";
 import { Widget } from "@/ui/widget";
-import { CreateAgentCode, CreateRequest } from "./comp/actions";
+import { CreateAgentCode, CreateRequest, GenericAction } from "./comp/actions";
 import { Splash } from "./comp/splash";
 import { motion } from "framer-motion";
 import { HyperText } from "@/ui/hypertext";
 import { Button } from "@nextui-org/react";
 import { useAuthCtx } from "@/app/ctx/auth";
-import { useCallback, useEffect, useState } from "react";
-import { useVex } from "@/app/ctx/convex";
-import type { SelectUser } from "@convex/users/d";
-import { Err } from "@/utils/helpers";
+
 import { BigActionCard } from "@/ui/action-card";
-import { FireIcon } from "@heroicons/react/24/solid";
+import { CommandLineIcon, FireIcon } from "@heroicons/react/24/solid";
 import { useRequest } from "../hooks/useRequest";
 import { Flag } from "./comp/status-flag";
+import { useVex } from "@/app/ctx/convex";
+import { useCallback } from "react";
 // import { Action } from "@/ui/action-card";
 // import { CatIcon } from "lucide-react";
 
 export const ManagerOverview = () => {
-  const { verifyCurrentUser, registered, user } = useAuthCtx();
+  const { user, vxuser } = useAuthCtx();
   const { usr } = useVex();
-  const [vxUser, setVxUser] = useState<SelectUser | null>(null);
   const create = useRequest();
 
-  const getVx = useCallback(async () => {
-    if (!user) return;
-    const vx = await usr.get.byId(user.uid);
-    setVxUser(vx);
-  }, [user, usr.get]);
+  const getvx = useCallback(async () => {
+    if (user?.uid) console.log(await usr.get.byId(user.uid));
+  }, [usr.get, user?.uid]);
 
-  useEffect(() => {
-    getVx().catch(Err);
-  }, [getVx]);
-
-  const getVResult = useCallback(async () => {
-    if (vxUser?.group_code === "NEO") {
-      const vresult = await verifyCurrentUser(user);
-      if (vresult?.group_code !== "NEO") {
-        if (!user) return;
-        await usr.update({
-          uid: user.uid,
-          group_code: vresult?.group_code,
-          is_verified: true,
-        });
-      }
-    }
-  }, [user, verifyCurrentUser, usr, vxUser?.group_code]);
-
-  useEffect(() => {
-    getVResult().catch(Err);
-  }, [user, getVResult, vxUser?.group_code]);
+  const updatevx = useCallback(async () => {
+    if (user?.uid)
+      console.log(await usr.update({ uid: user.uid, fast_score: 1 }));
+  }, [usr, user?.uid]);
 
   return (
     <div className="overflow-auto pb-6">
@@ -74,11 +53,11 @@ export const ManagerOverview = () => {
             className="flex h-2/3 w-full flex-col items-start justify-start space-y-[2px] border-l-[0.33px] border-primary/40"
           >
             <Flag
-              metric={registered}
-              label={["account", "registered", "unauthorized"]}
+              metric={!!vxuser}
+              label={["account", vxuser?.group_code, "NOT REGISTERED"]}
             />
             <Flag
-              metric={vxUser?.group_code !== "NEO"}
+              metric={!!vxuser && vxuser?.group_code !== "NEO"}
               label={["status", "active", "inactive"]}
             />
           </motion.section>
@@ -89,9 +68,28 @@ export const ManagerOverview = () => {
           <HStack cols={3} className="gap-4 px-4">
             <HStack.XsCol>
               <div className="h-full w-full space-y-4 text-foreground">
-                <Widget.Title>Hello, {user?.email}</Widget.Title>
+                <Widget.Title>
+                  Hello,{" "}
+                  {vxuser?.nickname !== "" ? vxuser?.nickname : vxuser?.email}
+                </Widget.Title>
                 <CreateAgentCode />
                 <CreateRequest {...create} />
+                <GenericAction
+                  loading={false}
+                  fn={getvx}
+                  icon={CommandLineIcon}
+                  title={"Get Button"}
+                  subtext="𝒇(𝒙) ⟹ get vxuser"
+                  label="run"
+                />
+                <GenericAction
+                  loading={false}
+                  fn={updatevx}
+                  icon={CommandLineIcon}
+                  title={"Update Button"}
+                  subtext="𝒇(𝒙) ⟹ update vxuser fast_score"
+                  label="run"
+                />
               </div>
             </HStack.XsCol>
             <HStack.SmCol>

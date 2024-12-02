@@ -18,12 +18,12 @@ export const Atomic = memo(function Ripple({
   return (
     <div
       className={cn(
-        "absolute inset-0 bg-background/5 [mask-image:linear-gradient(to_bottom,white,transparent)]",
+        "absolute inset-0 bg-background/10 [mask-image:linear-gradient(to_bottom,white,transparent)]",
         className,
       )}
     >
       {Array.from({ length: numCircles }, (_, i) => {
-        const size = mainCircleSize + i * 70;
+        const size = mainCircleSize + i * 80;
         const opacity = mainCircleOpacity - i * 0.05;
         const animationDelay = `${i * 0.06}s`;
         const borderStyle = i === numCircles - 1 ? "dashed" : "solid";
@@ -32,7 +32,7 @@ export const Atomic = memo(function Ripple({
         return (
           <div
             key={i}
-            className={`animate-ripple absolute rounded-full border-[0.33px] border-primary-100 bg-foreground/25 [--i:${i}]`}
+            className={`absolute animate-ripple rounded-full border-[0.33px] border-secondary bg-foreground/25 [--i:${i}]`}
             style={
               {
                 width: `${size}px`,

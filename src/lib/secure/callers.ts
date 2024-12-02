@@ -17,8 +17,8 @@ export const createAgentCode = asyncFn(api.auth.createAgentCode);
 export const verifyAgentCode = asyncFn(api.server.verifyAgentCode);
 export const createAccountToken = asyncFn(api.auth.createAccountToken);
 
-// SERVER STATUS
-export const getServerStatus = asyncFn(api.server.getServerStatus);
+// AXIOS SERVER STATUS
+
 // DEBUG MODES
 export const devSet = asyncFn(api.auth.devSet);
 export const devGet = asyncFn(api.auth.devGet);

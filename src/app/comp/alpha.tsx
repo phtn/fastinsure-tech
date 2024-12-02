@@ -1,22 +1,19 @@
 "use client";
 
 import { Spacing } from "@/ui/spacing";
-import { Button, Image, Link } from "@nextui-org/react";
-import { memo, useCallback, Suspense } from "react"; // Import lazy and Suspense
+import { Button, Image } from "@nextui-org/react";
+import { memo, Suspense, useCallback, useState } from "react"; // Import lazy and Suspense
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Flow } from "./flow";
-import { useThemeCtx } from "../ctx/theme";
-import { useRouter } from "next/navigation";
-import { useAuthCtx } from "../ctx/auth";
+import { AuthCommand } from "../auth/sign";
+import { withAuth } from "../ctx/auth";
 
-// Dynamically import the Flow component
-
-const Header = (props: { theme: string }) => (
+const Header = () => (
   <div className="flex h-[calc(100vh*0.15)] w-full items-center space-x-4 pl-6 md:pl-14 xl:h-[calc(100vh*0.15)] xl:pl-20">
-    <div className="flex size-[24px] items-center justify-center rounded-full border-1 border-primary/40 xl:size-[32px]">
+    <div className="flex size-[24px] items-center justify-center rounded-full border-1 border-primary/40 bg-void xl:size-[32px]">
       <Image
-        alt=""
-        src={props.theme === "light" ? "/svg/logo_dark.svg" : "/svg/f.svg"}
+        alt="logo"
+        src={"/svg/f.svg"}
         className="size-[12px] rounded-none xl:size-[16px]"
       />
     </div>
@@ -26,67 +23,45 @@ const Header = (props: { theme: string }) => (
   </div>
 );
 
-const MemoizedChevronIcon = memo(() => (
-  <div className="-mr-3.5 flex size-8 items-center justify-center rounded-full bg-background">
-    <ChevronRightIcon className="size-3 text-foreground" />
-  </div>
-));
-MemoizedChevronIcon.displayName = "MemoizedChevronIcon";
-
-const MemoizedButton = memo(
-  (props: { onPress: VoidFunction; label: string }) => {
-    const handlePress = useCallback(() => {
-      props.onPress();
-    }, [props]);
-
-    return (
+const HeroButton = () => {
+  const handleButtonClick = useCallback(() => {
+    const event = new KeyboardEvent("keydown", {
+      key: "j",
+      bubbles: true,
+      cancelable: true,
+      metaKey: true,
+      ctrlKey: true,
+    });
+    document.dispatchEvent(event);
+  }, []);
+  return (
+    <div>
       <Button
         size="lg"
         radius="full"
         variant="shadow"
         color="primary"
-        className=""
-        onPress={handlePress}
+        onPress={handleButtonClick}
       >
-        <div className="pr-4">{props.label}</div>
-        <MemoizedChevronIcon />
+        <div className="pr-4">{"Get Started"}</div>
+        <div className="-mr-3.5 flex size-8 items-center justify-center rounded-full bg-background">
+          <ChevronRightIcon className="size-3 text-foreground" />
+        </div>
       </Button>
-    );
-  },
-);
-MemoizedButton.displayName = "MemoizedButton";
+      <Authentication />
+    </div>
+  );
+};
 
 const Jumbotron = memo(() => {
-  const { user } = useAuthCtx();
-
-  const router = useRouter();
-  const handlePress = useCallback(() => {
-    if (typeof window !== "undefined") {
-      router.prefetch("/signin");
-    }
-    if (user) {
-      return router.push(`/dashboard`);
-    }
-    router.push("/signin");
-  }, [router, user]);
-
   return (
     <div className="relative ml-6 h-full w-full content-center space-y-12 md:ml-14 xl:ml-20">
       <div>
-        <Link
-          href={`http://localhost:3000/hcode?code=dsbe0xb4baab53d3&grp=tdJ2wJNNpnQIAiS+dNJGZyYqszatqVPQSX0dCpYSPBo=&nonce=21&sha=lPewWBRb5DmkfA+NadWubOcj`}
-        >
-          <Spacing text="TECH DRIVEN" />
-        </Link>
+        <Spacing text="TECH DRIVEN" />
         <Spacing bold text="Business" />
         <Spacing bold text="Engineering" />
       </div>
-      <div>
-        <MemoizedButton
-          onPress={handlePress}
-          label={user?.uid ? "View Dashboard" : "Get Started"}
-        />
-      </div>
+      <HeroButton />
     </div>
   );
 });
@@ -103,12 +78,18 @@ const Hero = memo(() => (
 Hero.displayName = "Hero";
 
 export const Alpha = memo(() => {
-  const { theme } = useThemeCtx();
   return (
     <div className="h-fit md:h-screen">
-      <Header theme={theme} />
+      <Header />
       <Hero />
     </div>
   );
 });
 Alpha.displayName = "Alpha";
+
+const AuthCard = () => {
+  const [open, setOpen] = useState(false);
+  return <AuthCommand open={open} setOpen={setOpen} />;
+};
+
+const Authentication = withAuth(AuthCard);

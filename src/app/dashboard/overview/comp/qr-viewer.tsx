@@ -13,7 +13,7 @@ const Component = ({ children, open, onOpenChange }: ComponentProps) => {
     <Drawer.Root open={open} onOpenChange={onOpenChange}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-foreground/10" />
-        <Drawer.Content className="fixed bottom-14 left-0 right-0 z-[70] mt-28 flex h-fit flex-col rounded-t-xl bg-transparent px-[5.5rem] outline-none">
+        <Drawer.Content className="fixed bottom-24 left-0 right-0 z-[100] mt-28 flex h-fit flex-col rounded-t-xl bg-transparent px-[5.5rem] outline-none">
           <VisuallyHidden>
             <Drawer.Title>QR Viewer</Drawer.Title>
             <Drawer.Description>
@@ -45,7 +45,7 @@ const Content = ({ children, title, close }: ContentProps) => (
   <div className="w-fit rounded-t-xl border-[0.33px] border-b-0 border-double border-foreground/80 bg-background">
     <div className="">
       <div className="mx-[0.66px] mt-[0.33px] flex h-16 items-start justify-between rounded-t-[11.33px] border-b-[0.33px] border-foreground/10 bg-foreground/80 p-3">
-        <p className="px-2 py-1.5 font-semibold tracking-tight text-background/80">
+        <p className="px-2 py-1.5 font-semibold tracking-tight text-background">
           {title}
         </p>
         <Handle close={close} />
@@ -74,7 +74,7 @@ const Detail = ({ children }: PropsWithChildren) => (
 );
 
 const Footer = ({ children }: PropsWithChildren) => (
-  <div className="w-[50.55rem] rounded-b-lg border-[0.33px] border-double border-foreground/80 bg-background/80 p-4 backdrop-blur-3xl dark:border-t-[0.33px] dark:border-t-foreground/30 dark:bg-background/50">
+  <div className="w-[50.55rem] rounded-b-lg border-[0.33px] border-double border-primary-700 bg-primary-100/60 p-4 backdrop-blur-3xl dark:border-t-[0.33px] dark:border-t-foreground/30 dark:bg-background">
     <div className="mx-auto flex items-center justify-between">{children}</div>
   </div>
 );

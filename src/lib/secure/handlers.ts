@@ -18,9 +18,7 @@ import type {
 import { createEndpoint } from "../utils";
 import { getRefresh } from "@/app/actions";
 
-export interface ServerStatus {
-  data: string;
-}
+export type ServerStatus = string;
 
 const livenessUrl = createEndpoint("/livez");
 const verifyAgentCodeUrl = createEndpoint("/verify-agent-code");

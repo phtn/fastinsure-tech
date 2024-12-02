@@ -18,40 +18,44 @@ import {
   Button,
   type AccordionItemIndicatorProps,
 } from "@nextui-org/react";
-import type { PropsWithChildren, ReactElement, ReactNode } from "react";
+import {
+  useCallback,
+  useMemo,
+  type PropsWithChildren,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import moment from "moment";
 import { CircleCheckBigIcon } from "lucide-react";
 import { copyFn } from "@/utils/helpers";
+import { useRenderDebug } from "@/debug/renderbug";
 
 interface QrDetailsProps {
   key_code: string | undefined;
   expiry: number | undefined;
 }
 export const QrDetails = (props: QrDetailsProps) => {
-  const date = Date.now() - (props?.expiry ?? 0);
-  const expiry = `expires ${moment().from(date)}`;
+  const { expiry, validity } = useMemo(
+    () => calcExpiryAndValidity(props.expiry),
+    [props.expiry],
+  );
 
-  const validity = moment().calendar(date, {
-    sameDay: function () {
-      return moment().diff(date, "hours") > 12
-        ? "[Today] h:mm a"
-        : "[In about] h [hours]";
-    },
-    nextDay: "[Tomorrow] h:mm a", // if the date is tomorrow
-    nextWeek: "LLLL", // within the next week
-    sameElse: "MM/DD/YYYY h:mm a",
-  });
+  const handleCopyCode = useCallback(
+    (text: string) => () => copyFn({ name: text, text }),
+    [],
+  );
 
-  const handleCopyCode = (text: string) => () => copyFn({ name: text, text });
+  useRenderDebug("QrDetails", props);
 
   return (
     <Accordion
-      className="group"
+      className="group mt-3"
       itemClasses={{
-        title: "text-sm font-medium font-inter tracking-tight",
+        title:
+          "text-sm font-medium font-inter tracking-tight dark:data-[open]:text-primary-700",
         subtitle: "text-xs tracking-tighter font-light",
         trigger:
-          "border-b-[0.33px] data-[open]:rounded-md data-[open]:bg-zinc-100/40 border-foreground/20 hover:rounded-md group-hover:border-background px-3 transition-all duration-300 ease-out hover:bg-primary-100/40",
+          "border-b-[0.33px] data-[open]:rounded-md data-[open]:bg-zinc-100/40 dark:data-[open]:text-primary-400 dark:data-[open]:bg-zinc-950 border-primary-300/50 hover:rounded-md group-hover:border-background px-3 transition-all duration-300 ease-out hover:bg-primary-100/40",
 
         base: "h-fit",
         content:
@@ -67,13 +71,12 @@ export const QrDetails = (props: QrDetailsProps) => {
             <item.startContent className="size-5 text-foreground/60" />
           }
           disableIndicatorAnimation={item.animateIndicator}
-          indicator={
-            item.id === "code"
-              ? indicator(false, props.key_code)
-              : item.id === "expiry"
-                ? indicator(false, expiry)
-                : item.indicator
-          }
+          indicator={renderIndicator(
+            item.id,
+            props.key_code,
+            expiry,
+            item.indicator,
+          )}
           title={item.title}
           subtitle={item.id === "expiry" ? validity : null}
         >
@@ -105,6 +108,35 @@ export const QrDetails = (props: QrDetailsProps) => {
   );
 };
 
+const calcExpiryAndValidity = (millis: number | undefined) => {
+  const date = Date.now() - (millis ?? 0);
+  const expiry = `expires ${moment().from(date)}`;
+
+  const validity = moment().calendar(date, {
+    sameDay: function () {
+      return moment().diff(date, "hours") > 12
+        ? "[Today] h:mm a"
+        : "[In about] h [hours]";
+    },
+    nextDay: "[Tomorrow] h:mm a", // if the date is tomorrow
+    nextWeek: "LLLL", // within the next week
+    sameElse: "MM/DD/YYYY h:mm a",
+  });
+  return { validity, expiry };
+};
+
+const renderIndicator = (
+  id: string,
+  key_code: string | undefined,
+  expiry: string,
+  indicate: ({ isOpen }: AccordionItemIndicatorProps) => ReactElement,
+) =>
+  id === "code"
+    ? indicator(false, key_code)
+    : id === "expiry"
+      ? indicator(false, expiry)
+      : indicate;
+
 const CodeContent = ({ children }: PropsWithChildren) => (
   <div className="font-arc mx-10 my-1 flex h-10 w-fit items-center">
     <div className="flex h-9 items-center space-x-6 rounded-md border border-primary-500 bg-primary-50 py-2 pl-4 font-semibold tracking-widest drop-shadow-lg">
@@ -113,7 +145,7 @@ const CodeContent = ({ children }: PropsWithChildren) => (
   </div>
 );
 const ExpiryContent = ({ children }: PropsWithChildren) => (
-  <div className="font-arc mx-10 flex h-10 w-fit items-center space-x-4 rounded-md border border-primary bg-primary-50 px-4 text-sm font-medium text-primary drop-shadow-lg">
+  <div className="font-arc mx-10 my-3 flex h-10 w-fit items-center space-x-4 rounded-md border border-primary-300 bg-primary-50 px-4 text-sm font-medium text-primary drop-shadow-lg">
     <ExclamationTriangleIcon className="size-5 animate-pulse text-warning" />
     <span>{children}</span>
   </div>
@@ -171,7 +203,7 @@ const detail_data: TQrDetail[] = [
       <ItemContent>
         <div className="font-arc my-4 flex w-full items-center justify-center space-x-2 rounded-md bg-primary px-4 py-3 font-bold leading-none text-primary-50">
           <p>You have successfully created an agent code!</p>
-          <CircleCheckBigIcon className="size-4 text-white" />
+          <CircleCheckBigIcon className="size-4 text-background" />
         </div>
         <div className="text-primar mb-3 flex h-10 items-center font-inter text-xs tracking-tight">
           Good to know:

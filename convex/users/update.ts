@@ -8,7 +8,8 @@ export const update = mutation({
     const user = await checkUser(db, data.uid);
 
     if (user === null) {
-      throw new Error("User not found");
+      return null;
+      // throw new Error("User not found");
     }
 
     const data_kv = Object.entries(data)
@@ -19,8 +20,17 @@ export const update = mutation({
       await db.patch(user._id, Object.fromEntries([d]) as UpdateUser);
     }
 
-    await db.patch(user._id, { group_code: data.group_code });
-    await db.patch(user._id, { is_verified: data.is_verified });
+    if (user.group_code !== data.group_code) {
+      await db.patch(user._id, { group_code: data.group_code });
+    }
+
+    if (user.role !== data.role) {
+      await db.patch(user._id, { role: data.role });
+    }
+
+    if (user.is_verified !== data.is_verified) {
+      await db.patch(user._id, { is_verified: data.is_verified });
+    }
 
     await db.patch(user._id, { updated_at: Date.now() });
     return user._id;

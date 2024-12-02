@@ -1,5 +1,61 @@
 import { z } from "zod";
 
+/// SERVER
+
+export const QueryServer = z.object({
+  endpoint: z.string(),
+});
+export type QServer = z.infer<typeof QueryServer>;
+export const ServerResponseSchema = z.object({
+  Code: z.string(),
+  Data: z.record(z.string()).or(z.string()),
+  Err: z.record(z.string()).or(z.string()),
+  Message: z.string(),
+  Status: z.number(),
+});
+export type ServerResponse = z.infer<typeof ServerResponseSchema>;
+
+export const LivezResponseSchema = ServerResponseSchema;
+export type LivezResponse = z.infer<typeof LivezResponseSchema>;
+
+///////////////////
+
+export const UserVerificationSchema = z.object({
+  uid: z.string().or(z.undefined()),
+});
+export type UserVerification = z.infer<typeof UserVerificationSchema>;
+
+export const UserVerificationResponseSchema = z.object({
+  data: z.object({
+    uid: z.string(),
+    verified: z.boolean(),
+    claims: z.record(z.boolean()).nullable(),
+  }),
+  status: z.number(),
+});
+export type UserVerificationResponse = z.infer<
+  typeof UserVerificationResponseSchema
+>;
+
+export const OnSigninVerificationSchema = z.object({
+  uid: z.string().or(z.undefined()),
+  id_token: z.string(),
+  refresh_token: z.string(),
+});
+export type OnSigninVerification = z.infer<typeof OnSigninVerificationSchema>;
+
+export const OnSigninVerificationResponseSchema = z.object({
+  data: z.object({
+    uid: z.string(),
+    verified: z.boolean(),
+    claims: z.record(z.boolean()).nullable(),
+  }),
+  status: z.number(),
+});
+export type OnSigninVerificationResponse = z.infer<
+  typeof OnSigninVerificationResponseSchema
+>;
+
 export const UserRoleSchema = z.union([
   z.literal("admin"),
   z.literal("manager"),
@@ -46,11 +102,9 @@ export const VerifyAuthKeySchema = z.object({
 export type VerifyAuthKey = z.infer<typeof VerifyAuthKeySchema>;
 
 export const AuthVerificationSchema = z.object({
-  key: z.string().optional(),
+  uid: z.string().optional(),
   verified: z.boolean(),
-  expiry: z.number().optional(),
-  is_active: z.boolean(),
-  group_code: z.string().optional(),
+  claims: z.record(z.boolean()).nullable(),
 });
 export type AuthVerification = z.infer<typeof AuthVerificationSchema>;
 

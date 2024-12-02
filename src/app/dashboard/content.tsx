@@ -7,10 +7,9 @@ import { ManagerOverview } from "./overview/m-overview";
 import { Loader } from "@/ui/loader";
 import { useAuthCtx } from "@/app/ctx/auth";
 import { NeoOverview } from "./overview/n-overview";
-// import { useNav } from "./hooks/useNav";
 
 export const Dashboard = () => {
-  const { claims, loading, registered } = useAuthCtx();
+  const { claims, loading } = useAuthCtx();
 
   const OverviewOptions = useCallback(() => {
     const is_manager = claims?.some((el) => el === "manager" || el === "admin");
@@ -19,10 +18,20 @@ export const Dashboard = () => {
   }, [claims]);
 
   const RegisteredOptions = useCallback(() => {
-    const is_registered = !loading && registered;
+    const withClaims = claims && claims?.length > 0;
     const options = opts(<OverviewOptions />, <NeoOverview />);
-    return <>{options.get(is_registered)}</>;
-  }, [OverviewOptions, loading, registered]);
+    return <>{options.get(withClaims ?? false)}</>;
+  }, [OverviewOptions, claims]);
+
+  // const DevMode = useCallback(() => {
+  //   const devenv = env.NODE_ENV === "development";
+  //   const devusers = env.NEXT_PUBLIC_DEVS.split(",");
+  //   const isDev = !!user?.email && devusers.includes(user.email) && devenv;
+
+  //   const options = opts(<DevOverview />, <RegisteredOptions />);
+
+  //   return <>{options.get(isDev)}</>;
+  // }, [RegisteredOptions, user?.email]);
 
   if (loading) {
     return <Loader />;

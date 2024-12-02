@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { HyperText } from "@/ui/hypertext";
 import { Iphone15Pro } from "@/ui/iphone";
 import { Safari } from "@/ui/safari";
 import { Screen } from "@/ui/screen";
@@ -83,18 +82,6 @@ export const Platform = () => (
           src={"/svg/logo_dark.svg"}
           className="size-6 rounded-none"
         />
-      </div>
-      <div className="flex h-[200px] w-full items-center justify-center opacity-0 transition-all duration-500 ease-out translate-y-[200px] group-hover:opacity-100 group-hover:translate-y-0">
-        <div className="flex w-full items-center justify-between text-center font-inst text-lg font-semibold lowercase text-background/80">
-          <HyperText text="linux" />
-          <HyperText text="macOS" />
-          <HyperText text="windows" />
-          <HyperText text="android" />
-          <HyperText text="iphone" />
-          <HyperText text="huawei" />
-          <HyperText text="chrome" />
-          <HyperText text="safari" />
-        </div>
       </div>
     </div>
   </div>

@@ -1,8 +1,30 @@
-import { Toaster } from "react-hot-toast";
+import { Toaster, ToastBar } from "react-hot-toast";
 
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { AlertOctagonIcon } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { Button } from "@nextui-org/react";
+import { FireIcon } from "@heroicons/react/24/solid";
+
+export const barToast = () => (
+  <Toaster>
+    {(t) => (
+      <ToastBar toast={t}>
+        {() => (
+          <>
+            <FireIcon className="text-red-500" />
+            <p>Butt fuck yea!</p>
+            {t.type !== "loading" && (
+              <Button variant="shadow" color="primary">
+                Close
+              </Button>
+            )}
+          </>
+        )}
+      </ToastBar>
+    )}
+  </Toaster>
+);
 
 export const onSuccess = (msg: string) => toast.success(msg);
 export const onInfo = (msg: string) =>
@@ -27,6 +49,14 @@ export const onWarn = (msg: string) =>
       fontSize: "14px",
     },
   });
+
+export const onAwait = <T,>(fn: Promise<T>, ...args: string[]) =>
+  toast.promise(fn, {
+    loading: args[0],
+    success: args[1],
+    error: (err: Error) => err.message,
+  });
+
 export const onError = (msg: string) => toast.error(msg);
 
 export const onLoading = (msg: string) => toast.loading(msg);

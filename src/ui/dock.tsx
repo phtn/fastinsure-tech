@@ -32,7 +32,7 @@ const DEFAULT_MAGNIFICATION = 50;
 const DEFAULT_DISTANCE = 100;
 
 const dockVariants = cva(
-  "bg-foreground/80 dark:bg-foreground backdrop-blur-xl mx-auto flex h-[42px] w-max gap-2 rounded-xl border border-primary-400/60 py-2 px-0 backdrop-blur-md",
+  "bg-dock-dark dark:bg-adam/50 mx-auto flex h-[42px] w-max gap-4 rounded-lg border-[0.33px] border-dock-border dark:border-fade-dark py-2 px-0",
 );
 
 const Dock = forwardRef<HTMLDivElement, DockProps>(

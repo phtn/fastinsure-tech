@@ -636,6 +636,7 @@ export const errHandler =
     setLoading(false);
     if (setError) setError(e);
   };
+
 export const Err =
   <T extends Error | null | undefined>(
     setLoading: Dispatch<SetStateAction<boolean>>,

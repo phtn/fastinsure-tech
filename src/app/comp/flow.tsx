@@ -18,7 +18,7 @@ interface NodeProps {
   className?: ClassName;
   children?: ReactNode;
 }
-const Node = forwardRef<HTMLDivElement, NodeProps>(
+const BeamNode = forwardRef<HTMLDivElement, NodeProps>(
   ({ className, children }, ref) => {
     return (
       <div
@@ -34,9 +34,8 @@ const Node = forwardRef<HTMLDivElement, NodeProps>(
   },
 );
 
-Node.displayName = "Node";
-
-// Memoize BeamEffect to prevent unnecessary re-renders
+BeamNode.displayName = "Node";
+const Node = memo(BeamNode);
 const MemoizedBeamEffect = memo(BeamEffect);
 
 export function Flow({ className }: { className?: string }) {

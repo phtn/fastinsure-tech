@@ -8,6 +8,7 @@ import type {
   Object3DEventMap,
 } from "three";
 import type { Euler, ReactProps, Vector3 } from "@react-three/fiber";
+import { memo, useCallback } from "react";
 
 type GLTFResult = GLTF & {
   nodes: Record<string, Mesh>;
@@ -15,7 +16,8 @@ type GLTFResult = GLTF & {
 };
 
 const shuttle = "/threed/space_shuttle.glb";
-export const Model = (
+
+const ModelComponent = (
   props: ReactProps<Group<Object3DEventMap>> & {
     position: (number | Vector3 | [x: number, y: number, z: number]) & Vector3;
   } & {
@@ -31,6 +33,20 @@ export const Model = (
 ) => {
   const { nodes, materials } = useGLTF(shuttle) as GLTFResult;
 
+  const Nodes = useCallback(
+    () =>
+      Object.keys(nodes).map((key) => (
+        <mesh
+          key={key}
+          castShadow
+          receiveShadow
+          geometry={nodes[key]?.geometry}
+          material={materials[key] ?? nodes[key]?.material}
+        />
+      )),
+    [materials, nodes],
+  );
+
   return (
     <group {...props} dispose={null}>
       <mesh
@@ -39,16 +55,9 @@ export const Model = (
         geometry={nodes.Cube?.geometry}
         material={materials.Material}
       />
-      {Object.keys(nodes).map((key) => (
-        <mesh
-          key={key}
-          castShadow
-          receiveShadow
-          geometry={nodes[key]?.geometry}
-          material={materials[key] ?? nodes[key]?.material}
-        />
-      ))}
+      <Nodes />
     </group>
   );
 };
+export const Model = memo(ModelComponent);
 useGLTF.preload(shuttle);

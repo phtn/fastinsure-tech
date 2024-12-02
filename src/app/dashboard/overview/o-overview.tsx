@@ -10,24 +10,10 @@ import { Flag } from "./comp/status-flag";
 import { GenericAction } from "./comp/actions";
 import { BigActionCard } from "@/ui/action-card";
 import { FireIcon } from "@heroicons/react/24/solid";
-import { useCallback } from "react";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
-// import { useAuthCtx } from "@/app/ctx/auth";
-// import { useCallback, useEffect } from "react";
-// import { Err } from "@/utils/helpers";
 
 export const LoggedOutView = () => {
-  const { user, verifyCurrentUser } = useAuthCtx();
-  console.log(user?.email);
-
-  const handleVerification = useCallback(async () => {
-    const vresult = await verifyCurrentUser(user);
-    console.log(vresult);
-  }, [verifyCurrentUser, user]);
-
-  // useEffect(() => {
-  //   handleSignOut().catch(Err);
-  // }, [handleSignOut]);
+  const { user, signOut } = useAuthCtx();
 
   return (
     <div className="_z-50 overflow-auto pb-6">
@@ -65,7 +51,7 @@ export const LoggedOutView = () => {
                 <Widget.Title>Hello, {user?.email}</Widget.Title>
                 <GenericAction
                   loading={false}
-                  fn={handleVerification}
+                  fn={signOut}
                   icon={ShieldCheckIcon}
                   title={"Verify Account"}
                   subtext=""

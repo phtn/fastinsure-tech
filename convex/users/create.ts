@@ -26,7 +26,8 @@ const create = mutation({
       total_submitted: 0,
       total_completed: 0,
       total_voided: 0,
-      group_code: data.group_code ?? "NEO",
+      fast_score: 0,
+      group_code: data.group_code ?? "neo",
       role: data.role ?? "neo",
     });
   },

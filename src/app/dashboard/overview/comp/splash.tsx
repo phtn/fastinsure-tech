@@ -43,9 +43,9 @@ export const Splash = (props: SplashProps) => {
   return (
     <div
       className={cn(
-        "relative h-64 w-full overflow-hidden rounded-2xl border-[0.5px] drop-shadow-sm backdrop-blur-xl",
-        "border-stone-400 bg-gradient-to-tr from-stone-300/40 via-zinc-300/40 to-slate-300/40",
-        "dark:border-slate-300/60 dark:bg-gradient-to-r dark:from-slate-200/20 dark:via-slate-200/40 dark:to-slate-200",
+        "relative h-64 w-full overflow-hidden rounded-b-2xl rounded-t-[15px] border-[0.5px] drop-shadow-sm backdrop-blur-xl",
+        "border-primary bg-gradient-to-tr from-stone-300/40 via-zinc-300/40 to-slate-300/40",
+        "dark:border-slate-300/60 dark:from-slate-200/20 dark:via-slate-200/40 dark:to-slate-200",
       )}
     >
       <Lines />

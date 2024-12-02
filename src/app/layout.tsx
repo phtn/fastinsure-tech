@@ -33,6 +33,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
       lang="en"
       className={`${instrument.variable} ${inter.variable} ${jet.variable} ${GeistSans.variable} antialiased`}
     >
+      <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
       <Theme>
         <Providers>{children}</Providers>
       </Theme>

@@ -4,11 +4,7 @@ import Link, { type LinkProps } from "next/link";
 import { useState, createContext, useContext, useCallback } from "react";
 import type { ComponentProps, PropsWithChildren, ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  AcademicCapIcon,
-  UserIcon,
-  UsersIcon,
-} from "@heroicons/react/24/outline";
+import { AcademicCapIcon, UserIcon } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import { type DualIcon } from "@/app/types";
 import { Button, Image } from "@nextui-org/react";
@@ -81,6 +77,7 @@ export const DesktopSidebar = ({
   return (
     <>
       <motion.button
+        id="sidebar-switch-a"
         onClick={toggle}
         initial={{ x: 56 }}
         animate={{
@@ -88,15 +85,16 @@ export const DesktopSidebar = ({
         }}
         transition={{ duration: 0.285, bounceDamping: 1, bounceStiffness: 1 }}
         className={cn(
-          "absolute top-0 z-50 my-6 h-[calc(100vh/12)] w-[20px] cursor-w-resize rounded-full bg-primary-50/50 dark:bg-primary-200/80",
+          "absolute top-0 z-50 my-6 h-[calc(100vh/12)] w-[20px] cursor-w-resize rounded-full bg-primary-50/50 shadow-2xl shadow-void dark:bg-primary-200/90",
           { "cursor-e-resize": !open },
-          "transition-colors duration-500 ease-out dark:hover:bg-primary-300/80",
+          "transition-colors duration-1000 ease-in-out dark:hover:bg-[#B8B4AC]/80",
         )}
       />
       <motion.button
+        id="sidebar-switch-b"
         onClick={toggle}
         animate={{
-          x: open ? 270 : 30,
+          x: open ? 277 : 37,
         }}
         transition={{ duration: 0.275, bounceDamping: 1, bounceStiffness: 1 }}
         className={cn(
@@ -105,7 +103,7 @@ export const DesktopSidebar = ({
           "flex justify-end",
         )}
       >
-        <div className="h-full w-[8px] rounded-full bg-transparent transition-all duration-500 ease-out translate-x-1 transform-gpu group-hover:bg-primary-50/50 group-hover:-translate-x-0.5 dark:group-hover:bg-primary-200" />
+        <div className="h-full w-[16px] rounded-full bg-transparent transition-all duration-500 ease-out translate-x-4 transform-gpu group-hover:animate-pulse group-hover:bg-primary-50/50 group-hover:shadow-inner group-hover:-translate-x-0 dark:group-hover:bg-[#B8B4AC]/80" />
       </motion.button>
 
       <motion.div
@@ -152,39 +150,35 @@ const UserNavs = () => {
 const UserSection = (props: { open: boolean }) => {
   const { user, signOut } = useAuthCtx();
   return (
-    <section className="relative left-0 -ml-4 flex size-16 items-center whitespace-nowrap">
+    <section className="relative -left-4 flex size-16 items-center whitespace-nowrap">
       <Link
         href="/dashboard/account"
         className="absolute flex size-16 items-center justify-center"
       >
-        {user?.photoURL ? (
-          <Image
-            alt="admin-logo"
-            src={user?.photoURL}
-            className="z-[100] animate-enter"
-            width={28}
-            height={28}
-          />
-        ) : (
-          <UsersIcon className="size-4" />
-        )}
+        <Image
+          alt="admin-logo"
+          src={user?.photoURL ?? "/svg/user.svg"}
+          className="z-[100] animate-enter border border-chalk/50"
+          width={28}
+          height={28}
+        />
       </Link>
 
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className={cn(
-          "ml-16 flex flex-shrink whitespace-nowrap px-2 font-jet text-xs tracking-widest text-primary-300",
+          "ml-14 flex flex-shrink whitespace-nowrap px-4 font-jet text-xs tracking-widest text-primary-300 dark:text-primary-600",
         )}
       >
         {user?.displayName ?? user?.email}
       </motion.span>
       <Button
         size="sm"
-        variant="faded"
+        variant="flat"
         onPress={signOut}
         className={cn(
-          "hidden w-14 border-0 font-inst font-light tracking-tighter text-chalk/80",
+          "hidden w-14 border-0 bg-chalk/20 font-inst font-light tracking-tighter text-chalk/80",
           {
             flex: props.open,
           },
@@ -209,18 +203,10 @@ export const SidebarNav = (props: NavProps) => {
     if (props.icon.type === "icon") {
       const IconComponent = props.icon.content;
       return (
-        <div
-          className={cn(
-            "rounded-xl p-1 text-xs",
-            // {
-            //   "text-white": pathname.length >= 3 && props.href.includes(sub!),
-            // },
-            props.className,
-          )}
-        >
+        <div className={cn("group p-1", props.className)}>
           <IconComponent
             className={cn(
-              "dark:hover:text-300 transision-all size-[1.5rem] shrink-0 stroke-1 text-primary-300 drop-shadow-md duration-300 ease-out transform-gpu hover:text-primary-200 dark:text-primary-500",
+              "transision-all size-[1.5rem] shrink-0 stroke-1 text-primary-200 drop-shadow-md duration-300 ease-out transform-gpu hover:text-primary-200 group-hover:text-chalk group-hover:scale-125 dark:text-primary-500",
               {
                 "stroke-[1.5px] text-secondary dark:text-secondary":
                   pathname.length >= 2 && props.href.includes(sub!),
@@ -265,13 +251,13 @@ export const SidebarNav = (props: NavProps) => {
           opacity: open ? 1 : 0,
         }}
         className={cn(
-          "!m-0 inline-block whitespace-pre rounded-lg px-3 py-1 font-inst font-medium tracking-tight text-primary-300 transition-all duration-300 transform-gpu group-hover/sidebar:bg-primary-50/20 group-hover/sidebar:text-primary-100 group-hover/sidebar:translate-x-0.5 dark:text-primary-600 dark:group-hover/sidebar:bg-primary-900/20 dark:group-hover/sidebar:text-primary-900",
+          "!m-0 inline-block whitespace-pre rounded-lg px-3 py-1 font-inst font-medium tracking-tight text-primary-200 transition-all duration-300 transform-gpu hover:text-chalk group-hover/sidebar:bg-primary-50/20 group-hover/sidebar:text-primary-100 group-hover/sidebar:translate-x-0.5 dark:text-primary-600 dark:group-hover/sidebar:bg-primary-900/20 dark:group-hover/sidebar:text-primary-900",
           {
-            "font-medium text-secondary dark:text-secondary-800":
+            "bg-gradient-to-r from-amber-100 from-5% via-secondary to-secondary bg-clip-text font-medium text-transparent dark:bg-gradient-to-r dark:from-amber-100 dark:from-5% dark:via-secondary dark:to-secondary dark:bg-clip-text dark:text-transparent":
               pathname.length >= 2 && props.href.includes(sub!),
           },
           {
-            "font-medium text-secondary dark:text-secondary-800":
+            "bg-gradient-to-r from-amber-100 from-5% via-secondary to-secondary bg-clip-text font-medium text-transparent dark:bg-gradient-to-r dark:from-amber-100 dark:from-5% dark:via-secondary dark:to-secondary dark:bg-clip-text dark:text-transparent":
               pathname.length <= 2 && `/${pathname[1]}` === props.href,
           },
         )}

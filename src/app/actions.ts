@@ -11,7 +11,7 @@ import { cookies } from "next/headers";
 import { env } from "@/env";
 import { GoogleAuth } from "google-auth-library";
 
-export type Modes = "light" | "dark" | "system";
+export type Modes = "light" | "dark" | "system" | "dev" | "devdark";
 export interface ModeCookie {
   name: string;
   value: Modes;
@@ -50,7 +50,8 @@ export const setUID = async (uid: string) => {
 
 export const getUID = async () => {
   const cookieStore = await cookies();
-  return cookieStore.get("fastinsure--uid")?.value;
+  const uid = cookieStore.get("fastinsure--uid")?.value;
+  return uid ?? null;
 };
 export const deleteUID = async () => {
   const cookieStore = await cookies();
@@ -193,10 +194,41 @@ export const activateAccount = async (data: FormData) => {
   const validatedParams = ActivateUserSchema.safeParse({
     hcode: data.get("hcode"),
     email: data.get("email"),
+    id_token,
+    uid,
   });
+
+  if (validatedParams.error) {
+    console.log("Invalid params");
+    console.table(validatedParams.error);
+  }
+
+  console.log(validatedParams.data);
 
   if (validatedParams.success) {
     if (!id_token || !uid) return;
-    return await activateUser({ ...validatedParams.data, id_token, uid });
+    const response = await activateUser({
+      ...validatedParams.data,
+    });
+    return response?.data;
   }
+};
+export const setCustomClaims = async (claims: string) => {
+  const cookieStore = await cookies();
+  if (claims)
+    cookieStore.set("fastinsure--claims", claims?.toString(), {
+      ...defaultOpts,
+      path: "/",
+    });
+};
+
+export const getCustomClaims = async () => {
+  const cookieStore = await cookies();
+  const value = cookieStore.get("fastinsure--claims")?.value;
+  return value?.split(",");
+};
+
+export const deleteCustomClaims = async () => {
+  const cookieStore = await cookies();
+  cookieStore.delete("fastinsure--claims");
 };

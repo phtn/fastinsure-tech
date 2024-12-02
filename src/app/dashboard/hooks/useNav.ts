@@ -29,37 +29,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 //   },
 // ];
 
-export const a_navs: NavItem[] = [
-  {
-    label: "Overview",
-    href: "/dashboard",
-    icon: { type: "icon", content: Squares2X2Icon },
-  },
-  {
-    label: "Requests",
-    href: "/dashboard/requests/all",
-    icon: { type: "icon", content: TableCellsIcon },
-  },
-  {
-    label: "Agents",
-    href: "#",
-    icon: { type: "icon", content: UsersIcon },
-  },
-];
-
-const u_navs: NavItem[] = [
-  {
-    label: "Overview",
-    href: "/dashboard",
-    icon: { type: "icon", content: Squares2X2Icon },
-  },
-  {
-    label: "Requests",
-    href: "/dashboard/requests",
-    icon: { type: "icon", content: TableCellsIcon },
-  },
-];
-
 export const useNav = () => {
   const [navs, setNavs] = useState<NavItem[] | undefined>();
 
@@ -95,6 +64,27 @@ export const useNav = () => {
     [],
   );
 
+  const a_navs: NavItem[] = useMemo(
+    () => [
+      {
+        label: "Overview",
+        href: "/dashboard",
+        icon: { type: "icon", content: Squares2X2Icon },
+      },
+      {
+        label: "Requests",
+        href: "/dashboard/requests",
+        icon: { type: "icon", content: TableCellsIcon },
+      },
+      {
+        label: "Agents",
+        href: "#",
+        icon: { type: "icon", content: UsersIcon },
+      },
+    ],
+    [],
+  );
+
   const m_navs: NavItem[] = useMemo(
     () => [
       {
@@ -116,27 +106,48 @@ export const useNav = () => {
     [],
   );
 
+  const u_navs: NavItem[] = useMemo(
+    () => [
+      {
+        label: "Overview",
+        href: "/dashboard",
+        icon: { type: "icon", content: Squares2X2Icon },
+      },
+      {
+        label: "Requests",
+        href: "/dashboard/requests",
+        icon: { type: "icon", content: TableCellsIcon },
+      },
+    ],
+    [],
+  );
+
   const { claims } = useAuthCtx();
   const getUserNavs = useCallback(() => {
-    console.log(claims);
     if (!claims || claims.length < 1) {
-      return setNavs(n_navs);
+      setNavs(n_navs);
+      return;
     }
-    claims.forEach((claim) => {
+    claims?.forEach((claim) => {
       switch (claim) {
         case "admin":
-          return setNavs(s_navs);
+          setNavs(s_navs);
+          break;
         case "manager":
-          return setNavs(m_navs);
+          setNavs(m_navs);
+          break;
         case "agent":
-          return setNavs(n_navs);
+          setNavs(a_navs);
+          break;
         case "underwriter":
-          return setNavs(u_navs);
+          setNavs(u_navs);
+          break;
         default:
-          return setNavs(n_navs);
+          setNavs(n_navs);
+          break;
       }
     });
-  }, [claims, m_navs, s_navs, n_navs]);
+  }, [claims, m_navs, s_navs, n_navs, a_navs, u_navs]);
 
   useEffect(() => {
     getUserNavs();

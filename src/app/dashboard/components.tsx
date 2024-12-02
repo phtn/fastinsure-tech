@@ -21,7 +21,7 @@ export const Logo = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className={cn(
-            "flex whitespace-nowrap px-4 font-jet text-xs tracking-widest text-primary-300",
+            "flex whitespace-nowrap px-4 font-jet text-xs tracking-widest text-primary-300 dark:text-primary-600",
           )}
         >
           FastInsure Tech

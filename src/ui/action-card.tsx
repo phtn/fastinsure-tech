@@ -15,7 +15,7 @@ const Component = ({ children }: PropsWithChildren) => (
     className={cn(
       "h-fit w-full cursor-pointer overflow-clip",
       "hover:border-foreground hover:shadow-lg",
-      "rounded-md border-[0.33px] border-primary-300",
+      "dark:primary-300 rounded-md border-[0.33px] border-foreground",
       "transition-all duration-300 ease-out",
       "bg-gradient-to-tr from-stone-300/20 via-zinc-300/40 to-slate-300/20",
       "dark:border-primary-500/50 dark:from-primary-100",

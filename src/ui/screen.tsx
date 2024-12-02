@@ -103,7 +103,7 @@ const Default = ({ children }: PropsWithChildren) => (
 );
 
 const Dark = ({ children }: PropsWithChildren) => (
-  <div className="relative -bottom-10 z-50 h-[calc(65vh)] w-screen overflow-hidden border-y-[0.33px] border-primary-300 bg-transparent">
+  <div className="relative -bottom-10 z-50 h-[calc(65vh)] w-screen overflow-hidden border-y-[0.33px] border-primary bg-transparent">
     {children}
   </div>
 );

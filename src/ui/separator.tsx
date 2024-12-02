@@ -19,8 +19,8 @@ const Separator = forwardRef<
       decorative={decorative}
       orientation={orientation}
       className={cn(
-        "bg-border shrink-0",
-        orientation === "horizontal" ? "h-[1px] w-full" : "h-full w-[1px]",
+        "dark:bg-fade-dark/50 shrink-0 rounded-full bg-primary-800",
+        orientation === "horizontal" ? "h-[1px] w-full" : "h-full w-[2px]",
         className,
       )}
       {...props}

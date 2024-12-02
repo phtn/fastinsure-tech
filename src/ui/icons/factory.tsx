@@ -15,7 +15,7 @@ export const FastOutlineFactory = forwardRef<
         {
           xmlns: "http://www.w3.org/2000/svg",
           fill: "none",
-          viewBox: "0 0 24 24",
+          viewBox: `0 0 24 ${props.width ?? "24"}`,
           strokeWidth: strokeWidth ?? 1.5,
           stroke: stroke ?? "currentColor",
           ref: ref,
