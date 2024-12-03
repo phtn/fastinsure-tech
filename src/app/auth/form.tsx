@@ -35,7 +35,7 @@ export const EmailSigninForm = () => {
       action={signUserWithEmail}
       className="flex h-full w-full flex-col items-end text-primary"
     >
-      <div className="h-full w-full space-y-6 px-10 py-8 dark:bg-void">
+      <div className="h-full w-full space-y-6 px-10 py-8 dark:bg-zinc-900">
         <div className="flex h-8 w-full items-end justify-start px-2 font-inter text-xl font-semibold tracking-tighter dark:text-icon-dark">
           <header>Sign in with email</header>
         </div>
@@ -60,7 +60,7 @@ export const EmailSigninForm = () => {
                   "border-x-double rounded-b-lg rounded-t-none border-t-[0.33px] border-primary-300":
                     field.name === "password",
                 },
-                "dark:bg-darkvoid",
+                "dark:bg-adam/20",
               )}
               // {...register(field.name === "email" ? "email" : "password")}
               {...register(field.name)}
@@ -72,9 +72,9 @@ export const EmailSigninForm = () => {
             radius="sm"
             type="submit"
             variant="solid"
-            color="secondary"
+            color="primary"
             isLoading={loading}
-            className="h-[rem] w-full items-center space-x-4 font-inst text-sm font-semibold sm:h-12"
+            className="w-full items-center space-x-4 font-inst text-sm font-semibold dark:bg-[#fafafa]/70 sm:h-12"
             fullWidth
           >
             <div>Sign in</div>

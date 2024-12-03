@@ -8,7 +8,6 @@ import {
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@nextui-org/react";
 import { type TestFunction, useFunction } from "./useFunction";
 import { cn } from "@/lib/utils";
@@ -17,6 +16,7 @@ import { toggleState } from "@/utils/helpers";
 import { DevToolbar } from "./toolbar";
 import { HyperList } from "@/ui/list";
 import { useWindow } from "@/ui/window/useWindow";
+import { DialogWindow } from "@/ui/window";
 
 export function DevButton(props: { fn: VoidFunction }) {
   return (
@@ -127,15 +127,10 @@ interface DevCommandProps {
 }
 
 export function DevCommands(props: DevCommandProps) {
-  const {
-    open,
-    close,
-    filterFn,
-    searchFn,
-    stopPropagation,
-    keyListener,
-    onKeyDown,
-  } = useWindow({ open: props.open, setOpen: props.setOpen });
+  const { close, filterFn, searchFn, keyListener, onKeyDown } = useWindow({
+    open: props.open,
+    setOpen: props.setOpen,
+  });
 
   const { devFnList, updateFnList, pending } = useFunction();
   const filtered: TestFunction[] = useMemo(
@@ -150,49 +145,62 @@ export function DevCommands(props: DevCommandProps) {
     return () => remove();
   }, [add, remove]);
 
+  const Toolbar = useCallback(
+    () => (
+      <DevToolbar
+        loading={pending}
+        searchFn={searchFn}
+        len={filtered.length}
+        closeFn={close}
+        action={updateFnList}
+      />
+    ),
+    [close, filtered.length, pending, searchFn, updateFnList],
+  );
+
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className={cn(
-            "fixed inset-0 flex items-center justify-center bg-zinc-950 bg-opacity-50 p-4",
-          )}
-          onClick={close}
-        >
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            className={cn(
-              "w-full max-w-2xl overflow-hidden rounded-lg shadow-2xl",
-              "border-[0.33px] border-fade-dark dark:border-fade-dark/90",
-              "bg-white dark:bg-[#0b0b0e]",
-            )}
-            onClick={stopPropagation}
-          >
-            <DevToolbar
-              loading={pending}
-              searchFn={searchFn}
-              len={filtered.length}
-              closeFn={close}
-              action={updateFnList}
-            />
-            <HyperList
-              data={filtered}
-              component={FunctionListItem}
-              container={cn("h-[calc(60vh)] overflow-y-scroll")}
-              itemStyle={cn(
-                "space-y-2 p-4 border-b-[0.33px]",
-                " border-icon/80 last:border-0 dark:border-void",
-                "h-fit w-full cursor-pointer overflow-clip",
-              )}
-            />
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    // <AnimatePresence>
+    //   {open && (
+    //     <motion.div
+    //       initial={{ opacity: 0 }}
+    //       animate={{ opacity: 1 }}
+    //       exit={{ opacity: 0 }}
+    //       className={cn(
+    //         "fixed inset-0 flex items-center justify-center bg-zinc-950 bg-opacity-50 p-4",
+    //       )}
+    //       onClick={close}
+    //     >
+    //       <motion.div
+    //         initial={{ scale: 0.95, opacity: 0 }}
+    //         animate={{ scale: 1, opacity: 1 }}
+    //         exit={{ scale: 0.95, opacity: 0 }}
+    //         className={cn(
+    //           "w-full max-w-2xl overflow-hidden rounded-lg shadow-2xl",
+    //           "border-[0.33px] border-fade-dark dark:border-fade-dark/90",
+    //           "bg-white dark:bg-[#0b0b0e]",
+    //         )}
+    //         onClick={stopPropagation}
+    //       >
+    <DialogWindow
+      k="k"
+      open={props.open}
+      setOpen={props.setOpen}
+      toolbar={Toolbar}
+    >
+      <HyperList
+        data={filtered}
+        component={FunctionListItem}
+        container={cn("h-[calc(60vh)] overflow-y-scroll")}
+        itemStyle={cn(
+          "space-y-2 p-4 border-b-[0.33px]",
+          " border-icon/80 last:border-0 dark:border-void",
+          "h-fit w-full cursor-pointer overflow-clip",
+        )}
+      />
+      {/* </motion.div> */}
+      {/* </motion.div> */}
+    </DialogWindow>
+    // )}
+    // </AnimatePresence>
   );
 }

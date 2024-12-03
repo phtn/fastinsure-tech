@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction, TransitionStartFunction } from "react";
 import { useTransition, useState, useCallback } from "react";
-import { onAwait, onWarn } from "../ctx/toasts";
+// import { onAwait, onWarn } from "../ctx/toasts";
 import { getUID } from "../actions";
 import { getLivez, getReadyz } from "@/lib/secure/callers/server";
 
@@ -17,9 +17,13 @@ export const useAuthFn = () => {
     transition(() => {
       transition(async () => {
         const result = await fn();
-        await onAwait(fn(), `"Running: ${name}`, `${name}: done!`);
+        localStorage.setItem(
+          name ?? Date.now().toString(36),
+          JSON.stringify(result),
+        );
+        // await onAwait(fn(), `"Running: ${name}`, `${name}: done!`);
         if (!result) {
-          onWarn(`return-type: ${String(result)}`);
+          // onWarn(`return-type: ${String(result)}`);
         }
         if (set) set(result);
       });

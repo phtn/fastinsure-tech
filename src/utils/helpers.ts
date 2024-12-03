@@ -658,3 +658,8 @@ export const onSettle =
   (setLoading: Dispatch<SetStateAction<boolean>>) => () => {
     setLoading(false);
   };
+
+export const excludeProp = <T extends object>(o: T, ...keys: string[]) => {
+  const ex = new Set(keys);
+  return Object.fromEntries(Object.entries(o).filter(([k]) => !ex.has(k)));
+};

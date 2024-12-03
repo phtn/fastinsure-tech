@@ -2,13 +2,19 @@ import { useAuthCtx } from "@/app/ctx/auth";
 import { useManager } from "@/lib/hooks/useManager";
 import { ActionCard, Action, ActionLink } from "@/ui/action-card";
 import { BookOpenIcon, QrCodeIcon } from "@heroicons/react/24/outline";
-import { type ReactNode, useCallback, useState } from "react";
+import {
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Qr } from "./qr-viewer";
 import { Button } from "@nextui-org/react";
 import { Square2StackIcon } from "@heroicons/react/24/solid";
 import { QrDetails } from "./qr-details";
 import { QrCodegen } from "./qr-codegen";
-import { copyFn, toggleState } from "@/utils/helpers";
+import { copyFn, Err, toggleState } from "@/utils/helpers";
 import { FileSymlinkIcon } from "lucide-react";
 import { type DualIcon } from "@/app/types";
 
@@ -18,11 +24,23 @@ export const CreateAgentCode = () => {
   const [open, setOpen] = useState(false);
 
   const handleCreateAgentCode = useCallback(async () => {
-    await newAgentCode(user);
-    setOpen(true);
+    await newAgentCode(user).then(setOpen).catch(Err);
   }, [newAgentCode, user]);
 
+  useEffect(() => {
+    if (agentCode) {
+      console.log("actions", agentCode);
+      console.table(agentCode);
+    }
+  }, [agentCode]);
+
   const handleToggleOpen = useCallback(() => toggleState(setOpen), []);
+
+  const url = useMemo(
+    () =>
+      agentCode?.url + `&exp=$` + (Date.now() + (agentCode?.expiry ?? 0)) + `$`,
+    [agentCode?.url, agentCode?.expiry],
+  );
 
   const QrViewer = () => {
     return (
@@ -30,18 +48,18 @@ export const CreateAgentCode = () => {
         <Qr.Content title="Activation Code Generated" close={handleToggleOpen}>
           <Qr.Body>
             <Qr.Code>
-              <QrCodegen url={agentCode?.data.url} />
+              <QrCodegen url={url} />
             </Qr.Code>
             <Qr.Detail>
               <QrDetails
-                key_code={agentCode?.data.code}
-                expiry={agentCode?.data.expiry}
+                key_code={agentCode?.code}
+                expiry={agentCode?.expiry}
               />
             </Qr.Detail>
           </Qr.Body>
         </Qr.Content>
         <Qr.Footer>
-          <FooterContent text={agentCode?.data.url} />
+          <FooterContent text={url} />
         </Qr.Footer>
       </Qr>
     );

@@ -88,6 +88,7 @@ export const DesktopSidebar = ({
           "absolute top-0 z-50 my-6 h-[calc(100vh/12)] w-[20px] cursor-w-resize rounded-full bg-primary-50/50 shadow-2xl shadow-void dark:bg-primary-200/90",
           { "cursor-e-resize": !open },
           "transition-colors duration-1000 ease-in-out dark:hover:bg-[#B8B4AC]/80",
+          "border-b-[0.33px] border-l-[0.33px] border-slate-400/40",
         )}
       />
       <motion.button

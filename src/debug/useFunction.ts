@@ -1,7 +1,7 @@
 import { getUID } from "@/app/actions";
 import { useAuthCtx } from "@/app/ctx/auth";
 import { useVex } from "@/app/ctx/convex";
-import { onSuccess, onWarn } from "@/app/ctx/toasts";
+import { onWarn } from "@/app/ctx/toasts";
 import { useNav } from "@/app/dashboard/hooks/useNav";
 import type { DualIcon } from "@/app/types";
 import { getLivez } from "@/lib/secure/callers/server";
@@ -11,6 +11,7 @@ import type { SelectUser, UserRole } from "@convex/users/d";
 import { IdentificationIcon } from "@heroicons/react/24/solid";
 import { type ParsedToken } from "firebase/auth";
 import { ServerIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import {
   type Dispatch,
   type SetStateAction,
@@ -49,9 +50,10 @@ export const useFunction = () => {
   const [vxUser, setVxUser] = useState<SelectUser | null>(null);
 
   const [pending, func] = useTransition();
+  const router = useRouter();
 
   const updateFnList = () => {
-    onSuccess("Fn list updated.");
+    router.push("/sandbox");
   };
 
   const startFn = <T>(

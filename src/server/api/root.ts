@@ -3,12 +3,16 @@ import { convexRouter } from "./routers/conv";
 import { authRouter } from "./routers/auth";
 import { serverRouter } from "./routers/server";
 import { docaiRouter } from "./routers/docai";
+import { managerRoute } from "./routers/manager";
+import { agentRoute } from "./routers/agent";
 
 export const appRouter = router({
   auth: authRouter,
   convex: convexRouter,
   docai: docaiRouter,
   server: serverRouter,
+  manager: managerRoute,
+  agent: agentRoute,
 });
 
 export type AppRouter = typeof appRouter;

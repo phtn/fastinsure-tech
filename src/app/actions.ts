@@ -1,15 +1,16 @@
 "use server";
 
-import { activateUser, getUser, verifyAgentCode } from "@/lib/secure/callers";
+import { activateUser, getUser } from "@/lib/secure/callers";
 import {
   ActivateUserSchema,
-  type HCodeParams,
   HCodeParamsSchema,
+  type HCodeResponseData,
   type UserRecord,
 } from "@/lib/secure/resource";
 import { cookies } from "next/headers";
 import { env } from "@/env";
 import { GoogleAuth } from "google-auth-library";
+import { verifyCode } from "@/lib/secure/callers/agent";
 
 export type Modes = "light" | "dark" | "system" | "dev" | "devdark";
 export interface ModeCookie {
@@ -104,22 +105,31 @@ export const deleteHCode = async () => {
   cookieStore.delete("fastinsure--hcode");
 };
 
-export const verifyHCode = async (decoded: HCodeParams, formData: FormData) => {
-  const validatedFields = HCodeParamsSchema.safeParse({
-    key_code: formData.get("key_code")?.toString(),
+export const verifyHCode = async (
+  vres: HCodeResponseData | undefined,
+  f: FormData,
+) => {
+  if (vres) return vres;
+
+  const v = HCodeParamsSchema.safeParse({
+    code: f.get("code") as string,
+    hkey: f.get("hkey") as string,
+    grp: f.get("grp") as string,
+    sha: f.get("sha") as string,
+    nonce: f.get("nonce") as string,
   });
 
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    };
+  if (v.error) {
+    // return {
+    //   errors: v.error.flatten().fieldErrors,
+    // };
+    // return null;
+    return undefined;
   }
 
-  const response = await verifyAgentCode({
-    ...validatedFields.data,
-    ...decoded,
-  });
-  return response.data;
+  const response = await verifyCode(v.data);
+  console.log("actions - hcode", response);
+  return response?.Data;
 };
 
 export const setIdToken = async (idToken: string | undefined) => {
@@ -231,4 +241,24 @@ export const getCustomClaims = async () => {
 export const deleteCustomClaims = async () => {
   const cookieStore = await cookies();
   cookieStore.delete("fastinsure--claims");
+};
+
+export const setGroupCode = async (group_code: string) => {
+  const cookieStore = await cookies();
+  if (group_code)
+    cookieStore.set("fastinsure--group_code", group_code, {
+      ...defaultOpts,
+      path: "/",
+    });
+};
+
+export const getGroupCode = async () => {
+  const cookieStore = await cookies();
+  const value = cookieStore.get("fastinsure--group_code")?.value;
+  return value?.split(",");
+};
+
+export const deleteGroupCode = async () => {
+  const cookieStore = await cookies();
+  cookieStore.delete("fastinsure--group_code");
 };

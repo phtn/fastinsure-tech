@@ -2,7 +2,6 @@
 
 import { env } from "@/env";
 import type {
-  AgentCode,
   AuthVerification,
   AccountTokenResponse,
   TokenVerification,
@@ -14,6 +13,7 @@ import type {
   GetUser,
   ActivateUser,
   ActivateUserResponse,
+  AgentCodeResponse,
 } from "./resource";
 import { createEndpoint } from "../utils";
 import { getRefresh } from "@/app/actions";
@@ -79,7 +79,7 @@ export const createAgentCode = async (params: VerifyIdToken) => {
     },
     body: JSON.stringify(params),
   });
-  return response.json() as Promise<{ data: AgentCode }>;
+  return response.json() as Promise<AgentCodeResponse>;
 };
 
 export const verifyAgentCode = async (params: HCodeParams) => {
@@ -91,7 +91,7 @@ export const verifyAgentCode = async (params: HCodeParams) => {
     },
     body: JSON.stringify(params),
   });
-  return response.json() as Promise<{ data: HCodeResponse }>;
+  return response.json() as Promise<HCodeResponse>;
 };
 
 // SERVER STATUS

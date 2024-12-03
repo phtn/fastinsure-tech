@@ -5,12 +5,8 @@ import { Widget } from "@/ui/widget";
 import { Splash } from "./comp/splash";
 import { motion } from "framer-motion";
 import { HyperText } from "@/ui/hypertext";
-import { GenericAction } from "./comp/actions";
-import {
-  BookOpenIcon,
-  ShieldCheckIcon,
-  WindowIcon,
-} from "@heroicons/react/24/outline";
+// import { GenericAction } from "./comp/actions";
+// import { ShieldCheckIcon, WindowIcon } from "@heroicons/react/24/outline";
 import { BigActionCard } from "@/ui/action-card";
 import { FireIcon } from "@heroicons/react/24/solid";
 import { Button, Input } from "@nextui-org/react";
@@ -19,36 +15,37 @@ import { useCallback, useState } from "react";
 import { activateAccount } from "@/app/actions";
 import { useVex } from "@/app/ctx/convex";
 import { verifyUser } from "@/lib/secure/callers/auth";
-import { onWarn } from "@/app/ctx/toasts";
+// import { onWarn } from "@/app/ctx/toasts";
 import Json from "@/ui/json";
+import { LoaderMd } from "@/ui/loader";
 
 export const NeoOverview = () => {
   const { user, claims } = useAuthCtx();
   const { usr } = useVex();
   const [json, setJson] = useState<object | null>({});
 
-  const handleVerification = useCallback(async () => {
-    await verifyUser({ uid: user?.uid });
-  }, [user?.uid]);
+  // const handleVerification = useCallback(async () => {
+  //   await verifyUser({ uid: user?.uid });
+  // }, [user?.uid]);
 
-  const getUsr = useCallback(() => {
-    setJson({ payload: "test" });
-    if (!user?.uid) {
-      setJson({ uid: user?.uid });
-      return;
-    }
-    const vx = usr.get.byId(user.uid);
-    setJson(vx);
-  }, [user?.uid, usr.get]);
+  // const getUsr = useCallback(() => {
+  //   setJson({ payload: "test" });
+  //   if (!user?.uid) {
+  //     setJson({ uid: user?.uid });
+  //     return;
+  //   }
+  //   const vx = usr.get.byId(user.uid);
+  //   setJson(vx);
+  // }, [user?.uid, usr.get]);
 
-  const getCustomClaims = useCallback(async () => {
-    if (!user) {
-      onWarn("User is null");
-      return;
-    }
-    const claims = (await user?.getIdTokenResult()).claims;
-    setJson(claims);
-  }, [user]);
+  // const getCustomClaims = useCallback(async () => {
+  //   if (!user) {
+  //     onWarn("User is null");
+  //     return;
+  //   }
+  //   const claims = (await user?.getIdTokenResult()).claims;
+  //   setJson(claims);
+  // }, [user]);
 
   const getStoredClaims = useCallback(() => {
     setJson(claims);
@@ -152,13 +149,14 @@ export const NeoOverview = () => {
         <Widget.BaseII>
           <HStack cols={3} className="gap-4 px-4">
             <HStack.XsCol>
-              <div className="h-full w-full space-y-[0px] text-foreground">
-                <Widget.Title>
-                  <p className="decoration-slice p-4 font-bold tracking-wide underline decoration-primary-400 decoration-2 underline-offset-[6px]">
-                    Start here
-                  </p>
-                </Widget.Title>
-                <GenericAction
+              {claims ? (
+                <div className="h-full w-full space-y-[0px] text-foreground">
+                  <Widget.Title>
+                    <p className="decoration-slice p-4 font-bold tracking-wide underline decoration-primary-400 decoration-2 underline-offset-[6px]">
+                      Start here
+                    </p>
+                  </Widget.Title>
+                  {/* <GenericAction
                   loading={false}
                   label="Run test"
                   fn={handleVerification}
@@ -181,8 +179,11 @@ export const NeoOverview = () => {
                   subtext="Claims determines users access privileges."
                   title="Fetch Custom Claims"
                   icon={ShieldCheckIcon}
-                />
-              </div>
+                /> */}
+                </div>
+              ) : (
+                <LoaderMd />
+              )}
             </HStack.XsCol>
             <HStack.SmCol>
               <BigActionCard>

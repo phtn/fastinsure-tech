@@ -45,6 +45,8 @@ export function DialogWindow(props: DialogWindowProps) {
           onClick={close}
         >
           <motion.div
+            drag
+            dragMomentum={false}
             initial={{ scale: 0.95, opacity: 0, borderRadius: 112 }}
             animate={{ scale: 1, opacity: 1, borderRadius: 12 }}
             exit={{ scale: 0.85, opacity: 0, y: 20 }}
@@ -68,9 +70,9 @@ export function DialogWindow(props: DialogWindowProps) {
 
             <div
               className={cn(
-                "relative border-x border-b-[0.33px] border-t-0",
-                "rounded-b-[11.77px]",
-                "border-dock-border/40",
+                "relative overflow-hidden border-x border-b-[0.33px] border-t-0",
+                "rounded-b-xl",
+                "border-dock-border/20",
                 "dark:border-icon/40",
               )}
             >

@@ -7,7 +7,7 @@ import { CreateAgentCode } from "./comp/actions";
 import { Splash } from "./comp/splash";
 // import { useRequest } from "../hooks/useRequest";
 
-export const NeoOverview = () => {
+export const UOverview = () => {
   // const create = useRequest();
   return (
     <div className="overflow-auto pb-6">

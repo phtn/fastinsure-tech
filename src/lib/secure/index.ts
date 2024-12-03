@@ -1,19 +1,12 @@
-import { type AxiosHeaders } from "axios";
 import { createAxiosInstance } from "./axios";
 import { createFn, createNoParamFn } from "../utils";
 import { verifyOnSignin, verifyUser } from "./handlers/auth";
-import { env } from "@/env";
 import { status } from "./handlers/server";
+import { userCode } from "./handlers/manager";
+import { verifyCode } from "./handlers/agent";
 
-const Secure = (headers?: AxiosHeaders) => {
-  const ax = createAxiosInstance({
-    headers: {
-      ...headers,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-API-Key": env.RE_UP_SECURE_API_KEY,
-    },
-  });
+const Secure = () => {
+  const ax = createAxiosInstance({});
 
   return {
     auth: {
@@ -23,6 +16,12 @@ const Secure = (headers?: AxiosHeaders) => {
     server: {
       getLivez: createNoParamFn(status, ax),
       getReadyz: createNoParamFn(status, ax),
+    },
+    manager: {
+      generateCode: createFn(userCode, ax),
+    },
+    agent: {
+      verifyCode: createFn(verifyCode, ax),
     },
   };
 };

@@ -1,37 +1,49 @@
 import { useCallback, useState } from "react";
-import { createAgentCode } from "../secure/callers";
-import type { AgentCode, VerifyIdToken } from "../secure/resource";
-import { errHandler } from "@/utils/helpers";
+import type {
+  AgentCode,
+  AgentCodeResponse,
+  VerifyIdToken,
+} from "../secure/resource";
 import { onError, onSuccess } from "@/app/ctx/toasts";
 import { getSession } from "@/app/actions";
 import { type User } from "firebase/auth";
+import { generateCode } from "../secure/callers/manager";
 
 export const useManager = () => {
   const [loading, setLoading] = useState(false);
-  const [agentCode, setAgentCode] = useState<{ data: AgentCode } | undefined>();
+  const [agentCode, setAgentCode] = useState<AgentCode>();
 
-  const getAgentCode = useCallback(async (code: { data: AgentCode }) => {
-    if (code) {
-      setAgentCode(code);
-      return onSuccess("Agent Code Generated");
+  const getAgentCode = useCallback((response: AgentCodeResponse | null) => {
+    const ok = response?.Status === 200;
+    if (ok) {
+      setAgentCode(response.Data);
+      setLoading(false);
+      onSuccess("Agent Code Generated");
+      return ok;
     }
     setLoading(false);
-    return onError("Unable to generate code.");
+    onError("Unable to generate code.");
+    return ok;
   }, []);
 
   const newAgentCode = useCallback(
     async (user: User | null) => {
+      setLoading(true);
       const id_token = await getSession();
-      if (!id_token && !user) return;
+      if (!id_token && !user) return false;
       const params: VerifyIdToken = {
         id_token,
         uid: user?.uid,
         email: user?.email,
       };
-      console.table(params);
-      return await createAgentCode(params)
+      // console.table(params);
+      return await generateCode(params)
         .then(getAgentCode)
-        .catch(errHandler(setLoading));
+        .catch(() => {
+          onError("Re-authentication required.");
+          setLoading(false);
+          return false;
+        });
     },
     [getAgentCode],
   );

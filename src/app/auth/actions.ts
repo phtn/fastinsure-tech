@@ -1,6 +1,6 @@
-import { EmailAndPasswordSchema } from "../signin/schema";
+import { EmailAndPasswordSchema } from "./schema";
 
-export const signinStatus = async (
+export const actionState = async (
   p: Record<string, number> | undefined,
   f: FormData,
 ) => {
@@ -10,4 +10,5 @@ export const signinStatus = async (
   });
 
   if (v.success) return p;
+  return undefined;
 };

@@ -38,7 +38,7 @@ import {
   setUID,
 } from "@/app/actions";
 
-import { EmailAndPasswordSchema } from "../signin/schema";
+import { EmailAndPasswordSchema } from "../auth/schema";
 import type {
   OnSigninVerification,
   OnSigninVerificationResponse,
@@ -195,17 +195,21 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const signWithGoogle = useCallback(async () => {
     setGoogleSigning(true);
     const provider = new GoogleAuthProvider();
-    const userCredential = await signInWithPopup(auth, provider);
-    const u = userCredential.user;
-    if (u) {
-      setUser(u);
-      const vres = await initVerification(u, setUserRecord, setLoading);
-      setVResult(vres);
-    }
-    const oauthCredential =
-      GoogleAuthProvider.credentialFromResult(userCredential);
-    setOAuth(oauthCredential);
-    setGoogleSigning(false);
+    await signInWithPopup(auth, provider)
+      .then((userCredential) => {
+        const u = userCredential.user;
+        if (u) {
+          setUser(u);
+          initVerification(u, setUserRecord, setGoogleSigning)
+            .then(setVResult)
+            .catch(Err(setGoogleSigning));
+        }
+        const oauthCredential =
+          GoogleAuthProvider.credentialFromResult(userCredential);
+        setOAuth(oauthCredential);
+        setGoogleSigning(false);
+      })
+      .catch(Err(setGoogleSigning, "Google Auth closed."));
   }, []);
 
   const signOut = useCallback(async () => {

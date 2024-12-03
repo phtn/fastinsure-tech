@@ -1,3 +1,3 @@
 import { Secure } from "@/lib/secure";
 
-export const { auth, server } = Secure();
+export const { auth, server, manager, agent } = Secure();

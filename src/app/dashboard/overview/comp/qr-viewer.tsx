@@ -1,4 +1,3 @@
-import { VisuallyHidden } from "@nextui-org/react";
 import Link from "next/link";
 import type { PropsWithChildren, ReactNode } from "react";
 import { Drawer } from "vaul";
@@ -14,12 +13,10 @@ const Component = ({ children, open, onOpenChange }: ComponentProps) => {
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-foreground/10" />
         <Drawer.Content className="fixed bottom-24 left-0 right-0 z-[100] mt-28 flex h-fit flex-col rounded-t-xl bg-transparent px-[5.5rem] outline-none">
-          <VisuallyHidden>
-            <Drawer.Title>QR Viewer</Drawer.Title>
-            <Drawer.Description>
-              Shows a dialog box with QR code
-            </Drawer.Description>
-          </VisuallyHidden>
+          <Drawer.Title className="hidden">QR Viewer</Drawer.Title>
+          <Drawer.Description className="hidden">
+            Shows a dialog box with QR code
+          </Drawer.Description>
           {children}
         </Drawer.Content>
       </Drawer.Portal>
@@ -88,6 +85,7 @@ const Url = ({ url, children }: UrlProps) => (
     <div className="flex w-fit items-center gap-1 overflow-auto whitespace-nowrap">
       <Link
         href={url ?? ""}
+        target="_blank"
         className="font-mono text-xs font-light text-foreground/80 decoration-foreground hover:underline hover:underline-offset-4"
       >
         {url}

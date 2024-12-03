@@ -3,7 +3,10 @@ import { z } from "zod";
 /// SERVER
 
 export const QueryServer = z.object({
-  endpoint: z.string(),
+  Code: z.string(),
+  Err: z.record(z.string()).or(z.string()),
+  Message: z.string(),
+  Status: z.number(),
 });
 export type QServer = z.infer<typeof QueryServer>;
 export const ServerResponseSchema = z.object({
@@ -150,21 +153,51 @@ export const AgentCodeSchema = z.object({
 });
 export type AgentCode = z.infer<typeof AgentCodeSchema>;
 
+export const AgentCodeResponseSchema = z
+  .object({
+    Data: AgentCodeSchema,
+  })
+  .merge(QueryServer);
+export type AgentCodeResponse = z.infer<typeof AgentCodeResponseSchema>;
+
+export const HCodeSchema = z.object({
+  hkey: z.string().or(z.null()),
+  grp: z.string().or(z.null()),
+  nonce: z.string().or(z.null()),
+  sha: z.string().or(z.null()),
+});
+export type HCode = z.infer<typeof HCodeSchema>;
+
+export const HCodeDetailSchema = z
+  .object({
+    expiry: z.string().or(z.null()),
+    verified: z.boolean().or(z.null()),
+  })
+  .merge(HCodeSchema);
+export type HCodeDetail = z.infer<typeof HCodeDetailSchema>;
+
 export const HCodeParamsSchema = z.object({
-  key_code: z.string().min(6).max(6),
-  code: z.string().optional(),
+  code: z.string().min(6).max(6).optional(),
+  hkey: z.string().optional(),
   grp: z.string().optional(),
   nonce: z.string().optional(),
   sha: z.string().optional(),
 });
 export type HCodeParams = z.infer<typeof HCodeParamsSchema>;
 
-export const HCodeResponseSchema = z.object({
+export const HCodeResponseDataSchema = z.object({
   verified: z.boolean(),
   expiry: z.number().or(z.undefined()),
   url: z.string().url().or(z.undefined()),
   group_code: z.string().or(z.undefined()),
 });
+export type HCodeResponseData = z.infer<typeof HCodeResponseDataSchema>;
+
+export const HCodeResponseSchema = z
+  .object({
+    Data: HCodeResponseDataSchema,
+  })
+  .merge(QueryServer);
 export type HCodeResponse = z.infer<typeof HCodeResponseSchema>;
 
 const UserMetadataSchema = z.object({

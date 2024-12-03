@@ -3,20 +3,38 @@
 import { Screen } from "@/ui/screen";
 import { HStackII } from "@/ui/hstack";
 import { Image, Link, Slider, type SliderValue } from "@nextui-org/react";
-import { withAuth } from "../ctx/auth";
 import { SqcIcon } from "@/ui/icons";
-import { useCallback, useEffect, useState } from "react";
+import { useActionState, useCallback, useEffect, useState } from "react";
 import { DialogWindow } from "@/ui/window";
 import { ButtSqx } from "@/ui/button/index";
 import { FireIcon } from "@heroicons/react/24/solid";
 import { CommandLineIcon, UserIcon } from "@heroicons/react/24/outline";
-
-const SignComponent = () => {
+interface State {
+  title: string;
+  author: string;
+}
+export const Sandbox = () => {
   const [open, setOpen] = useState(false);
+
+  const defaultValues: State = { title: "", author: "" };
+  const submitFormI = useCallback(async (_: State, f: FormData) => {
+    const values = {
+      title: f.get("title") as string,
+      author: f.get("author") as string,
+    };
+    return values as State;
+  }, []);
+  const [_, action, pending] = useActionState(submitFormI, defaultValues);
+  // const submitFormII = useCallback(async (state: void | null, f: FormData) => {
+  //   console.log(null);
+  // }, []);
+
+  // const [err, action, pending] = useActionState( submitFormII, null )
+
   return (
     <Screen>
       <Screen.PadLg />
-      <SigninHeader />
+      <Header />
       <Screen.Dark>
         <HStackII cols={1}>
           <DialogWindow
@@ -26,7 +44,27 @@ const SignComponent = () => {
             setOpen={setOpen}
             variant="goddess"
           >
-            <div className="flex size-96 items-center justify-center space-x-4">
+            <div className="flex h-96 w-full items-center justify-center space-x-4">
+              <div className="flex size-72 items-center space-x-4 border stroke-[1.5px] px-4">
+                <form action={action} className="space-y-2 text-xs">
+                  <input
+                    name="title"
+                    className="bg-goddess p-2"
+                    placeholder="title"
+                  />
+                  <input
+                    name="author"
+                    className="bg-god p-2"
+                    placeholder="author"
+                  />
+                  <ButtSqx
+                    isLoading={pending}
+                    icon={FireIcon}
+                    size="md"
+                    type="submit"
+                  />
+                </form>
+              </div>
               <div className="flex h-[49px] items-center space-x-4 border stroke-[1.5px] px-4">
                 <ButtSqx icon={FireIcon} size="md" />
                 <ButtSqx icon={CommandLineIcon} size="lg" />
@@ -159,7 +197,7 @@ const Sqci = (props: { p: string; w: number; h: number }) => (
   </svg>
 );
 
-const SigninHeader = () => (
+const Header = () => (
   <div className="absolute left-0 top-0 z-[70] flex h-[calc(100vh*0.15)] w-full items-center space-x-4 pl-8">
     <div className="flex size-[24px] items-center justify-center rounded-full border-[0.33px] border-[#1B1F22]/50 bg-chalk xl:size-[32px]">
       <Link href="/">
@@ -172,10 +210,8 @@ const SigninHeader = () => (
     </div>
     <Link href="/">
       <h1 className="font-inst font-medium text-primary drop-shadow-lg xl:text-lg">
-        FastInsure Technologies
+        Sandbox
       </h1>
     </Link>
   </div>
 );
-
-export const SignContent = withAuth(SignComponent);

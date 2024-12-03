@@ -2,8 +2,9 @@
 import { CheckCircleIcon, StopCircleIcon } from "@heroicons/react/24/solid";
 import { Listbox, ListboxItem } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, type PropsWithChildren } from "react";
-import { useHCode } from "./useHCode";
+import { useMemo, type PropsWithChildren } from "react";
+import type { HCode } from "@/lib/secure/resource";
+import { cn } from "@/lib/utils";
 
 interface HCodeStatus {
   id: string;
@@ -12,85 +13,97 @@ interface HCodeStatus {
   status: boolean;
 }
 
-interface HCodeDetailsProps {
-  key_code?: string | undefined;
-  group?: string | undefined;
-  nonce?: string | undefined;
-  sha?: string | undefined;
-  expiry: string | undefined;
-  verified: boolean | null;
+// interface HCodeDetailsProps {
+//   hkey?: string | undefined;
+//   group?: string | undefined;
+//   nonce?: string | undefined;
+//   sha?: string | undefined;
+//   expiry: string | undefined;
+//   verified: boolean | null;
+// }
+//
+interface HCodeDetail {
+  hcode: HCode | null;
+  expiry: string | null;
+  verified?: boolean;
+  // statusFn: (status: boolean) => void;
 }
 
 export const HCodeDetails = ({
-  key_code,
-  group,
-  nonce,
-  sha,
+  hcode,
   expiry,
-  verified,
-}: HCodeDetailsProps) => {
+  verified = false,
+}: HCodeDetail) => {
+  // const [checked, setChecked] = useState(false);
   const pathname = usePathname();
   const valid_url = pathname === "/hcode";
-  const { checkStatuses } = useHCode();
 
   const status_data: HCodeStatus[] = useMemo(
     () => [
       {
         id: "url",
         label: "URL",
-        value: valid_url ? "Valid URL" : "Invalid URL",
+        value: valid_url ? "OK" : "INVALID",
         status: valid_url,
       },
       {
         id: "key",
         label: "Key",
-        value: key_code,
-        status: !!key_code,
+        value: hcode?.hkey ? "OK" : "INVALID",
+        status: !!hcode?.hkey,
       },
       {
         id: "group",
         label: "Group",
-        value: group,
-        status: !!group,
+        value: hcode?.grp ? "OK" : "INVALID",
+        status: !!hcode?.grp,
       },
       {
         id: "nonce",
         label: "Nonce",
-        value: nonce,
-        status: !!nonce,
+        value: hcode?.nonce ? "OK" : "INVALID",
+        status: !!hcode?.nonce,
       },
       {
         id: "sha",
         label: "SHA",
-        value: sha,
-        status: !!sha,
+        value: hcode?.sha ? "OK" : "INVALID",
+        status: !!hcode?.sha,
       },
       {
         id: "expiry",
         label: "Expiry",
-        value: !expiry
-          ? "Activation code is required to get expiry date."
-          : "Expired",
-        status: !!expiry,
+        // value: !expiry
+        //   ? "Activation code is required to get expiry date."
+        //   : "Expired",
+        value: expiry,
+        status: !!expiry && !expiry?.includes("ago"),
       },
       {
         id: "hcode",
         label: "Activation Code",
-        value: verified ? "Activation Code Verified" : null,
+        value: verified ? "Verified!" : null,
         status: !!verified,
       },
     ],
-    [key_code, expiry, group, nonce, sha, valid_url, verified],
+    [hcode, valid_url, verified, expiry],
   );
 
-  const getStatuses = useMemo(
-    () => status_data.filter((item) => item.status).some((s) => !s),
-    [status_data],
-  );
+  // const status = useMemo(
+  //   () => status_data.filter((item) => item.status).some((s) => !s),
+  //   [status_data],
+  // );
 
-  useEffect(() => {
-    checkStatuses(getStatuses);
-  }, [checkStatuses, getStatuses]);
+  // const updateStatus = useCallback(
+  //   (ok: boolean) => {
+  //     if (!ok) setChecked(true);
+  //   },
+  //   [setChecked],
+  // );
+
+  // useEffect(() => {
+  //   updateStatus(status);
+  // }, [updateStatus, status]);
 
   return (
     <ListboxWrapper>
@@ -121,11 +134,17 @@ const ListBoxContent = (props: {
 }) => (
   <div className="flex w-full items-center justify-between whitespace-nowrap border-b border-dashed border-foreground/20 py-1">
     <p className="font-semibold text-foreground/90">{props.label}</p>
-    <p className="font-jet text-foreground/80">{props.value}</p>
+    <p
+      className={cn("font-jet text-foreground/80", {
+        "text-rose-400": props.value?.toString().includes("ago"),
+      })}
+    >
+      {props.value}
+    </p>
   </div>
 );
 const success = "text-success-600 size-4";
-const idle = "text-zinc-600 size-4";
+const idle = "text-rose-400 size-4";
 
 const startContent = (condition: boolean) =>
   condition ? (

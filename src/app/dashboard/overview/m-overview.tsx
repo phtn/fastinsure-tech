@@ -2,35 +2,20 @@
 
 import { HStack } from "@/ui/hstack";
 import { Widget } from "@/ui/widget";
-import { CreateAgentCode, CreateRequest, GenericAction } from "./comp/actions";
+import { CreateAgentCode, CreateRequest } from "./comp/actions";
 import { Splash } from "./comp/splash";
 import { motion } from "framer-motion";
 import { HyperText } from "@/ui/hypertext";
-import { Button } from "@nextui-org/react";
 import { useAuthCtx } from "@/app/ctx/auth";
 
 import { BigActionCard } from "@/ui/action-card";
-import { CommandLineIcon, FireIcon } from "@heroicons/react/24/solid";
+import { FireIcon } from "@heroicons/react/24/solid";
 import { useRequest } from "../hooks/useRequest";
 import { Flag } from "./comp/status-flag";
-import { useVex } from "@/app/ctx/convex";
-import { useCallback } from "react";
-// import { Action } from "@/ui/action-card";
-// import { CatIcon } from "lucide-react";
 
 export const ManagerOverview = () => {
   const { user, vxuser } = useAuthCtx();
-  const { usr } = useVex();
   const create = useRequest();
-
-  const getvx = useCallback(async () => {
-    if (user?.uid) console.log(await usr.get.byId(user.uid));
-  }, [usr.get, user?.uid]);
-
-  const updatevx = useCallback(async () => {
-    if (user?.uid)
-      console.log(await usr.update({ uid: user.uid, fast_score: 1 }));
-  }, [usr, user?.uid]);
 
   return (
     <div className="overflow-auto pb-6">
@@ -74,22 +59,6 @@ export const ManagerOverview = () => {
                 </Widget.Title>
                 <CreateAgentCode />
                 <CreateRequest {...create} />
-                <GenericAction
-                  loading={false}
-                  fn={getvx}
-                  icon={CommandLineIcon}
-                  title={"Get Button"}
-                  subtext="𝒇(𝒙) ⟹ get vxuser"
-                  label="run"
-                />
-                <GenericAction
-                  loading={false}
-                  fn={updatevx}
-                  icon={CommandLineIcon}
-                  title={"Update Button"}
-                  subtext="𝒇(𝒙) ⟹ update vxuser fast_score"
-                  label="run"
-                />
               </div>
             </HStack.XsCol>
             <HStack.SmCol>
@@ -119,38 +88,3 @@ export const ManagerOverview = () => {
     </div>
   );
 };
-
-export const NextStep = ({}) => (
-  <div className="flex w-[calc(50vw)] items-center justify-between space-x-4 px-4 pt-5">
-    <div className="flex h-10 w-80 items-center overflow-x-hidden rounded-md bg-void/5 px-4 font-inst text-[10px] font-thin tracking-wide backdrop-blur-xl">
-      <p className="w-fit whitespace-nowrap"> _id: </p>
-    </div>
-    <div className="flex h-12 w-fit items-center space-x-8 whitespace-nowrap pl-28">
-      <p className="font-thin opacity-40">&middot;</p>
-      <p className="font-jet text-xs font-light uppercase tracking-wider">
-        Next step:
-      </p>
-      <Button variant="solid" color="primary" size="md" radius="sm">
-        Activate your account
-      </Button>
-    </div>
-  </div>
-);
-
-// const Stats = () => {
-//   const arrfour = [1, 2, 3, 4];
-//   return (
-//     <div className="mb-4 flex w-full gap-4">
-//       {arrfour.map((i) => (
-//         <Stat key={i}>
-//           <Stat.Header title="Users" tag="users" />
-//           <Stat.Icon icon={UsersIcon} />
-//           <Stat.Content>
-//             <Stat.Content.Value>10</Stat.Content.Value>
-//             <Stat.Content.Key>x</Stat.Content.Key>
-//           </Stat.Content>
-//         </Stat>
-//       ))}
-//     </div>
-//   );
-// };

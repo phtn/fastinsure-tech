@@ -28,7 +28,6 @@ import {
 import moment from "moment";
 import { CircleCheckBigIcon } from "lucide-react";
 import { copyFn } from "@/utils/helpers";
-import { useRenderDebug } from "@/debug/renderbug";
 
 interface QrDetailsProps {
   key_code: string | undefined;
@@ -44,8 +43,6 @@ export const QrDetails = (props: QrDetailsProps) => {
     (text: string) => () => copyFn({ name: text, text }),
     [],
   );
-
-  useRenderDebug("QrDetails", props);
 
   return (
     <Accordion
