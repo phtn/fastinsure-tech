@@ -84,7 +84,7 @@ const ResultComponent = ({ result }: ResultProps) => {
 
 const Result = memo(ResultComponent);
 
-const FunctionListItem = (props: TestFunction) => {
+const FnListItem = (props: TestFunction) => {
   return (
     <>
       <button onClick={props.fn} className="flex items-center space-x-4">
@@ -127,14 +127,15 @@ interface DevCommandProps {
 }
 
 export function DevCommands(props: DevCommandProps) {
-  const { close, filterFn, searchFn, keyListener, onKeyDown } = useWindow({
-    open: props.open,
-    setOpen: props.setOpen,
-  });
+  const { search, close, filterFn, searchFn, keyListener, onKeyDown } =
+    useWindow({
+      open: props.open,
+      setOpen: props.setOpen,
+    });
 
   const { devFnList, updateFnList, pending } = useFunction();
   const filtered: TestFunction[] = useMemo(
-    () => filterFn(devFnList),
+    () => filterFn(devFnList, 15),
     [devFnList, filterFn],
   );
 
@@ -153,43 +154,23 @@ export function DevCommands(props: DevCommandProps) {
         len={filtered.length}
         closeFn={close}
         action={updateFnList}
+        value={search}
       />
     ),
-    [close, filtered.length, pending, searchFn, updateFnList],
+    [close, filtered.length, search, pending, searchFn, updateFnList],
   );
 
   return (
-    // <AnimatePresence>
-    //   {open && (
-    //     <motion.div
-    //       initial={{ opacity: 0 }}
-    //       animate={{ opacity: 1 }}
-    //       exit={{ opacity: 0 }}
-    //       className={cn(
-    //         "fixed inset-0 flex items-center justify-center bg-zinc-950 bg-opacity-50 p-4",
-    //       )}
-    //       onClick={close}
-    //     >
-    //       <motion.div
-    //         initial={{ scale: 0.95, opacity: 0 }}
-    //         animate={{ scale: 1, opacity: 1 }}
-    //         exit={{ scale: 0.95, opacity: 0 }}
-    //         className={cn(
-    //           "w-full max-w-2xl overflow-hidden rounded-lg shadow-2xl",
-    //           "border-[0.33px] border-fade-dark dark:border-fade-dark/90",
-    //           "bg-white dark:bg-[#0b0b0e]",
-    //         )}
-    //         onClick={stopPropagation}
-    //       >
     <DialogWindow
       k="k"
       open={props.open}
       setOpen={props.setOpen}
       toolbar={Toolbar}
+      value={search}
     >
       <HyperList
         data={filtered}
-        component={FunctionListItem}
+        component={FnListItem}
         container={cn("h-[calc(60vh)] overflow-y-scroll")}
         itemStyle={cn(
           "space-y-2 p-4 border-b-[0.33px]",
@@ -197,10 +178,6 @@ export function DevCommands(props: DevCommandProps) {
           "h-fit w-full cursor-pointer overflow-clip",
         )}
       />
-      {/* </motion.div> */}
-      {/* </motion.div> */}
     </DialogWindow>
-    // )}
-    // </AnimatePresence>
   );
 }

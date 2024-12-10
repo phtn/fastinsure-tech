@@ -1,15 +1,18 @@
 "use client";
 
+import { useAuthCtx } from "@/app/ctx/auth";
 import { HStack } from "@/ui/hstack";
+import { HyperText } from "@/ui/hypertext";
 import { Widget } from "@/ui/widget";
+import { motion } from "framer-motion";
 import { CreateAgentCode, CreateRequest } from "./comp/actions";
 import { Splash } from "./comp/splash";
-import { motion } from "framer-motion";
-import { HyperText } from "@/ui/hypertext";
-import { useAuthCtx } from "@/app/ctx/auth";
 
-import { BigActionCard } from "@/ui/action-card";
-import { FireIcon } from "@heroicons/react/24/solid";
+import { Window } from "@/ui/window";
+import {
+  ArrowTrendingUpIcon,
+  ChatBubbleLeftRightIcon,
+} from "@heroicons/react/24/outline";
 import { useRequest } from "../hooks/useRequest";
 import { Flag } from "./comp/status-flag";
 
@@ -18,7 +21,7 @@ export const ManagerOverview = () => {
   const create = useRequest();
 
   return (
-    <div className="overflow-auto pb-6">
+    <div className="overflow-auto rounded-tl-3xl p-4">
       <Splash text={""}>
         <div className="absolute top-4 z-[60] flex h-1/2 w-1/3 items-center space-x-2 border-primary px-12 font-inst text-2xl delay-1000">
           {user ? (
@@ -62,7 +65,27 @@ export const ManagerOverview = () => {
               </div>
             </HStack.XsCol>
             <HStack.SmCol>
-              <BigActionCard>
+              <div className="flex w-full justify-between space-x-4">
+                <Window
+                  title="Activity"
+                  icon={ArrowTrendingUpIcon}
+                  variant="god"
+                >
+                  <div className="flex h-96 w-full bg-chalk dark:bg-slate-300/80"></div>
+                </Window>
+                {/* <Window title="Notifications" variant="god">
+                  <div className="flex h-96 w-full bg-chalk dark:bg-slate-300/80"></div>
+                </Window> */}
+                <Window
+                  title="Messages"
+                  icon={ChatBubbleLeftRightIcon}
+                  variant="god"
+                >
+                  <div className="flex h-96 w-full bg-chalk dark:bg-slate-300/80"></div>
+                </Window>
+              </div>
+
+              {/* <BigActionCard>
                 <BigActionCard.Icon icon={FireIcon} />
                 <div>
                   <BigActionCard.Header>
@@ -76,7 +99,7 @@ export const ManagerOverview = () => {
                   </div>
                 </div>
                 <div className="h-full w-full rounded-lg bg-void"></div>
-              </BigActionCard>
+              </BigActionCard> */}
             </HStack.SmCol>
             <HStack.XsCol>
               <div className="h-full w-full text-background"></div>
@@ -88,3 +111,48 @@ export const ManagerOverview = () => {
     </div>
   );
 };
+
+// const ActivityGrid = (props: { data: BentoCardProps[] }) => {
+//   return (
+//     <div className="h-full w-full">
+//       <div className="h-full w-full">
+//         <BentoGrid className="h-full w-full rounded-xl backdrop-blur-xl">
+//           {props.data.map((activity) => (
+//             <BentoCardDash
+//               key={activity.title}
+//               {...activity}
+//               className="col-span-3 h-fit w-full whitespace-nowrap"
+//             />
+//           ))}
+//         </BentoGrid>
+//       </div>
+//     </div>
+//   );
+// };
+
+// const activity_data: BentoCardProps[] = [
+//   {
+//     icon: DocumentIcon,
+//     title: "Request Status",
+//     description: "",
+//     href: "/",
+//     cta: "Learn more",
+//     className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
+//   },
+//   {
+//     icon: BellIcon,
+//     title: "Notifications",
+//     description: "",
+//     href: "/",
+//     cta: "Learn more",
+//     className: "lg:row-start-1 lg:row-end-1 lg:col-start-1 lg:col-end-1",
+//   },
+//   {
+//     icon: ChatBubbleLeftRightIcon,
+//     title: "Messages",
+//     description: "",
+//     href: "/",
+//     cta: "Learn more",
+//     className: "lg:row-start-1 lg:row-end-1 lg:col-start-1 lg:col-end-1",
+//   },
+// ];

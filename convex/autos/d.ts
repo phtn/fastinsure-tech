@@ -27,15 +27,18 @@ export const auto_schema = v.object({
   vin_no: v.optional(v.string()),
   cr_no: v.optional(v.string()),
   cr_date: v.optional(v.string()),
-  gross_wt: v.optional(v.string()),
-  net_wt: v.optional(v.string()),
-  shipping_wt: v.optional(v.string()),
+  gross_wt: v.optional(v.number()),
+  net_wt: v.optional(v.number()),
+  net_cap: v.optional(v.number()),
+  shipping_wt: v.optional(v.number()),
   denomination: v.optional(v.string()),
   fuel: v.optional(v.string()),
-  cylinders: v.optional(v.string()),
+  cylinders: v.optional(v.number()),
+  displacement: v.optional(v.string()),
   chassis_no: v.optional(v.string()),
   metadata: v.optional(v.record(v.string(), v.any())),
   updated_at: v.optional(v.float64()),
 });
 
 export type InsertAuto = Infer<typeof auto_schema>;
+export type SelectAuto = Infer<typeof auto_schema>;

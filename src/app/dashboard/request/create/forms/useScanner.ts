@@ -3,17 +3,18 @@ import { scanDocument } from "@/lib/docai/caller";
 import type { RawDocument, SpecialEntity } from "@/lib/docai/resource";
 import { errHandler } from "@/utils/helpers";
 import { useState } from "react";
+import { exampleResult } from "./components";
 
 export const useScanner = () => {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<SpecialEntity[] | null>(null);
+  const [result, setResult] = useState<SpecialEntity[] | null>(exampleResult);
   const [elapsed, setElapsed] = useState(0);
+  const [startTime, setStartTime] = useState<number>(0);
 
-  let startTime: number;
   let endTime: number;
   const handleScanDocument = (rawDocument: RawDocument | null) => () => {
     if (!rawDocument) return;
-    startTime = Date.now();
+    setStartTime(Date.now());
     setLoading(true);
     scanDocument(rawDocument)
       .then((response) => {

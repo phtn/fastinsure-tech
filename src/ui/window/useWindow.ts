@@ -1,18 +1,19 @@
 import {
-  type ChangeEvent,
+  ChangeEvent,
   type Dispatch,
-  type MouseEvent,
   type SetStateAction,
   useCallback,
   useState,
 } from "react";
-
-export type Keys = "j" | "k";
-interface FilterProps {
-  id?: number | string;
-  name: string;
-  description?: string;
-}
+import {
+  stopPropagation as stopProp,
+  searchFn as sfn,
+  onKeyDown as okd,
+  keyListener as kl,
+  close as closeFn,
+  type FilterProps,
+  type Keys,
+} from "./utils";
 
 export interface UseWindow {
   open: boolean;
@@ -20,18 +21,15 @@ export interface UseWindow {
 }
 export const useWindow = ({ open, setOpen }: UseWindow) => {
   const [search, setSearch] = useState("");
-  const close = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-
-  const stopPropagation = useCallback((e: MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-  }, []);
+  const close = useCallback(() => closeFn(setOpen), [setOpen]);
 
   const searchFn = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
     setSearch(e.target.value);
   }, []);
+
+  const stopPropagation = useCallback(() => stopProp, []);
+  const onKeyDown = useCallback((k: Keys) => okd(k, setOpen), [setOpen]);
+  const keyListener = useCallback((fn: () => void) => kl(fn), []);
 
   const filterFn = useCallback(
     <T extends FilterProps>(list: T[], max?: number) =>
@@ -44,27 +42,6 @@ export const useWindow = ({ open, setOpen }: UseWindow) => {
         .slice(0, max ?? 5),
     [search],
   );
-
-  const onKeyDown = useCallback(
-    <T, R extends void>(key: Keys, action?: (p?: T) => R) =>
-      (e: KeyboardEvent) => {
-        if (e.key === key && (e.metaKey || e.ctrlKey)) {
-          e.preventDefault();
-          setOpen((prev) => !prev);
-          if (typeof action !== "undefined") {
-            action();
-          }
-        }
-      },
-    [setOpen],
-  );
-
-  const keyListener = useCallback((keydownFn: (e: KeyboardEvent) => void) => {
-    return {
-      add: () => document.addEventListener("keydown", keydownFn),
-      remove: () => document.removeEventListener("keydown", keydownFn),
-    };
-  }, []);
 
   return {
     open,

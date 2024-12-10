@@ -17,12 +17,12 @@ export const Header = ({ title, sm, xs }: HeaderProps) => {
   return (
     <div
       className={cn(
-        "relative z-50 h-fit w-full p-6",
-        { "px-6 py-4": sm },
-        { "px-6 py-2": xs },
+        "relative z-50 h-14 w-full",
+        { "px-2 py-4": sm },
+        { "px-2 py-2": xs },
       )}
     >
-      <section className="flex items-center px-2 leading-none">
+      <section className="flex h-full items-end px-4 leading-none">
         <Link
           href={`/dashboard/${title}`}
           className="font-inter text-xl font-semibold capitalize tracking-tighter text-foreground opacity-100"
@@ -30,7 +30,7 @@ export const Header = ({ title, sm, xs }: HeaderProps) => {
           <motion.p
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.2, delay: 1.5, ease: "easeOut" }}
+            transition={{ duration: 0.2, delay: 0.5, ease: "easeOut" }}
           >
             {title}
           </motion.p>
@@ -40,8 +40,8 @@ export const Header = ({ title, sm, xs }: HeaderProps) => {
           <motion.span
             initial={{ opacity: 0, x: -2 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 2, ease: "easeOut" }}
-            className="rounded-md bg-default/60 px-1.5 py-1 font-mono text-[10px] uppercase leading-3"
+            transition={{ duration: 0.3, delay: 0.75, ease: "easeOut" }}
+            className="rounded-md bg-primary-100/60 px-1.5 py-1 font-mono text-[10px] uppercase leading-3"
           >
             {crumbs[1] === "dashboard" && !crumbs[2]
               ? "home"

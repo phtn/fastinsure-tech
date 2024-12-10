@@ -15,7 +15,7 @@ const BentoGrid = ({
   return (
     <div
       className={cn(
-        "grid w-full auto-rows-[22rem] grid-cols-3 gap-8 p-2",
+        "grid w-full grid-cols-1 p-2 md:auto-rows-[22rem] md:grid-cols-3 md:gap-8",
         className,
       )}
     >
@@ -80,4 +80,59 @@ const BentoCard = (props: BentoCardProps) => {
   );
 };
 
-export { BentoCard, BentoGrid };
+const BentoCardDash = (props: BentoCardProps) => {
+  const { title, className, description, cta } = props;
+  return (
+    <div>
+      <div
+        key={title}
+        className={cn(
+          "group relative flex h-20 w-full cursor-pointer flex-col justify-between overflow-hidden rounded-md bg-god font-inst backdrop-blur-xl",
+          // light styles
+          "",
+          // dark styles
+          "transform-gpu dark:bg-black/50",
+          className,
+        )}
+      >
+        <div className="pointer-events-none z-10 flex items-center gap-3 p-3 transition-all duration-300 transform-gpu group-hover:-translate-y-10">
+          <props.icon className="size-5 origin-center opacity-50 transition-transform duration-300 ease-in-out transform-gpu group-hover:scale-0" />
+          <div>
+            <h3 className="font-inter text-sm font-medium tracking-tight">
+              {title}
+            </h3>
+            <p className="max-w-lg text-sm font-light opacity-60">
+              {description}
+            </p>
+          </div>
+        </div>
+
+        <div
+          className={cn(
+            "pointer-events-none absolute bottom-0 flex w-full flex-row items-center opacity-0 transition-all duration-300 translate-y-10 transform-gpu group-hover:opacity-100 group-hover:translate-y-0",
+          )}
+        >
+          <Button
+            variant="solid"
+            color="primary"
+            radius="none"
+            size="md"
+            className="pointer-events-auto w-full text-sm tracking-tight text-background hover:opacity-100"
+          >
+            {cta}
+            <ArrowRightIcon className="ml-2 size-4 text-background" />
+          </Button>
+        </div>
+
+        <div className="pointer-events-none absolute inset-0 transition-all duration-300 transform-gpu group-hover:bg-black/[.03] group-hover:dark:bg-neutral-800/10" />
+      </div>
+      <div className="h-fit w-full py-2">
+        <div className="flex h-24 w-full items-center justify-center rounded-md border-[0.33px] border-icon dark:border-icon-dark">
+          border
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export { BentoCard, BentoCardDash, BentoGrid };

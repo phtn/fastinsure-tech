@@ -123,19 +123,18 @@ function RequestComponent() {
   const handlePostalCodeChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const location = getLocation(e.target.value);
-      console.table(location);
       reset({
         line_2: location?.line_2,
         city: location?.city,
         state: location?.state,
+        country: "PH",
       });
     },
     [getLocation, reset],
   );
-
   return (
     <Wrapper>
-      <FormHeader isLoading={false} isValid={true} title="New Request Form" />
+      {/* <FormHeader isLoading={false} isValid={true} title="New Request Form" /> */}
       <form action={saveAsDraft} className="w-full">
         <CardGroup title="Policy Type">
           <RadioGroupCard

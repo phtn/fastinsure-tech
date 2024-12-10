@@ -15,12 +15,7 @@ const DashboardLayout = ({ children }: PropsWithChildren) => {
       <Sidebar>
         <SidebarBody className="justify-between gap-10 bg-foreground backdrop-blur-3xl dark:bg-background/90">
           <div className="flex w-fit flex-1 flex-col overflow-y-auto overflow-x-scroll">
-            <div className="mt-6 flex flex-col gap-2">
-              {/* <SidebarNavs /> */}
-              {/* {n_navs.map((nav, idx) => (
-                <SidebarNav key={idx} {...nav} />
-              ))} */}
-            </div>
+            <div className="mt-6 flex flex-col"></div>
           </div>
         </SidebarBody>
       </Sidebar>
@@ -30,7 +25,7 @@ const DashboardLayout = ({ children }: PropsWithChildren) => {
           {},
         )}
       >
-        <div className="_dark:bg-background relative flex h-full w-full flex-1 flex-col gap-2 rounded-tl-3xl border-l-[0.0px] border-foreground/15 bg-background p-2 md:p-4">
+        <div className="_dark:bg-background relative flex h-full w-full flex-1 flex-col gap-2 overflow-clip rounded-tl-3xl border-l-[0.0px] border-foreground/15 bg-background">
           {children}
         </div>
       </div>

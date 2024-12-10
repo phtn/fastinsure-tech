@@ -28,33 +28,51 @@ export const UserVerificationSchema = z.object({
 });
 export type UserVerification = z.infer<typeof UserVerificationSchema>;
 
-export const UserVerificationResponseSchema = z.object({
-  data: z.object({
-    uid: z.string(),
-    verified: z.boolean(),
-    claims: z.record(z.boolean()).nullable(),
-  }),
-  status: z.number(),
+export const UserVerificationResponseDataSchema = z.object({
+  uid: z.string(),
+  verified: z.boolean(),
+  claims: z.record(z.boolean()).nullable(),
 });
+export type UserVerificationResponseData = z.infer<
+  typeof UserVerificationResponseDataSchema
+>;
+export const UserVerificationResponseSchema = z
+  .object({
+    Data: UserVerificationResponseDataSchema,
+  })
+  .merge(QueryServer);
 export type UserVerificationResponse = z.infer<
   typeof UserVerificationResponseSchema
 >;
 
 export const OnSigninVerificationSchema = z.object({
   uid: z.string().or(z.undefined()),
-  id_token: z.string(),
-  refresh_token: z.string(),
 });
 export type OnSigninVerification = z.infer<typeof OnSigninVerificationSchema>;
 
-export const OnSigninVerificationResponseSchema = z.object({
-  data: z.object({
-    uid: z.string(),
-    verified: z.boolean(),
-    claims: z.record(z.boolean()).nullable(),
-  }),
-  status: z.number(),
+export const OnSigninVerificationResponseDataSchema = z.object({
+  uid: z.string(),
+  is_verified: z.boolean(),
+  group_code: z.string().optional(),
+  email: z.string(),
+  id: z.string(),
+  phone_number: z.string().optional(),
+  nickname: z.string().optional(),
+  group_id: z.string(),
+  photo_url: z.string().optional(),
+  is_active: z.boolean(),
+  address_id: z.string().optional(),
+  name: z.string(),
 });
+export type OnSigninVerificationResponseData = z.infer<
+  typeof OnSigninVerificationResponseDataSchema
+>;
+
+export const OnSigninVerificationResponseSchema = z
+  .object({
+    Data: OnSigninVerificationResponseDataSchema,
+  })
+  .merge(QueryServer);
 export type OnSigninVerificationResponse = z.infer<
   typeof OnSigninVerificationResponseSchema
 >;

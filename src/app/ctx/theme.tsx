@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -10,16 +11,12 @@ import {
 } from "react";
 import { getTheme, type Modes, setTheme } from "../actions";
 import { Switch } from "@nextui-org/react";
-import {
-  BoltIcon,
-  BoltSlashIcon,
-  MoonIcon,
-  SunIcon,
-} from "@heroicons/react/24/solid";
+import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
+import { Err } from "@/utils/helpers";
+import { keyListener, onKeyDown } from "@/ui/window/utils";
 interface ThemeProps {
   theme: Modes;
-  toggleTheme: VoidFunction;
-  devThemeToggle: VoidFunction;
+  toggle: VoidFunction;
 }
 const ThemeCtx = createContext<ThemeProps | null>(null);
 
@@ -33,11 +30,10 @@ export const Theme = ({ children }: PropsWithChildren) => {
   const stableValues = useMemo(
     () => ({
       theme,
-      devThemeToggle: () => (theme === "dev" ? "devDark" : "dev"),
-      toggleTheme: () => {
+      toggle: () => {
         const newTheme = theme === "light" ? "dark" : "light";
         setThemeState(newTheme);
-        setTheme(newTheme).catch(console.log);
+        setTheme(newTheme).catch(Err);
       },
     }),
     [theme],
@@ -59,47 +55,40 @@ export const useThemeCtx = () => {
 };
 
 export const ThemeSwitch = () => {
-  const { toggleTheme, theme } = useThemeCtx();
-
+  const { toggle, theme } = useThemeCtx();
   const isSelected = useMemo(() => theme === "light", [theme]);
+
+  const toggleSwitch = useCallback(() => {
+    const event = new KeyboardEvent("keydown", {
+      key: "i",
+      bubbles: true,
+      cancelable: true,
+      metaKey: true,
+      ctrlKey: true,
+    });
+    document.dispatchEvent(event);
+  }, []);
+
+  const { add, remove } = keyListener(onKeyDown("i", toggle));
+
+  useEffect(() => {
+    add();
+    return () => remove();
+  }, [add, remove]);
+
   return (
     <div className="flex flex-col gap-4">
       <Switch
         size="sm"
         color="primary"
         isSelected={isSelected}
-        onChange={toggleTheme}
+        onChange={toggleSwitch}
         thumbIcon={isSelected ? <MoonIcon /> : <SunIcon />}
         classNames={{
           wrapper:
-            "border-[0.33px] dark:bg-dock-dark/30 border-fade-dark shadow-inner",
-          thumb: "bg-fade-dark dark:bg-adam/50",
-          thumbIcon: "text-chalk drop-shadow-md",
-        }}
-      />
-    </div>
-  );
-};
-
-export const DevThemeSwitch = () => {
-  const { devThemeToggle, theme } = useThemeCtx();
-
-  const isSelected = useMemo(
-    () => theme === "dark" || theme === "devdark",
-    [theme],
-  );
-  return (
-    <div className="flex flex-col gap-2">
-      <Switch
-        size="sm"
-        color="primary"
-        isSelected={isSelected}
-        onChange={devThemeToggle}
-        thumbIcon={isSelected ? <BoltIcon /> : <BoltSlashIcon />}
-        classNames={{
-          wrapper: "border-[0.33px] border-void shadow-inner",
-          thumb: "bg-dock-dark dark:bg-transparent",
-          thumbIcon: "drop-shadow-md",
+            "border-[0.33px] dark:bg-dock-dark/30 bg-fade-dark border-fade-dark/80 shadow-inner dark:shadow-dock-dark shadow-zinc-950/40",
+          thumb: "bg-dock-dark border-[0.2px] border-fade-dark dark:bg-adam/50",
+          thumbIcon: "text-warning dark:text-icon-dark drop-shadow-md",
         }}
       />
     </div>

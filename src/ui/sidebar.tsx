@@ -207,7 +207,7 @@ export const SidebarNav = (props: NavProps) => {
         <div className={cn("group p-1", props.className)}>
           <IconComponent
             className={cn(
-              "transision-all size-[1.5rem] shrink-0 stroke-1 text-primary-200 drop-shadow-md duration-300 ease-out transform-gpu hover:text-primary-200 group-hover:text-chalk group-hover:scale-125 dark:text-primary-500",
+              "transision-all size-[1.25rem] shrink-0 stroke-1 text-primary-200 drop-shadow-md duration-300 ease-out transform-gpu hover:text-primary-200 group-hover:text-chalk group-hover:scale-110 dark:text-primary-500",
               {
                 "stroke-[1.5px] text-secondary dark:text-secondary":
                   pathname.length >= 2 && props.href.includes(sub!),

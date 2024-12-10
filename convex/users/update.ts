@@ -1,5 +1,5 @@
 import { mutation } from "@vex/server";
-import { user_updateable_schema, type UpdateUser } from "./d";
+import { user_updateable_schema } from "./d";
 import { checkUser } from "./create";
 
 export const update = mutation({
@@ -12,13 +12,13 @@ export const update = mutation({
       // throw new Error("User not found");
     }
 
-    const data_kv = Object.entries(data)
-      .filter((f) => f[0] === "uid")
-      .map(([k, v]) => [k, v]);
+    // const data_kv = Object.entries(data)
+    //   .filter((f) => f[0] === "uid")
+    //   .map(([k, v]) => [k, v]);
 
-    for (const d of data_kv) {
-      await db.patch(user._id, Object.fromEntries([d]) as UpdateUser);
-    }
+    // for (const d of data_kv) {
+    //   await db.patch(user._id, Object.fromEntries([d]) as UpdateUser);
+    // }
 
     if (user.group_code !== data.group_code) {
       await db.patch(user._id, { group_code: data.group_code });
@@ -28,7 +28,10 @@ export const update = mutation({
       await db.patch(user._id, { role: data.role });
     }
 
-    if (user.is_verified !== data.is_verified) {
+    if (
+      typeof data.is_verified !== "undefined" &&
+      user.is_verified !== data.is_verified
+    ) {
       await db.patch(user._id, { is_verified: data.is_verified });
     }
 

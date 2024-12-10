@@ -85,7 +85,7 @@ export function ActionBar() {
   }, [livez, elapsed]);
 
   return (
-    <div className="fixed bottom-8 right-8 z-[300] flex h-fit w-fit flex-col items-center justify-center dark:bg-background">
+    <div className="fixed bottom-8 right-8 z-[300] flex h-fit w-fit flex-col items-center justify-center rounded-lg dark:bg-background">
       <Dock direction="middle">
         {DATA.navbar.map((item) => (
           <DockIcon key={item.label}>

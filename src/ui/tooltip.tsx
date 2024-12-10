@@ -1,5 +1,13 @@
 "use client";
-import { type RefObject, type PropsWithChildren, type ReactNode } from "react";
+import type {
+  RefObject,
+  PropsWithChildren,
+  ReactNode,
+  ComponentRef,
+  ComponentPropsWithoutRef,
+} from "react";
+import { forwardRef } from "react";
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { motion, AnimatePresence, type MotionProps } from "framer-motion";
 import type { ClassName, DualIcon, TextProps, UID } from "@/app/types";
 import { cn } from "@/lib/utils";
@@ -128,3 +136,39 @@ export const Tooltip: TTooltip = Object.assign(TooltipComponent, {
   Title,
   Label,
 });
+
+export const TooltipContent = forwardRef<
+  ComponentRef<typeof TooltipPrimitive.Content>,
+  ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
+>(({ className, sideOffset = 4, ...props }, ref) => (
+  <TooltipPrimitive.Content
+    ref={ref}
+    sideOffset={sideOffset}
+    className={cn(
+      "animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground",
+      className,
+    )}
+    {...props}
+  />
+));
+TooltipContent.displayName = "TooltipContent";
+
+type TheTipProps = {
+  content: string | ReactNode;
+  children: ReactNode;
+};
+
+export const TheTip = ({ content, children }: TheTipProps) => {
+  return (
+    <Tooltip>
+      {children}
+      <TooltipContent side="right" sideOffset={4}>
+        <div className="rounded-md rounded-bl-none bg-void px-2 py-1 text-xs text-blue-100">
+          {content}
+        </div>
+      </TooltipContent>
+    </Tooltip>
+  );
+};
+
+export const TooltipTrigger = TooltipPrimitive.Trigger;

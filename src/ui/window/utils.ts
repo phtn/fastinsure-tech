@@ -1,10 +1,12 @@
 import type { ChangeEvent, Dispatch, MouseEvent, SetStateAction } from "react";
 
-interface FilterProps {
+export interface FilterProps {
   id?: number | string;
   name: string;
   description?: string;
 }
+export type Keys = "j" | "k" | "i";
+
 export const filterFn = <T extends FilterProps>(
   list: T[],
   key: string,
@@ -18,7 +20,6 @@ export const filterFn = <T extends FilterProps>(
     )
     .slice(0, max ?? 5);
 
-export type Keys = "j" | "k";
 export const onKeyDown =
   <T, R extends void>(
     k: Keys,

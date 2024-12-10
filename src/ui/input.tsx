@@ -1,34 +1,42 @@
-import { cn } from "@/lib/utils";
-import {
-  forwardRef,
-  type InputHTMLAttributes,
-  useMemo,
-  useState,
-  useCallback,
-  type ChangeEvent,
-} from "react";
-import { AsteriskIcon } from "lucide-react";
 import type { ClassName, DualIcon } from "@/app/types";
+import { cn } from "@/lib/utils";
 import {
   copyFn,
   mapUnion,
   opts,
   passwordSecure,
+  pasteFn,
   toggleState,
 } from "@/utils/helpers";
 import {
+  ClipboardIcon,
   EyeIcon,
   EyeSlashIcon,
   LockOpenIcon,
 } from "@heroicons/react/24/outline";
+import {
+  BoltIcon,
+  PhotoIcon,
+  Square2StackIcon,
+} from "@heroicons/react/24/solid";
 import { Button } from "@nextui-org/react";
-import { PhotoIcon, Square2StackIcon } from "@heroicons/react/24/solid";
+import { AsteriskIcon } from "lucide-react";
+import {
+  forwardRef,
+  useCallback,
+  useMemo,
+  useState,
+  type ChangeEvent,
+  type InputHTMLAttributes,
+  type MouseEvent,
+} from "react";
 
 import { type InsertFields } from "@/app/dashboard/request/create/forms/fields";
+import type { InsertAuto } from "@convex/autos/d";
 import type { InsertAddress } from "convex/addresses/d";
 import type { InsertSubject } from "convex/subjects/d";
-import type { InsertAuto } from "@convex/autos/d";
 import type { FieldValues, UseFormRegister } from "react-hook-form";
+import { ButtSpc } from "./button/button";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: DualIcon;
@@ -305,6 +313,7 @@ export const FastLight = forwardRef<HTMLInputElement, InputProps>(
   ),
 );
 FastLight.displayName = "FastLight";
+
 type GroupFields =
   | InsertFields<InsertSubject>[]
   | InsertFields<InsertAddress>[]
@@ -317,68 +326,87 @@ interface FieldGroupProps {
 export const FastFieldGroup = forwardRef<
   HTMLInputElement,
   InputProps & FieldGroupProps
->(({ className, type, ...props }, ref) => (
-  <div
-    className={cn(
-      "w-full overflow-hidden rounded-md border border-primary-200 bg-slate-300/15 shadow-sm shadow-primary-200 transition-all duration-300 ease-out transform-gpu hover:shadow-md dark:border-primary-300",
-      {
-        hidden: props.hidden,
-      },
-    )}
-  >
-    <div className="full flex h-10 items-center border-b-[0.33px] border-dotted border-primary-300 px-2 font-inter text-sm font-semibold tracking-tighter text-primary-800">
-      {props.group}
-    </div>
-    <div className="flex w-full">
-      {props.items.map((item) => (
-        <div
-          key={item.name}
-          className="flex h-[48px] w-full border-r-[0.33px] border-dashed border-primary-400/60 last:border-r-0"
-        >
-          <section className="relative flex h-12 items-center">
-            <div className="flex h-full w-fit items-center bg-background">
-              <div className="flex items-center px-2">
-                <span
-                  className={cn(
-                    "mt-[1.5px] font-inter text-xs capitalize tracking-tighter text-foreground/80 dark:text-primary-800",
-                    { "opacity-60": item.disabled },
-                  )}
-                >
-                  {item.title}
-                </span>
-                {item.required ? (
-                  <AsteriskIcon
+>(({ className, ...props }, _ref) => {
+  const paste = useCallback(
+    (id: string) => async (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      await pasteFn(id);
+    },
+    [],
+  );
+  return (
+    <div
+      className={cn(
+        "w-full overflow-hidden rounded-lg border border-primary-200 bg-primary-200/70 shadow-sm transition-all duration-300 ease-out transform-gpu hover:shadow-md dark:border-primary-300 dark:bg-primary-100",
+        {
+          hidden: props.hidden,
+        },
+      )}
+    >
+      <div className="full flex h-10 items-center border-b-[0.33px] border-dotted border-primary-300 px-2 font-inter text-sm font-semibold tracking-tighter text-primary-800">
+        {props.group}
+      </div>
+      <div className="flex w-full">
+        {props.items.map((item) => (
+          <div
+            key={item.name}
+            className="flex h-[48px] w-full border-r-[0.33px] border-dashed border-primary-400/60 last:border-r-0"
+          >
+            <section className="relative flex h-12 items-center">
+              <div className="flex h-full w-fit items-center bg-background">
+                <div className="flex items-center px-2">
+                  <span
                     className={cn(
-                      "-mr-2 -mt-1 ml-0.5 size-4 text-danger-400 dark:text-danger-600",
-                      {
-                        "opacity-50": item.disabled,
-                      },
+                      "mt-[1.5px] font-inter text-xs capitalize tracking-tighter text-icon dark:text-icon-dark",
+                      { "opacity-60": item.disabled },
                     )}
-                  />
-                ) : (
-                  "  "
-                )}
+                  >
+                    {item.title}
+                  </span>
+                  {item.required ? (
+                    <AsteriskIcon
+                      className={cn("-mr-2 -mt-1 ml-0.5 size-4 text-danger", {
+                        "opacity-50": item.disabled,
+                      })}
+                    />
+                  ) : (
+                    "  "
+                  )}
+
+                  {item.hint ? (
+                    <BoltIcon
+                      className={cn("-mr-2 -mt-1 ml-0.5 size-4 text-success", {
+                        "opacity-50": item.disabled,
+                      })}
+                    />
+                  ) : null}
+                </div>
               </div>
+            </section>
+            <div className="group relative flex w-full">
+              <Input
+                {...props.register(item.name)}
+                {...item}
+                className={cn(
+                  "h-[48px] bg-background",
+                  "font-arc font-medium tracking-wide text-foreground placeholder:text-xs",
+                  "ring-offset-primary-300 focus-visible:ring-offset-0",
+                  className,
+                )}
+              />
+              <ButtSpc
+                size="sm"
+                icon={ClipboardIcon}
+                onClick={paste(item.name)}
+                className="absolute right-1 top-1 z-[50] hidden size-fit group-hover:flex"
+              />
             </div>
-          </section>
-          <Input
-            {...item}
-            id={item.name}
-            {...props.register(item.name)}
-            ref={ref}
-            className={cn(
-              "h-[48px] bg-background",
-              "font-arc font-medium tracking-wide text-foreground placeholder:text-xs",
-              "ring-offset-primary-300 focus-visible:ring-offset-0",
-              className,
-            )}
-            type={type}
-          />
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-));
+  );
+});
 FastFieldGroup.displayName = "FastFieldGroup";
 
 interface FieldGroupIIProps {
@@ -389,13 +417,261 @@ interface FieldGroupIIProps {
   listOne: GroupFields;
   listTwo: GroupFields;
 }
-export const FastFieldGroupII = forwardRef<
+export const FastFieldGroupII = (props: FieldGroupIIProps & InputProps) => {
+  return (
+    <div
+      className={cn(
+        "w-full overflow-hidden rounded-lg border border-primary-200 bg-primary-200/70 shadow-sm transition-all duration-300 ease-out transform-gpu hover:shadow-md dark:border-primary-300 dark:bg-primary-100",
+        {
+          hidden: props.hidden,
+        },
+      )}
+    >
+      <div className="full flex h-10 items-center border-b-[0.33px] border-primary-300 px-2 font-inter text-sm font-semibold tracking-tighter text-primary-800">
+        {props.group}
+      </div>
+      <RenderInputList data={props.listOne} {...props} />
+      <RenderInputList data={props.listTwo} {...props} />
+    </div>
+  );
+};
+const RenderInputList = (props: {
+  register: UseFormRegister<FieldValues>;
+  data: GroupFields;
+  className?: ClassName;
+  changeFn?: (e: ChangeEvent<HTMLInputElement>) => void;
+  changeField?: keyof InsertAddress;
+}) => {
+  const { className, data, register, changeFn, changeField } = props;
+  const paste = useCallback(
+    (id: string) => async (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      await pasteFn(id);
+    },
+    [],
+  );
+  return (
+    <div className="flex w-full border-b-[0.33px] border-primary-300">
+      {data.map((item) => {
+        return (
+          <div
+            key={item.name}
+            className="flex h-[48px] w-full border-r-[0.33px] border-primary-400/60 last:border-r-0"
+          >
+            <section className="relative flex h-12 items-center">
+              <div className="flex h-full w-fit items-center bg-background">
+                <div className="flex items-center px-2">
+                  <span
+                    className={cn(
+                      "mt-[1.5px] font-inter text-xs capitalize tracking-tighter text-icon dark:text-icon-dark",
+                      { "opacity-60": item.disabled },
+                    )}
+                  >
+                    {item.title}
+                  </span>
+                  {item.required ? (
+                    <AsteriskIcon
+                      className={cn(
+                        "-mr-2 -mt-1 ml-0.5 size-4 text-danger-400 dark:text-danger-600",
+                        {
+                          "opacity-50": item.disabled,
+                        },
+                      )}
+                    />
+                  ) : null}
+                  {item.hint ? (
+                    <BoltIcon
+                      className={cn("-mr-2 -mt-1 ml-0.5 size-4 text-success", {
+                        "opacity-50": item.disabled,
+                      })}
+                    />
+                  ) : null}
+                </div>
+              </div>
+            </section>
+            <div className="group relative flex w-full">
+              <Input
+                id={item.name}
+                type={item.type}
+                placeholder={item.placeholder}
+                className={cn(
+                  "flex h-[48px] w-full bg-background",
+                  "font-arc font-medium tracking-wide text-foreground placeholder:font-normal",
+                  "ring-offset-primary-300 focus-visible:ring-offset-0",
+                  className,
+                  {
+                    "w-60":
+                      item.name.startsWith("owner") ||
+                      item.name.startsWith("mvfile") ||
+                      item.name.startsWith("series") ||
+                      item.name.startsWith("chassis"),
+                  },
+                )}
+                {...register(item.name, {
+                  onChange:
+                    item.name === changeField ? changeFn : () => undefined,
+                  required: item.required,
+                })}
+              />
+              <ButtSpc
+                size="sm"
+                icon={ClipboardIcon}
+                onClick={paste(item.name)}
+                className="absolute right-1 top-1 z-[50] hidden size-fit group-hover:flex"
+              />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+interface FieldGroupIIIProps {
+  group: string;
+  register: UseFormRegister<FieldValues>;
+  listOne: GroupFields;
+  listTwo: GroupFields;
+}
+
+export const FastFieldGroupIII = (props: FieldGroupIIIProps & InputProps) => {
+  return (
+    <div
+      className={cn(
+        "w-full overflow-hidden rounded-lg border border-primary-200 bg-primary-200/70 shadow-sm transition-all duration-300 ease-out transform-gpu hover:shadow-md dark:border-primary-300 dark:bg-primary-100",
+        {
+          hidden: props.hidden,
+        },
+      )}
+    >
+      <div className="full flex h-10 items-center border-b-[0.33px] border-primary-300 px-2 font-inter text-sm font-semibold tracking-tighter text-primary-800">
+        {props.group}
+      </div>
+      <RenderInputIII data={props.listOne} {...props} />
+      <RenderInputIII data={props.listTwo} {...props} />
+    </div>
+  );
+};
+
+const RenderInputIII = (props: {
+  register: UseFormRegister<FieldValues>;
+  data: GroupFields;
+  className?: ClassName;
+}) => {
+  const { className, data, register } = props;
+  const paste = useCallback(
+    (id: string) => async (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      await pasteFn(id);
+    },
+    [],
+  );
+
+  const RequiredOptions = useCallback(
+    (p: { required: boolean | undefined; disabled: boolean | undefined }) => {
+      const options = opts(
+        <AsteriskIcon
+          className={cn(
+            "-mr-2 -mt-1 ml-0.5 size-4 text-danger-400 dark:text-danger-600",
+            {
+              "opacity-50": p.disabled,
+            },
+          )}
+        />,
+        null,
+      );
+      return <>{options.get(!!p.required)}</>;
+    },
+    [],
+  );
+
+  const HyperOptions = useCallback(
+    (p: { disabled: boolean | undefined; hint: string | undefined }) => {
+      const options = opts(
+        <BoltIcon
+          className={cn("-mr-2 -mt-1 ml-0.5 size-4 text-success", {
+            "opacity-50": p.disabled,
+          })}
+        />,
+        null,
+      );
+      return <>{options.get(!!p.hint)}</>;
+    },
+    [],
+  );
+
+  return (
+    <div className="flex w-full border-b-[0.33px] border-primary-300">
+      {data.map((item) => {
+        const { ref, name, onBlur, onChange } = register(item.name);
+        return (
+          <div
+            key={item.name}
+            className="flex h-[48px] w-full border-r-[0.33px] border-primary-400/60 last:border-r-0"
+          >
+            <section className="relative flex h-12 items-center">
+              <div className="flex h-full w-fit items-center bg-background">
+                <div className="flex items-center px-2">
+                  <span
+                    className={cn(
+                      "mt-[1.5px] font-inter text-xs capitalize tracking-tighter text-icon dark:text-icon-dark",
+                      { "opacity-60": item.disabled },
+                    )}
+                  >
+                    {item.title}
+                  </span>
+                  <RequiredOptions
+                    disabled={item.disabled}
+                    required={item.required}
+                  />
+                  <HyperOptions disabled={item.disabled} hint={item.hint} />
+                </div>
+              </div>
+            </section>
+            <div className="group relative flex w-full">
+              <Input
+                ref={ref}
+                id={name}
+                name={name}
+                onBlur={onBlur}
+                onChange={onChange}
+                type={item.type}
+                placeholder={item.placeholder}
+                className={cn(
+                  "flex h-[48px] w-full bg-background",
+                  "font-arc font-medium tracking-wide text-foreground placeholder:font-normal",
+                  "ring-offset-primary-300 focus-visible:ring-offset-0",
+                  className,
+                  {
+                    "w-64":
+                      name.startsWith("owner") ||
+                      name.startsWith("mvfile") ||
+                      item.name.startsWith("model") ||
+                      name.startsWith("chassis"),
+                  },
+                )}
+              />
+              <ButtSpc
+                size="sm"
+                icon={ClipboardIcon}
+                onClick={paste(item.name)}
+                className="absolute right-1 top-1 z-[50] hidden size-fit group-hover:flex"
+              />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export const FastFieldGroupIV = forwardRef<
   HTMLInputElement,
   InputProps & FieldGroupIIProps
 >(({ className, type, ...props }, _ref) => (
   <div
     className={cn(
-      "w-full overflow-hidden rounded-md border border-primary-200 bg-slate-300/15 shadow-sm shadow-primary-200 transition-all duration-300 ease-out transform-gpu hover:shadow-md dark:border-primary-300",
+      "w-full overflow-hidden rounded-lg border border-primary-200 bg-primary-200/70 shadow-sm transition-all duration-300 ease-out transform-gpu hover:shadow-md dark:border-primary-300 dark:bg-primary-100",
       {
         hidden: props.hidden,
       },
@@ -486,15 +762,14 @@ export const FastFieldGroupII = forwardRef<
           </section>
           <Input
             {...item}
-            id={item.name}
             {...props.register(item.name)}
             // ref={ref}
             onChange={
               item.name === props.changeField ? props.changeFn : props.onChange
             }
             className={cn(
-              "h-[48px] bg-background",
-              "font-arc font-medium tracking-wide text-foreground placeholder:font-normal",
+              "h-[48px] bg-background placeholder:font-normal",
+              "font-arc font-medium tracking-wide text-foreground",
               "ring-offset-primary-300 focus-visible:ring-offset-0",
               className,
             )}
@@ -505,19 +780,19 @@ export const FastFieldGroupII = forwardRef<
     </div>
   </div>
 ));
-FastFieldGroupII.displayName = "FastFieldGroupII";
+FastFieldGroupIV.displayName = "FastFieldGroupIII";
 
 export const FastFile = forwardRef<HTMLInputElement, InputProps>(
   ({ className, ...props }, ref) => {
     return (
       <div
         className={cn(
-          "relative flex size-full flex-col items-center justify-center space-y-1 rounded-xl border border-dashed border-primary-300 bg-background shadow-sm shadow-primary-200 transition-all duration-300 ease-out transform-gpu hover:shadow-sm",
+          "relative flex size-full flex-col items-center justify-center space-y-1 rounded-xl border-[0.33px] border-dashed border-primary-400 bg-primary-100 shadow-sm shadow-primary-200 transition-all duration-300 ease-out transform-gpu hover:shadow-sm",
           className,
         )}
       >
         <PhotoIcon className="size-8 stroke-1 text-primary-500" />
-        <p className="font-inst text-xs font-medium opacity-80">
+        <p className="font-inst text-sm font-light opacity-80">
           {props.placeholder ?? "Drag & drop image or click here."}
         </p>
 

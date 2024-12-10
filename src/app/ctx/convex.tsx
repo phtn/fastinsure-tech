@@ -30,6 +30,7 @@ interface VexCtxValues {
     get: {
       all: () => SelectRequest[] | undefined;
       byId: (id: string) => Promise<SelectRequest | null>;
+      byAgentId: (uid: string) => Promise<SelectRequest[]>;
     };
     storage: {
       generateUrl: () => Promise<string>;
@@ -60,6 +61,8 @@ interface VexCtxValues {
     ) => Promise<(string & { __tableName: "users" }) | null>;
     get: {
       byId: (id: string) => Promise<SelectUser | null>;
+      byEmail: (email: string) => Promise<SelectUser | null>;
+      byGroup: (group_code: string) => Promise<SelectUser[]>;
     };
     update: (args: UpdateUser) => Promise<void>;
   };
@@ -72,6 +75,7 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
   const createRequest = useMutation(api.requests.create.default);
   const getAllRequests = useQuery(api.requests.get.all);
   const getRequestById = useMutation(api.requests.get.byId);
+  const getRequestsByAgentId = useMutation(api.requests.get.byAgentId);
   const generateUrl = useMutation(api.requests.storage.generateUrl);
 
   const request = useMemo(
@@ -80,12 +84,19 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
       get: {
         all: () => getAllRequests,
         byId: (id: string) => getRequestById({ request_id: id }),
+        byAgentId: async (uid: string) => await getRequestsByAgentId({ uid }),
       },
       storage: {
         generateUrl,
       },
     }),
-    [createRequest, getAllRequests, getRequestById, generateUrl],
+    [
+      createRequest,
+      getAllRequests,
+      getRequestById,
+      getRequestsByAgentId,
+      generateUrl,
+    ],
   );
 
   const createSubject = useMutation(api.subjects.create.default);
@@ -116,13 +127,18 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
 
   const createUser = useMutation(api.users.create.default);
   const getUserById = useMutation(api.users.get.byId);
+  const getUserByEmail = useMutation(api.users.get.byEmail);
+  const getUsersByGroup = useMutation(api.users.get.byGroup);
   const updateUser = useMutation(api.users.update.update);
 
   const usr = useMemo(
     () => ({
       create: async (args: InsertUser) => await createUser(args),
       get: {
-        byId: async (id: string) => await getUserById({ uid: id }),
+        byId: async (uid: string) => await getUserById({ uid }),
+        byEmail: async (email: string) => await getUserByEmail({ email }),
+        byGroup: async (group_code: string) =>
+          await getUsersByGroup({ group_code }),
       },
       update: async (args: UpdateUser) => {
         const exists = await getUserById({ uid: args.uid });
@@ -131,7 +147,7 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
         }
       },
     }),
-    [createUser, getUserById, updateUser],
+    [createUser, getUserById, updateUser, getUsersByGroup, getUserByEmail],
   );
 
   return (

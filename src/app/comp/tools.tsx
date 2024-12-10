@@ -21,9 +21,9 @@ export const SupportTools = () => {
 
 const Tools = () => {
   return (
-    <div className="h-96 pt-12 md:px-16">
+    <div className="h-96 px-2 pt-12 md:px-16">
       <div className="h-full w-full">
-        <BentoGrid className="bg-primary-900/20_ h-full rounded-xl p-0.5 backdrop-blur-xl">
+        <BentoGrid className="h-full rounded-xl p-0.5 backdrop-blur-xl">
           {tools.map((tool) => (
             <BentoCard key={tool.title} {...tool} className="h-fit" />
           ))}
@@ -65,7 +65,7 @@ const Blades = () => {
           />
         </div>
       ))}
-      <div className="pointer-events-none absolute h-80 w-[calc(100vw-220px)] rounded-sm border-x-8 border-y-5 border-primary-700/20" />
+      <div className="pointer-events-none absolute h-80 w-[calc(100vw-220px)] rounded-sm border-0 border-primary-700/20" />
     </div>
   );
 };

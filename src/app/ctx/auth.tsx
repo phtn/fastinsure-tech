@@ -1,5 +1,3 @@
-"use client";
-
 import { auth } from "@/lib/fire";
 import { useRouter, usePathname } from "next/navigation";
 import {
@@ -24,6 +22,8 @@ import {
   type PropsWithChildren,
   useEffect,
   type FC,
+  useTransition,
+  type TransitionStartFunction,
 } from "react";
 import { Err, Ok } from "@/utils/helpers";
 import {
@@ -32,6 +32,7 @@ import {
   deleteSession,
   deleteUID,
   getCustomClaims,
+  getGroupCode,
   setCustomClaims,
   setIdToken,
   setRefresh,
@@ -63,6 +64,7 @@ interface AuthCtxValues {
   setClaims: Dispatch<SetStateAction<UserRole[] | null>>;
   vresult: OnSigninVerificationResponse | null;
   vxuser: SelectUser | null;
+  pending: boolean;
 }
 
 const AuthCtx = createContext<AuthCtxValues | null>(null);
@@ -77,15 +79,54 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [vresult, setVResult] = useState<OnSigninVerificationResponse | null>(
     null,
   );
+  const [refreshTime, setRefreshTime] = useState((45 * 60) / 0.001);
   const [vxuser, setVxuser] = useState<SelectUser | null>(null);
-
-  const router = useRouter();
   const { usr } = useVex();
 
-  const getClaims = useCallback(async () => {
-    const cookieClaims = await getCustomClaims();
-    setClaims(cookieClaims as UserRole[]);
+  // const refreshTimer = NodeJS.Timeout
+
+  const startTimer = useCallback(() => {
+    const timer = setTimeout(() => {
+      setRefreshTime((prev) => prev - 1000);
+    }, 1000);
+    if (timer) clearTimeout(timer);
+  }, [setRefreshTime]);
+
+  const router = useRouter();
+
+  const uid = useMemo(() => user?.uid, [user?.uid]);
+
+  const [pending, fn] = useTransition();
+
+  const setFn = <T, P>(
+    transition: TransitionStartFunction,
+    action: (p: P | undefined) => Promise<T>,
+    set: Dispatch<SetStateAction<T>>,
+  ) => {
+    transition(() =>
+      transition(async (p = undefined) => {
+        const r = await action(p);
+        set(r);
+      }),
+    );
+  };
+
+  const getClaims = useCallback(() => {
+    setFn(fn, getCustomClaims, setClaims);
   }, []);
+
+  const verify = useCallback(
+    async (u: User) => {
+      const vres = await initVerification(u, setUserRecord, setLoading);
+      const group_code = vres.Data.group_code;
+      if (group_code !== "" && !vxuser?.group_code) {
+        await usr.update({ uid: u.uid, group_code });
+      }
+      console.log("group_code", group_code);
+      setVResult(vres);
+    },
+    [usr, vxuser?.group_code],
+  );
 
   const getvx = useCallback(
     async (uid: string) => {
@@ -96,28 +137,33 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       if (vx && claims && vx.role !== claimsStr) {
         await usr.update({ uid, role: claimsStr });
       }
+
+      const group_code = await getGroupCode();
+      if (group_code) {
+        await usr.update({ uid, group_code });
+
+        // update server
+      }
     },
     [claims, usr],
   );
 
   useEffect(() => {
-    if (user?.uid) {
-      getvx(user.uid).catch(Err);
-    }
-  }, [getvx, user?.uid]);
+    if (uid) getvx(uid).catch(Err);
+  }, [getvx, uid]);
 
   const createvx = useCallback(async () => {
     if (!user) return;
     const { uid, displayName, email, phoneNumber, photoURL } = user;
-    const vx = await usr.get.byId(uid);
-    if (!vx) {
+    const vxuid = await usr.get.byId(uid);
+    const vxemail = await usr.get.byEmail(email!);
+    if (!vxuid && !vxemail) {
       return await usr.create({
         uid,
         email: email!,
-        nickname: displayName ?? "",
+        nickname: displayName ?? email!,
         photo_url: photoURL ?? "",
         phone_number: phoneNumber ?? "",
-        group_code: "neo",
       });
     }
   }, [usr, user]);
@@ -128,11 +174,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const updateClaims = useCallback(async () => {
     const role = (claims?.join(",") ?? "neo") as UserRole;
-    if (!user?.uid) return;
+    if (!uid) return;
     if (vxuser && vxuser?.role !== role) {
-      await usr.update({ uid: user.uid, role });
+      await usr.update({ uid, role });
     }
-  }, [claims, user?.uid, usr, vxuser]);
+  }, [claims, uid, usr, vxuser]);
 
   useEffect(() => {
     updateClaims().catch(Err);
@@ -150,72 +196,68 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setLoading(true);
       if (u) {
         setUser(u);
-        // updateVxRole(u.uid).catch(Err);
         setLoading(false);
       } else {
         setLoading(false);
         cleanUpCookies().catch(Err);
       }
-      getClaims().catch(Err(setLoading));
+      getClaims();
     });
     return () => unsubscribe();
   }, [router, cleanUpCookies, getClaims]);
 
-  const signUserWithEmail = useCallback(async (f: FormData) => {
-    setLoading(true);
+  const signUserWithEmail = useCallback(
+    async (f: FormData) => {
+      setLoading(true);
 
-    const validated = EmailAndPasswordSchema.safeParse({
-      email: f.get("email"),
-      password: f.get("password"),
-    });
-    if (validated.error) {
-      onWarn("Invalid credentials.");
-      return;
-    }
+      const validated = EmailAndPasswordSchema.safeParse({
+        email: f.get("email"),
+        password: f.get("password"),
+      });
+      if (validated.error) {
+        onWarn("Invalid credentials.");
+        return;
+      }
 
-    const { email, password } = validated.data;
+      const { email, password } = validated.data;
 
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password,
-    );
-    const u = userCredential?.user;
-    if (u) {
-      setUser(u);
-      onSuccess("Authentication successful!");
-      const vres = await initVerification(u, setUserRecord, setLoading);
-      setVResult(vres);
-    } else {
-      onError("Unable to sign in.");
-      setLoading(false);
-    }
-  }, []);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      const u = userCredential?.user;
+      if (u) {
+        setUser(u);
+        onSuccess("Logged in!");
+        await verify(u);
+      } else {
+        onError("Unable to sign in.");
+        setLoading(false);
+      }
+    },
+    [verify],
+  );
 
   const signWithGoogle = useCallback(async () => {
     setGoogleSigning(true);
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider)
-      .then((userCredential) => {
-        const u = userCredential.user;
-        if (u) {
-          setUser(u);
-          initVerification(u, setUserRecord, setGoogleSigning)
-            .then(setVResult)
-            .catch(Err(setGoogleSigning));
-        }
-        const oauthCredential =
-          GoogleAuthProvider.credentialFromResult(userCredential);
-        setOAuth(oauthCredential);
-        setGoogleSigning(false);
-      })
-      .catch(Err(setGoogleSigning, "Google Auth closed."));
-  }, []);
+    const creds = await signInWithPopup(auth, provider);
+    const u = creds?.user;
+    if (u) {
+      setUser(u);
+      await verify(u);
+      setGoogleSigning(false);
+    }
+    const oauthCredential = GoogleAuthProvider.credentialFromResult(creds);
+    setOAuth(oauthCredential);
+    setGoogleSigning(false);
+  }, [verify]);
 
   const signOut = useCallback(async () => {
     await logout(auth)
       .then(Ok(setLoading, "Signed out."))
-      .catch(Err(setLoading, "Error signing out."));
+      .catch(Err(setLoading, "Sign out error."));
     await cleanUpCookies();
     router.push("/");
   }, [router, cleanUpCookies]);
@@ -234,6 +276,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       vresult,
       loading,
       vxuser,
+      pending,
     }),
     [
       user,
@@ -248,6 +291,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       vresult,
       loading,
       vxuser,
+      pending,
     ],
   );
 
@@ -276,12 +320,11 @@ const initVerification = async (
   await setRefresh(refresh_token);
   await setCustomClaims(customClaims?.join(",") ?? "");
   const vParams: OnSigninVerification = {
-    id_token,
-    refresh_token,
     uid: u.uid,
   };
 
   const r = await verifyOnSignin(vParams);
+  console.log(r);
   setLoading(false);
   return r;
 };

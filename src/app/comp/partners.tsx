@@ -22,10 +22,10 @@ export const Partners = () => {
     [],
   );
   return (
-    <div className="relative my-24 h-[calc(100vh*0.3)] content-center xl:h-[calc(100vh*0.5)]">
+    <div className="relative h-[calc(100vh*0.5)] content-center md:my-24 xl:h-[calc(100vh*0.5)]">
       <Marquee />
 
-      <div className="pointer-events-none absolute top-0 flex h-[calc(100vh*0.5)] w-full items-center justify-end bg-gradient-to-r from-background/50 from-5% via-transparent via-15% to-transparent dark:from-background/50 dark:via-30% xl:h-[calc(100vh*0.40)]">
+      <div className="pointer-events-none absolute top-0 flex h-[calc(100vh*0.4)] w-full items-center justify-end bg-gradient-to-r from-background/50 from-5% via-transparent via-15% to-transparent dark:from-background/50 dark:via-30% xl:h-[calc(100vh*0.40)]">
         <Image
           alt="back-wormhole"
           src="/svg/wormhole_back.svg"
@@ -38,7 +38,7 @@ export const Partners = () => {
           }
           className="relative -bottom-12 right-0 z-[200] aspect-square w-auto rounded-none xl:h-[calc(100vh*0.5)]"
         />
-        <div className="-rounded-l-md absolute bottom-12 right-0 z-[100] h-[calc(100vh*0.17)] w-[178px] bg-gradient-to-r from-background/90 to-background backdrop-blur-sm" />
+        <div className="-rounded-l-md absolute bottom-[6vh] right-0 z-[100] h-[calc(100vh*0.17)] w-[100px] bg-gradient-to-r from-background/90 to-background backdrop-blur-sm md:bottom-12 md:w-[178px]" />
       </div>
     </div>
   );

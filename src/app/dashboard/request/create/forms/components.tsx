@@ -5,13 +5,15 @@ import { InputFieldName } from "@/ui/input";
 import { ArrowUturnLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Button, Image } from "@nextui-org/react";
 import { FileSymlinkIcon, ScanIcon, ScanTextIcon } from "lucide-react";
-import type { PropsWithChildren, ReactNode } from "react";
+import type { MouseEvent, PropsWithChildren, ReactNode } from "react";
 
 export const Wrapper = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
-      "mt-1.5 h-[calc(90vh)] bg-gradient-to-tr from-stone-200/30 via-zinc-200/30 to-default-200/30",
-      "overflow-scroll rounded-[3px] border-[0.33px] border-primary-400",
+      "mt-1.5 h-[calc(92vh)]",
+      "overflow-scroll rounded-xl border-[0.33px] border-primary-400",
+      "bg-chalk",
+      "dark:bg-primary/10",
       "pb-44",
     )}
   >
@@ -21,7 +23,7 @@ export const Wrapper = ({ children }: PropsWithChildren) => (
 
 const FormTitle = (props: { title?: string }) => (
   <div className="flex min-w-28 items-center justify-between space-x-4 whitespace-nowrap">
-    <p className="font-arc font-semibold tracking-tight text-foreground drop-shadow-sm">
+    <p className="font-arc font-semibold tracking-tight text-foreground">
       {props.title}
     </p>
   </div>
@@ -68,9 +70,17 @@ export const CardGroup = ({ children, title }: CardGroup) => (
     {children}
   </div>
 );
+export const NewCardGroup = ({ children, title }: CardGroup) => (
+  <div className="w-full space-y-2 rounded-lg p-6">
+    <p className="font-inter font-medium tracking-tighter dark:text-icon-dark">
+      {title}
+    </p>
+    {children}
+  </div>
+);
 
 export const SpecialGroup = ({ children, title, subtext }: CardGroup) => (
-  <div className="col-span-2 h-full w-full space-y-3 border-b-[0.33px] border-l-[0.33px] border-primary-300 bg-primary-100/50 px-4 py-6 drop-shadow-sm backdrop-blur-xl dark:bg-primary-100/40">
+  <div className="col-span-2 h-full w-full space-y-[22px] px-4 py-6 drop-shadow-sm backdrop-blur-xl">
     <header className="flex items-start gap-3">
       <ScanTextIcon className="size-6 stroke-1" />
       <section className="space-y-1 leading-none">
@@ -207,7 +217,10 @@ export const ScanButton = ({
       isLoading={loading}
       disabled={!imageData || result}
       variant={imageData ? "solid" : "flat"}
-      className="w-36 font-inter font-medium tracking-tight"
+      className={cn("w-36 font-inter font-medium tracking-tight", {
+        "cursor-not-allowed bg-primary-100 text-primary-400":
+          loading || !imageData || result,
+      })}
       onPress={onPress}
     >
       {loading ? "Scanning..." : "Scan document"}
@@ -218,7 +231,7 @@ export const ScanButton = ({
 interface ResultsWrapperProps {
   children: ReactNode;
   withResult: boolean;
-  applyFn: VoidFunction;
+  applyFn: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 export const ResultsWrapper = ({
   children,
@@ -241,7 +254,7 @@ export const ResultsWrapper = ({
         radius="sm"
         color="primary"
         className="relative z-[60] font-medium tracking-tight"
-        onPress={applyFn}
+        onClick={applyFn}
       >
         <ArrowUturnLeftIcon className="size-4" />
         Apply Scan Results
@@ -251,7 +264,7 @@ export const ResultsWrapper = ({
     <div
       className={cn(
         "h-48 w-full overflow-scroll rounded-lg border-[0.33px] border-primary-200 bg-background font-medium",
-        { "relative h-[calc(70vh-6px)]": withResult },
+        { "relative h-[100vh]": withResult },
       )}
     >
       {children}

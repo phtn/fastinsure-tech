@@ -11,6 +11,7 @@ import { cookies } from "next/headers";
 import { env } from "@/env";
 import { GoogleAuth } from "google-auth-library";
 import { verifyCode } from "@/lib/secure/callers/agent";
+import { type UserRole } from "@convex/users/d";
 
 export type Modes = "light" | "dark" | "system" | "dev" | "devdark";
 export interface ModeCookie {
@@ -235,7 +236,7 @@ export const setCustomClaims = async (claims: string) => {
 export const getCustomClaims = async () => {
   const cookieStore = await cookies();
   const value = cookieStore.get("fastinsure--claims")?.value;
-  return value?.split(",");
+  return value?.split(",") as UserRole[] | null;
 };
 
 export const deleteCustomClaims = async () => {
@@ -255,7 +256,7 @@ export const setGroupCode = async (group_code: string) => {
 export const getGroupCode = async () => {
   const cookieStore = await cookies();
   const value = cookieStore.get("fastinsure--group_code")?.value;
-  return value?.split(",");
+  return value;
 };
 
 export const deleteGroupCode = async () => {

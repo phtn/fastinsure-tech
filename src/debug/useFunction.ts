@@ -4,10 +4,15 @@ import { useVex } from "@/app/ctx/convex";
 import { onWarn } from "@/app/ctx/toasts";
 import { useNav } from "@/app/dashboard/hooks/useNav";
 import type { DualIcon } from "@/app/types";
+import { verifyUser } from "@/lib/secure/callers/auth";
 import { getLivez } from "@/lib/secure/callers/server";
-import type { LivezResponse } from "@/lib/secure/resource";
+import {
+  UserVerificationResponse,
+  type LivezResponse,
+} from "@/lib/secure/resource";
 import { type NavItem } from "@/ui/sidebar";
 import type { SelectUser, UserRole } from "@convex/users/d";
+import { CircleStackIcon } from "@heroicons/react/24/outline";
 import { IdentificationIcon } from "@heroicons/react/24/solid";
 import { type ParsedToken } from "firebase/auth";
 import { ServerIcon } from "lucide-react";
@@ -48,6 +53,7 @@ export const useFunction = () => {
     null,
   );
   const [vxUser, setVxUser] = useState<SelectUser | null>(null);
+  const [vres, setVRes] = useState<UserVerificationResponse>();
 
   const [pending, func] = useTransition();
   const router = useRouter();
@@ -92,6 +98,19 @@ export const useFunction = () => {
       setVxUser(vx);
     }
   }, [usr.get, user?.uid]);
+
+  const verifyWithUID = useCallback(async () => {
+    if (!uid) {
+      onWarn("UID not ready");
+      return;
+    }
+    const r = await verifyUser({ uid });
+    return r.data;
+  }, [uid]);
+
+  const fn_verifyUser = useCallback(() => {
+    startFn(func, verifyWithUID, setVRes);
+  }, [verifyWithUID]);
 
   //////////////////////////////////////////////////////////////////////
   //SERVER
@@ -147,6 +166,15 @@ export const useFunction = () => {
         result: vxUser,
         returnType: "<SelectUser | undefined>",
       },
+      {
+        id: 5,
+        name: "Verify User (Server)",
+        description: "{claims, uid, verified}",
+        icon: CircleStackIcon,
+        fn: fn_verifyUser,
+        result: vres,
+        returnType: "<UserVerificationResponse | undefined>",
+      },
     ],
     [
       uid,
@@ -156,9 +184,11 @@ export const useFunction = () => {
       userInitValues,
       getUserInitValues,
       fn_getLivez,
+      fn_verifyUser,
       livez,
       fn_getVxUser,
       vxUser,
+      vres,
     ],
   );
   return { devFnList, pending, updateFnList };

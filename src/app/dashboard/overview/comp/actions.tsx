@@ -64,7 +64,7 @@ export const CreateAgentCode = () => {
       </Qr>
     );
   };
-  QrViewer.displayName = "Qr";
+  // QrViewer.displayName = "QrViewer";
 
   return (
     <BasicAction

@@ -113,7 +113,7 @@ export const formatMobile = (mobile_number: string) => {
   return "";
 };
 
-export const opts = (...args: ReactElement[]) => {
+export const opts = (...args: (ReactElement | null)[]) => {
   return new Map([
     [true, args[0]],
     [false, args[1]],
@@ -662,4 +662,15 @@ export const onSettle =
 export const excludeProp = <T extends object>(o: T, ...keys: string[]) => {
   const ex = new Set(keys);
   return Object.fromEntries(Object.entries(o).filter(([k]) => !ex.has(k)));
+};
+
+export const pasteFn = async (id: string) => {
+  const inputEl = document.getElementById(id) as HTMLInputElement;
+  const text = await navigator.clipboard.readText();
+  inputEl.value = text.trim();
+  const v = inputEl.value;
+  if (v.includes('"')) {
+    v.replaceAll('"', "");
+  }
+  return v;
 };

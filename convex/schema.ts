@@ -17,7 +17,17 @@ export default defineSchema({
       "fullname",
       "nickname",
     ])
+    .index("by_group_code", [
+      "group_code",
+      "email",
+      "nickname",
+      "phone_number",
+      "fullname",
+      "uid",
+      "account_id",
+    ])
     .index("by_email", ["email", "fullname", "group_code", "uid", "account_id"])
+
     .index("by_role", [
       "role",
       "fullname",
@@ -40,8 +50,8 @@ export default defineSchema({
       "amount",
     ])
     .index("by_agent_id", [
-      "policy_id",
       "agent_id",
+      "policy_id",
       "agent_name",
       "subject_id",
       "status",

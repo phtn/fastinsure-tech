@@ -33,9 +33,9 @@ export const EmailSigninForm = () => {
   return (
     <form
       action={signUserWithEmail}
-      className="flex h-full w-full flex-col items-end text-primary"
+      className="flex h-full flex-col items-end text-primary md:w-full"
     >
-      <div className="h-full w-full space-y-6 px-10 py-8 dark:bg-zinc-900">
+      <div className="h-full w-fit space-y-6 p-4 dark:bg-zinc-900 md:w-full md:px-10 md:py-8">
         <div className="flex h-8 w-full items-end justify-start px-2 font-inter text-xl font-semibold tracking-tighter dark:text-icon-dark">
           <header>Sign in with email</header>
         </div>

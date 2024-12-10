@@ -13,9 +13,10 @@ import {
 import {
   DevicePhoneMobileIcon,
   SparklesIcon,
-  UserIcon,
   TruckIcon,
 } from "@heroicons/react/24/solid";
+import { UserIcon } from "@heroicons/react/24/outline";
+
 import type { DualIcon } from "@/app/types";
 import type { ChangeEvent, HTMLInputTypeAttribute } from "react";
 import type { InsertSubject } from "convex/subjects/d";
@@ -155,7 +156,7 @@ export const assured_name: InsertFields<InsertSubject>[] = [
     placeholder: "First name",
     required: true,
     type: "text",
-    defaultValue: "first name",
+    // defaultValue: "first name",
   },
   {
     title: "middle",
@@ -174,7 +175,7 @@ export const assured_name: InsertFields<InsertSubject>[] = [
     placeholder: "Last name",
     required: true,
     type: "text",
-    defaultValue: "last name",
+    // defaultValue: "last name",
   },
 ];
 
@@ -259,13 +260,14 @@ export const address_fields_II: InsertFields<InsertAddress>[] = [
     placeholder: "Postal Code",
     required: false,
     type: "text",
+    hint: "flash Auto locate",
     // onChange: (e: ChangeEvent<HTMLInputElement>) => {
     //   console.log(e.target.value);
     // },
   },
 ];
 
-export const auto_fields_I: InsertFields<InsertAuto>[] = [
+export const auto_fields_II: InsertFields<InsertAuto>[] = [
   {
     title: "plate",
     description: "Plate number",
@@ -280,7 +282,7 @@ export const auto_fields_I: InsertFields<InsertAuto>[] = [
     description: "Induction",
     name: "induction_no",
     id: "induction_no",
-    placeholder: "Induction number",
+    placeholder: "Induction no.",
     required: false,
     type: "text",
   },
@@ -304,7 +306,7 @@ export const auto_fields_I: InsertFields<InsertAuto>[] = [
   },
 ];
 
-export const auto_fields_II: InsertFields<InsertAuto>[] = [
+export const auto_fields_I: InsertFields<InsertAuto>[] = [
   {
     title: "CR no",
     description: "Certificate of Registration number",
@@ -313,6 +315,7 @@ export const auto_fields_II: InsertFields<InsertAuto>[] = [
     placeholder: "CR number",
     required: false,
     type: "text",
+    defaultValue: "",
   },
   {
     title: "CR date",
@@ -362,15 +365,6 @@ export const auto_fields_III: InsertFields<InsertAuto>[] = [
     required: false,
     type: "text",
   },
-  {
-    title: "type",
-    description: "Type of transport",
-    name: "type",
-    id: "type",
-    placeholder: "Private or Public",
-    required: false,
-    type: "radio",
-  },
 ];
 
 export const auto_fields_IV: InsertFields<InsertAuto>[] = [
@@ -393,6 +387,29 @@ export const auto_fields_IV: InsertFields<InsertAuto>[] = [
     required: false,
     type: "text",
   },
+
+  {
+    title: "fuel",
+    description: "Fuel type of the vehicle",
+    name: "fuel",
+    id: "fuel",
+    placeholder: "Gas",
+    required: false,
+    type: "text",
+  },
+];
+
+export const auto_fields_V: InsertFields<InsertAuto>[] = [
+  {
+    title: "type",
+    description: "Type of transport",
+    name: "type",
+    id: "type",
+    placeholder: "Private or Public",
+    required: false,
+    type: "text",
+  },
+
   {
     title: "denomination",
     description: "Type of denomination of the vehicle",
@@ -403,11 +420,59 @@ export const auto_fields_IV: InsertFields<InsertAuto>[] = [
     type: "text",
   },
   {
-    title: "fuel",
-    description: "Fuel type of the vehicle",
-    name: "fuel",
-    id: "fuel",
-    placeholder: "Gas",
+    title: "No. of Cylinders",
+    description: "Number of engine cylinders.",
+    name: "cylinders",
+    id: "cylinders",
+    placeholder: "6",
+    required: false,
+    type: "text",
+  },
+  {
+    title: "Piston Displacement",
+    description: "Piston displacement.",
+    name: "displacement",
+    id: "displacement",
+    placeholder: "1400",
+    required: false,
+    type: "text",
+  },
+];
+
+export const auto_fields_VI: InsertFields<InsertAuto>[] = [
+  {
+    title: "Net Wt",
+    description: "Vehicle's net weight in kilograms.",
+    name: "net_wt",
+    id: "net_wt",
+    placeholder: "1000",
+    required: false,
+    type: "text",
+  },
+  {
+    title: "Shipping Wt",
+    description: "Vehicle's shipping weight in kilograms.",
+    name: "shipping_wt",
+    id: "shipping_wt",
+    placeholder: "1000",
+    required: false,
+    type: "text",
+  },
+  {
+    title: "Gross Wt",
+    description: "Vehicle's gross weight in kilograms.",
+    name: "gross_wt",
+    id: "gross_wt",
+    placeholder: "1000",
+    required: false,
+    type: "text",
+  },
+  {
+    title: "Net Cap",
+    description: "Vehicle's net capacity in kilograms.",
+    name: "net_cap",
+    id: "net_cap",
+    placeholder: "500",
     required: false,
     type: "text",
   },
@@ -456,10 +521,16 @@ export const resultFields: string[] = [
   "series",
   "chassisNo",
   "bodyType",
-  "denomination",
   "fuel",
+  "denomination",
+  "pistonDisplacement",
+  "cylinders",
+  "netWt",
+  "shippingWt",
+  "grossWt",
+  "netCapacity",
 ];
-export const autoFields: string[] = [
+export const autoFields: (keyof InsertAuto)[] = [
   "plate_no",
   "vin_no",
   "mvfile_no",
@@ -470,6 +541,12 @@ export const autoFields: string[] = [
   "model",
   "chassis_no",
   "body_type",
-  "denomination",
   "fuel",
+  "denomination",
+  "displacement",
+  "cylinders",
+  "net_wt",
+  "shipping_wt",
+  "gross_wt",
+  "net_cap",
 ] as const;

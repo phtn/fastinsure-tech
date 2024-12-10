@@ -9,23 +9,24 @@ import { ButtStat } from "../ui/button/index";
 
 interface DevToolbarProps extends ToolbarSearchProps {
   closeFn: VoidFunction;
+  value?: string;
   len: number;
   loading?: boolean;
   action?: VoidFunction;
 }
 const DevToolbarComponent = (props: DevToolbarProps) => {
-  const { closeFn, searchFn, len, loading, action } = props;
+  const { closeFn, value, searchFn, len, loading, action } = props;
 
   return (
     <Toolbar
       icon={CommandLineIcon}
       loading={loading}
-      title=""
+      title="Dev"
       closeFn={closeFn}
       action={action}
     >
       <ButtStat value={String(len)} />
-      <ToolbarSearch searchFn={searchFn} />
+      <ToolbarSearch searchFn={searchFn} value={value} />
     </Toolbar>
   );
 };

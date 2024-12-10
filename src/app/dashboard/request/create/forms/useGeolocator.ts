@@ -5,6 +5,7 @@ export interface LocationValues {
   line_2: string;
   city: string;
   state: string;
+  country: string;
 }
 export const useGeolocator = () => {
   const ph = usePH();
@@ -30,4 +31,5 @@ const assignLocationValues = (data: PlaceProps | undefined) => ({
   city: data?.location,
   line_2: data?.municipality,
   state: data?.region,
+  country: "PH",
 });

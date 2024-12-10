@@ -17,6 +17,7 @@ import type {
   ServiceType,
 } from "convex/requests/d";
 import type { RadioFields } from "@/app/dashboard/request/create/forms/fields";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
 export const RadioGroup = forwardRef<
   ComponentRef<typeof RadioGroupPrimitive.Root>,
@@ -48,7 +49,7 @@ export const RadioGroupItem = forwardRef<
       </RadioGroupPrimitive.Indicator>
     ) : (
       <RadioGroupPrimitive.Indicator className="">
-        <CheckIcon className="-mr-1.5 -mt-1 size-6 animate-enter stroke-[1.5px] text-secondary-500 drop-shadow-sm dark:text-secondary" />
+        <CheckCircleIcon className="-ml-2 -mt-4 size-6 animate-enter stroke-2 text-secondary drop-shadow-sm dark:text-secondary" />
       </RadioGroupPrimitive.Indicator>
     )}
   </RadioGroupPrimitive.Item>
@@ -70,7 +71,7 @@ export const RadioGroupCard = forwardRef<
 >(({ className, ...props }, ref) => (
   <RadioGroup
     className={cn(
-      "gap-0 transition-all duration-300 ease-out transform-gpu hover:shadow-md",
+      "gap-0 rounded-lg transition-all duration-300 ease-out transform-gpu hover:shadow-md",
       { flex: props.orientation === "horizontal" },
       className,
     )}
@@ -82,12 +83,13 @@ export const RadioGroupCard = forwardRef<
       <div
         key={item.title}
         className={cn(
-          "relative flex w-full items-start p-4 tracking-wide shadow-sm shadow-black/5",
-          "bg-primary-50 dark:bg-transparent/10 dark:backdrop-blur-xl",
-          "border-y border-r border-dashed border-primary-300/80 border-l-transparent first:rounded-s-md first:border-l first:border-l-primary-400 last:rounded-e-md last:border-r dark:border-primary-500",
-          "has-[[data-state=checked]]:bg-warning-200/20 has-[[data-state=checked]]:dark:bg-background",
-          "has-[[data-state=checked]]:border-double has-[[data-state=checked]]:border-primary-400",
-          "has-[[data-state=checked]]:before:border-r-transparent",
+          "relative flex w-full items-start p-4 tracking-wide shadow-sm shadow-void/5",
+          "bg-primary-200/70 dark:bg-primary-100 dark:backdrop-blur-xl",
+          "overflow-clip border-y border-r border-primary-300/80 border-l-transparent first:rounded-s-lg first:border-l first:border-l-primary-300 last:rounded-e-lg last:border-l dark:border-secondary",
+          "has-[[data-state=checked]]:bg-chalk has-[[data-state=checked]]:text-primary",
+          "has-[[data-state=checked]]:dark:bg-background",
+          "has-[[data-state=checked]]:border-double has-[[data-state=checked]]:border-primary",
+          "dark:has-[[data-state=checked]]:border-secondary",
           "dark:border-primary-300",
         )}
       >
@@ -95,31 +97,33 @@ export const RadioGroupCard = forwardRef<
           value={item.title}
           id={item.title}
           aria-describedby={item.description}
-          className="order-1 after:absolute after:inset-0"
+          className="order-1 p-2 after:absolute after:inset-0"
           disabled={item.disabled}
         />
-        <div className="mr-2 flex grow items-start gap-2">
+        <div className="flex grow items-start gap-2">
           <item.icon
-            className={cn(
-              "-ml-2 -mt-1 size-5 shrink-0 stroke-1 text-primary-700",
-              {
-                "opacity-50": item.disabled,
-              },
-            )}
+            className={cn("-ml-2 -mt-1 size-5 shrink-0 stroke-1", {
+              "opacity-50": item.disabled,
+            })}
           />
           <div className="pointer-events-none grid h-10 grow gap-2">
             <Label
               htmlFor={item.name}
-              className={cn("font-inter font-semibold capitalize opacity-80", {
-                "opacity-60": item.disabled,
-              })}
+              className={cn(
+                "font-inst font-semibold capitalize tracking-tight opacity-80",
+                {
+                  "opacity-60": item.disabled,
+                },
+              )}
             >
               {item.title}
-              <span className="text-xs font-normal leading-[inherit]"></span>
             </Label>
             <p
               id={`${item.title}-description`}
-              className="pointer-events-none max-w-[50ch] whitespace-nowrap text-xs font-light tracking-tight opacity-80"
+              className={cn(
+                "pointer-events-none max-w-[50ch] whitespace-nowrap text-xs font-light tracking-tight",
+                { "opacity-70": item.disabled },
+              )}
             >
               {item.disabled ? "Not available" : item.description}
             </p>

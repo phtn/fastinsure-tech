@@ -15,3 +15,12 @@ export const byId = mutation({
       .withIndex("by_request_id", (q) => q.eq("request_id", request_id))
       .first(),
 });
+
+export const byAgentId = mutation({
+  args: { uid: v.string() },
+  handler: async ({ db }, { uid }) =>
+    await db
+      .query("requests")
+      .withIndex("by_agent_id", (q) => q.eq("agent_id", uid))
+      .collect(),
+});

@@ -1,4 +1,5 @@
 import { type Metadata } from "next";
+import { All } from "./all";
 
 export const metadata: Metadata = {
   title: "All Requests",
@@ -8,8 +9,8 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <div className="-mx-8 flex h-[calc(88vh)] items-center justify-center rounded-t-lg bg-gray-200/30 text-4xl font-bold text-secondary">
-      ALL REQS
+    <div className="-mx-8">
+      <All />
     </div>
   );
 }

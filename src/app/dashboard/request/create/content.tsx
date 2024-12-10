@@ -1,2 +1,3 @@
 import { RequestForm } from "./forms/create";
-export const RequestFormContent = () => <RequestForm />;
+import { CreateNew } from "./forms/create-new";
+export const Content = () => <CreateNew />;
