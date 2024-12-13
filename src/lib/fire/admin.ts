@@ -1,22 +1,22 @@
-import { env } from "@/env";
-import admin from "firebase-admin";
-import { getAuth } from "firebase-admin/auth";
+// import { env } from "@/env";
+// import admin from "firebase-admin";
+// import { getAuth } from "firebase-admin/auth";
 
-let app: admin.app.App | null = null;
+// let app: admin.app.App | null = null;
 
-const initAdmin = () => {
-  if (app) {
-    return app;
-  }
+// const initAdmin = () => {
+//   if (app) {
+//     return app;
+//   }
 
-  app = admin.initializeApp({
-    credential: admin.credential.cert(env.AD),
-    databaseURL: "https://fastinsure-f1801.firebaseio.com",
-  });
+//   app = admin.initializeApp({
+//     credential: admin.credential.cert(env.AD),
+//     databaseURL: "https://fastinsure-f1801.firebaseio.com",
+//   });
 
-  return app;
-};
+//   return app;
+// };
 
-const init = initAdmin();
+// const init = initAdmin();
 
-export const adminAuth = getAuth(init);
+// export const adminAuth = getAuth(init);

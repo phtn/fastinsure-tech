@@ -1,7 +1,7 @@
-"use server";
+// "use server";
 
-import { adminAuth } from "@/lib/fire/admin";
+// import { adminAuth } from "@/lib/fire/admin";
 
-export const verifyAuth = async (idToken: string) => {
-  await adminAuth.verifyIdToken(idToken);
-};
+// export const verifyAuth = async (idToken: string) => {
+//   await adminAuth.verifyIdToken(idToken);
+// };
