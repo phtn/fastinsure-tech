@@ -6,12 +6,10 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  type GlobalFilterTableState,
   useReactTable,
   type ColumnDef,
   type ColumnFiltersState,
   type SortingState,
-  GlobalFilterColumn,
 } from "@tanstack/react-table";
 
 import {
@@ -32,10 +30,6 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   loading: boolean;
   toolbarActions: [boolean, VoidFunction];
-}
-
-interface GlobalFilter {
-  globalFilter: string;
 }
 
 export function DataTable<TData, TValue>({

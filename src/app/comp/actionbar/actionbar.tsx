@@ -4,8 +4,7 @@ import { Separator } from "@/ui/separator";
 import { Dock, DockIcon } from "@/ui/dock";
 import { useEffect, useState, useCallback } from "react";
 
-import { ThemeSwitch } from "../ctx/theme";
-import { Link } from "@nextui-org/react";
+import { ThemeSwitch } from "@ctx/theme";
 import {
   BellIcon,
   ChatBubbleBottomCenterIcon,
@@ -13,12 +12,13 @@ import {
 } from "@heroicons/react/24/outline";
 import { useServer } from "@/lib/hooks/useServer";
 
-import type { DualIcon } from "../types";
-import { getLivez } from "@/lib/secure/callers/server";
-import { type LivezResponse } from "@/lib/secure/resource";
-import { opts } from "@/utils/helpers";
+import type { DualIcon } from "@/app/types";
+import { getLivez } from "@/trpc/secure/callers/server";
+import { type LivezResponse } from "@/server/secure/resource";
+import { Err, opts } from "@/utils/helpers";
 import { DevCommands } from "@/debug/fn";
-import { ServerHealth, ServerIcon } from "./actionbar/server-status";
+import { ServerHealth, ServerIcon } from "./server-status";
+import { ButtSqx } from "@/ui/button/button";
 
 const DATA = {
   navbar: [
@@ -60,7 +60,7 @@ export function ActionBar() {
 
   useEffect(() => {
     if (!livez) {
-      checkServerStatus().catch(console.error);
+      checkServerStatus().catch(Err);
     }
 
     const intervalId = setInterval(() => {
@@ -76,7 +76,7 @@ export function ActionBar() {
   const ServerHealthChild = useCallback(() => {
     const options = opts(
       <ServerButton livez={livez} />,
-      <p className="font-jet text-[13px] font-medium">
+      <p className="font-jet text-[13px] font-medium text-icon">
         {elapsed}
         <span className="text-[10px] font-thin">s</span>
       </p>,
@@ -117,13 +117,13 @@ interface DockIcon {
   href: string;
   icon: DualIcon;
 }
-const Icon = (props: DockIcon) => (
-  <Link
-    href={props.href}
-    className="group flex size-8 items-center justify-center rounded-lg text-icon-dark transition-colors duration-300 ease-out hover:bg-primary/10 dark:text-icon-dark"
-  >
-    <props.icon className="size-5" />
-  </Link>
+const Icon = ({ icon }: DockIcon) => (
+  <ButtSqx
+    size="md"
+    inverted
+    // className="group flex size-8 items-center justify-center rounded-lg text-icon-dark transition-colors duration-300 ease-out hover:bg-primary/10 dark:text-icon-dark"
+    icon={icon}
+  />
 );
 
 interface ActionButton {

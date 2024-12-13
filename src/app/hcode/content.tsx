@@ -7,7 +7,7 @@ import { ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { type ReadonlyURLSearchParams, useRouter } from "next/navigation";
 import { verifyHCode } from "../actions";
-import type { HCode, HCodeResponseData } from "@/lib/secure/resource";
+import type { HCode, HCodeResponseData } from "@/server/secure/resource";
 import { CheckIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useSearchParams } from "next/navigation";
 import { useHCode } from "./useHCode";

@@ -14,68 +14,180 @@ import {
 import { Link, User } from "@nextui-org/react";
 import { FileSymlink } from "lucide-react";
 import { useTeam } from "./useTeam";
-import { Loader } from "@/ui/loader";
+import { LoaderMd } from "@/ui/loader";
 import { type SelectUser } from "@convex/users/d";
+import type { ClassName, DualIcon } from "@/app/types";
+import { cn } from "@/lib/utils";
+import { type FC, type ReactNode, useCallback, useMemo, useState } from "react";
+import { opts, toggleState } from "@/utils/helpers";
+import { HyperList } from "@/ui/list";
+import { UserConfig } from "./components";
 
 export const All = () => {
-  const { vxteam, pending } = useTeam();
+  const { vxmembers, pending } = useTeam();
+  const [open2, setOpen2] = useState(false);
+  const [selected, setSelected] = useState("");
+  // const [selectedvx, setSelectedvx] = useState<SelectUser>();
 
-  if (pending) return <Loader />;
+  // const openUserConfig = useCallback((key: Keys) => {
+  //   const event = new KeyboardEvent("keydown", {
+  //     key: key,
+  //     bubbles: true,
+  //     cancelable: true,
+  //     metaKey: true,
+  //     ctrlKey: true,
+  //   });
+  //   document.dispatchEvent(event);
+  // }, []);
+
+  const toggleUserConfig = useCallback(() => toggleState(setOpen2), [setOpen2]);
+
+  const vx = useMemo(
+    () => vxmembers?.find((v) => v.uid === selected),
+    [selected, vxmembers],
+  );
+
+  const createUserWindow = useCallback(
+    (uid: string | undefined) => () => {
+      if (uid) {
+        setSelected(uid);
+        toggleUserConfig();
+      }
+    },
+    [toggleUserConfig, setSelected],
+  );
+
+  const TeamMember = useCallback(
+    (props: Partial<SelectUser>) => {
+      return (
+        <div className="h-28 w-full rounded-3xl bg-primary-50 drop-shadow-sm">
+          <div className="flex h-1/2 items-center justify-between px-3">
+            <UserCard {...props} />
+            <ButtSqx
+              onClick={createUserWindow(props.uid)}
+              icon={EllipsisHorizontalIcon}
+            />
+          </div>
+          <div className="flex justify-center">
+            <Separator
+              orientation="horizontal"
+              className="h-px bg-primary-50/5 opacity-40"
+            />
+          </div>
+          <div className="flex h-1/2 w-full items-center justify-start space-x-4 px-6">
+            <ButtSqx variant="goddess" icon={ChatBubbleLeftRightIcon} />
+            <ButtSqx variant="goddess" icon={DevicePhoneMobileIcon} />
+            <ButtSqx variant="goddess" icon={FileSymlink} />
+            <ButtSqx variant="goddess" icon={CursorArrowRaysIcon} />
+          </div>
+        </div>
+      );
+    },
+    [createUserWindow],
+  );
+
+  const MostActiveList = useCallback(() => {
+    const options = opts(
+      <LoaderMd />,
+      <ListContent comp={TeamMember} data={vxmembers} />,
+    );
+    return <>{options.get(pending)}</>;
+  }, [pending, vxmembers, TeamMember]);
 
   return (
-    <div className="grid w-full grid-cols-1 gap-6 px-6 md:grid-cols-3">
-      <div className="h-fit space-y-3 rounded-[2rem] bg-primary-100/60 px-6 py-3">
-        <div className="flex h-10 items-center space-x-2 text-sm font-bold tracking-tight">
-          <div className="rounded-full bg-void/80 p-1">
-            <BoltIcon className="size-3 text-warning" />
-          </div>
-          <p>Most active</p>
-        </div>
-        <div className="space-y-6">
-          {vxteam?.map((member) => (
-            <Member key={member.account_id} {...member} />
-          ))}
-        </div>
+    <div className="w-full">
+      <div className="grid w-full grid-cols-1 gap-6 px-6 md:grid-cols-3">
+        <ListContainer pending={pending}>
+          <MostActiveList />
+        </ListContainer>
       </div>
+      <section className="relative z-[200] size-full">
+        <UserConfig
+          vx={vx}
+          open={open2}
+          title={selected}
+          toggleFn={toggleUserConfig}
+        />
+      </section>
     </div>
   );
 };
 
-const Member = ({ nickname, email }: SelectUser) => (
-  <div className="h-28 rounded-3xl bg-primary-50 drop-shadow-sm">
-    <div className="flex h-1/2 items-center justify-between px-2">
-      <User
-        name={nickname}
-        description={
-          <Link
-            href="https://twitter.com/jrgarciadev"
-            size="sm"
-            isExternal
-            className="text-xs text-secondary"
-          >
-            {email}
-          </Link>
-        }
-        avatarProps={{
-          src: "https://avatars.githubusercontent.com/u/30373425?v=4",
-        }}
-        classNames={{
-          name: "font-semibold capitalize tracking-tight",
-        }}
-      />
-      <ButtSqx icon={EllipsisHorizontalIcon} />
+interface ListTitleProps {
+  title: string;
+  icon: DualIcon;
+  iconColor?: ClassName;
+}
+
+const ListTitle = (props: ListTitleProps) => (
+  <div className="flex h-10 items-center space-x-2 text-sm font-bold capitalize tracking-tight">
+    <div className="rounded-full bg-void/80 p-1">
+      <props.icon className={cn("size-3", props.iconColor)} />
     </div>
-    <div className="flex justify-center">
-      <Separator
-        orientation="horizontal"
-        className="h-px bg-primary-50/5 opacity-40"
-      />
-    </div>
-    <div className="flex h-1/2 w-full items-center justify-start space-x-4 px-6">
-      <ButtSqx icon={ChatBubbleLeftRightIcon} />
-      <ButtSqx icon={DevicePhoneMobileIcon} />
-      <ButtSqx icon={FileSymlink} />
-      <ButtSqx icon={CursorArrowRaysIcon} />
-    </div>
+    <p>{props.title}</p>
   </div>
 );
+
+const UserCard = ({ nickname, uid, email, photo_url }: Partial<SelectUser>) => (
+  <User
+    id={uid}
+    name={nickname}
+    description={
+      <Link
+        href="#"
+        size="sm"
+        isExternal
+        className="text-xs text-blue-500 drop-shadow-sm hover:text-blue-500 hover:opacity-100 hover:drop-shadow-md dark:text-secondary"
+      >
+        {email}
+      </Link>
+    }
+    avatarProps={{
+      src: photo_url,
+    }}
+    classNames={{
+      name: "ml-1 font-semibold text-primary/80 capitalize tracking-tight",
+      wrapper: "space-x-1",
+    }}
+  />
+);
+
+interface ListContentProps<T> {
+  data: T[] | undefined;
+  comp: FC<T>;
+}
+const ListContent = <T extends SelectUser>({
+  comp,
+  data,
+}: ListContentProps<T>) => {
+  return (
+    <section className="space-y-3">
+      <ListTitle title="most active" icon={BoltIcon} iconColor="text-warning" />
+      <HyperList
+        data={data}
+        component={comp}
+        container="space-y-6"
+        itemStyle="rounded-3xl"
+      />
+    </section>
+  );
+};
+
+interface ListContainerProps {
+  pending: boolean;
+  children: ReactNode;
+}
+const ListContainer = ({ children, pending }: ListContainerProps) => {
+  return (
+    <div
+      className={cn(
+        "h-fit rounded-[2rem] bg-primary-100/60 px-6 pb-8 pt-3 transition-transform duration-500 ease-out transform-gpu",
+        {
+          "h-96 p-0": pending,
+        },
+      )}
+    >
+      {children}
+    </div>
+  );
+};

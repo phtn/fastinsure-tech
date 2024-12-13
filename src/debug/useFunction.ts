@@ -4,12 +4,12 @@ import { useVex } from "@/app/ctx/convex";
 import { onWarn } from "@/app/ctx/toasts";
 import { useNav } from "@/app/dashboard/hooks/useNav";
 import type { DualIcon } from "@/app/types";
-import { verifyUser } from "@/lib/secure/callers/auth";
-import { getLivez } from "@/lib/secure/callers/server";
+import { verifyUser } from "@/trpc/secure/callers/auth";
+import { getLivez } from "@/trpc/secure/callers/server";
 import {
-  UserVerificationResponse,
+  type UserVerificationResponse,
   type LivezResponse,
-} from "@/lib/secure/resource";
+} from "@/server/secure/resource";
 import { type NavItem } from "@/ui/sidebar";
 import type { SelectUser, UserRole } from "@convex/users/d";
 import { CircleStackIcon } from "@heroicons/react/24/outline";

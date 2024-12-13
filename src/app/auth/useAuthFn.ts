@@ -1,12 +1,13 @@
 import type { Dispatch, SetStateAction, TransitionStartFunction } from "react";
 import { useTransition, useState, useCallback } from "react";
 // import { onAwait, onWarn } from "../ctx/toasts";
-import { getUID } from "../actions";
-import { getLivez, getReadyz } from "@/lib/secure/callers/server";
+import { getLastLogin, getUID } from "../actions";
+import { getLivez, getReadyz } from "@/trpc/secure/callers/server";
 
 export const useAuthFn = () => {
   const [uid, setuid] = useState<string | null>(null);
   const [pending, fn] = useTransition();
+  const [lastLogin, setLastLoginState] = useState(0);
 
   const startFn = <T>(
     transition: TransitionStartFunction,
@@ -39,5 +40,9 @@ export const useAuthFn = () => {
     startFn(fn, getReadyz, undefined, "Get Readyz");
   }, []);
 
-  return { checkSession, checkServer, pending, uid };
+  const checkLastLogin = () => {
+    startFn(fn, getLastLogin, setLastLoginState);
+  };
+
+  return { checkSession, checkServer, checkLastLogin, pending, uid, lastLogin };
 };

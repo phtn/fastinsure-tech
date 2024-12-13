@@ -2,7 +2,7 @@
 
 import { Label } from "@/ui/label";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
-import { CircleOffIcon, CheckIcon } from "lucide-react";
+import { CircleOffIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import {

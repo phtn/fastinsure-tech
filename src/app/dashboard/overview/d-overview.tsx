@@ -11,7 +11,6 @@ import { useAuthCtx } from "@/app/ctx/auth";
 
 import { BigActionCard } from "@/ui/action-card";
 import { CommandLineIcon, FireIcon } from "@heroicons/react/24/solid";
-import { useRequest } from "../hooks/useRequest";
 import { Flag } from "./comp/status-flag";
 import { useVex } from "@/app/ctx/convex";
 import { useCallback } from "react";
@@ -21,16 +20,15 @@ import { useCallback } from "react";
 export const DevOverview = () => {
   const { user, vxuser } = useAuthCtx();
   const { usr } = useVex();
-  const create = useRequest();
 
   const getvx = useCallback(async () => {
     if (user?.uid) console.log(await usr.get.byId(user.uid));
   }, [usr.get, user?.uid]);
 
-  const updatevx = useCallback(async () => {
-    if (user?.uid)
-      console.log(await usr.update({ uid: user.uid, fast_score: 1 }));
-  }, [usr, user?.uid]);
+  // const updatevx = useCallback(async () => {
+  //   if (user?.uid)
+  //     console.log(await usr.update({ uid: user.uid, fast_score: 1 }));
+  // }, [usr, user?.uid]);
 
   return (
     <div className="overflow-auto pb-6">
@@ -73,7 +71,7 @@ export const DevOverview = () => {
                   {vxuser?.nickname !== "" ? vxuser?.nickname : vxuser?.email}
                 </Widget.Title>
                 <CreateAgentCode />
-                <CreateRequest {...create} />
+                <CreateRequest />
                 <GenericAction
                   loading={false}
                   fn={getvx}
@@ -82,14 +80,14 @@ export const DevOverview = () => {
                   subtext="𝒇(𝒙) ⟹ get vxuser"
                   label="run"
                 />
-                <GenericAction
+                {/* <GenericAction
                   loading={false}
                   fn={updatevx}
                   icon={CommandLineIcon}
                   title={"Update Button"}
                   subtext="𝒇(𝒙) ⟹ update vxuser fast_score"
                   label="run"
-                />
+                /> */}
               </div>
             </HStack.XsCol>
             <HStack.SmCol>

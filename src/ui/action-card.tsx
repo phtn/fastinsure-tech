@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button, Link } from "@nextui-org/react";
 import { useInView } from "framer-motion";
 import { type PropsWithChildren, type ReactNode, useRef } from "react";
+import { ButtSex } from "./button/index";
 
 interface CommonProps {
   children?: ReactNode;
@@ -87,16 +88,16 @@ interface BtnProps extends CommonProps {
   onPress: VoidFunction;
   loading: boolean;
 }
-const Btn = ({ children, className, loading, onPress }: BtnProps) => (
-  <Button
-    color="primary"
-    className={cn("", className)}
+const Btn = ({ children, loading, onPress }: BtnProps) => (
+  <ButtSex
     size={"sm"}
-    onPress={onPress}
-    isLoading={loading}
+    onClick={onPress}
+    loading={loading}
+    inverted
+    // className={cn("", className)}
   >
     {children}
-  </Button>
+  </ButtSex>
 );
 const Label = ({ children, className }: CommonProps) => (
   <p
@@ -175,7 +176,7 @@ export const ActionCard: TActionComp = Object.assign(Component, {
 const ComponentII = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
-      "h-96 w-full cursor-pointer overflow-clip",
+      "h-[28rem] w-full cursor-pointer overflow-clip",
       "_border-[0.33px] rounded-b-xl border-foreground",
       "transition-all duration-300 ease-out",
       "bg-gradient-to-b from-stone-50/10 via-zinc-300/50 to-slate-100/10",

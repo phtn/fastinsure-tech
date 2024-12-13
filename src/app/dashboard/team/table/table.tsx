@@ -6,12 +6,10 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  type GlobalFilterTableState,
   useReactTable,
   type ColumnDef,
   type ColumnFiltersState,
   type SortingState,
-  GlobalFilterColumn,
 } from "@tanstack/react-table";
 
 import {

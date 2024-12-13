@@ -1,3 +1,5 @@
+"use server";
+
 import { googleAuthClient } from "@/app/actions";
 import type { JWT } from "google-auth-library";
 import { documentai_v1 } from "googleapis";

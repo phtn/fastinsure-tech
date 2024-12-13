@@ -50,7 +50,7 @@ export const OnSigninVerificationSchema = z.object({
 });
 export type OnSigninVerification = z.infer<typeof OnSigninVerificationSchema>;
 
-export const OnSigninVerificationResponseDataSchema = z.object({
+export const GetUserResponseDataSchema = z.object({
   uid: z.string(),
   is_verified: z.boolean(),
   group_code: z.string().optional(),
@@ -65,17 +65,30 @@ export const OnSigninVerificationResponseDataSchema = z.object({
   name: z.string(),
 });
 export type OnSigninVerificationResponseData = z.infer<
-  typeof OnSigninVerificationResponseDataSchema
+  typeof GetUserResponseDataSchema
 >;
 
 export const OnSigninVerificationResponseSchema = z
   .object({
-    Data: OnSigninVerificationResponseDataSchema,
+    Data: GetUserResponseDataSchema,
   })
   .merge(QueryServer);
 export type OnSigninVerificationResponse = z.infer<
   typeof OnSigninVerificationResponseSchema
 >;
+
+export const GetUserParamsSchema = z.object({
+  uid: z.string().or(z.undefined()),
+});
+export type GetUserParams = z.infer<typeof GetUserParamsSchema>;
+
+export type GetUserResponseData = z.infer<typeof GetUserResponseDataSchema>;
+export const GetUserResponseSchema = z
+  .object({
+    Data: GetUserResponseDataSchema,
+  })
+  .merge(QueryServer);
+export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;
 
 export const UserRoleSchema = z.union([
   z.literal("admin"),
@@ -240,16 +253,29 @@ export const UserRecordSchema = z.object({
 
 export type UserRecord = z.infer<typeof UserRecordSchema>;
 
-export const ActivateUserSchema = z.object({
+export const AccountActivationParamsSchema = z.object({
   id_token: z.string(),
   uid: z.string(),
   email: z.string().or(z.undefined()),
   hcode: z.string(),
 });
-export type ActivateUser = z.infer<typeof ActivateUserSchema>;
+export type AccountActivationParams = z.infer<
+  typeof AccountActivationParamsSchema
+>;
 
-export const ActivateUserResponseSchema = z.object({
+export const AccountActivationResponseDataSchema = z.object({
   group_code: z.string(),
   valid: z.boolean(),
 });
-export type ActivateUserResponse = z.infer<typeof ActivateUserResponseSchema>;
+export type AccountActivationResponseData = z.infer<
+  typeof AccountActivationResponseDataSchema
+>;
+
+export const AccountActivationResponseSchema = z
+  .object({
+    Data: AccountActivationResponseDataSchema,
+  })
+  .merge(QueryServer);
+export type AccountActivationResponse = z.infer<
+  typeof AccountActivationResponseSchema
+>;

@@ -79,7 +79,6 @@ export const useForm = () => {
         amount: data.get("amount")?.valueOf(),
         duration: data.get("duration"),
         expiry_date: data.get("expiry_date"),
-        updates: data.get("updates")?.toString(),
         date_delivered: data.get("date_delivered")?.valueOf(),
         remarks: data.get(""),
         metadata: data.get("")?.valueOf(),
@@ -108,12 +107,12 @@ export const useForm = () => {
   const saveAsDraft = useCallback(
     (data: FormData) => {
       if (submitType === "save") {
-        console.log("save");
+        // console.log("save");
       } else {
-        console.log("submit");
+        // console.log("submit");
       }
 
-      const fullname = `${data.get("firstname")?.toString()} ${data.get("middlename")?.toString()} ${data.get("lastname")?.toString()}`;
+      const fullname = `${data.get("firstname") as string} ${data.get("middlename") as string} ${data.get("lastname") as string}`;
 
       const subjectData = {
         subject_id: data.get("subject_id"),

@@ -24,7 +24,7 @@ export const Theme = ({ children }: PropsWithChildren) => {
   const [theme, setThemeState] = useState<Modes>("dark");
 
   useEffect(() => {
-    getTheme().then(setThemeState).catch(console.log);
+    getTheme().then(setThemeState).catch(Err);
   }, []);
 
   const stableValues = useMemo(
@@ -41,9 +41,9 @@ export const Theme = ({ children }: PropsWithChildren) => {
 
   return (
     <ThemeCtx.Provider value={stableValues}>
-      <body className={`bg-background text-foreground ${theme}`}>
+      <main className={`bg-background text-foreground ${theme}`}>
         {children}
-      </body>
+      </main>
     </ThemeCtx.Provider>
   );
 };

@@ -4,8 +4,8 @@ import { Screen } from "@/ui/screen";
 import { Image, Link } from "@nextui-org/react";
 import { useState } from "react";
 import { DialogWindow } from "@/ui/window";
-import Json from "@/ui/json";
 import { FlexRow } from "@/ui/flex";
+import { ButtSex } from "@/ui/button/ripple";
 
 export const Sandbox = () => {
   const [open, setOpen] = useState(false);
@@ -13,6 +13,9 @@ export const Sandbox = () => {
   return (
     <Screen>
       <Header />
+      <FlexRow className="size-96 items-center justify-center">
+        <ButtSex className="">Create account</ButtSex>
+      </FlexRow>
       <DialogWindow
         k="j"
         shadow="sm"
@@ -21,7 +24,8 @@ export const Sandbox = () => {
         variant="goddess"
       >
         <div className="flex h-96 w-full items-center justify-center space-x-4">
-          <canvas id="gl" className="size-96 border border-primary"></canvas>
+          <p>YO:</p>
+          <ButtSex rippleColor="#14141b">Let it rip!</ButtSex>
         </div>
       </DialogWindow>
       <Screen.PadLg />

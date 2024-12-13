@@ -1,39 +1,32 @@
 "use client";
 
-import { Button, Tab, Tabs } from "@nextui-org/react";
-import { PlusIcon } from "@heroicons/react/24/outline";
-import { CircleHelpIcon } from "lucide-react";
+import { Tab, Tabs } from "@nextui-org/react";
+import {
+  ListBulletIcon,
+  PlusIcon,
+  Squares2X2Icon,
+} from "@heroicons/react/24/outline";
 import {
   type Key,
   useCallback,
   useMemo,
   useState,
-  type ReactElement,
   type PropsWithChildren,
   useRef,
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useUtils } from "@/utils/useUtils";
 import { cn } from "@/lib/utils";
-import { ButtSqx } from "@/ui/button/index";
-
-export interface TabItem {
-  id: string | number;
-  value: Key;
-  label: string;
-  content: ReactElement;
-  // content: ReactElement | MemoExoticComponent<() => ReactElement>;
-}
+import { ButtSex, ButtSqx } from "@/ui/button/index";
+import { guid } from "@/utils/helpers";
+import type { TabItem } from "@/app/types";
 
 export const TabContainer = ({ children }: PropsWithChildren) => {
   const pathname = usePathname().split("/")[3];
   const [selected, setSelected] = useState<string>(pathname!);
   const router = useRouter();
 
-  // const handleCreateNewRequest = useCallback(() => {
-  // const request_id = guid
-  // router.push(`/dashboard/request/create?rid=${request_id}`);
-  // }, [router])
+  // const { create } = useRequest();
 
   const tabs: TabItem[] = useMemo(
     () => [
@@ -44,17 +37,17 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
         content: <TabContent />,
       },
       {
-        id: 3,
+        id: 1,
         value: "/team/agents",
         label: "Agents",
         content: <TabContent />,
       },
-      {
-        id: 4,
-        value: "/team/underwriter",
-        label: "Underwriters",
-        content: <TabContent />,
-      },
+      // {
+      //   id: 4,
+      //   value: "/requests/completed",
+      //   label: "Completed",
+      //   content: <TabContent />,
+      // },
     ],
     [],
   );
@@ -67,12 +60,16 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
     [router, setSelected],
   );
 
+  const handleCreate = useCallback(() => {
+    router.push(`/dashboard/request/create?rid=${guid()}`);
+  }, [router]);
+
   const midbarRef = useRef<HTMLDivElement>(null);
   const { centerpoint } = useUtils(midbarRef);
 
   return (
-    <div className="relative px-4 pt-1">
-      <section className="flex">
+    <div className="relative pt-1">
+      <section className="flex px-4">
         <div className="flex w-full"></div>
         <Tabs
           items={tabs}
@@ -82,10 +79,10 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           size="md"
           color="primary"
           variant="underlined"
-          className="absolute -top-10 right-0 z-[200] border-b-[0.5px] border-primary-300"
+          className="absolute -top-[3.25rem] right-0 z-[200] border-b-[0.5px] border-primary-300"
           isVertical={false}
           classNames={{
-            tabList: "w-full px-3 -mb-1",
+            tabList: "w-full px-3 dark:-mb-1.5 -mb-[5px]",
             tab: "w-32",
           }}
         >
@@ -97,36 +94,26 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
         </Tabs>
       </section>
 
-      <div className="h-[calc(90vh)]">{children}</div>
+      <div className="-mt-2 h-[calc(90vh)] px-12">{children}</div>
       <div
         ref={midbarRef}
         style={{ left: centerpoint.x, width: 300 }}
         className={cn(
-          "absolute -top-10 z-50",
+          "absolute -top-[3.25rem] z-50",
           "flex items-center justify-center",
-          "transfor-gpu transition-all duration-300 ease-out",
+          "transfor-gpu transition-all duration-500 ease-out",
           "space-x-4",
         )}
       >
-        <Button
-          size="md"
-          radius="sm"
-          variant="flat"
-          className="w-fit"
-          onPress={() => null}
-        >
-          <PlusIcon className="size-4" />
+        <ButtSex size="sm" start={PlusIcon} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
-            Create
+            Create New Request
           </p>
-        </Button>
-        <ButtSqx
-          size="md"
-          variant="flat"
-          color="default"
-          className="group w-fit"
-          icon={CircleHelpIcon}
-        />
+        </ButtSex>
+        <section className="flex rounded-xl border-[0.33px] border-primary-100/60">
+          <ButtSqx size="sm" variant="god" icon={ListBulletIcon} />
+          <ButtSqx size="sm" variant="goddess" icon={Squares2X2Icon} />
+        </section>
       </div>
     </div>
   );

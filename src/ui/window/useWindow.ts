@@ -1,5 +1,5 @@
 import {
-  ChangeEvent,
+  type ChangeEvent,
   type Dispatch,
   type SetStateAction,
   useCallback,
@@ -7,10 +7,9 @@ import {
 } from "react";
 import {
   stopPropagation as stopProp,
-  searchFn as sfn,
   onKeyDown as okd,
   keyListener as kl,
-  close as closeFn,
+  close as x,
   type FilterProps,
   type Keys,
 } from "./utils";
@@ -21,15 +20,23 @@ export interface UseWindow {
 }
 export const useWindow = ({ open, setOpen }: UseWindow) => {
   const [search, setSearch] = useState("");
-  const close = useCallback(() => closeFn(setOpen), [setOpen]);
+  const close = useCallback(() => x(setOpen), [setOpen]);
 
   const searchFn = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   }, []);
 
   const stopPropagation = useCallback(() => stopProp, []);
-  const onKeyDown = useCallback((k: Keys) => okd(k, setOpen), [setOpen]);
-  const keyListener = useCallback((fn: () => void) => kl(fn), []);
+  const onKeyDown = useCallback(
+    <T, R extends void>(k?: Keys, action?: (p: T | undefined) => R) =>
+      okd(k, setOpen, action),
+    [setOpen],
+  );
+  const keyListener = useCallback(
+    <T, R extends void>(k?: Keys, action?: (p?: T) => R) =>
+      kl(onKeyDown(k, action)),
+    [onKeyDown],
+  );
 
   const filterFn = useCallback(
     <T extends FilterProps>(list: T[], max?: number) =>

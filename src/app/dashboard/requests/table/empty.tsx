@@ -1,5 +1,5 @@
 import { TableCell, TableRow } from "@/ui/table/table";
-import { Spinner, Button } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 import { InboxIcon } from "lucide-react";
 
 export const LoadingTable = (props: { colSpan: number }) => (

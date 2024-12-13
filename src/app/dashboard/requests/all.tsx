@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import { AllData } from "./table";
 
 export const All = () => {
@@ -11,6 +11,6 @@ export const All = () => {
   );
 };
 
-const RequestItem = () => (
-  <div className="h-36 rounded-lg border-[0.33px] border-primary bg-primary-50 hover:bg-warning-50/60"></div>
-);
+// const RequestItem = () => (
+//   <div className="h-36 rounded-lg border-[0.33px] border-primary bg-primary-50 hover:bg-warning-50/60"></div>
+// );

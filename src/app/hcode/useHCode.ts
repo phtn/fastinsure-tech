@@ -1,10 +1,14 @@
 import { onError, onSuccess } from "@/app/ctx/toasts";
 import { type RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Err, rawUriDecoder } from "@/utils/helpers";
 import { setGroupCode, setHCode } from "@/app/actions";
-import type { HCode, HCodeParams, HCodeResponse } from "@/lib/secure/resource";
-import { verifyCode } from "@/lib/secure/callers/agent";
+import type {
+  HCode,
+  HCodeParams,
+  HCodeResponse,
+} from "@/server/secure/resource";
+import { verifyCode } from "@/trpc/secure/callers/agent";
 import moment from "moment";
 
 export const useHCode = (sp: HCode & { exp: string | null }) => {
@@ -32,9 +36,9 @@ export const useHCode = (sp: HCode & { exp: string | null }) => {
 
   const hcode = useMemo(() => decodeParams(), [decodeParams]);
 
-  useEffect(() => {
-    console.log("hcode", hcode);
-  }, [hcode]);
+  // useEffect(() => {
+  //   console.log("hcode", hcode);
+  // }, [hcode]);
 
   const setHCodeCookie = useCallback(
     async (key: string) => await setHCode(key),
@@ -50,13 +54,13 @@ export const useHCode = (sp: HCode & { exp: string | null }) => {
       setLoading(true);
       await verifyCode(params)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           if (res && res.Status === 200) {
             setResponse(res);
             if (res.Data.verified) {
               onSuccess("Verified Agent Code");
 
-              console.log("useHCode", `${params.code}--${res.Data.group_code}`);
+              // console.log("useHCode", `${params.code}--${res.Data.group_code}`);
 
               return setHCodeCookie(
                 `${params.code}--${res.Data.group_code}`,

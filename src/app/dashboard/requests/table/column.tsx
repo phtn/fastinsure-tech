@@ -1,16 +1,12 @@
 import {
   type CellContext,
-  type Column,
-  ColumnDef,
+  type ColumnDef,
   type ColumnHelper,
   createColumnHelper,
 } from "@tanstack/react-table";
 
 import { cn } from "@/lib/utils";
-import {
-  nameHeaderFit,
-  nameHeaderNumber,
-} from "@/ui/table/components/name-cells";
+import { nameHeaderFit } from "@/ui/table/components/name-cells";
 import { type SelectRequest } from "@convex/requests/d";
 
 interface CellProps<T, D> {

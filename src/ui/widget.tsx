@@ -1,7 +1,6 @@
 import { type ReactNode, type PropsWithChildren, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { type ClassName } from "@/app/types";
-import { Link } from "@nextui-org/react";
 import { useInView } from "framer-motion";
 
 interface TextProps {
@@ -11,18 +10,16 @@ interface TextProps {
   dark?: boolean;
 }
 
-const Title = ({ children, href, className, dark = false }: TextProps) => (
-  <Link href={href}>
-    <h2
-      className={cn(
-        "font-arc pt-4 text-sm leading-none",
-        { "text-background": dark },
-        className,
-      )}
-    >
-      {children}
-    </h2>
-  </Link>
+const Title = ({ children, className }: TextProps) => (
+  <h2
+    className={cn(
+      "font-arc px-2 pt-4 text-sm leading-none",
+      "text-icon dark:text-icon-dark",
+      className,
+    )}
+  >
+    {children}
+  </h2>
 );
 const Subtext = ({ children, className }: TextProps) => (
   <p className={cn("text-sm opacity-60", className)}>{children}</p>
@@ -67,7 +64,7 @@ export const Header: THeader = Object.assign(HeaderComponent, {
 });
 
 const Component = ({ children }: PropsWithChildren) => (
-  <div className="flex h-full w-full flex-col items-center overflow-x-clip overflow-y-scroll xl:pb-0">
+  <div className="flex h-fit w-full flex-col items-center overflow-x-clip">
     {children}
   </div>
 );
@@ -90,12 +87,12 @@ const Diffused = ({ children }: PropsWithChildren) => (
   </div>
 );
 const Base = ({ children }: PropsWithChildren) => (
-  <div className="h-full w-full rounded-[2.5rem] bg-transparent pb-10 xl:pb-0">
+  <div className="h-full w-full rounded-[2.5rem] bg-transparent xl:pb-0">
     {children}
   </div>
 );
 const BaseII = ({ children }: PropsWithChildren) => (
-  <div className="h-full w-full rounded-[1rem] bg-transparent pb-10 backdrop-blur-lg xl:pb-0">
+  <div className="h-full w-full rounded-[1rem] bg-transparent backdrop-blur-lg">
     {children}
   </div>
 );

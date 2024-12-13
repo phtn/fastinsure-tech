@@ -2,7 +2,7 @@
 
 import { type Table } from "@tanstack/react-table";
 import { DataTableFacetedFilter } from "./filter-facets";
-import { Dispatch, SetStateAction, useCallback, type ChangeEvent } from "react";
+import { useCallback, type ChangeEvent } from "react";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import { ButtSqx } from "@/ui/button/index";
@@ -14,7 +14,6 @@ interface DataTableToolbarProps<TData> {
 
 export function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  const fuzzy = table.getGlobalFilterFn;
 
   const handleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {

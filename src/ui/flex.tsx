@@ -8,7 +8,10 @@ interface FlexProps {
   className?: ClassName;
 }
 export const FlexRow = (props: FlexProps) => (
-  <div ref={props.ref} className={cn("flex w-full gap-4", props.className)}>
+  <div
+    ref={props.ref}
+    className={cn("flex h-full w-full space-x-4", props.className)}
+  >
     {props.children}
   </div>
 );

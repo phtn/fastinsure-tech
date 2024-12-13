@@ -1,16 +1,18 @@
 "use client";
 import { env } from "@/env";
+import type { InsertAuto } from "@convex/autos/d";
+import type { InsertLog, SelectLog } from "@convex/logs/d";
+import type { InsertRequest, SelectRequest } from "@convex/requests/d";
+import type { InsertSubject } from "@convex/subjects/d";
+import type { InsertUser, SelectUser, UpdateUser } from "@convex/users/d";
 import { api } from "@vex/api";
+import type { Id } from "@vex/dataModel";
 import {
   ConvexProvider,
   ConvexReactClient,
   useMutation,
   useQuery,
 } from "convex/react";
-import type { InsertRequest, SelectRequest } from "@convex/requests/d";
-import type { InsertSubject } from "@convex/subjects/d";
-import type { InsertAuto } from "@convex/autos/d";
-// import { generateUrl } from "convex/requests/storage";
 import {
   createContext,
   type PropsWithChildren,
@@ -18,7 +20,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import type { InsertUser, SelectUser, UpdateUser } from "@convex/users/d";
 
 const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
 
@@ -64,7 +65,21 @@ interface VexCtxValues {
       byEmail: (email: string) => Promise<SelectUser | null>;
       byGroup: (group_code: string) => Promise<SelectUser[]>;
     };
-    update: (args: UpdateUser) => Promise<void>;
+    update: {
+      groupCode: (
+        uid: string,
+        group_code: string,
+      ) => Promise<Id<"users"> | null>;
+      userInfo: (args: UpdateUser) => Promise<Id<"users"> | null>;
+    };
+  };
+  logs: {
+    create: (
+      args: InsertLog,
+    ) => Promise<(string & { __tableName: "logs" }) | null>;
+    get: {
+      byId: (uid: string) => Promise<SelectLog | null>;
+    };
   };
   updating: boolean;
 }
@@ -129,7 +144,8 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
   const getUserById = useMutation(api.users.get.byId);
   const getUserByEmail = useMutation(api.users.get.byEmail);
   const getUsersByGroup = useMutation(api.users.get.byGroup);
-  const updateUser = useMutation(api.users.update.update);
+  const updateUser = useMutation(api.users.update.userInfo);
+  const updateGroupCode = useMutation(api.users.update.groupCode);
 
   const usr = useMemo(
     () => ({
@@ -140,18 +156,37 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
         byGroup: async (group_code: string) =>
           await getUsersByGroup({ group_code }),
       },
-      update: async (args: UpdateUser) => {
-        const exists = await getUserById({ uid: args.uid });
-        if (exists) {
-          await updateUser(args);
-        }
+      update: {
+        userInfo: async (args: UpdateUser) => await updateUser(args),
+        groupCode: async (uid: string, group_code: string) =>
+          await updateGroupCode({ uid, group_code }),
       },
     }),
-    [createUser, getUserById, updateUser, getUsersByGroup, getUserByEmail],
+    [
+      createUser,
+      getUserById,
+      updateUser,
+      getUsersByGroup,
+      getUserByEmail,
+      updateGroupCode,
+    ],
+  );
+
+  const createLog = useMutation(api.logs.create.default);
+  const getLogById = useMutation(api.logs.get.byId);
+
+  const logs = useMemo(
+    () => ({
+      create: async (args: InsertLog) => await createLog(args),
+      get: {
+        byId: async (uid: string) => await getLogById({ uid }),
+      },
+    }),
+    [createLog, getLogById],
   );
 
   return (
-    <VexCtx.Provider value={{ request, subject, auto, usr, updating }}>
+    <VexCtx.Provider value={{ logs, request, subject, auto, usr, updating }}>
       {children}
     </VexCtx.Provider>
   );

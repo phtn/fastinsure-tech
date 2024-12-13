@@ -4,7 +4,6 @@ import { Inter, JetBrains_Mono, Instrument_Sans } from "next/font/google";
 import { Providers } from "./ctx/providers";
 import { type PropsWithChildren } from "react";
 import { type Metadata } from "next";
-import { Theme } from "./ctx/theme";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -34,9 +33,9 @@ export default function RootLayout({ children }: PropsWithChildren) {
       className={`${instrument.variable} ${inter.variable} ${jet.variable} ${GeistSans.variable} antialiased`}
     >
       <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
-      <Theme>
+      <body>
         <Providers>{children}</Providers>
-      </Theme>
+      </body>
     </html>
   );
 }

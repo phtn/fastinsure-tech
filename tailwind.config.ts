@@ -242,6 +242,7 @@ export default {
         inst: ["var(--font-inst)"],
       },
       animation: {
+        ripp: "ripp .750s ease-out",
         enter: "enter 0.275s ease-out normal both",
         focus: "enter 0.275s ease-out normal both",
         back: "back 0.25s ease-out normal both",
@@ -254,6 +255,15 @@ export default {
         ripple: "ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite",
       },
       keyframes: {
+        ripp: {
+          "0%": {
+            opacity: "1",
+          },
+          "100%": {
+            transform: "scale(2)",
+            opacity: "0",
+          },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },

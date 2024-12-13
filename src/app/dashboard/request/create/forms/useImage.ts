@@ -36,8 +36,8 @@ export const useImageFile = () => {
 
       reader.onload = (e) => {
         // Display original image
-        const image = e.target?.result?.toString();
-        setImageData(image!);
+        const image = e.target?.result;
+        setImageData(image as string);
 
         // Create new image
         const img = new Image();

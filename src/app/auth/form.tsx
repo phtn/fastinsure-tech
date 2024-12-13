@@ -4,15 +4,29 @@ import { Button, Image, Link } from "@nextui-org/react";
 import { useAuthCtx } from "../ctx/auth";
 import { cn } from "@/lib/utils";
 import { FastField } from "@/ui/input";
-import { type FormEvent, useCallback } from "react";
+import { type FormEvent, useCallback, useMemo } from "react";
 import { Err } from "@/utils/helpers";
+import { FlexRow } from "@/ui/flex";
+import moment from "moment";
 
-export const EmailSigninForm = () => {
+export const EmailSigninForm = (props: { lastLogin: number }) => {
   const { signUserWithEmail, loading } = useAuthCtx();
   const defaultValues = { email: "", password: "" };
   const { register } = useForm<EmailAndPassword>({
     defaultValues,
   });
+
+  const timeAgo = useMemo(
+    () => moment(props.lastLogin).fromNow(),
+    [props.lastLogin],
+  );
+  const timestamp = useMemo(
+    () =>
+      moment()
+        .subtract(props.lastLogin - Date.now(), "milliseconds")
+        .calendar(),
+    [props.lastLogin],
+  );
 
   // const signInAction = useCallback(
   //   async (state: UserCredential | null, data: FormData) => {
@@ -51,6 +65,7 @@ export const EmailSigninForm = () => {
               icon={field.icon}
               title={field.label}
               type={field.type}
+              autoFocus={field.name === "email"}
               className={cn(
                 {
                   "w-full rounded-b-none rounded-t-lg border-b-0 border-primary":
@@ -79,14 +94,21 @@ export const EmailSigninForm = () => {
           >
             <div>Sign in</div>
           </Button>
-          <div className="flex h-8 items-center justify-center text-xs">
+          <div className="flex h-8 items-center justify-center text-xs text-icon dark:text-icon-dark">
             <p>or</p>
           </div>
           <GoogleSignin />
-
-          <div className="flex h-8 items-center justify-center text-xs"></div>
-
+          <div className="flex h-6 items-center justify-center text-xs"></div>
           <Support />
+          <FlexRow className="relative -top-2 h-8 w-full items-center justify-center">
+            <p className="w-fit space-x-2 whitespace-nowrap rounded-full border-[0.33px] border-icon-dark bg-goddess p-1.5 font-jet text-[10px] font-light capitalize leading-none text-icon shadow-inner dark:border-icon/40 dark:bg-void dark:text-warning-500">
+              <span>logged off since</span>{" "}
+              <span className="text-[8px] text-icon">{`:`}</span>
+              <span className="capitalize">{timestamp}</span>
+              <span className="text-[8px] text-icon">{`:`}</span>
+              <span className="lowercase">{timeAgo}</span>
+            </p>
+          </FlexRow>
         </div>
       </div>
     </form>

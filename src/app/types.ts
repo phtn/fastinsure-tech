@@ -1,4 +1,4 @@
-import type { HTMLProps, ReactNode } from "react";
+import type { HTMLProps, ReactNode, Key, ReactElement } from "react";
 import type { LucideIcon } from "lucide-react";
 import type { HeartIcon } from "@heroicons/react/24/outline";
 
@@ -23,3 +23,10 @@ export type MonthName =
   | "October"
   | "November"
   | "December";
+
+export interface TabItem {
+  id: string | number;
+  value: Key;
+  label: string;
+  content: ReactElement;
+}

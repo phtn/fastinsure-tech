@@ -15,7 +15,7 @@ export const HStackComponent = ({
 }: HStackProps) => (
   <div
     className={cn(
-      "grid h-full w-full grid-cols-1",
+      "grid h-fit w-full grid-cols-1",
       className,
       { "lg:grid-cols-6": cols === 6 },
       { "lg:grid-cols-5": cols === 5 },

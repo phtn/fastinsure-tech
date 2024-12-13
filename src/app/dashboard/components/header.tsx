@@ -17,12 +17,12 @@ export const Header = ({ title, sm, xs }: HeaderProps) => {
   return (
     <div
       className={cn(
-        "relative z-50 h-14 w-full",
+        "relative z-50 h-16 w-full",
         { "px-2 py-4": sm },
         { "px-2 py-2": xs },
       )}
     >
-      <section className="flex h-full items-end px-4 leading-none">
+      <section className="flex h-full items-center px-6 leading-none">
         <Link
           href={`/dashboard/${title}`}
           className="font-inter text-xl font-semibold capitalize tracking-tighter text-foreground opacity-100"

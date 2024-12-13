@@ -13,12 +13,12 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  if (req.nextUrl.pathname === "/signin") {
-    if (uid) {
-      const dashboard = new URL("/dashboard", req.url);
-      return NextResponse.redirect(dashboard);
-    }
-  }
+  // if (req.nextUrl.pathname === "/signin") {
+  //   if (uid) {
+  //     const dashboard = new URL("/dashboard", req.url);
+  //     return NextResponse.redirect(dashboard);
+  //   }
+  // }
 
   return NextResponse.next();
 }

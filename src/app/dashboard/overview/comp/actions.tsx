@@ -2,13 +2,7 @@ import { useAuthCtx } from "@/app/ctx/auth";
 import { useManager } from "@/lib/hooks/useManager";
 import { ActionCard, Action, ActionLink } from "@/ui/action-card";
 import { BookOpenIcon, QrCodeIcon } from "@heroicons/react/24/outline";
-import {
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { Qr } from "./qr-viewer";
 import { Button } from "@nextui-org/react";
 import { Square2StackIcon } from "@heroicons/react/24/solid";
@@ -17,6 +11,7 @@ import { QrCodegen } from "./qr-codegen";
 import { copyFn, Err, toggleState } from "@/utils/helpers";
 import { FileSymlinkIcon } from "lucide-react";
 import { type DualIcon } from "@/app/types";
+import { useRequest } from "../../hooks/useRequest";
 
 export const CreateAgentCode = () => {
   const { user } = useAuthCtx();
@@ -26,13 +21,6 @@ export const CreateAgentCode = () => {
   const handleCreateAgentCode = useCallback(async () => {
     await newAgentCode(user).then(setOpen).catch(Err);
   }, [newAgentCode, user]);
-
-  useEffect(() => {
-    if (agentCode) {
-      console.log("actions", agentCode);
-      console.table(agentCode);
-    }
-  }, [agentCode]);
 
   const handleToggleOpen = useCallback(() => toggleState(setOpen), []);
 
@@ -157,10 +145,9 @@ export const SpecialAction = ({
   );
 };
 
-export const CreateRequest = (create: {
-  request: VoidFunction;
-  loading: boolean;
-}) => {
+export const CreateRequest = () => {
+  const create = useRequest();
+
   return (
     <ActionCard>
       <ActionCard.Icon icon={FileSymlinkIcon} />

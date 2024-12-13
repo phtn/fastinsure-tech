@@ -16,16 +16,11 @@ export function Toolbar<TData>({
   // toolbarActions,
 }: DataTableToolbarProps<TData>) {
   // const isFiltered = table.getState().columnFilters.length > 0;
-  const filterValues =
-    // (table.getColumn("assuredName")?.getFilterValue() as string) ||
-    table.getColumn("uid")?.getFilterValue() as string;
+  // const filterValues =
+  //   table.getColumn("uid")?.getFilterValue() as string;
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(filterValues);
-    return (
-      // table.getColumn("assuredName")?.setFilterValue(e.target.value) ??
-      table.getColumn("uid")?.setFilterValue(e.target.value)
-    );
+    return table.getColumn("uid")?.setFilterValue(e.target.value);
   };
 
   return (

@@ -8,26 +8,27 @@ import {
   Toolbar,
   type ToolbarProps,
 } from "./toolbar";
-import { type UseWindow, useWindow, type Keys } from "./useWindow";
+import { type UseWindow, useWindow } from "./useWindow";
 import type { DualIcon } from "@/app/types";
+import { type Keys } from "./utils";
 
 export type WindowVariant = "demigod" | "god" | "goddess";
-interface DialogWindowProps extends UseWindow {
-  k: Keys;
+interface DialogWindowProps<S> extends UseWindow {
+  k?: Keys;
   value?: string;
   children?: ReactNode;
   action?: <T, R>(p: T) => R;
   variant?: WindowVariant;
   shadow?: "sm" | "md" | "lg" | "xl";
-  toolbar?: FC<ToolbarProps>;
+  toolbar?: FC<ToolbarProps<S>>;
   title?: string;
 }
 
-export function DialogWindow(props: DialogWindowProps) {
+export const DialogWindow = <T,>(props: DialogWindowProps<T>) => {
   const {
+    k,
     action,
     children,
-    k,
     shadow = "xl",
     title,
     variant,
@@ -35,12 +36,12 @@ export function DialogWindow(props: DialogWindowProps) {
     setOpen,
   } = props;
 
-  const { open, close, keyListener, onKeyDown, stopPropagation } = useWindow({
+  const { open, close, keyListener, stopPropagation } = useWindow({
     open: props.open,
     setOpen,
   });
 
-  const { add, remove } = keyListener(onKeyDown(k, action));
+  const { add, remove } = keyListener(k, action);
 
   useEffect(() => {
     add();
@@ -57,7 +58,7 @@ export function DialogWindow(props: DialogWindowProps) {
           className={cn(
             "fixed inset-0 flex items-center justify-center bg-void bg-opacity-10 p-4",
           )}
-          onClick={close}
+          // onClick={close}
         >
           <motion.div
             drag
@@ -66,7 +67,7 @@ export function DialogWindow(props: DialogWindowProps) {
             animate={{ scale: 1, opacity: 1, borderRadius: 16 }}
             exit={{ scale: 0.85, opacity: 0, y: 20 }}
             className={cn(
-              "w-full max-w-2xl overflow-hidden shadow-xl",
+              "z-50 w-full max-w-2xl overflow-hidden shadow-xl",
               "rounded-2xl",
               { "shadow-xl": shadow === "xl" },
               { "shadow-lg": shadow === "lg" },
@@ -99,7 +100,7 @@ export function DialogWindow(props: DialogWindowProps) {
       )}
     </AnimatePresence>
   );
-}
+};
 
 interface WindowProps {
   children?: ReactNode;
@@ -118,7 +119,9 @@ export function Window(props: WindowProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className={cn("flex w-full items-center justify-center py-6")}
+        className={cn(
+          "flex w-full items-center justify-center rounded-2xl bg-void",
+        )}
       >
         <motion.div
           drag
@@ -133,8 +136,8 @@ export function Window(props: WindowProps) {
             { "shadow-lg": shadow === "lg" },
             { "shadow-md": shadow === "md" },
             { "shadow-sm": shadow === "sm" },
-            "dark:border-fade-dark/90 dark:bg-darkvoid",
-            "border-[0.33px] border-fade-dark/40 bg-white",
+            "dark:border-fade-dark/90 dark:bg-void",
+            "border-[0.33px] border-fade-dark/20 bg-chalk",
           )}
         >
           {props.toolbar ? (

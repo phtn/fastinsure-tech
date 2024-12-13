@@ -10,7 +10,6 @@ import { type ChangeEvent, memo, type MouseEvent, useCallback } from "react";
 import {
   CardGroup,
   exampleResult,
-  FormHeader,
   HiddenCanvas,
   ImageViewer,
   ResultsWrapper,

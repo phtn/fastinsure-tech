@@ -6,9 +6,9 @@ import { TabContainer } from "./tabs";
 
 export default function RequestsLayout({ children }: PropsWithChildren) {
   return (
-    <div>
+    <main>
       <Header title="requests" xs />
       <TabContainer>{children}</TabContainer>
-    </div>
+    </main>
   );
 }

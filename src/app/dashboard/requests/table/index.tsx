@@ -1,3 +1,5 @@
+"use client";
+
 import { DataTable } from "./table";
 import { columns } from "./column";
 import { useRequests } from "../useRequests";
@@ -17,7 +19,7 @@ export const AllData = () => {
   );
 };
 
-const fake_req = [
+export const fake_req = [
   {
     request_id: "984Coffee",
     assured_name: "name_01",

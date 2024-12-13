@@ -5,7 +5,7 @@ export interface FilterProps {
   name: string;
   description?: string;
 }
-export type Keys = "j" | "k" | "i";
+export type Keys = "j" | "k" | "i" | "'" | ".";
 
 export const filterFn = <T extends FilterProps>(
   list: T[],
@@ -22,12 +22,12 @@ export const filterFn = <T extends FilterProps>(
 
 export const onKeyDown =
   <T, R extends void>(
-    k: Keys,
+    k: Keys | undefined,
     setOpen: Dispatch<SetStateAction<boolean>>,
     action?: (p?: T) => R,
   ) =>
   (e: KeyboardEvent) => {
-    if (e.key === k && (e.metaKey || e.ctrlKey)) {
+    if (k && e.key === k && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       setOpen((prev) => !prev);
       if (typeof action !== "undefined") {
@@ -43,9 +43,8 @@ export const keyListener = (keydownFn: (e: KeyboardEvent) => void) => {
   };
 };
 
-export const close = (setOpen: Dispatch<SetStateAction<boolean>>) => () => {
+export const close = (setOpen: Dispatch<SetStateAction<boolean>>) =>
   setOpen(false);
-};
 
 export const searchFn =
   (setSearch: Dispatch<SetStateAction<string>>) =>

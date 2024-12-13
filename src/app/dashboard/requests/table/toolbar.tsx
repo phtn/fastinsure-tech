@@ -2,10 +2,10 @@
 
 import { type Table } from "@tanstack/react-table";
 // import { DataTableFacetedFilter } from "./filter-facets";
-import { PropsWithChildren, type ChangeEvent } from "react";
+import { type PropsWithChildren, type ChangeEvent } from "react";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
-import { ButtSqx, ButtStat } from "@/ui/button/index";
+import { ButtSqx } from "@/ui/button/index";
 import { DataTableViewOptions } from "@/ui/table/components/view-options";
 import { DataTablePagination } from "@/ui/table/components/pagination";
 

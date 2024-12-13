@@ -1,4 +1,4 @@
-import type { LivezResponse } from "@/lib/secure/resource";
+import type { LivezResponse } from "@/server/secure/resource";
 import { cn } from "@/lib/utils";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/ui/hover";
 import { HyperList } from "@/ui/list";

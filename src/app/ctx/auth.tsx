@@ -28,13 +28,17 @@ import {
 import { Err, Ok } from "@/utils/helpers";
 import {
   deleteAuthClient,
+  deleteCustomClaims,
+  deleteLastLogin,
   deleteRefresh,
   deleteSession,
   deleteUID,
   getCustomClaims,
   getGroupCode,
+  getLastLogin,
   setCustomClaims,
   setIdToken,
+  setLastLogin,
   setRefresh,
   setUID,
 } from "@/app/actions";
@@ -43,12 +47,13 @@ import { EmailAndPasswordSchema } from "../auth/schema";
 import type {
   OnSigninVerification,
   OnSigninVerificationResponse,
-} from "@/lib/secure/resource";
+} from "@/server/secure/resource";
 import { onError, onSuccess, onWarn } from "./toasts";
 import { Loader } from "@/ui/loader";
-import { verifyOnSignin } from "@/lib/secure/callers/auth";
+import { verifyOnSignin } from "@/trpc/secure/callers/auth";
 import { useVex } from "./convex";
 import type { UserRole, SelectUser } from "@convex/users/d";
+import moment from "moment";
 
 interface AuthCtxValues {
   loading: boolean;
@@ -64,7 +69,6 @@ interface AuthCtxValues {
   setClaims: Dispatch<SetStateAction<UserRole[] | null>>;
   vresult: OnSigninVerificationResponse | null;
   vxuser: SelectUser | null;
-  pending: boolean;
 }
 
 const AuthCtx = createContext<AuthCtxValues | null>(null);
@@ -79,24 +83,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [vresult, setVResult] = useState<OnSigninVerificationResponse | null>(
     null,
   );
-  const [refreshTime, setRefreshTime] = useState((45 * 60) / 0.001);
   const [vxuser, setVxuser] = useState<SelectUser | null>(null);
   const { usr } = useVex();
-
-  // const refreshTimer = NodeJS.Timeout
-
-  const startTimer = useCallback(() => {
-    const timer = setTimeout(() => {
-      setRefreshTime((prev) => prev - 1000);
-    }, 1000);
-    if (timer) clearTimeout(timer);
-  }, [setRefreshTime]);
 
   const router = useRouter();
 
   const uid = useMemo(() => user?.uid, [user?.uid]);
 
-  const [pending, fn] = useTransition();
+  const [_, fn] = useTransition();
 
   const setFn = <T, P>(
     transition: TransitionStartFunction,
@@ -117,12 +111,19 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const verify = useCallback(
     async (u: User) => {
-      const vres = await initVerification(u, setUserRecord, setLoading);
+      const vres = await initVerification(
+        u,
+        setUserRecord,
+        setClaims,
+        setLoading,
+      );
       const group_code = vres.Data.group_code;
-      if (group_code !== "" && !vxuser?.group_code) {
-        await usr.update({ uid: u.uid, group_code });
+      if (!!group_code && group_code !== "" && !vxuser?.group_code) {
+        console.log(group_code, group_code !== "");
+        console.log(vxuser?.group_code, !vxuser?.group_code);
+        console.log(group_code !== "" && !vxuser?.group_code);
+        await usr.update.groupCode(u.uid, group_code);
       }
-      console.log("group_code", group_code);
       setVResult(vres);
     },
     [usr, vxuser?.group_code],
@@ -135,13 +136,12 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setVxuser(vx);
 
       if (vx && claims && vx.role !== claimsStr) {
-        await usr.update({ uid, role: claimsStr });
+        await usr.update.userInfo({ uid, role: claimsStr });
       }
 
       const group_code = await getGroupCode();
-      if (group_code) {
-        await usr.update({ uid, group_code });
-
+      if (group_code && !vx?.group_code) {
+        // await usr.update({ uid, group_code });
         // update server
       }
     },
@@ -176,7 +176,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const role = (claims?.join(",") ?? "neo") as UserRole;
     if (!uid) return;
     if (vxuser && vxuser?.role !== role) {
-      await usr.update({ uid, role });
+      await usr.update.userInfo({ uid, role });
     }
   }, [claims, uid, usr, vxuser]);
 
@@ -188,23 +188,47 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     await deleteSession();
     await deleteRefresh();
     await deleteUID();
+    await deleteCustomClaims();
     await deleteAuthClient();
   }, []);
+
+  const checkLastLogin = useCallback(async () => {
+    const lastLogin = await getLastLogin();
+    if (!lastLogin) {
+      await setLastLogin();
+      return `Logged out: ${new Date().getTime()}`;
+    }
+    return moment().from(lastLogin);
+  }, []);
+
+  const signOut = useCallback(async () => {
+    await logout(auth);
+    await cleanUpCookies();
+    router.push("/");
+    await setLastLogin();
+  }, [router, cleanUpCookies]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       setLoading(true);
       if (u) {
         setUser(u);
+        getClaims();
+        deleteLastLogin().catch(Err);
         setLoading(false);
       } else {
+        signOut()
+          .then(() => {
+            checkLastLogin()
+              .then((lastLogin) => Ok(setLoading, lastLogin))
+              .catch(Err(setLoading));
+          })
+          .catch(Err(setLoading, "Sign out error...."));
         setLoading(false);
-        cleanUpCookies().catch(Err);
       }
-      getClaims();
     });
     return () => unsubscribe();
-  }, [router, cleanUpCookies, getClaims]);
+  }, [router, signOut, getClaims, checkLastLogin]);
 
   const signUserWithEmail = useCallback(
     async (f: FormData) => {
@@ -227,6 +251,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         password,
       );
       const u = userCredential?.user;
+      setLoading(false);
       if (u) {
         setUser(u);
         onSuccess("Logged in!");
@@ -254,14 +279,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     setGoogleSigning(false);
   }, [verify]);
 
-  const signOut = useCallback(async () => {
-    await logout(auth)
-      .then(Ok(setLoading, "Signed out."))
-      .catch(Err(setLoading, "Sign out error."));
-    await cleanUpCookies();
-    router.push("/");
-  }, [router, cleanUpCookies]);
-
   const stableValues = useMemo(
     () => ({
       user,
@@ -276,7 +293,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       vresult,
       loading,
       vxuser,
-      pending,
     }),
     [
       user,
@@ -291,7 +307,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       vresult,
       loading,
       vxuser,
-      pending,
     ],
   );
 
@@ -301,30 +316,28 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 const initVerification = async (
   u: User,
   setUserRecord: Dispatch<SetStateAction<IdTokenResult | null>>,
+  setClaims: Dispatch<SetStateAction<UserRole[] | null>>,
   setLoading: Dispatch<SetStateAction<boolean>>,
 ) => {
   const id_token = await u.getIdToken();
   const refresh_token = (await u.getIdTokenResult()).token;
-
   const parsedToken = (await u.getIdTokenResult()).claims;
   const customClaims = filterActiveClaims(parsedToken);
+  const activeClaims = customClaims?.join(",") ?? "";
 
   const record = await u.getIdTokenResult();
   setUserRecord(record);
 
-  // const hcode = await getHCode();
-  // const group_code = hcode?.split("--")[1] ?? "";
-
   await setUID(u.uid);
   await setIdToken(id_token);
   await setRefresh(refresh_token);
-  await setCustomClaims(customClaims?.join(",") ?? "");
+  setClaims(customClaims);
+  await setCustomClaims(activeClaims);
   const vParams: OnSigninVerification = {
     uid: u.uid,
   };
 
   const r = await verifyOnSignin(vParams);
-  console.log(r);
   setLoading(false);
   return r;
 };

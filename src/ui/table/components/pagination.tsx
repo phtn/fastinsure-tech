@@ -8,7 +8,7 @@ import { type Table } from "@tanstack/react-table";
 
 import { Select, SelectTrigger, SelectValue } from "@/ui/select";
 import { BeachSelect, BeachSelectItem } from "./styles";
-import { ButtSqx } from "@/ui/button/";
+import { ButtSqx } from "@/ui/button/index";
 import { type ReactNode } from "react";
 
 interface DataTablePaginationProps<TData> {

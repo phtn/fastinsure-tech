@@ -3,7 +3,7 @@ import { CheckCircleIcon, StopCircleIcon } from "@heroicons/react/24/solid";
 import { Listbox, ListboxItem } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
 import { useMemo, type PropsWithChildren } from "react";
-import type { HCode } from "@/lib/secure/resource";
+import type { HCode } from "@/server/secure/resource";
 import { cn } from "@/lib/utils";
 
 interface HCodeStatus {

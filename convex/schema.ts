@@ -4,6 +4,7 @@ import { request_schema } from "./requests/d";
 import { auto_schema } from "./autos/d";
 import { address_schema } from "./addresses/d";
 import { subject_schema } from "./subjects/d";
+import { log_schema } from "./logs/d";
 
 export default defineSchema({
   users: defineTable(user_schema)
@@ -88,5 +89,14 @@ export default defineSchema({
     "firstname",
     "lastname",
     "middlename",
+  ]),
+
+  logs: defineTable(log_schema).index("by_uid", [
+    "uid",
+    "email",
+    "created_at",
+    "device",
+    "geolocation",
+    "ip",
   ]),
 });

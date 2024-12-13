@@ -1,17 +1,17 @@
 "use server";
 
-import { activateUser, getUser } from "@/lib/secure/callers";
 import {
-  ActivateUserSchema,
+  AccountActivationParamsSchema,
+  // type GetUserResponse,
   HCodeParamsSchema,
   type HCodeResponseData,
-  type UserRecord,
-} from "@/lib/secure/resource";
+} from "@/server/secure/resource";
 import { cookies } from "next/headers";
 import { env } from "@/env";
 import { GoogleAuth } from "google-auth-library";
-import { verifyCode } from "@/lib/secure/callers/agent";
+import { verifyActivationCode } from "@/trpc/secure/callers/server";
 import { type UserRole } from "@convex/users/d";
+// import { activateAccount, getUser } from "@/lib/secure/callers/auth";
 
 export type Modes = "light" | "dark" | "system" | "dev" | "devdark";
 export interface ModeCookie {
@@ -26,15 +26,13 @@ const defaultOpts = {
   sameSite: "lax" as const,
 };
 
-export const getUserRecord = async (): Promise<UserRecord | undefined> => {
-  const cookieStore = await cookies();
-  const id_token = cookieStore.get("fastinsure--session")?.value;
-  const uid = cookieStore.get("fastinsure--uid")?.value;
-  if (!id_token || !uid) return;
-  const result = await getUser({ id_token, uid });
-  if (!result) return;
-  return result.data;
-};
+// export const getUserRecord = async (): Promise<GetUserResponse | undefined> => {
+//   const cookieStore = await cookies();
+//   const uid = cookieStore.get("fastinsure--uid")?.value;
+//   const result = await getUser({ uid });
+//   if (!result) return;
+//   return result;
+// };
 
 export const getRefresh = async () => {
   const cookieStore = await cookies();
@@ -121,15 +119,10 @@ export const verifyHCode = async (
   });
 
   if (v.error) {
-    // return {
-    //   errors: v.error.flatten().fieldErrors,
-    // };
-    // return null;
     return undefined;
   }
 
-  const response = await verifyCode(v.data);
-  console.log("actions - hcode", response);
+  const response = await verifyActivationCode(v.data);
   return response?.Data;
 };
 
@@ -198,11 +191,11 @@ export const deleteAuthClient = async () => {
   cookieStore.delete("fastinsure--ocr-proc");
 };
 
-export const activateAccount = async (data: FormData) => {
+export const activate = async (data: FormData) => {
   const id_token = await getSession();
   const uid = await getUID();
 
-  const validatedParams = ActivateUserSchema.safeParse({
+  const validatedParams = AccountActivationParamsSchema.safeParse({
     hcode: data.get("hcode"),
     email: data.get("email"),
     id_token,
@@ -210,20 +203,18 @@ export const activateAccount = async (data: FormData) => {
   });
 
   if (validatedParams.error) {
-    console.log("Invalid params");
-    console.table(validatedParams.error);
+    return;
   }
-
-  console.log(validatedParams.data);
 
   if (validatedParams.success) {
     if (!id_token || !uid) return;
-    const response = await activateUser({
-      ...validatedParams.data,
-    });
-    return response?.data;
+    // const response = await activateAccount({
+    //   ...validatedParams.data,
+    // });
+    // return response;
   }
 };
+
 export const setCustomClaims = async (claims: string) => {
   const cookieStore = await cookies();
   if (claims)
@@ -262,4 +253,21 @@ export const getGroupCode = async () => {
 export const deleteGroupCode = async () => {
   const cookieStore = await cookies();
   cookieStore.delete("fastinsure--group_code");
+};
+
+export const setLastLogin = async () => {
+  const cookieStore = await cookies();
+  cookieStore.set("fastinsure--lastlogin", Date.now().toString(), {
+    ...defaultOpts,
+    path: "/",
+  });
+};
+export const getLastLogin = async () => {
+  const cookieStore = await cookies();
+  const value = cookieStore.get("fastinsure--lastlogin")?.value;
+  return parseInt(value ?? "0");
+};
+export const deleteLastLogin = async () => {
+  const cookieStore = await cookies();
+  cookieStore.delete("fastinsure--lastlogin");
 };

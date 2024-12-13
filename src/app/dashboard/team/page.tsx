@@ -1,11 +1,11 @@
-import { type Metadata } from "next";
+// import { type Metadata } from "next";
 import { All } from "./all";
 
-export const metadata: Metadata = {
-  title: "My Team",
-  description: "Viewing all my team.",
-  icons: [{ rel: "icon", url: "/svg/f.svg" }],
-};
+// export const metadata: Metadata = {
+//   title: "My Team",
+//   description: "Viewing all my team.",
+//   icons: [{ rel: "icon", url: "/svg/f.svg" }],
+// };
 
 export default async function Page() {
   return (

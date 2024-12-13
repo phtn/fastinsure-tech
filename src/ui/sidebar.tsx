@@ -137,7 +137,7 @@ const UserNavs = () => {
   const SidebarNavs = useCallback(() => {
     if (!navs) return;
     return (
-      <div className="space-y-2">
+      <div className="h-14 space-y-2">
         {navs.map((nav, idx) => (
           <SidebarNav key={`${nav.id}_${idx}`} {...nav} href={nav.href} />
         ))}
@@ -207,7 +207,7 @@ export const SidebarNav = (props: NavProps) => {
         <div className={cn("group p-1", props.className)}>
           <IconComponent
             className={cn(
-              "transision-all size-[1.25rem] shrink-0 stroke-1 text-primary-200 drop-shadow-md duration-300 ease-out transform-gpu hover:text-primary-200 group-hover:text-chalk group-hover:scale-110 dark:text-primary-500",
+              "transision-all size-[1.5rem] shrink-0 stroke-1 text-primary-200 drop-shadow-md duration-300 ease-out transform-gpu hover:text-primary-200 group-hover:text-chalk group-hover:scale-110 dark:text-primary-500",
               {
                 "stroke-[1.5px] text-secondary dark:text-secondary":
                   pathname.length >= 2 && props.href.includes(sub!),
@@ -254,11 +254,11 @@ export const SidebarNav = (props: NavProps) => {
         className={cn(
           "!m-0 inline-block whitespace-pre rounded-lg px-3 py-1 font-inst font-medium tracking-tight text-primary-200 transition-all duration-300 transform-gpu hover:text-chalk group-hover/sidebar:bg-primary-50/20 group-hover/sidebar:text-primary-100 group-hover/sidebar:translate-x-0.5 dark:text-primary-600 dark:group-hover/sidebar:bg-primary-900/20 dark:group-hover/sidebar:text-primary-900",
           {
-            "bg-gradient-to-r from-amber-100 from-5% via-secondary to-secondary bg-clip-text font-medium text-transparent dark:bg-gradient-to-r dark:from-amber-100 dark:from-5% dark:via-secondary dark:to-secondary dark:bg-clip-text dark:text-transparent":
+            "bg-gradient-to-r from-amber-100 from-5% via-secondary-300 via-25% to-secondary bg-clip-text font-medium text-transparent dark:bg-gradient-to-r dark:from-amber-100 dark:from-5% dark:via-secondary dark:to-secondary dark:bg-clip-text dark:text-transparent":
               pathname.length >= 2 && props.href.includes(sub!),
           },
           {
-            "bg-gradient-to-r from-amber-100 from-5% via-secondary to-secondary bg-clip-text font-medium text-transparent dark:bg-gradient-to-r dark:from-amber-100 dark:from-5% dark:via-secondary dark:to-secondary dark:bg-clip-text dark:text-transparent":
+            "bg-gradient-to-r from-amber-100 from-5% via-secondary-300 via-25% to-secondary bg-clip-text font-medium text-transparent dark:bg-gradient-to-r dark:from-amber-100 dark:from-5% dark:via-secondary dark:to-secondary dark:bg-clip-text dark:text-transparent":
               pathname.length <= 2 && `/${pathname[1]}` === props.href,
           },
         )}

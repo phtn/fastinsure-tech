@@ -3,11 +3,11 @@ import type {
   AgentCode,
   AgentCodeResponse,
   VerifyIdToken,
-} from "../secure/resource";
+} from "@/server/secure/resource";
 import { onError, onSuccess } from "@/app/ctx/toasts";
 import { getSession } from "@/app/actions";
 import { type User } from "firebase/auth";
-import { generateCode } from "../secure/callers/manager";
+import { generateCode } from "@/trpc/secure/callers/manager";
 
 export const useManager = () => {
   const [loading, setLoading] = useState(false);

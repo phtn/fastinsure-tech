@@ -127,11 +127,10 @@ interface DevCommandProps {
 }
 
 export function DevCommands(props: DevCommandProps) {
-  const { search, close, filterFn, searchFn, keyListener, onKeyDown } =
-    useWindow({
-      open: props.open,
-      setOpen: props.setOpen,
-    });
+  const { search, close, filterFn, searchFn, keyListener } = useWindow({
+    open: props.open,
+    setOpen: props.setOpen,
+  });
 
   const { devFnList, updateFnList, pending } = useFunction();
   const filtered: TestFunction[] = useMemo(
@@ -139,7 +138,7 @@ export function DevCommands(props: DevCommandProps) {
     [devFnList, filterFn],
   );
 
-  const { add, remove } = keyListener(onKeyDown("k"));
+  const { add, remove } = keyListener("k");
 
   useEffect(() => {
     add();

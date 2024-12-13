@@ -47,8 +47,8 @@ export const useFile = () => {
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      const result = e.target?.result?.toString();
-      setImageData(result);
+      const result = e.target?.result;
+      setImageData(result as string);
 
       const img = new Image();
       img.onload = () => {

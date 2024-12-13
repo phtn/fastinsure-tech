@@ -12,9 +12,11 @@ import {
 } from "react";
 
 export const useTeam = () => {
-  const [vxteam, setVxTeam] = useState<SelectUser[] | undefined>([]);
+  const [vxteam, setVxTeam] = useState<SelectUser[] | undefined>();
+  const [vxmembers, setVxMembers] = useState<SelectUser[] | undefined>();
 
   const { vxuser } = useAuthCtx();
+  const group_code = vxuser?.group_code;
   const { usr } = useVex();
 
   const [pending, fn] = useTransition();
@@ -26,17 +28,18 @@ export const useTeam = () => {
   ) => {
     transition(() => {
       transition(async () => {
-        const r = await action();
-        set(r);
+        set(await action());
       });
     });
   };
 
   const getvxgroup = useCallback(async () => {
-    const group_code = vxuser?.group_code;
     if (!group_code) return;
-    return await usr.get.byGroup(group_code);
-  }, [usr, vxuser?.group_code]);
+    const team = await usr.get.byGroup(group_code);
+    const members = team?.filter((u) => u.uid !== vxuser.uid);
+    setVxMembers(members);
+    return team;
+  }, [usr, group_code, vxuser?.uid]);
 
   const getTeam = useCallback(() => {
     setFn(fn, getvxgroup, setVxTeam);
@@ -46,5 +49,5 @@ export const useTeam = () => {
     getTeam();
   }, [getTeam]);
 
-  return { vxteam, pending };
+  return { vxteam, vxmembers, pending };
 };

@@ -22,26 +22,22 @@ export interface AuthComponentProps {
   shadow?: "sm" | "md" | "lg" | "xl";
 }
 function AuthComponent(props: AuthComponentProps) {
-  const { open, close, keyListener, onKeyDown, stopPropagation } = useWindow({
+  const { open, close, keyListener, stopPropagation } = useWindow({
     open: props.open,
     setOpen: props.setOpen,
   });
-  const { pending, checkSession, checkServer } = useAuthFn();
+  const { pending, checkSession, checkServer, checkLastLogin, lastLogin } =
+    useAuthFn();
 
   const onLoad = useCallback(() => {
     if (!open) {
       checkServer();
       checkSession();
+      checkLastLogin();
     }
-  }, [open, checkServer, checkSession]);
+  }, [open, checkServer, checkSession, checkLastLogin]);
 
-  const { add, remove } = keyListener(onKeyDown("j", onLoad));
-
-  // useEffect(() => {
-  //   if (open) {
-  //     onInfo(pending ? "pending" : "complete");
-  //   }
-  // }, [pending, open]);
+  const { add, remove } = keyListener("j", onLoad);
 
   useEffect(() => {
     add();
@@ -49,7 +45,7 @@ function AuthComponent(props: AuthComponentProps) {
   }, [add, remove]);
 
   //////////
-  //MOTION
+  // MOTION
 
   const state = useMotionValue(0);
   const r = useTransform(state, [0, 1], [384, 16]);
@@ -66,6 +62,9 @@ function AuthComponent(props: AuthComponentProps) {
     }
   }, []);
 
+  //////////
+  // WINDOW
+
   const toggleStateValue = useCallback(() => {
     if (open) {
       state.set(pending ? 1 : 0);
@@ -76,12 +75,13 @@ function AuthComponent(props: AuthComponentProps) {
     toggleStateValue();
   }, [toggleStateValue]);
 
-  /////////
-
   const SignCardOptions = useCallback(() => {
-    const options = opts(<PendingState />, <SignCard close={close} />);
+    const options = opts(
+      <PendingState />,
+      <SignCard close={close} lastLogin={lastLogin} />,
+    );
     return <>{options.get(pending)}</>;
-  }, [pending, close]);
+  }, [pending, close, lastLogin]);
 
   return (
     <AnimatePresence>
@@ -94,7 +94,6 @@ function AuthComponent(props: AuthComponentProps) {
             "fixed inset-0 z-[200] flex h-screen w-screen items-center justify-center p-4",
             "bg-zinc-950 bg-opacity-20 p-4",
           )}
-          onClick={close}
         >
           <motion.div
             drag
@@ -136,25 +135,21 @@ function AuthComponent(props: AuthComponentProps) {
 
 interface SignCardProps {
   close: VoidFunction;
+  lastLogin: number;
 }
 
-const SignCard = ({ close }: SignCardProps) => {
+const SignCard = ({ close, lastLogin }: SignCardProps) => {
   return (
     <motion.div
       initial={{ opacity: 0.85, scale: 0.3 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0.8, scale: 0.75 }}
       transition={{}}
-      className="h-[540px] md:w-[30vw]"
+      className="h-[540px] w-[30vw] xl:w-[25vw]"
     >
-      <Toolbar
-        icon={UserIcon}
-        // title="Sign in"
-        closeFn={close}
-        variant="god"
-      />
+      <Toolbar icon={UserIcon} closeFn={close} variant="god" />
       <WindowContent>
-        <EmailSigninForm />
+        <EmailSigninForm lastLogin={lastLogin} />
       </WindowContent>
     </motion.div>
   );

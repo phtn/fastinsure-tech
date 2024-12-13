@@ -11,17 +11,16 @@ import { BigActionCard } from "@/ui/action-card";
 import { FireIcon } from "@heroicons/react/24/solid";
 import { Button, Input } from "@nextui-org/react";
 import { useAuthCtx } from "@/app/ctx/auth";
-import { useCallback, useState } from "react";
-import { activateAccount } from "@/app/actions";
-import { useVex } from "@/app/ctx/convex";
-import { verifyUser } from "@/lib/secure/callers/auth";
+import { useActionState, useCallback, useState } from "react";
+// import { useVex } from "@/app/ctx/convex";
+// import { activateAccount, verifyUser } from "@/lib/secure/callers/auth";
 // import { onWarn } from "@/app/ctx/toasts";
 import Json from "@/ui/json";
 import { LoaderMd } from "@/ui/loader";
 
 export const NeoOverview = () => {
-  const { user, claims } = useAuthCtx();
-  const { usr } = useVex();
+  const { user, claims, signOut } = useAuthCtx();
+  // const { usr } = useVex();
   const [json, setJson] = useState<object | null>({});
 
   // const handleVerification = useCallback(async () => {
@@ -51,23 +50,23 @@ export const NeoOverview = () => {
     setJson(claims);
   }, [claims]);
 
-  // OKPMFX
-
   const handleActivation = useCallback(
-    async (data: FormData) => {
-      const result = await activateAccount(data);
-      if (result) {
-        if (!user?.uid) {
-          console.log("no creds", user?.uid);
-          return;
-        }
-        await usr.update({ uid: user?.uid, group_code: result.group_code });
-        await verifyUser({ uid: user.uid });
+    async (prevState: { hcode: string } | undefined, f: FormData) => {
+      if (!user?.uid) {
+        await signOut();
       }
-      console.log(result);
+
+      const v = {
+        hcode: f.get("hcode") as string,
+      };
+
+      if (!v) prevState = undefined;
+
+      return v ? v : prevState;
     },
-    [user?.uid, usr],
+    [user?.uid, signOut],
   );
+  const [state, action, pending] = useActionState(handleActivation, undefined);
 
   // const getServerHealth = useCallback(async () => {
   //   await ServerHealthCheck();
@@ -75,7 +74,7 @@ export const NeoOverview = () => {
 
   return (
     <div className="overflow-auto pb-6">
-      <Splash text={""}>
+      <Splash text={state?.hcode}>
         <div className="absolute top-4 z-[60] flex h-1/2 w-1/3 items-center border-primary px-12 font-inst text-2xl delay-1000">
           {user ? `Hello, ${user?.displayName ?? user?.email}!` : null}
         </div>
@@ -111,7 +110,7 @@ export const NeoOverview = () => {
                 </motion.div>
               </div>
               <div className="flex w-[calc(50vw)] items-center justify-between space-x-4 px-4 pt-5">
-                <form action={handleActivation}>
+                <form action={action}>
                   <div className="flex h-12 w-fit items-center space-x-1.5 whitespace-nowrap">
                     <Input
                       size="sm"
@@ -127,6 +126,7 @@ export const NeoOverview = () => {
                       variant="solid"
                       color="primary"
                       className="h-[2.175rem] w-32 px-2 font-inter font-medium"
+                      isLoading={pending}
                       type="submit"
                     >
                       Activate now

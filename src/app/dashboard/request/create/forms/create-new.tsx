@@ -39,11 +39,11 @@ import { type FieldValues, useForm as useHookForm } from "react-hook-form";
 import {
   type ChangeEvent,
   type MouseEvent,
-  ReactNode,
+  type ReactNode,
   useCallback,
 } from "react";
 import { useGeolocator } from "./useGeolocator";
-import { Button, Input } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 import { useSearchParams } from "next/navigation";
 import { type SubmitType, useForm } from "./useForm";
 import { opts } from "@/utils/helpers";
@@ -51,16 +51,12 @@ import { cn } from "@/lib/utils";
 import { useFile } from "./useFile";
 import { useScanner } from "./useScanner";
 import { useAuthCtx } from "@/app/ctx/auth";
-import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
-import { ClassName, DualIcon } from "@/app/types";
-import {
-  ArrowDownRightIcon,
-  ArrowDownTrayIcon,
-  InboxArrowDownIcon,
-} from "@heroicons/react/24/outline";
-import { ButtSqx } from "@/ui/button/button";
+import type { DualIcon } from "@/app/types";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import { ButtSex } from "@/ui/button/index";
 import { CircleSlash2 } from "lucide-react";
 import { ConfirmButton } from "@/ui/button";
+import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 
 export const CreateNew = () => {
   const { vxuser } = useAuthCtx();
@@ -75,7 +71,7 @@ export const CreateNew = () => {
   });
   const { getLocation } = useGeolocator();
   const searchParams = useSearchParams();
-  const { setSubmitType, saveAsDraft, generateIDs } = useForm();
+  const { setSubmitType, generateIDs } = useForm();
   const { handleScanDocument, loading, result, elapsed } = useScanner();
   const {
     imageData,
@@ -133,7 +129,7 @@ export const CreateNew = () => {
         );
 
       if (!filteredList || filteredList.length === 0) {
-        console.warn("No filtered List");
+        // console.warn("No filtered List");
         return;
       }
       const values = filteredList.map(({ mentionText }) => mentionText);
@@ -150,7 +146,7 @@ export const CreateNew = () => {
       // }, {} as ResetValues);
 
       autoFields.forEach((k, i) => {
-        console.log(k, values[i]);
+        // console.log(k, values[i]);
         setValue(k, values[i]);
       });
     },
@@ -176,46 +172,34 @@ export const CreateNew = () => {
       </div>,
     );
     return <>{options.get(!!result)}</>;
-    // return <>{options.get(true)}</>;
   }, [loading, result]);
-
-  const setVal = useCallback(
-    (e: MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault();
-      setValue("plate_no", "xxxddd");
-    },
-    [setValue],
-  );
 
   return (
     <div className="flex h-[calc(93vh)] w-full overflow-y-scroll border-t-[0.33px] border-primary-200/50 bg-primary-100/50 p-6 dark:bg-void">
       <form className="w-full">
         <div className="absolute -top-4 right-0 z-[250] flex h-24 items-center space-x-4 px-12">
-          <ButtSqx icon={ArrowDownRightIcon} size="sm" onClick={setVal} />
-          <SButton
-            fn={handleSetSubmitType("save")}
-            className="border border-primary-400 bg-primary-100"
-          >
+          <SButton fn={handleSetSubmitType("save")} end={ArrowDownTrayIcon}>
             <SButtonLabel label="Save as draft" />
-            <ArrowDownTrayIcon className="size-4" />
           </SButton>
           <SButton
-            variant="solid"
-            color="primary"
+            inverted
             fn={handleSetSubmitType("save")}
+            end={PaperAirplaneIcon}
           >
             <SButtonLabel label="Submit Request" />
           </SButton>
         </div>
-        <section className="grid w-full grid-cols-6 gap-6">
+        <section className="grid w-full grid-cols-6 gap-6 bg-background">
           <div className="col-span-4">
             <div className="flex h-[30rem] w-full flex-col justify-center rounded-[2rem] border-2 border-secondary bg-primary-50 shadow-2xl shadow-primary-400/50 dark:border-secondary-400/80 dark:bg-primary-200 dark:shadow-secondary-500/40">
               <NewCardGroup title="Policy Type">
-                <RadioGroupCard
-                  name="policy_type"
-                  items={request_policy_types}
-                  orientation="horizontal"
-                />
+                <div className="overflow-x-scroll">
+                  <RadioGroupCard
+                    name="policy_type"
+                    items={request_policy_types}
+                    orientation="horizontal"
+                  />
+                </div>
               </NewCardGroup>
               <div className="flex">
                 <NewCardGroup title="Policy Coverage">
@@ -361,23 +345,22 @@ export const CreateNew = () => {
 
 interface SButtonProps {
   fn: (e: MouseEvent<HTMLButtonElement>) => void;
-  variant?: "flat" | "solid";
-  color?: "primary" | "secondary" | "warning";
+  inverted?: boolean;
   children?: ReactNode;
-  className?: ClassName;
+  start?: DualIcon;
+  end?: DualIcon;
 }
-const SButton = ({ fn, variant, color, children, className }: SButtonProps) => (
-  <Button
+const SButton = ({ fn, inverted, start, end, children }: SButtonProps) => (
+  <ButtSex
     size="sm"
-    radius="sm"
-    variant={variant}
-    color={color}
-    className={cn("w-fit", className)}
     onMouseEnter={fn}
     type="submit"
+    inverted={inverted}
+    start={start}
+    end={end}
   >
     {children}
-  </Button>
+  </ButtSex>
 );
 
 const SButtonLabel = (props: { label: string }) => (

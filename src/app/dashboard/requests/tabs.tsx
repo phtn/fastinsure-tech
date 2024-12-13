@@ -1,12 +1,11 @@
 "use client";
 
-import { Button, Tab, Tabs } from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/react";
 import {
   ListBulletIcon,
   PlusIcon,
   Squares2X2Icon,
 } from "@heroicons/react/24/outline";
-import { CircleHelpIcon } from "lucide-react";
 import {
   type Key,
   useCallback,
@@ -19,7 +18,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { useUtils } from "@/utils/useUtils";
 import { cn } from "@/lib/utils";
-import { ButtSqx } from "@/ui/button/index";
+import { ButtSex, ButtSqx } from "@/ui/button/index";
 import { guid } from "@/utils/helpers";
 
 export interface TabItem {
@@ -46,17 +45,17 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
         content: <TabContent />,
       },
       {
-        id: 3,
+        id: 1,
         value: "/requests/submitted",
         label: "Submitted",
         content: <TabContent />,
       },
-      {
-        id: 4,
-        value: "/requests/completed",
-        label: "Completed",
-        content: <TabContent />,
-      },
+      // {
+      //   id: 4,
+      //   value: "/requests/completed",
+      //   label: "Completed",
+      //   content: <TabContent />,
+      // },
     ],
     [],
   );
@@ -69,9 +68,9 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
     [router, setSelected],
   );
 
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     router.push(`/dashboard/request/create?rid=${guid()}`);
-  };
+  }, [router]);
 
   const midbarRef = useRef<HTMLDivElement>(null);
   const { centerpoint } = useUtils(midbarRef);
@@ -86,17 +85,20 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           defaultSelectedKey={"all"}
           selectedKey={selected}
           size="md"
-          color="primary"
           variant="underlined"
-          className="absolute -top-10 right-0 z-[200] border-b-[0.5px] border-primary-300"
+          className="absolute -top-[3.25rem] right-0 z-[200] border-b-[0.5px] border-primary-300"
           isVertical={false}
           classNames={{
             tabList: "w-full px-3 dark:-mb-1.5 -mb-[5px]",
-            tab: "w-32",
+            tab: "w-32 font-semibold tracking-tight text-sm",
           }}
         >
           {tabs.map((tab) => (
-            <Tab key={tab.value} title={tab.label}>
+            <Tab
+              key={tab.value}
+              title={tab.label}
+              className={cn({ "text-warning": tab.value === selected })}
+            >
               {tab.content}
             </Tab>
           ))}
@@ -108,34 +110,21 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
         ref={midbarRef}
         style={{ left: centerpoint.x, width: 300 }}
         className={cn(
-          "absolute -top-10 z-50",
+          "absolute -top-[3.25rem] z-50",
           "flex items-center justify-center",
-          "transfor-gpu transition-all duration-300 ease-out",
+          "transfor-gpu transition-all duration-500 ease-out",
           "space-x-4",
         )}
       >
-        <Button
-          size="sm"
-          radius="sm"
-          variant="ghost"
-          color="secondary"
-          className="w-fit border-0 bg-primary-100/60 text-icon dark:text-icon-dark"
-          onPress={handleCreate}
-        >
-          <PlusIcon className="size-3.5 shrink-0" />
+        <ButtSex size="sm" start={PlusIcon} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
             Create New Request
           </p>
-        </Button>
-        <ButtSqx
-          size="md"
-          variant="flat"
-          className="group w-fit"
-          icon={CircleHelpIcon}
-        />
+        </ButtSex>
+
         <section className="flex rounded-xl border-[0.33px] border-primary-100/60">
-          <ButtSqx size="md" variant="flat" icon={ListBulletIcon} />
-          <ButtSqx size="md" variant="flat" icon={Squares2X2Icon} />
+          <ButtSqx size="md" variant="god" icon={ListBulletIcon} />
+          <ButtSqx size="md" variant="goddess" icon={Squares2X2Icon} />
         </section>
       </div>
     </div>
