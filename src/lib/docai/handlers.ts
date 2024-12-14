@@ -1,5 +1,3 @@
-"use server";
-
 import { env } from "@/env";
 import { type RawDocument } from "@/lib/docai/resource";
 import { initializeGoogleAuth } from "./utils";

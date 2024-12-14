@@ -1,4 +1,4 @@
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx, withAuth } from "@/app/ctx/auth";
 import { HStack } from "@/ui/hstack";
 import { Widget } from "@/ui/widget";
 import { motion } from "framer-motion";
@@ -17,7 +17,7 @@ import { Greeting } from "./comp/greeting";
 import { UpdatesComponent } from "./comp/updates";
 import { Separator } from "@/ui/separator";
 
-export const ManagerOverview = () => {
+const MOverview = () => {
   const { user, vxuser } = useAuthCtx();
 
   const UserOptions = useCallback(() => {
@@ -99,3 +99,4 @@ export const ManagerOverview = () => {
     </div>
   );
 };
+export const ManagerOverview = withAuth(MOverview);

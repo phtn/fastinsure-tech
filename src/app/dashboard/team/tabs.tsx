@@ -1,11 +1,9 @@
 "use client";
 
 import { Tab, Tabs } from "@nextui-org/react";
-import {
-  ListBulletIcon,
-  PlusIcon,
-  Squares2X2Icon,
-} from "@heroicons/react/24/outline";
+import { ListBulletIcon, Squares2X2Icon } from "@heroicons/react/24/outline";
+import { CalendarIcon, UsersIcon } from "@heroicons/react/24/solid";
+
 import {
   type Key,
   useCallback,
@@ -97,7 +95,7 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
       <div className="-mt-2 h-[calc(90vh)] px-12">{children}</div>
       <div
         ref={midbarRef}
-        style={{ left: centerpoint.x, width: 300 }}
+        style={{ left: centerpoint.x, width: 500 }}
         className={cn(
           "absolute -top-[3.25rem] z-50",
           "flex items-center justify-center",
@@ -105,9 +103,14 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           "space-x-4",
         )}
       >
-        <ButtSex size="sm" start={PlusIcon} onClick={handleCreate}>
+        <ButtSex size="sm" start={CalendarIcon} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
-            Create New Request
+            Schedule Meetings
+          </p>
+        </ButtSex>
+        <ButtSex size="sm" start={UsersIcon} onClick={handleCreate}>
+          <p className="font-inter text-xs font-medium tracking-tight">
+            Create Groups
           </p>
         </ButtSex>
         <section className="flex rounded-xl border-[0.33px] border-primary-100/60">

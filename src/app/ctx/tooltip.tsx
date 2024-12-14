@@ -28,8 +28,9 @@ export interface TooltipData {
 interface TooltipCtxValues {
   hoveredIndex: UID;
   setHoveredIndex: Dispatch<SetStateAction<UID>>;
-  motionProps: MotionProps;
   mouseMoveFn: (e: MouseEvent<HTMLDivElement>) => void;
+  motionProps: MotionProps;
+  motionPropsII: MotionProps;
 }
 const TooltipCtx = createContext<TooltipCtxValues | null>(null);
 
@@ -77,17 +78,40 @@ export const TooltipProvider = ({ children }: PropsWithChildren) => {
     [translateX, rotate],
   );
 
+  const motionPropsII = useMemo(
+    () =>
+      ({
+        initial: { opacity: 0, x: -36 },
+        animate: {
+          opacity: 1,
+          x: -56,
+          transition: {
+            stiffness: 100,
+            duration: 0.2,
+          },
+        },
+        exit: { opacity: 0, x: -36 },
+        style: {
+          translateX: translateX,
+          rotate: rotate,
+          whiteSpace: "nowrap",
+        },
+      }) as MotionProps,
+    [translateX, rotate],
+  );
+
   return (
-    <TooltipCtx.Provider
+    <TooltipCtx
       value={{
-        hoveredIndex,
-        setHoveredIndex,
         motionProps,
+        hoveredIndex,
+        motionPropsII,
+        setHoveredIndex,
         mouseMoveFn: handleMouseMove,
       }}
     >
       {children}
-    </TooltipCtx.Provider>
+    </TooltipCtx>
   );
 };
 

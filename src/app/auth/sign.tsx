@@ -91,12 +91,12 @@ function AuthComponent(props: AuthComponentProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className={cn(
-            "fixed inset-0 z-[200] flex h-screen w-screen items-center justify-center p-4",
+            "fixed inset-0 z-[250] flex h-screen w-screen items-center justify-center p-4",
             "bg-zinc-950 bg-opacity-20 p-4",
           )}
         >
           <motion.div
-            drag
+            drag={window.innerWidth >= 600}
             dragMomentum={false}
             dragConstraints={constraints}
             initial={{
@@ -114,13 +114,13 @@ function AuthComponent(props: AuthComponentProps) {
             exit={{ scale: 0.75, opacity: 0, y: 25 }}
             transition={{}}
             className={cn(
-              "w-full overflow-hidden shadow-xl md:w-fit",
+              "w-fit overflow-hidden shadow-xl",
               "rounded-2xl",
               { "shadow-xl": props.shadow === "xl" },
               { "shadow-lg": props.shadow === "lg" },
               { "shadow-md": props.shadow === "md" },
               { "shadow-sm": props.shadow === "sm" },
-              "dark:border-fade-dark/90 dark:bg-[#0b0b0e]",
+              "dark:border-fade-dark/90 dark:bg-chalk",
               "border-[0.33px] border-fade-dark/40 bg-white",
             )}
             onClick={stopPropagation}
@@ -135,7 +135,7 @@ function AuthComponent(props: AuthComponentProps) {
 
 interface SignCardProps {
   close: VoidFunction;
-  lastLogin: number;
+  lastLogin: string | undefined;
 }
 
 const SignCard = ({ close, lastLogin }: SignCardProps) => {
@@ -145,9 +145,9 @@ const SignCard = ({ close, lastLogin }: SignCardProps) => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0.8, scale: 0.75 }}
       transition={{}}
-      className="h-[540px] w-[30vw] xl:w-[25vw]"
+      className="h-[540px] w-fit bg-adam/60 dark:bg-adam/80"
     >
-      <Toolbar icon={UserIcon} closeFn={close} variant="god" />
+      <Toolbar icon={UserIcon} closeFn={close} variant="void" />
       <WindowContent>
         <EmailSigninForm lastLogin={lastLogin} />
       </WindowContent>

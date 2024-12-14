@@ -1,5 +1,5 @@
 import { auth } from "@/lib/fire";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, redirect } from "next/navigation";
 import {
   GoogleAuthProvider,
   type OAuthCredential,
@@ -25,7 +25,7 @@ import {
   useTransition,
   type TransitionStartFunction,
 } from "react";
-import { Err, Ok } from "@/utils/helpers";
+import { Err } from "@/utils/helpers";
 import {
   deleteAuthClient,
   deleteCustomClaims,
@@ -83,10 +83,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [vresult, setVResult] = useState<OnSigninVerificationResponse | null>(
     null,
   );
-  const [vxuser, setVxuser] = useState<SelectUser | null>(null);
-  const { usr } = useVex();
 
-  const router = useRouter();
+  const pathname = usePathname();
+  const [vxuser, setVxuser] = useState<SelectUser | null>(null);
+  const { usr, logs } = useVex();
 
   const uid = useMemo(() => user?.uid, [user?.uid]);
 
@@ -105,6 +105,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     );
   };
 
+  const createLog = useCallback(
+    async (id: string | undefined, type: string) => {
+      if (id) await logs.create({ uid: id, type });
+    },
+    [logs],
+  );
+
   const getClaims = useCallback(() => {
     setFn(fn, getCustomClaims, setClaims);
   }, []);
@@ -118,12 +125,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         setLoading,
       );
       const group_code = vres.Data.group_code;
-      if (!!group_code && group_code !== "" && !vxuser?.group_code) {
-        console.log(group_code, group_code !== "");
-        console.log(vxuser?.group_code, !vxuser?.group_code);
-        console.log(group_code !== "" && !vxuser?.group_code);
+      if (!vxuser?.group_code && group_code) {
         await usr.update.groupCode(u.uid, group_code);
       }
+
       setVResult(vres);
     },
     [usr, vxuser?.group_code],
@@ -132,12 +137,12 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const getvx = useCallback(
     async (uid: string) => {
       const vx = await usr.get.byId(uid);
-      const claimsStr = claims?.join(",") as UserRole;
+      // const claimsStr = claims?.join(",") as UserRole;
       setVxuser(vx);
 
-      if (vx && claims && vx.role !== claimsStr) {
-        await usr.update.userInfo({ uid, role: claimsStr });
-      }
+      // if (vx && claims && vx.role !== claimsStr) {
+      //   await usr.update.userInfo({ uid, role: claimsStr });
+      // }
 
       const group_code = await getGroupCode();
       if (group_code && !vx?.group_code) {
@@ -145,7 +150,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         // update server
       }
     },
-    [claims, usr],
+    [usr],
   );
 
   useEffect(() => {
@@ -192,21 +197,28 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     await deleteAuthClient();
   }, []);
 
+  //173414401 _ 1376
   const checkLastLogin = useCallback(async () => {
     const lastLogin = await getLastLogin();
     if (!lastLogin) {
       await setLastLogin();
       return `Logged out: ${new Date().getTime()}`;
     }
-    return moment().from(lastLogin);
+    return moment().from(Number(lastLogin));
   }, []);
 
   const signOut = useCallback(async () => {
-    await logout(auth);
+    if (uid) {
+      await createLog(uid, "logout");
+    }
+    await checkLastLogin();
     await cleanUpCookies();
-    router.push("/");
     await setLastLogin();
-  }, [router, cleanUpCookies]);
+    await logout(auth);
+  }, [checkLastLogin, cleanUpCookies, createLog, uid]);
+
+  /////////////////////
+  //ON_AUTH_STATE_CHANGE
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -214,21 +226,18 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       if (u) {
         setUser(u);
         getClaims();
+        setLoading(false);
+        setGoogleSigning(false);
         deleteLastLogin().catch(Err);
-        setLoading(false);
       } else {
-        signOut()
-          .then(() => {
-            checkLastLogin()
-              .then((lastLogin) => Ok(setLoading, lastLogin))
-              .catch(Err(setLoading));
-          })
-          .catch(Err(setLoading, "Sign out error...."));
         setLoading(false);
+        if (pathname === "/dashboard") {
+          redirect("/");
+        }
       }
     });
     return () => unsubscribe();
-  }, [router, signOut, getClaims, checkLastLogin]);
+  }, [signOut, getClaims, checkLastLogin, pathname]);
 
   const signUserWithEmail = useCallback(
     async (f: FormData) => {
@@ -254,14 +263,15 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setLoading(false);
       if (u) {
         setUser(u);
-        onSuccess("Logged in!");
+        await createLog(u.uid, "login");
         await verify(u);
+        onSuccess("Logged in!");
       } else {
         onError("Unable to sign in.");
         setLoading(false);
       }
     },
-    [verify],
+    [verify, createLog],
   );
 
   const signWithGoogle = useCallback(async () => {
@@ -271,13 +281,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const u = creds?.user;
     if (u) {
       setUser(u);
+      await createLog(u.uid, "login");
       await verify(u);
       setGoogleSigning(false);
     }
     const oauthCredential = GoogleAuthProvider.credentialFromResult(creds);
     setOAuth(oauthCredential);
     setGoogleSigning(false);
-  }, [verify]);
+  }, [verify, createLog]);
 
   const stableValues = useMemo(
     () => ({

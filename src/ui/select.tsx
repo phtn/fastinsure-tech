@@ -1,8 +1,9 @@
 "use client";
+
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check } from "lucide-react";
 import type { ComponentRef, ComponentPropsWithoutRef } from "react";
-import { forwardRef } from "react";
+import { forwardRef, useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 
@@ -167,6 +168,73 @@ export function FastSelect() {
         <SelectContent>
           <SelectItem value="s1">React</SelectItem>
           <SelectItem value="s2">Next.js</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+export const Square = ({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) => (
+  <span
+    data-square
+    className={cn(
+      "bg-muted text-muted-foreground flex size-5 items-center justify-center rounded text-xs font-medium",
+      className,
+    )}
+    aria-hidden="true"
+  >
+    {children}
+  </span>
+);
+
+export interface HyperSelectOption {
+  id: string | number;
+  value: string;
+  color?: string;
+}
+export interface HyperSelectProps {
+  id: string;
+  label?: string;
+  options: HyperSelectOption[];
+}
+export default function HyperSelect({
+  options,
+  label = "options",
+}: HyperSelectProps) {
+  const [selected, setSelected] = useState<string>("");
+  const handleChange = useCallback(
+    (value: string) => {
+      setSelected(value);
+    },
+    [setSelected],
+  );
+  return (
+    <div>
+      <Select onValueChange={handleChange}>
+        <SelectTrigger className="ps-2 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_[data-square]]:shrink-0">
+          <SelectValue defaultValue={selected} placeholder={label} />
+        </SelectTrigger>
+        <SelectContent className="[&_*[role=option]>span]:end-2 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:flex [&_*[role=option]>span]:items-center [&_*[role=option]>span]:gap-2 [&_*[role=option]]:pe-8 [&_*[role=option]]:ps-2">
+          <SelectGroup>
+            <SelectLabel className="ps-2 capitalize">{label}</SelectLabel>
+            <SelectItem value={options?.[0]?.value ?? "option 1"}>
+              <Square
+                className={cn(
+                  "bg-gray-400/20 uppercase text-gray-500",
+                  options?.[0]?.color,
+                )}
+              >
+                {options?.[0]?.value?.substring(0, 1)}
+              </Square>
+              <span className="capitalize">{options?.[0]?.value}</span>
+            </SelectItem>
+          </SelectGroup>
         </SelectContent>
       </Select>
     </div>

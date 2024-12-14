@@ -18,34 +18,33 @@ import { LoaderMd } from "@/ui/loader";
 import { type SelectUser } from "@convex/users/d";
 import type { ClassName, DualIcon } from "@/app/types";
 import { cn } from "@/lib/utils";
-import { type FC, type ReactNode, useCallback, useMemo, useState } from "react";
-import { opts, toggleState } from "@/utils/helpers";
+import {
+  type FC,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { Err, opts, toggleState } from "@/utils/helpers";
 import { HyperList } from "@/ui/list";
 import { UserConfig } from "./components";
+import { TooltipNode } from "@/ui/tooltip";
 
 export const All = () => {
-  const { vxmembers, pending } = useTeam();
+  const { vxmembers, userLogs, getUserLogs, pending } = useTeam();
   const [open2, setOpen2] = useState(false);
   const [selected, setSelected] = useState("");
-  // const [selectedvx, setSelectedvx] = useState<SelectUser>();
-
-  // const openUserConfig = useCallback((key: Keys) => {
-  //   const event = new KeyboardEvent("keydown", {
-  //     key: key,
-  //     bubbles: true,
-  //     cancelable: true,
-  //     metaKey: true,
-  //     ctrlKey: true,
-  //   });
-  //   document.dispatchEvent(event);
-  // }, []);
-
   const toggleUserConfig = useCallback(() => toggleState(setOpen2), [setOpen2]);
 
   const vx = useMemo(
     () => vxmembers?.find((v) => v.uid === selected),
     [selected, vxmembers],
   );
+
+  useEffect(() => {
+    if (selected) getUserLogs(selected).catch(Err);
+  }, [selected, getUserLogs]);
 
   const createUserWindow = useCallback(
     (uid: string | undefined) => () => {
@@ -63,10 +62,17 @@ export const All = () => {
         <div className="h-28 w-full rounded-3xl bg-primary-50 drop-shadow-sm">
           <div className="flex h-1/2 items-center justify-between px-3">
             <UserCard {...props} />
-            <ButtSqx
-              onClick={createUserWindow(props.uid)}
-              icon={EllipsisHorizontalIcon}
-            />
+            <TooltipNode
+              title="User Settings"
+              description="butt-fuck"
+              id={props.uid!}
+            >
+              <ButtSqx
+                id={props.uid}
+                onClick={createUserWindow(props.uid)}
+                icon={EllipsisHorizontalIcon}
+              />
+            </TooltipNode>
           </div>
           <div className="flex justify-center">
             <Separator
@@ -107,6 +113,7 @@ export const All = () => {
           open={open2}
           title={selected}
           toggleFn={toggleUserConfig}
+          logs={userLogs}
         />
       </section>
     </div>
@@ -168,6 +175,7 @@ const ListContent = <T extends SelectUser>({
         component={comp}
         container="space-y-6"
         itemStyle="rounded-3xl"
+        keyId={"uid"}
       />
     </section>
   );

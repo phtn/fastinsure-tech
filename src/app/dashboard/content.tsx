@@ -1,18 +1,14 @@
 "use client";
 
 import { AgentOverview } from "./overview/a-overview";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { opts } from "@/utils/helpers";
 import { ManagerOverview } from "./overview/m-overview";
 import { Loader } from "@/ui/loader";
 import { useAuthCtx } from "@/app/ctx/auth";
 import { NeoOverview } from "./overview/n-overview";
 
-export const Dashboard = (props: { userAgent: string | null }) => {
-  useEffect(() => {
-    console.log(props.userAgent);
-  }, [props.userAgent]);
-
+const DashboardComponent = () => {
   const { claims, loading } = useAuthCtx();
 
   const OverviewOptions = useCallback(() => {
@@ -48,4 +44,4 @@ export const Dashboard = (props: { userAgent: string | null }) => {
   );
 };
 
-// export const Dashboard = memo(DashboardContent);
+export const Dashboard = DashboardComponent;

@@ -12,7 +12,7 @@ import { type UseWindow, useWindow } from "./useWindow";
 import type { DualIcon } from "@/app/types";
 import { type Keys } from "./utils";
 
-export type WindowVariant = "demigod" | "god" | "goddess";
+export type WindowVariant = "demigod" | "god" | "goddess" | "adam" | "void";
 interface DialogWindowProps<S> extends UseWindow {
   k?: Keys;
   value?: string;

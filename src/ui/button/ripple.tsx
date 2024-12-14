@@ -23,6 +23,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   size?: ButtSize;
   ref?: RefObject<HTMLButtonElement>;
+  type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
 }
 
 export const ButtSex = ({
@@ -31,11 +32,13 @@ export const ButtSex = ({
   loading = false,
   size = "sm",
   className,
+  disabled,
   children,
   onClick,
   start,
   end,
   ref,
+  type,
   ...props
 }: ButtonProps) => {
   const [buttonRipples, setButtonRipples] = useState<
@@ -43,7 +46,9 @@ export const ButtSex = ({
   >([]);
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+    if (type !== "submit") {
+      event.preventDefault();
+    }
     createRipple(event);
     onClick?.(event);
   };
@@ -81,6 +86,9 @@ export const ButtSex = ({
             {
               "size-4 text-icon dark:text-icon-dark": size === "sm",
             },
+            {
+              "size-6 text-icon dark:text-icon-dark": size === "lg",
+            },
             { "text-icon-dark dark:text-void/80": inverted },
           )}
         />
@@ -101,10 +109,11 @@ export const ButtSex = ({
   return (
     <Container inverted={inverted} size={size}>
       <button
+        disabled={disabled ?? loading}
         className={cn(
-          "relative flex items-center justify-center gap-4 overflow-hidden",
-          "rounded-lg border px-4 py-2",
-          "border-primary/40 bg-primary-100/30 group-hover:bg-white",
+          "relative flex w-full items-center justify-center overflow-hidden",
+          "rounded-lg border px-3",
+          "border-primary/40 bg-goddess group-hover:bg-white",
           "dark:bg-void dark:group-hover:bg-void",
           "dark:border-primary-500/40 dark:group-hover:border-primary-500/50",
           "dark:shadow-secondary dark:group-hover:drop-shadow-md",
@@ -115,16 +124,26 @@ export const ButtSex = ({
             "dark:bg-primary dark:group-hover:border-void/80 dark:group-hover:bg-white":
               inverted,
           },
+          {
+            "h-8 gap-2 rounded-lg": size === "sm",
+          },
+          {
+            "h-10 gap-3 rounded-[11px]": size === "md",
+          },
+          {
+            "h-12 gap-4 rounded-xl": size === "lg",
+          },
           className,
         )}
         onClick={handleClick}
         ref={ref}
+        type={type}
         {...props}
       >
         <StartOption />
         <div
           className={cn(
-            "relative z-[200] whitespace-nowrap",
+            "relative z-[200] flex h-full items-center overflow-hidden whitespace-nowrap",
             "font-inter text-xs font-semibold capitalize tracking-tight text-void",
             "drop-shadow-md group-hover:text-void/90",
             "dark:text-icon-dark dark:group-hover:text-chalk/80",
@@ -185,10 +204,14 @@ const Container = ({
   return (
     <div
       className={cn(
-        "group relative flex h-fit w-fit items-center justify-center p-1",
+        "group relative flex h-fit w-fit items-center justify-center overflow-hidden p-1",
         {
           "rounded-[11px]": size === "sm",
         },
+        {
+          "rounded-[12px]": size === "md",
+        },
+        { "rounded-[14px]": size === "lg" },
         containerStyle,
       )}
     >
@@ -206,9 +229,11 @@ const Shadow = ({ size, inverted }: ShadowProps) => {
   return (
     <div
       className={cn(
-        "absolute size-full opacity-20",
+        "absolute size-full overflow-hidden opacity-20",
         "scale-75 group-hover:scale-100",
         { "rounded-[11px]": size === "sm" },
+        { "rounded-[12px]": size === "md" },
+        { "rounded-[16px]": size === "lg" },
         "group-hover:bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] group-hover:from-slate-300/20 group-hover:via-slate-200/60 group-hover:to-slate-200/50",
         "dark:group-hover:bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] dark:group-hover:from-slate-200/40 dark:group-hover:via-slate-300/30 dark:group-hover:to-slate-500/5",
         "group-hover:opacity-100 group-hover:backdrop-blur-xl",

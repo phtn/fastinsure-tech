@@ -1,4 +1,4 @@
-import { getUID } from "@/app/actions";
+import { getLastLogin, getUID } from "@/app/actions";
 import { useAuthCtx } from "@/app/ctx/auth";
 import { useVex } from "@/app/ctx/convex";
 import { onWarn } from "@/app/ctx/toasts";
@@ -12,7 +12,7 @@ import {
 } from "@/server/secure/resource";
 import { type NavItem } from "@/ui/sidebar";
 import type { SelectUser, UserRole } from "@convex/users/d";
-import { CircleStackIcon } from "@heroicons/react/24/outline";
+import { CircleStackIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { IdentificationIcon } from "@heroicons/react/24/solid";
 import { type ParsedToken } from "firebase/auth";
 import { ServerIcon } from "lucide-react";
@@ -54,6 +54,7 @@ export const useFunction = () => {
   );
   const [vxUser, setVxUser] = useState<SelectUser | null>(null);
   const [vres, setVRes] = useState<UserVerificationResponse>();
+  const [lastLogin, setLastLogin] = useState(0);
 
   const [pending, func] = useTransition();
   const router = useRouter();
@@ -111,6 +112,20 @@ export const useFunction = () => {
   const fn_verifyUser = useCallback(() => {
     startFn(func, verifyWithUID, setVRes);
   }, [verifyWithUID]);
+
+  const checkLastLogin = useCallback(async () => {
+    const lastLogin = await getLastLogin();
+    // if (!lastLogin) {
+    //   await setLastLogin();
+    //   return `Logged out: ${new Date().getTime()}`;
+    // }
+    // return moment().from(lastLogin);
+    return Number(lastLogin);
+  }, []);
+
+  const fn_getLastLogin = useCallback(() => {
+    startFn(func, checkLastLogin, setLastLogin);
+  }, [checkLastLogin]);
 
   //////////////////////////////////////////////////////////////////////
   //SERVER
@@ -175,6 +190,15 @@ export const useFunction = () => {
         result: vres,
         returnType: "<UserVerificationResponse | undefined>",
       },
+      {
+        id: 6,
+        name: "Get Last Login (Cookies)",
+        description: "Last login in (ms)",
+        icon: ClockIcon,
+        fn: fn_getLastLogin,
+        result: lastLogin,
+        returnType: "<number>",
+      },
     ],
     [
       uid,
@@ -189,6 +213,8 @@ export const useFunction = () => {
       fn_getVxUser,
       vxUser,
       vres,
+      lastLogin,
+      fn_getLastLogin,
     ],
   );
   return { devFnList, pending, updateFnList };

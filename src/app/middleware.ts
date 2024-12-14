@@ -4,13 +4,14 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const uid = req.cookies.get("fastinsure--uid")?.value;
   const secured = ["/dashboard"];
+  const isSecured = secured.some((path) =>
+    req.nextUrl.pathname.startsWith(path),
+  );
 
-  if (secured.some((path) => req.nextUrl.pathname.startsWith(path))) {
-    if (!uid) {
-      const signin = new URL("/signin", req.url);
-      signin.searchParams.set("redirect", req.nextUrl.pathname);
-      return NextResponse.redirect(signin);
-    }
+  if (isSecured && !uid) {
+    const home = new URL("/", req.url);
+    home.searchParams.set("redirect", req.nextUrl.pathname);
+    return NextResponse.redirect(home);
   }
 
   // if (req.nextUrl.pathname === "/signin") {
@@ -24,5 +25,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard"],
 };

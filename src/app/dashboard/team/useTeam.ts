@@ -1,5 +1,6 @@
 import { useAuthCtx } from "@/app/ctx/auth";
 import { useVex } from "@/app/ctx/convex";
+import type { SelectLog } from "@convex/logs/d";
 import type { SelectUser } from "@convex/users/d";
 import {
   type Dispatch,
@@ -14,10 +15,11 @@ import {
 export const useTeam = () => {
   const [vxteam, setVxTeam] = useState<SelectUser[] | undefined>();
   const [vxmembers, setVxMembers] = useState<SelectUser[] | undefined>();
+  const [userLogs, setUserLogs] = useState<SelectLog[] | null>(null);
 
   const { vxuser } = useAuthCtx();
   const group_code = vxuser?.group_code;
-  const { usr } = useVex();
+  const { usr, logs } = useVex();
 
   const [pending, fn] = useTransition();
 
@@ -45,9 +47,19 @@ export const useTeam = () => {
     setFn(fn, getvxgroup, setVxTeam);
   }, [getvxgroup]);
 
+  ///
+
+  const getUserLogs = useCallback(
+    async (uid: string) => {
+      const allLogs = await logs.get.byId(uid);
+      setUserLogs(allLogs);
+    },
+    [logs, setUserLogs],
+  );
+
   useEffect(() => {
     getTeam();
   }, [getTeam]);
 
-  return { vxteam, vxmembers, pending };
+  return { vxteam, vxmembers, pending, userLogs, getUserLogs };
 };

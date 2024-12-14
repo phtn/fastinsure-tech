@@ -8,7 +8,6 @@ import {
 } from "@/server/secure/resource";
 import { cookies } from "next/headers";
 import { env } from "@/env";
-import { GoogleAuth } from "google-auth-library";
 import { verifyActivationCode } from "@/trpc/secure/callers/server";
 import { type UserRole } from "@convex/users/d";
 // import { activateAccount, getUser } from "@/lib/secure/callers/auth";
@@ -176,16 +175,6 @@ export const getSidebarAnimate = async () => {
   return animate;
 };
 
-export const googleAuthClient = async () => {
-  const scopes: string[] = ["https://www.googleapis.com/auth/cloud-platform"];
-  const credentials = JSON.parse(env.ADC) as object;
-  const auth = new GoogleAuth({
-    credentials,
-    scopes,
-  });
-  return await auth.getClient();
-};
-
 export const deleteAuthClient = async () => {
   const cookieStore = await cookies();
   cookieStore.delete("fastinsure--ocr-proc");
@@ -265,7 +254,7 @@ export const setLastLogin = async () => {
 export const getLastLogin = async () => {
   const cookieStore = await cookies();
   const value = cookieStore.get("fastinsure--lastlogin")?.value;
-  return parseInt(value ?? "0");
+  return value;
 };
 export const deleteLastLogin = async () => {
   const cookieStore = await cookies();

@@ -24,9 +24,9 @@ export const userInfo = mutation({
     //   await db.patch(user._id, { group_code: data.group_code });
     // }
 
-    if (user.role !== data.role) {
-      await db.patch(user._id, { role: data.role });
-    }
+    // if (user.role !== data.role && data.role?.length !== 0) {
+    //   await db.patch(user._id, { role: data.role });
+    // }
 
     if (
       typeof data.is_verified !== "undefined" &&

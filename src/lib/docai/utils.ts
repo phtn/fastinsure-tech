@@ -1,11 +1,20 @@
-"use server";
-
-import { googleAuthClient } from "@/app/actions";
-import type { JWT } from "google-auth-library";
+import { env } from "@/env";
+import { GoogleAuth, type JWT } from "google-auth-library";
 import { documentai_v1 } from "googleapis";
 
 let authClient: JWT | null = null;
 let docaiClient: documentai_v1.Documentai | null = null;
+
+const getAuthClient = async () => {
+  if (authClient) return authClient;
+  const scopes: string[] = ["https://www.googleapis.com/auth/cloud-platform"];
+  const credentials = JSON.parse(env.ADC) as object;
+  const auth = new GoogleAuth({
+    credentials,
+    scopes,
+  });
+  return (await auth.getClient()) as JWT;
+};
 
 export const initializeGoogleAuth = async () => {
   if (authClient && docaiClient) {
@@ -13,7 +22,7 @@ export const initializeGoogleAuth = async () => {
   }
 
   try {
-    authClient = (await googleAuthClient()) as JWT;
+    authClient = await getAuthClient();
 
     docaiClient = new documentai_v1.Documentai({
       auth: authClient,

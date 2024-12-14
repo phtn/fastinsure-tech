@@ -54,6 +54,8 @@ const ToolbarComponent = <T,>({
         { "bg-demigod": variant === "demigod" },
         { "bg-god": variant === "god" },
         { "bg-goddess": variant === "goddess" },
+        { "bg-adam": variant === "adam" },
+        { "bg-void": variant === "void" },
         "",
         // DARK
         "dark:border-zinc-950/80 dark:bg-primary-100",

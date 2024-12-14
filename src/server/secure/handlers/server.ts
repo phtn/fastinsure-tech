@@ -1,5 +1,3 @@
-"use server";
-
 import type { AxiosInstance, AxiosRequestConfig } from "axios";
 import type { HCodeParams, HCodeResponse, LivezResponse } from "../resource";
 

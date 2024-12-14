@@ -18,7 +18,7 @@ const Component = ({
       open={open}
       onOpenChange={onOpenChange}
       direction={direction}
-      dismissible={false}
+      dismissible={true}
     >
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0" />

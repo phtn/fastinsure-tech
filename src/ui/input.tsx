@@ -227,7 +227,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                   className={cn(
                     "rounded-full border-0 bg-transparent hover:bg-transparent",
                   )}
-                  onClick={toggleSecure}
+                  onPress={toggleSecure}
                 >
                   <IconOptions />
                 </Button>
@@ -245,12 +245,12 @@ export const FastField = forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => (
     <div
       className={cn(
-        "_bg-primary-100 _border-b-[0.33px] flex h-[50px] w-full items-center border-primary-300 pl-3 ps-2 focus-within:border-[0.33px] focus-within:border-warning focus-within:ring-offset-0 active:border-warning",
+        "_bg-primary-100 _border-b-[0.33px] flex h-[50px] w-full items-center border-primary-300 pl-3 ps-2 focus-within:border focus-within:border-warning-400 focus-within:ring-offset-1 active:border-warning-400",
         className,
       )}
     >
       {props.icon ? (
-        <props.icon className="ml-2 size-5 shrink-0 stroke-1 text-foreground/60" />
+        <props.icon className="ml-2 size-5 shrink-0 text-chalk/40" />
       ) : null}
 
       <input

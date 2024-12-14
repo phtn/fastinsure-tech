@@ -5,22 +5,20 @@ import { Toasts } from "./toasts";
 import { AuthProvider } from "./auth";
 import { ActionBar } from "../comp/actionbar/actionbar";
 import { Vex } from "./convex";
-import { TRPCReactProvider } from "@/trpc/react";
 import { Theme } from "./theme";
+import { TooltipProvider } from "./tooltip";
 
 export const Providers = ({ children }: PropsWithChildren) => {
   return (
     <NextUIProvider>
       <Theme>
-        <TRPCReactProvider>
-          <Vex>
-            <AuthProvider>
-              {children}
-              <ActionBar />
-              <Toasts />
-            </AuthProvider>
-          </Vex>
-        </TRPCReactProvider>
+        <Vex>
+          <AuthProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+            <ActionBar />
+            <Toasts />
+          </AuthProvider>
+        </Vex>
       </Theme>
     </NextUIProvider>
   );

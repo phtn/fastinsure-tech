@@ -7,5 +7,5 @@ export const byId = mutation({
     await db
       .query("logs")
       .withIndex("by_uid", (q) => q.eq("uid", uid))
-      .first(),
+      .collect(),
 });

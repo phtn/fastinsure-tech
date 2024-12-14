@@ -172,3 +172,40 @@ export const TheTip = ({ content, children }: TheTipProps) => {
 };
 
 export const TooltipTrigger = TooltipPrimitive.Trigger;
+
+export interface TooltipNodeProps {
+  children: ReactNode;
+  title: string;
+  id: string;
+  description?: string;
+}
+export const TooltipNode = ({
+  id,
+  title,
+  children,
+  description,
+}: TooltipNodeProps) => {
+  const { setHoveredIndex, hoveredIndex, motionPropsII } = useTooltip();
+  return (
+    <div
+      className="group relative cursor-pointer"
+      onMouseEnter={() => setHoveredIndex(id)}
+      onMouseLeave={() => setHoveredIndex(null)}
+    >
+      <AnimatePresence mode="popLayout">
+        {hoveredIndex === id && (
+          <motion.div
+            {...motionPropsII}
+            className="absolute z-50 flex flex-col items-center justify-center rounded-md bg-adam/20 px-1 py-0.5 text-xs shadow-xl backdrop-blur-xl -translate-x-1/2"
+          >
+            <div className="relative z-30 text-base font-bold text-background dark:text-foreground">
+              {description}
+            </div>
+            <div className="text-xs text-icon dark:text-icon-dark">{title}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {children}
+    </div>
+  );
+};

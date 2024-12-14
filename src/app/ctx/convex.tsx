@@ -78,7 +78,7 @@ interface VexCtxValues {
       args: InsertLog,
     ) => Promise<(string & { __tableName: "logs" }) | null>;
     get: {
-      byId: (uid: string) => Promise<SelectLog | null>;
+      byId: (uid: string) => Promise<SelectLog[] | null>;
     };
   };
   updating: boolean;

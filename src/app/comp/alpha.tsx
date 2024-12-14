@@ -68,7 +68,7 @@ const Jumbotron = memo(() => {
 Jumbotron.displayName = "Jumbotron";
 
 const Hero = memo(() => (
-  <div className="grid h-[calc(100vh*0.5)] grid-cols-1 content-center md:h-[calc(100vh*0.7)] lg:grid-cols-2 xl:h-[calc(100vh*0.7)]">
+  <div className="grid h-[calc(100vh*0.5)] grid-cols-1 content-center md:h-[calc(100vh*0.7)] md:grid-cols-2 xl:h-[calc(100vh*0.7)]">
     <Jumbotron />
     <Suspense fallback={<div>Loading...</div>}>
       <Flow />

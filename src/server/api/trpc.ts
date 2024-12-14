@@ -1,24 +1,14 @@
-import { getRefresh, getSession } from "@/app/actions";
-import { env } from "@/env";
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-export const tRPC = async () => {
-  const idToken = await getSession();
-  const refresh = await getRefresh();
+export const Tctx = async (opts: { headers: Headers }) => {
   return {
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${idToken}`,
-      "X-Refresh-Token": refresh,
-      "X-API-Key": env.RE_UP_SECURE_API_KEY,
-      "Content-Type": "application/json",
-    },
+    ...opts,
   };
 };
 
-const t = initTRPC.context<typeof tRPC>().create({
+const t = initTRPC.context<typeof Tctx>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {
