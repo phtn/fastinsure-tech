@@ -1,7 +1,7 @@
 import { proc, router } from "../trpc";
 import { asyncR } from "../utils";
 import { HCodeParamsSchema } from "@/server/secure/resource";
-import { server } from "./index";
+import { server } from "@/server/secure";
 
 export const serverRouter = router({
   // VERIFY ACTIVATION CODE

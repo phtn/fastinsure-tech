@@ -3,8 +3,8 @@ import { type Infer, v } from "convex/values";
 export const user_role_schema = v.union(
   v.literal("admin"),
   v.literal("manager"),
+  v.literal("supervisor"),
   v.literal("agent"),
-  v.literal("agent2"),
   v.literal("underwriter"),
   v.literal("neo"),
 );
@@ -32,7 +32,7 @@ export const user_schema = v.object({
   middlename: v.optional(v.string()),
   phone_number: v.optional(v.string()),
   photo_url: v.optional(v.string()),
-  role: v.optional(user_role_schema),
+  role: v.optional(v.string()),
   user_code: v.optional(v.string()),
   updated_at: v.optional(v.float64()),
   special_collection: v.optional(v.array(v.record(v.string(), v.any()))),

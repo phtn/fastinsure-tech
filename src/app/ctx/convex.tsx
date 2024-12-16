@@ -70,6 +70,7 @@ interface VexCtxValues {
         uid: string,
         group_code: string,
       ) => Promise<Id<"users"> | null>;
+      role: (uid: string, role: string) => Promise<Id<"users"> | null>;
       userInfo: (args: UpdateUser) => Promise<Id<"users"> | null>;
     };
   };
@@ -146,6 +147,7 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
   const getUsersByGroup = useMutation(api.users.get.byGroup);
   const updateUser = useMutation(api.users.update.userInfo);
   const updateGroupCode = useMutation(api.users.update.groupCode);
+  const updateRole = useMutation(api.users.update.role);
 
   const usr = useMemo(
     () => ({
@@ -160,7 +162,10 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
         userInfo: async (args: UpdateUser) => await updateUser(args),
         groupCode: async (uid: string, group_code: string) =>
           await updateGroupCode({ uid, group_code }),
+        role: async (uid: string, role: string) =>
+          await updateRole({ uid, role }),
       },
+      //
     }),
     [
       createUser,
@@ -169,6 +174,7 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
       getUsersByGroup,
       getUserByEmail,
       updateGroupCode,
+      updateRole,
     ],
   );
 

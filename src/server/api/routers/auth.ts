@@ -14,7 +14,7 @@ import { proc, router } from "../trpc";
 //   createAccountToken,
 // } from "@/server/secure/handlers";
 import { asyncR } from "../utils";
-import { auth } from ".";
+import { auth } from "@/server/secure";
 
 export const authRouter = router({
   verifyUser: proc

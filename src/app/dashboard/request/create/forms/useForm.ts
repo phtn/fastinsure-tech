@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useVex } from "@/app/ctx/convex";
 import { Err, Ok } from "@/utils/helpers";
 import type { InsertRequest } from "convex/requests/d";

@@ -3,7 +3,7 @@
 import { HStack } from "@/ui/hstack";
 import { Widget } from "@/ui/widget";
 import { Splash } from "./comp/splash";
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { HyperText } from "@/ui/hypertext";
 import { motion } from "framer-motion";
 import { Flag } from "./comp/status-flag";

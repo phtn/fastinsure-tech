@@ -4,9 +4,9 @@ import { Spacing } from "@/ui/spacing";
 import { Button, Image } from "@nextui-org/react";
 import { memo, Suspense, useCallback, useState } from "react"; // Import lazy and Suspense
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import { Flow } from "./flow";
+import { withAuth } from "@/app/ctx/auth/auth";
 import { AuthCommand } from "../auth/sign";
-import { withAuth } from "../ctx/auth";
+import { Flow } from "./flow";
 
 const Header = () => (
   <div className="flex h-[calc(100vh*0.15)] w-full items-center space-x-4 pl-6 md:pl-14 xl:h-[calc(100vh*0.15)] xl:pl-20">

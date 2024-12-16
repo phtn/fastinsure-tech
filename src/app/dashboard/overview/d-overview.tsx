@@ -7,7 +7,7 @@ import { Splash } from "./comp/splash";
 import { motion } from "framer-motion";
 import { HyperText } from "@/ui/hypertext";
 import { Button } from "@nextui-org/react";
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 
 import { BigActionCard } from "@/ui/action-card";
 import { CommandLineIcon, FireIcon } from "@heroicons/react/24/solid";

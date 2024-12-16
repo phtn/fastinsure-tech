@@ -114,7 +114,7 @@ function AuthComponent(props: AuthComponentProps) {
             exit={{ scale: 0.75, opacity: 0, y: 25 }}
             transition={{}}
             className={cn(
-              "w-fit overflow-hidden shadow-xl",
+              "h-full w-fit overflow-hidden shadow-xl",
               "rounded-2xl",
               { "shadow-xl": props.shadow === "xl" },
               { "shadow-lg": props.shadow === "lg" },
@@ -122,6 +122,7 @@ function AuthComponent(props: AuthComponentProps) {
               { "shadow-sm": props.shadow === "sm" },
               "dark:border-fade-dark/90 dark:bg-chalk",
               "border-[0.33px] border-fade-dark/40 bg-white",
+              { "bg-transparent dark:bg-transparent": pending },
             )}
             onClick={stopPropagation}
           >

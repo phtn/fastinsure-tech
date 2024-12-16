@@ -83,11 +83,15 @@ export const ButtSex = ({
       ) : (
         <props.icon
           className={cn(
+            "text-icon dark:text-icon-dark",
             {
-              "size-4 text-icon dark:text-icon-dark": size === "sm",
+              "size-4": size === "sm",
             },
             {
-              "size-6 text-icon dark:text-icon-dark": size === "lg",
+              "size-4": size === "md",
+            },
+            {
+              "size-6": size === "lg",
             },
             { "text-icon-dark dark:text-void/80": inverted },
           )}

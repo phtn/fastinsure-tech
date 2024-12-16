@@ -3,7 +3,7 @@
 import { HStack } from "@/ui/hstack";
 import { Widget } from "@/ui/widget";
 import { Splash } from "./comp/splash";
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useCallback } from "react";
 import { opts } from "@/utils/helpers";
 import { Greeting } from "./comp/greeting";

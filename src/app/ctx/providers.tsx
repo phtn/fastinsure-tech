@@ -2,7 +2,7 @@
 import { type PropsWithChildren } from "react";
 import { NextUIProvider } from "@nextui-org/react";
 import { Toasts } from "./toasts";
-import { AuthProvider } from "./auth";
+import { AuthProvider } from "./auth/auth";
 import { ActionBar } from "../comp/actionbar/actionbar";
 import { Vex } from "./convex";
 import { Theme } from "./theme";

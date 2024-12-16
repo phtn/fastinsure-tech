@@ -5,12 +5,12 @@ import { useState, createContext, useContext, useCallback } from "react";
 import type { ComponentProps, PropsWithChildren, ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AcademicCapIcon, UserIcon } from "@heroicons/react/24/outline";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { type DualIcon } from "@/app/types";
 import { Button, Image } from "@nextui-org/react";
 import { toggleState } from "@/utils/helpers";
 import { Logo } from "@/app/dashboard/components";
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useNav } from "@/app/dashboard/hooks/useNav";
 
 export interface NavItem {
@@ -149,7 +149,11 @@ const UserNavs = () => {
 };
 
 const UserSection = (props: { open: boolean }) => {
-  const { user, signOut } = useAuthCtx();
+  const { user } = useAuthCtx();
+  const router = useRouter();
+  const signOut = useCallback(() => {
+    router.push("/dashboard/prime");
+  }, [router]);
   return (
     <section className="relative -left-4 flex size-16 items-center whitespace-nowrap">
       <Link

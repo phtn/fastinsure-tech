@@ -29,7 +29,6 @@ import {
 import { Err, opts, toggleState } from "@/utils/helpers";
 import { HyperList } from "@/ui/list";
 import { UserConfig } from "./components";
-import { TooltipNode } from "@/ui/tooltip";
 
 export const All = () => {
   const { vxmembers, userLogs, getUserLogs, pending } = useTeam();
@@ -59,20 +58,20 @@ export const All = () => {
   const TeamMember = useCallback(
     (props: Partial<SelectUser>) => {
       return (
-        <div className="h-28 w-full rounded-3xl bg-primary-50 drop-shadow-sm">
+        <div className="h-28 w-full rounded-2xl bg-primary-50 drop-shadow-sm">
           <div className="flex h-1/2 items-center justify-between px-3">
             <UserCard {...props} />
-            <TooltipNode
+            {/* <TooltipNode
               title="User Settings"
               description="butt-fuck"
               id={props.uid!}
-            >
-              <ButtSqx
-                id={props.uid}
-                onClick={createUserWindow(props.uid)}
-                icon={EllipsisHorizontalIcon}
-              />
-            </TooltipNode>
+            > */}
+            <ButtSqx
+              id={props.uid}
+              onClick={createUserWindow(props.uid)}
+              icon={EllipsisHorizontalIcon}
+            />
+            {/* </TooltipNode> */}
           </div>
           <div className="flex justify-center">
             <Separator
@@ -151,6 +150,7 @@ const UserCard = ({ nickname, uid, email, photo_url }: Partial<SelectUser>) => (
     }
     avatarProps={{
       src: photo_url,
+      size: "sm",
     }}
     classNames={{
       name: "ml-1 font-semibold text-primary/80 capitalize tracking-tight",
@@ -173,8 +173,8 @@ const ListContent = <T extends SelectUser>({
       <HyperList
         data={data}
         component={comp}
-        container="space-y-6"
-        itemStyle="rounded-3xl"
+        container="space-y-3"
+        itemStyle="rounded-2xl"
         keyId={"uid"}
       />
     </section>
@@ -189,7 +189,7 @@ const ListContainer = ({ children, pending }: ListContainerProps) => {
   return (
     <div
       className={cn(
-        "h-fit rounded-[2rem] bg-primary-100/60 px-6 pb-8 pt-3 transition-transform duration-500 ease-out transform-gpu",
+        "h-fit rounded-3xl bg-primary-100/60 px-3 pt-2 transition-transform duration-500 ease-out transform-gpu",
         {
           "h-96 p-0": pending,
         },

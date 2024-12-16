@@ -1,7 +1,7 @@
 import { type EmailAndPassword, loginFields } from "./schema";
 import { useForm } from "react-hook-form";
 import { Image, Spinner } from "@nextui-org/react";
-import { useAuthCtx } from "../ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { cn } from "@/lib/utils";
 import { FastField } from "@/ui/input";
 import { type FormEvent, useCallback, useMemo } from "react";
@@ -34,7 +34,7 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
   const HeadingOptions = useCallback(() => {
     const options = opts(
       <header className="flex w-full items-center justify-start space-x-4">
-        <p>Signing in...</p> <Spinner size="sm" color="primary" />{" "}
+        <p>Signing in...</p> <Spinner size="sm" color="primary" />
       </header>,
       <header className="flex w-full justify-start">Sign in with email</header>,
     );
@@ -47,7 +47,7 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
       className="flex h-full w-full min-w-[22rem] max-w-[22rem] flex-col items-end text-primary portrait:w-screen"
     >
       <div className="flex h-full w-full flex-col items-center space-y-6">
-        <div className="flex h-14 w-full items-end justify-center px-6 font-inter text-xl font-semibold tracking-tighter dark:text-icon-dark">
+        <div className="flex h-16 w-full items-end justify-center px-6 font-inter text-xl font-semibold tracking-tighter dark:text-icon-dark">
           <HeadingOptions />
         </div>
         <div
@@ -105,9 +105,9 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
           </div>
           <GoogleSignin />
         </div>
-        <div className="flex h-[52px] items-center justify-center text-xs"></div>
+        <div className="flex h-16 items-center justify-center text-xs" />
         <Support />
-        <FlexRow className="relative -top-2 h-8 w-full items-center justify-center">
+        <FlexRow className="relative h-12 w-full items-center justify-center">
           <p className="w-fit space-x-2 whitespace-nowrap rounded-md p-1.5 font-jet text-[10px] font-light capitalize leading-none text-void">
             <span>Last login</span>
             <span className="text-[8px]">{`:`}</span>

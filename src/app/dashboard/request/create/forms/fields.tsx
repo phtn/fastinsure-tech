@@ -10,12 +10,8 @@ import {
   PlaneTakeoffIcon,
   RotateCcwIcon,
 } from "lucide-react";
-import {
-  DevicePhoneMobileIcon,
-  SparklesIcon,
-  TruckIcon,
-} from "@heroicons/react/24/solid";
-import { UserIcon } from "@heroicons/react/24/outline";
+import { SparklesIcon, TruckIcon } from "@heroicons/react/24/solid";
+import { DevicePhoneMobileIcon, UserIcon } from "@heroicons/react/24/outline";
 
 import type { DualIcon } from "@/app/types";
 import type { ChangeEvent, HTMLInputTypeAttribute } from "react";

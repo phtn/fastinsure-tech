@@ -1,6 +1,6 @@
 import { proc, router } from "../trpc";
 import { asyncR } from "../utils";
-import { agent } from ".";
+import { agent } from "@/server/secure";
 import { HCodeParamsSchema } from "@/server/secure/resource";
 
 export const agentRoute = router({

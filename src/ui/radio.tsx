@@ -71,7 +71,7 @@ export const RadioGroupCard = forwardRef<
 >(({ className, ...props }, ref) => (
   <RadioGroup
     className={cn(
-      "gap-0 rounded-lg transition-all duration-300 ease-out transform-gpu hover:shadow-md",
+      "gap-0 space-x-2 rounded-lg",
       { flex: props.orientation === "horizontal" },
       className,
     )}
@@ -83,14 +83,14 @@ export const RadioGroupCard = forwardRef<
       <div
         key={item.title}
         className={cn(
-          "relative flex w-full items-start p-4 tracking-wide shadow-sm shadow-void/5",
-          "bg-primary-200/70 dark:bg-primary-100 dark:backdrop-blur-xl",
-          "overflow-clip border-y border-r border-primary-300/80 border-l-transparent first:rounded-s-lg first:border-l first:border-l-primary-300 last:rounded-e-lg last:border-l dark:border-secondary",
+          "relative flex w-fit items-start p-4 tracking-wide shadow-sm shadow-void/5",
+          "bg-primary-100/60 dark:bg-primary-100 dark:backdrop-blur-xl",
+          "overflow-clip rounded-lg",
+          "border-2 border-primary-100/40",
           "has-[[data-state=checked]]:bg-chalk has-[[data-state=checked]]:text-primary",
-          "has-[[data-state=checked]]:dark:bg-background",
-          "has-[[data-state=checked]]:border-double has-[[data-state=checked]]:border-primary",
-          "dark:has-[[data-state=checked]]:border-secondary",
-          "dark:border-primary-300",
+          "has-[[data-state=checked]]:dark:border-secondary has-[[data-state=checked]]:dark:bg-background",
+          "has-[[data-state=checked]]:border-secondary dark:border-primary-300/60",
+          "",
         )}
       >
         <RadioGroupItem
@@ -100,9 +100,9 @@ export const RadioGroupCard = forwardRef<
           className="order-1 p-2 after:absolute after:inset-0"
           disabled={item.disabled}
         />
-        <div className="flex grow items-start gap-2">
+        <div className="flex grow items-start gap-2 transition-all duration-300 ease-out transform-gpu hover:shadow-md">
           <item.icon
-            className={cn("-ml-2 -mt-1 size-5 shrink-0 stroke-1", {
+            className={cn("-ml-1 -mt-0.5 size-4 shrink-0 stroke-1", {
               "opacity-50": item.disabled,
             })}
           />
@@ -110,7 +110,7 @@ export const RadioGroupCard = forwardRef<
             <Label
               htmlFor={item.name}
               className={cn(
-                "font-inst font-semibold capitalize tracking-tight opacity-80",
+                "pe-4 font-inst font-semibold capitalize tracking-tight opacity-80",
                 {
                   "opacity-60": item.disabled,
                 },
@@ -121,7 +121,7 @@ export const RadioGroupCard = forwardRef<
             <p
               id={`${item.title}-description`}
               className={cn(
-                "pointer-events-none max-w-[50ch] whitespace-nowrap text-xs font-light tracking-tight",
+                "pointer-events-none max-w-[50ch] whitespace-nowrap text-xs font-light tracking-tight opacity-80",
                 { "opacity-70": item.disabled },
               )}
             >

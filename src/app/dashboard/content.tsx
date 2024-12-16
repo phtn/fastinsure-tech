@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import { opts } from "@/utils/helpers";
 import { ManagerOverview } from "./overview/m-overview";
 import { Loader } from "@/ui/loader";
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { NeoOverview } from "./overview/n-overview";
 
 const DashboardComponent = () => {

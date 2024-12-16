@@ -1,4 +1,4 @@
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useVex } from "@/app/ctx/convex";
 import type { SelectLog } from "@convex/logs/d";
 import type { SelectUser } from "@convex/users/d";

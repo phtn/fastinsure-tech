@@ -13,12 +13,9 @@ import {
   EyeIcon,
   EyeSlashIcon,
   LockOpenIcon,
-} from "@heroicons/react/24/outline";
-import {
-  BoltIcon,
-  PhotoIcon,
   Square2StackIcon,
-} from "@heroicons/react/24/solid";
+} from "@heroicons/react/24/outline";
+import { BoltIcon, PhotoIcon } from "@heroicons/react/24/solid";
 import { Button } from "@nextui-org/react";
 import { AsteriskIcon } from "lucide-react";
 import {
@@ -36,7 +33,7 @@ import type { InsertAuto } from "@convex/autos/d";
 import type { InsertAddress } from "convex/addresses/d";
 import type { InsertSubject } from "convex/subjects/d";
 import type { FieldValues, UseFormRegister } from "react-hook-form";
-import { ButtSpc } from "./button/button";
+import { ButtSpc, ButtSqx } from "./button/button";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: DualIcon;
@@ -389,7 +386,7 @@ export const FastFieldGroup = forwardRef<
                 {...item}
                 className={cn(
                   "h-[48px] bg-background",
-                  "font-arc font-medium tracking-wide text-foreground placeholder:text-xs",
+                  "font-arc font-medium tracking-wide text-foreground placeholder:text-xs dark:text-secondary-200",
                   "ring-offset-primary-300 focus-visible:ring-offset-0",
                   className,
                 )}
@@ -496,7 +493,8 @@ const RenderInputList = (props: {
                 placeholder={item.placeholder}
                 className={cn(
                   "flex h-[48px] w-full bg-background",
-                  "font-arc font-medium tracking-wide text-foreground placeholder:font-normal",
+                  "font-arc font-medium tracking-wide text-foreground dark:text-secondary-400",
+                  "placeholder:font-normal dark:placeholder:opacity-50",
                   "ring-offset-primary-300 focus-visible:ring-offset-0",
                   className,
                   {
@@ -639,7 +637,8 @@ const RenderInputIII = (props: {
                 placeholder={item.placeholder}
                 className={cn(
                   "flex h-[48px] w-full bg-background",
-                  "font-arc font-medium tracking-wide text-foreground placeholder:font-normal",
+                  "font-arc font-medium tracking-wide text-foreground dark:text-secondary-400",
+                  "placeholder:font-normal dark:placeholder:opacity-50",
                   "ring-offset-primary-300 focus-visible:ring-offset-0",
                   className,
                   {
@@ -719,7 +718,7 @@ export const FastFieldGroupIV = forwardRef<
             // ref={ref}
             className={cn(
               "h-[48px] bg-background",
-              "font-arc font-medium tracking-wide text-foreground placeholder:font-normal",
+              "font-arc font-medium tracking-wide text-foreground placeholder:font-normal dark:text-secondary-100",
               "ring-offset-primary-300 focus-visible:ring-offset-0",
               className,
             )}
@@ -769,7 +768,7 @@ export const FastFieldGroupIV = forwardRef<
             }
             className={cn(
               "h-[48px] bg-background placeholder:font-normal",
-              "font-arc font-medium tracking-wide text-foreground",
+              "font-arc font-medium tracking-wide text-foreground dark:text-secondary-100",
               "ring-offset-primary-300 focus-visible:ring-offset-0",
               className,
             )}
@@ -834,17 +833,12 @@ export const InputFieldName = forwardRef<
           </span>
         </div>
         <div>
-          <Button
+          <ButtSqx
             size="sm"
-            variant="ghost"
-            color="primary"
-            radius="sm"
-            onPress={handleCopyValue}
+            icon={Square2StackIcon}
+            onClick={handleCopyValue}
             className="hidden border-0 group-hover:flex"
-          >
-            copy
-            <Square2StackIcon className="size-4" />
-          </Button>
+          />
         </div>
       </section>
 

@@ -5,22 +5,16 @@ import { Widget } from "@/ui/widget";
 import { Splash } from "./comp/splash";
 import { motion } from "framer-motion";
 import { HyperText } from "@/ui/hypertext";
-// import { GenericAction } from "./comp/actions";
-// import { ShieldCheckIcon, WindowIcon } from "@heroicons/react/24/outline";
 import { BigActionCard } from "@/ui/action-card";
 import { FireIcon } from "@heroicons/react/24/solid";
 import { Button, Input } from "@nextui-org/react";
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useActionState, useCallback, useState } from "react";
-// import { useVex } from "@/app/ctx/convex";
-// import { activateAccount, verifyUser } from "@/lib/secure/callers/auth";
-// import { onWarn } from "@/app/ctx/toasts";
 import Json from "@/ui/json";
 import { LoaderMd } from "@/ui/loader";
 
 export const NeoOverview = () => {
   const { user, claims, signOut } = useAuthCtx();
-  // const { usr } = useVex();
   const [json, setJson] = useState<object | null>({});
 
   // const handleVerification = useCallback(async () => {

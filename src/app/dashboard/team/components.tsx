@@ -5,24 +5,25 @@ import { ButtSex } from "@/ui/button/ripple";
 import { FlexRow } from "@/ui/flex";
 import { HyperList } from "@/ui/list";
 import { LoaderSm } from "@/ui/loader";
-import { type HyperSelectOption, type HyperSelectProps } from "@/ui/select";
+import { type HyperSelectOption } from "@/ui/select";
 import { SideVaul } from "@/ui/sidevaul";
 import { Window } from "@/ui/window";
 import { SpToolbar, type ToolbarProps } from "@/ui/window/toolbar";
 import { type SelectLog } from "@convex/logs/d";
-import { type SelectUser } from "@convex/users/d";
+import type { SelectUser, UserRole } from "@convex/users/d";
 import {
   ArrowDownRightIcon,
+  ArrowPathIcon,
   ArrowTrendingUpIcon,
   ChevronUpDownIcon,
   CogIcon,
-  EllipsisHorizontalIcon,
   InboxIcon,
+  KeyIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import {
-  ClockIcon,
   ChatBubbleLeftRightIcon,
+  ClockIcon,
   MapPinIcon,
 } from "@heroicons/react/24/solid";
 import {
@@ -35,13 +36,8 @@ import {
 } from "@nextui-org/react";
 import { UserCog2 } from "lucide-react";
 import moment from "moment";
-import {
-  type ChangeEvent,
-  type ReactElement,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
+import { type ReactElement, use, useCallback, useMemo } from "react";
+import { TeamContext, TeamCtx } from "./ctx";
 
 interface UserConfigProps {
   open: boolean;
@@ -64,14 +60,26 @@ export const UserConfig = ({
         closeFn={toggleFn}
         icon={UserCog2}
         v={vx}
-      ></ToolbarComponent>
+      />
     );
   }, [vx, toggleFn]);
+
+  const UserConfigContent = useCallback(() => {
+    return (
+      <TeamContext
+        uid={vx?.uid}
+        currentRole={vx?.role?.split(",") as UserRole[]}
+        logs={logs}
+      >
+        <Body />
+      </TeamContext>
+    );
+  }, [logs, vx]);
 
   return (
     <SideVaul open={open} onOpenChange={toggleFn} direction="right">
       <Window title={title} variant="god" toolbar={ConfigToolbar}>
-        <Body logs={logs} />
+        <UserConfigContent />
         <SideVaul.Footer>
           <FlexRow className="w-full items-center justify-end">
             <ButtSex size="sm" end={ChevronUpDownIcon}>
@@ -108,7 +116,7 @@ const ToolbarComponent = ({ closeFn, v }: ToolbarProps<SelectUser>) => {
           <ButtSqx icon={XMarkIcon} onClick={closeFn}></ButtSqx>
         </div>
       </FlexRow>
-      <FlexRow className="h-16 w-full items-end px-4">
+      <FlexRow className="h-10 w-full items-end px-4">
         <ButtSqx size="lg" variant="god" icon={ChatBubbleLeftRightIcon} />
       </FlexRow>
     </SpToolbar>
@@ -119,33 +127,30 @@ interface TabIconProps {
   icon: DualIcon;
 }
 
-interface BodyProps {
-  logs: SelectLog[] | null;
-}
-const Body = ({ logs }: BodyProps) => {
+const Body = () => {
   const tabs: (TabItem & TabIconProps)[] = useMemo(
     () => [
       {
         id: 0,
         value: "setttings",
         label: "User Settings",
-        content: <SettingsContent />,
+        content: <Settings />,
         icon: CogIcon,
       },
       {
         id: 1,
         value: "activity",
         label: "Activity Logs",
-        content: <ActivityLogs data={logs} />,
+        content: <ActivityLogs />,
         icon: ArrowTrendingUpIcon,
       },
     ],
-    [logs],
+    [],
   );
 
   return (
     <SideVaul.Body>
-      <div className="flex h-[30rem] w-[28rem] flex-col">
+      <div className="flex h-[34rem] w-[28rem] flex-col">
         <Tabs
           size="sm"
           color="default"
@@ -153,7 +158,7 @@ const Body = ({ logs }: BodyProps) => {
           radius="none"
           classNames={{
             tabList:
-              "bg-steel/40 p-0 border-b-[0.33px] border-steel/50 w-[28rem] overflow-scroll",
+              "bg-steel/40 p-0 border-b-[0.5px] border-steel w-[28rem] overflow-scroll",
             tab: "h-[34px]",
             panel: "p-0",
           }}
@@ -182,21 +187,28 @@ const TabTitle = (props: { label: string; icon: DualIcon }) => (
   </FlexRow>
 );
 
-const ActivityLogs = (props: { data: SelectLog[] | null }) => {
-  if (!props.data) return <LoaderSm />;
-  if (props.data.length === 0)
-    return (
-      <FlexRow className="h-32 items-center justify-center text-xs opacity-60">
-        <InboxIcon className="size-4 text-steel" />
-        <span>No record found.</span>
-      </FlexRow>
-    );
-  return (
-    <div className="h-[60vh] w-full overflow-scroll">
-      <HyperList data={props.data} component={LogItem} keyId="created_at" />
-    </div>
+const ActivityLogs = () => {
+  const { logs } = use(TeamCtx)!;
+  return !logs ? (
+    <LoaderSm />
+  ) : logs.length === 0 ? (
+    <EmptyList />
+  ) : (
+    <HyperList
+      data={logs}
+      component={LogItem}
+      keyId="created_at"
+      container="h-[60vh] w-full overflow-y-scroll"
+    />
   );
 };
+
+const EmptyList = () => (
+  <FlexRow className="h-32 items-center justify-center text-xs opacity-60">
+    <InboxIcon className="size-4 text-steel" />
+    <span>No record found.</span>
+  </FlexRow>
+);
 
 const LogItem = (props: SelectLog) => {
   return (
@@ -235,7 +247,9 @@ const LogItem = (props: SelectLog) => {
   );
 };
 
-const SettingsContent = () => {
+const Settings = () => {
+  const { roleSelected, currentRole, updateRole, loading, isDone } =
+    use(TeamCtx)!;
   const SettingFnComponent = useCallback(
     () => (
       <ButtSex inverted size="lg" className="flex">
@@ -245,77 +259,66 @@ const SettingsContent = () => {
     [],
   );
 
-  const user_access_roles: HyperSelectOption[] = useMemo(
-    () => [
-      {
-        id: 0,
-        value: "agent",
-        color: "bg-warning-400/20 text-amber-500",
-      },
-      {
-        id: 2,
-        value: "underwriter",
-        color: "bg-indigo-100 text-indigo-600",
-      },
-      {
-        id: 3,
-        value: "supervisor",
-        color: "bg-sky-100 text-sky-600",
-      },
-      {
-        id: 4,
-        value: "manager",
-        color: "bg-slate-400/20 text-slate-950",
-      },
-    ],
-    [],
-  );
-
-  // const UserAccessRolesFnComponent = useCallback(
-  //   () => (
-  //     <HyperSelect
-  //       options={user_access_roles}
-  //       label="user access roles"
-  //       id="user-access-roles"
-  //     />
-  //   ),
-  //   [user_access_roles],
-  // );
-
   const settings_data: UserSetting[] = useMemo(
     () => [
       {
         title: "User Access Roles",
         description:
           "Access Roles provides role-based access management and ensures that users have appropriate permissions within your team.",
-        component: (
-          <UserRoleSelect id="user-role" options={user_access_roles} />
-        ),
+        value: currentRole?.join(","),
+        component: <UserRoleSelect />,
+        saveFn: updateRole,
+        isModified: roleSelected !== "",
+        newValue: roleSelected,
+        loading,
+        isDone,
       },
       {
         title: "Commission Rate",
         component: <SettingFnComponent />,
+        saveFn: updateRole,
+        isModified: false,
+        newValue: "",
+        loading,
+        isDone: false,
       },
       {
         title: "Group Assignment",
         component: <SettingFnComponent />,
+        saveFn: updateRole,
+        newValue: "",
+        isModified: false,
+        loading,
+        isDone: false,
       },
       {
         title: "Branch Assignment",
         component: <SettingFnComponent />,
+        saveFn: updateRole,
+        newValue: "",
+        isModified: false,
+        loading,
+        isDone: false,
       },
     ],
-    [SettingFnComponent, user_access_roles],
+    [
+      SettingFnComponent,
+      currentRole,
+      updateRole,
+      roleSelected,
+      isDone,
+      loading,
+    ],
   );
+
   return (
-    <div className="">
-      <HyperList
-        data={settings_data}
-        container="px-2 pt-8 space-y-12 pb-20 bg-steel/15 h-[50vh] w-full overflow-y-scroll"
-        component={SettingsItem}
-        keyId="title"
-      />
-    </div>
+    <HyperList
+      keyId="title"
+      data={settings_data}
+      itemStyle="rounded-lg"
+      component={SettingsItem}
+      container="px-2 pt-8 space-y-12 pb-20 bg-steel/15 h-[60vh] w-full overflow-y-scroll"
+    />
   );
 };
 
@@ -323,25 +326,41 @@ interface UserSetting {
   title: string;
   description?: string;
   value?: string | number | undefined;
+  newValue: string | number | undefined;
   component: ReactElement;
+  saveFn: () => Promise<void>;
+  isModified: boolean;
+  loading: boolean;
+  isDone: boolean;
 }
 const SettingsItem = (props: UserSetting) => {
   return (
-    <div className="h-80 w-full rounded-lg border-[0.33px] border-icon bg-chalk py-2 shadow-md">
+    <div className="h-[20rem] w-full overflow-hidden rounded-lg border-[0.33px] border-icon bg-chalk py-2 shadow-md">
       <section className="flex h-3/4 flex-col justify-start px-4">
-        <FlexRow className="flex h-2/5 items-center justify-between">
+        <FlexRow className="flex h-2/5 items-center justify-between pt-2">
           <header className="font-inst text-lg font-medium tracking-tight">
             {props.title}
           </header>
-          <ButtSqx icon={EllipsisHorizontalIcon} />
+          {props.isModified ? (
+            <ButtSex
+              inverted
+              onClick={props.saveFn}
+              end={ArrowPathIcon}
+              loading={props.loading}
+            >
+              Save changes
+            </ButtSex>
+          ) : (
+            <ButtSqx disabled icon={KeyIcon} />
+          )}
         </FlexRow>
-        <FlexRow className="h-2/5 w-full items-start rounded-md bg-steel/5 px-1.5 py-1">
+        <FlexRow className="h-2/5 w-full items-start rounded-md bg-gradient-to-b from-steel/5 to-transparent px-1.5 py-1">
           <p className="text-sm font-light leading-5">{props.description}</p>
         </FlexRow>
-        <FlexRow className="my-2 h-1/5 w-full items-center justify-between gap-4 rounded-lg border border-secondary bg-secondary px-3 text-chalk">
+        <FlexRow className="_border mb-4 h-1/5 w-full items-center justify-between gap-4 rounded-lg border-secondary bg-secondary-100/60 px-3 text-secondary">
           <p className="font-inst text-sm font-semibold">Current value</p>
-          <p className="font-inst font-semibold tracking-wide text-white drop-shadow-md">
-            10%
+          <p className="font-inter font-semibold uppercase tracking-wide drop-shadow-md">
+            {props.isDone ? props.newValue : props?.value}
           </p>
         </FlexRow>
       </section>
@@ -354,31 +373,17 @@ const SettingsItem = (props: UserSetting) => {
   );
 };
 
-// const TabContent = (props: { title: string }) => (
-//   <FlexRow className="h-32 items-center justify-center text-xs opacity-60">
-//     {props.title}
-//   </FlexRow>
-// "bg-indigo-400/20 text-indigo-500"
-// "bg-purple-400/20 text-purple-500"
-// "bg-rose-400/20 text-rose-500"
-// );
-
-const UserRoleSelect = ({ options }: HyperSelectProps) => {
-  const [value, setValue] = useState<string>("");
-
-  const handleSelectionChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
-    setValue(e.target.value);
-  };
+const UserRoleSelect = () => {
+  const { roles, roleSelected, onRoleSelect } = use(TeamCtx)!;
 
   return (
     <Select
-      items={options}
       isMultiline
+      items={roles}
       label="Select Access Role"
       className="z-[200] w-[16rem] rounded-lg border-[0.33px] border-steel bg-goddess"
-      selectedKeys={[value]}
-      onChange={handleSelectionChange}
+      selectedKeys={[roleSelected]}
+      onChange={onRoleSelect}
       renderValue={(options: SelectedItems<HyperSelectOption>) =>
         options.map((option) => (
           <FlexRow
@@ -387,11 +392,11 @@ const UserRoleSelect = ({ options }: HyperSelectProps) => {
           >
             <div
               className={cn(
-                "flex size-5 items-center justify-center space-x-4 rounded-md bg-gray-400/20 uppercase text-gray-500",
+                "flex size-5 items-center justify-center space-x-4 rounded-md bg-gray-400/20 uppercase text-gray-500 drop-shadow-sm",
                 option.data?.color,
               )}
             >
-              <span className="text-xs font-bold capitalize">
+              <span className="text-sm font-bold capitalize">
                 {option.data?.value.substring(0, 1)}
               </span>
             </div>
@@ -400,11 +405,13 @@ const UserRoleSelect = ({ options }: HyperSelectProps) => {
         ))
       }
     >
-      {(option) => (
+      {(
+        option, // SELECTED ITEM
+      ) => (
         <SelectItem
           key={option.value}
-          textValue={value}
-          className="data-[hover=true]:bg-steel/15"
+          textValue={roleSelected}
+          className="data-[hover=true]:bg-steel/10"
           classNames={{
             wrapper: "border bg-chalk",
             base: "py-2 pointer-events-auto",
@@ -413,7 +420,7 @@ const UserRoleSelect = ({ options }: HyperSelectProps) => {
           <FlexRow className="items-center capitalize">
             <div
               className={cn(
-                "flex size-5 items-center justify-center space-x-4 rounded-md bg-gray-400/20 uppercase text-gray-500",
+                "flex size-5 items-center justify-center space-x-4 rounded-md bg-gray-400/20 uppercase text-gray-500 drop-shadow-sm",
                 option.color,
               )}
             >

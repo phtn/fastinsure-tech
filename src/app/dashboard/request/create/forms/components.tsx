@@ -1,6 +1,7 @@
 import { type DualIcon } from "@/app/types";
 import { type SpecialEntity } from "@/lib/docai/resource";
 import { cn } from "@/lib/utils";
+import { ButtSex } from "@/ui/button/ripple";
 import { InputFieldName } from "@/ui/input";
 import { ArrowUturnLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Button, Image } from "@nextui-org/react";
@@ -10,8 +11,8 @@ import type { MouseEvent, PropsWithChildren, ReactNode } from "react";
 export const Wrapper = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
-      "mt-1.5 h-[calc(92vh)]",
-      "overflow-scroll rounded-xl border-[0.33px] border-primary-400",
+      "mt-1.5 h-[calc(92vh)] overflow-scroll",
+      "rounded-xl border-[0.33px] border-primary-400",
       "bg-chalk",
       "dark:bg-primary/10",
       "pb-44",
@@ -210,21 +211,18 @@ export const ScanButton = ({
   onPress,
 }: ScanButtonProps) => (
   <div className="pl-2">
-    <Button
-      size="md"
-      radius="sm"
-      color="primary"
-      isLoading={loading}
+    <ButtSex
+      size="lg"
+      loading={loading}
       disabled={!imageData || result}
-      variant={imageData ? "solid" : "flat"}
       className={cn("w-36 font-inter font-medium tracking-tight", {
         "cursor-not-allowed bg-primary-100 text-primary-400":
           loading || !imageData || result,
       })}
-      onPress={onPress}
+      onClick={onPress}
     >
       {loading ? "Scanning..." : "Scan document"}
-    </Button>
+    </ButtSex>
   </div>
 );
 
@@ -247,19 +245,15 @@ export const ResultsWrapper = ({
         },
       )}
     >
-      {/* <div className="relative bottom-0 right-0 flex h-20 items-center justify-end px-4"> */}
-      <Button
-        variant="solid"
+      <ButtSex
+        inverted
         size="md"
-        radius="sm"
-        color="primary"
-        className="relative z-[60] font-medium tracking-tight"
         onClick={applyFn}
+        start={ArrowUturnLeftIcon}
+        className="relative z-[60] font-medium tracking-tight"
       >
-        <ArrowUturnLeftIcon className="size-4" />
         Apply Scan Results
-      </Button>
-      {/* </div> */}
+      </ButtSex>
     </div>
     <div
       className={cn(

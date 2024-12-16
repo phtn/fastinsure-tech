@@ -7,7 +7,6 @@ import {
   signInWithPopup,
   signOut as logout,
   type User,
-  type ParsedToken,
   type IdTokenResult,
   onAuthStateChanged,
 } from "firebase/auth";
@@ -36,24 +35,17 @@ import {
   getCustomClaims,
   getGroupCode,
   getLastLogin,
-  setCustomClaims,
-  setIdToken,
   setLastLogin,
-  setRefresh,
-  setUID,
 } from "@/app/actions";
 
-import { EmailAndPasswordSchema } from "../auth/schema";
-import type {
-  OnSigninVerification,
-  OnSigninVerificationResponse,
-} from "@/server/secure/resource";
-import { onError, onSuccess, onWarn } from "./toasts";
+import { EmailAndPasswordSchema } from "@/app/auth/schema";
+import type { OnSigninVerificationResponse } from "@/server/secure/resource";
+import { onError, onSuccess, onWarn } from "../toasts";
 import { Loader } from "@/ui/loader";
-import { verifyOnSignin } from "@/trpc/secure/callers/auth";
-import { useVex } from "./convex";
+import { useVex } from "../convex";
 import type { UserRole, SelectUser } from "@convex/users/d";
 import moment from "moment";
+import { initVerification } from "./utils";
 
 interface AuthCtxValues {
   loading: boolean;
@@ -62,7 +54,6 @@ interface AuthCtxValues {
   signOut: () => Promise<void>;
   signWithGoogle: () => Promise<void>;
   signUserWithEmail: (fd: FormData) => Promise<void>;
-  // signUserWithEmail: (f: EmailAndPassword) => Promise<void>;
   userRecord: IdTokenResult | null;
   oauth: OAuthCredential | null;
   claims: UserRole[] | null;
@@ -231,9 +222,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         deleteLastLogin().catch(Err);
       } else {
         setLoading(false);
-        if (pathname === "/dashboard") {
-          redirect("/");
-        }
+        redirect("/");
       }
     });
     return () => unsubscribe();
@@ -322,44 +311,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   );
 
   return <AuthCtx.Provider value={stableValues}>{children}</AuthCtx.Provider>;
-};
-
-const initVerification = async (
-  u: User,
-  setUserRecord: Dispatch<SetStateAction<IdTokenResult | null>>,
-  setClaims: Dispatch<SetStateAction<UserRole[] | null>>,
-  setLoading: Dispatch<SetStateAction<boolean>>,
-) => {
-  const id_token = await u.getIdToken();
-  const refresh_token = (await u.getIdTokenResult()).token;
-  const parsedToken = (await u.getIdTokenResult()).claims;
-  const customClaims = filterActiveClaims(parsedToken);
-  const activeClaims = customClaims?.join(",") ?? "";
-
-  const record = await u.getIdTokenResult();
-  setUserRecord(record);
-
-  await setUID(u.uid);
-  await setIdToken(id_token);
-  await setRefresh(refresh_token);
-  setClaims(customClaims);
-  await setCustomClaims(activeClaims);
-  const vParams: OnSigninVerification = {
-    uid: u.uid,
-  };
-
-  const r = await verifyOnSignin(vParams);
-  setLoading(false);
-  return r;
-};
-
-export const filterActiveClaims = (customClaims: ParsedToken) => {
-  if (!customClaims) return null;
-  const allowedRoles = ["admin", "manager", "agent", "agent2", "underwriter"];
-
-  return Object.entries(customClaims)
-    .filter(([key, value]) => value && allowedRoles.includes(key))
-    .map(([key]) => key as UserRole);
 };
 
 export const useAuthCtx = () => {

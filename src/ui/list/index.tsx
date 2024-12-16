@@ -33,7 +33,7 @@ export const HyperList = <T extends object>(props: HyperListProps<T>) => {
   );
   return (
     <AnimatePresence>
-      <ul className={cn("max-h-60vh overflow-y-auto pb-24", props.container)}>
+      <ul className={cn("max-h-60vh overflow-y-auto", props.container)}>
         {props.data?.map(render)}
       </ul>
     </AnimatePresence>

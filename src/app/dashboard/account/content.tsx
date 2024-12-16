@@ -2,7 +2,7 @@
 
 import { Button, Image } from "@nextui-org/react";
 import { AccountSummary, TabComponent } from "./components";
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { cn } from "@/lib/utils";
 
 export const AccountContent = () => {

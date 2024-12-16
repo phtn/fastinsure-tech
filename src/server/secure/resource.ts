@@ -25,6 +25,8 @@ export type LivezResponse = z.infer<typeof LivezResponseSchema>;
 
 export const UserVerificationSchema = z.object({
   uid: z.string().or(z.undefined()),
+  id_token: z.string(),
+  refresh_token: z.string(),
 });
 export type UserVerification = z.infer<typeof UserVerificationSchema>;
 
@@ -47,6 +49,8 @@ export type UserVerificationResponse = z.infer<
 
 export const OnSigninVerificationSchema = z.object({
   uid: z.string().or(z.undefined()),
+  id_token: z.string(),
+  refresh_token: z.string(),
 });
 export type OnSigninVerification = z.infer<typeof OnSigninVerificationSchema>;
 

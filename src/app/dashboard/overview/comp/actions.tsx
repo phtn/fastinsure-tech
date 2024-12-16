@@ -1,4 +1,4 @@
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useManager } from "@/lib/hooks/useManager";
 import { ActionCard, Action, ActionLink } from "@/ui/action-card";
 import { BookOpenIcon, QrCodeIcon } from "@heroicons/react/24/outline";

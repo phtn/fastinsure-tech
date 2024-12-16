@@ -40,23 +40,32 @@ import {
   type ChangeEvent,
   type MouseEvent,
   type ReactNode,
+  use,
   useCallback,
 } from "react";
 import { useGeolocator } from "./useGeolocator";
-import { Input } from "@nextui-org/react";
+import {
+  Input,
+  Select,
+  type SelectedItems,
+  SelectItem,
+} from "@nextui-org/react";
 import { useSearchParams } from "next/navigation";
 import { type SubmitType, useForm } from "./useForm";
 import { opts } from "@/utils/helpers";
 import { cn } from "@/lib/utils";
 import { useFile } from "./useFile";
 import { useScanner } from "./useScanner";
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import type { DualIcon } from "@/app/types";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { ButtSex } from "@/ui/button/index";
 import { CircleSlash2 } from "lucide-react";
 import { ConfirmButton } from "@/ui/button";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { FlexRow } from "@/ui/flex";
+import type { HyperSelectOption } from "@/ui/select";
+import { RequestCtx } from "../ctx";
 
 export const CreateNew = () => {
   const { vxuser } = useAuthCtx();
@@ -175,20 +184,23 @@ export const CreateNew = () => {
   }, [loading, result]);
 
   return (
-    <div className="flex h-[calc(93vh)] w-full overflow-y-scroll border-t-[0.33px] border-primary-200/50 bg-primary-100/50 p-6 dark:bg-void">
+    <main className="flex h-[calc(93vh)] w-full overflow-y-scroll border-t-[0.33px] border-primary-200/50 bg-chalk p-6 dark:bg-void">
       <form className="w-full">
-        <div className="absolute -top-4 right-0 z-[250] flex h-24 items-center space-x-4 px-12">
-          <SButton fn={handleSetSubmitType("save")} end={ArrowDownTrayIcon}>
-            <SButtonLabel label="Save as draft" />
-          </SButton>
-          <SButton
-            inverted
-            fn={handleSetSubmitType("save")}
-            end={PaperAirplaneIcon}
-          >
-            <SButtonLabel label="Submit Request" />
-          </SButton>
-        </div>
+        <FlexRow className="absolute -top-4 right-0 z-[250] h-24 w-fit items-center space-x-6 xl:space-x-36">
+          <UnderwriterSelect />
+          <section className="flex items-center space-x-4 px-10">
+            <SButton fn={handleSetSubmitType("save")} end={ArrowDownTrayIcon}>
+              <SButtonLabel label="Save as draft" />
+            </SButton>
+            <SButton
+              inverted
+              fn={handleSetSubmitType("save")}
+              end={PaperAirplaneIcon}
+            >
+              <SButtonLabel label="Submit Request" />
+            </SButton>
+          </section>
+        </FlexRow>
         <section className="grid w-full grid-cols-6 gap-6 bg-background">
           <div className="col-span-4">
             <div className="flex h-[30rem] w-full flex-col justify-center rounded-[2rem] border-2 border-secondary bg-primary-50 shadow-2xl shadow-primary-400/50 dark:border-secondary-400/80 dark:bg-primary-200 dark:shadow-secondary-500/40">
@@ -339,7 +351,7 @@ export const CreateNew = () => {
           />
         </div>
       </form>
-    </div>
+    </main>
   );
 };
 
@@ -366,3 +378,64 @@ const SButton = ({ fn, inverted, start, end, children }: SButtonProps) => (
 const SButtonLabel = (props: { label: string }) => (
   <p className="font-inter font-medium tracking-tight">{props.label}</p>
 );
+
+const UnderwriterSelect = () => {
+  const { underwriters, underwriter, onUnderwriterSelect } = use(RequestCtx)!;
+
+  return (
+    <Select
+      size="sm"
+      variant="flat"
+      items={underwriters}
+      placeholder="Select underwriter"
+      className="z-[200] w-[16rem] rounded-lg border-[0.33px] border-steel"
+      selectedKeys={[underwriter]}
+      onChange={onUnderwriterSelect}
+      renderValue={(options: SelectedItems<HyperSelectOption>) =>
+        options.map((option) => (
+          <FlexRow key={option.data?.id} className="items-center capitalize">
+            <div
+              className={cn(
+                "flex size-5 items-center justify-center space-x-4 rounded-md bg-indigo-100/10 uppercase text-indigo-400 drop-shadow-sm",
+              )}
+            >
+              <span className="text-xs font-bold capitalize">u</span>
+            </div>
+            <span className={cn("truncate font-inst")}>
+              {option.data?.value}
+            </span>
+          </FlexRow>
+        ))
+      }
+    >
+      {(
+        option, // SELECTED ITEM
+      ) => (
+        <SelectItem
+          key={option.id}
+          textValue={option.value}
+          className="group data-[hover=true]:bg-steel/10 data-[selected=true]:bg-steel"
+          classNames={{
+            wrapper: "border",
+            base: "py-2",
+          }}
+        >
+          <FlexRow className="items-center capitalize">
+            <div
+              className={cn(
+                "flex size-5 items-center justify-center space-x-4 rounded-md bg-indigo-400/20 uppercase text-indigo-500 drop-shadow-sm",
+              )}
+            >
+              <span className="text-xs font-bold capitalize">u</span>
+            </div>
+            <span
+              className={cn("truncate font-inst group-hover:text-icon-dark")}
+            >
+              {option.value}
+            </span>
+          </FlexRow>
+        </SelectItem>
+      )}
+    </Select>
+  );
+};

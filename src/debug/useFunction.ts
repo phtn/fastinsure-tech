@@ -1,5 +1,5 @@
 import { getLastLogin, getUID } from "@/app/actions";
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useVex } from "@/app/ctx/convex";
 import { onWarn } from "@/app/ctx/toasts";
 import { useNav } from "@/app/dashboard/hooks/useNav";
@@ -101,13 +101,14 @@ export const useFunction = () => {
   }, [usr.get, user?.uid]);
 
   const verifyWithUID = useCallback(async () => {
-    if (!uid) {
-      onWarn("UID not ready");
-      return;
+    if (user) {
+      const uid = user.uid;
+      const id_token = await user.getIdToken();
+      const refresh_token = (await user.getIdTokenResult()).token;
+      const r = await verifyUser({ uid, id_token, refresh_token });
+      return r.data;
     }
-    const r = await verifyUser({ uid });
-    return r.data;
-  }, [uid]);
+  }, [user]);
 
   const fn_verifyUser = useCallback(() => {
     startFn(func, verifyWithUID, setVRes);

@@ -170,9 +170,9 @@ export const SpToolbar = <T,>({
         { "h-[49px] items-center": size === "sm" },
         { "h-[80px] items-start": size === "md" },
         { "h-[120px] items-start": size === "lg" },
-        { "h-[160px] items-start": size === "xl" },
+        { "h-[130px] items-start": size === "xl" },
         // LIGHT
-        "border-b-[0.5px] border-adam",
+        "border-b-[0.5px] border-steel",
         { "bg-demigod": variant === "demigod" },
         { "bg-god": variant === "god" },
         { "bg-goddess": variant === "goddess" },

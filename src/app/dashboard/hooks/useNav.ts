@@ -1,4 +1,4 @@
-import { useAuthCtx } from "@/app/ctx/auth";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { type NavItem } from "@/ui/sidebar";
 import {
   ShieldCheckIcon,

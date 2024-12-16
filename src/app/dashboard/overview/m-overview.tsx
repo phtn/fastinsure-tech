@@ -1,4 +1,4 @@
-import { useAuthCtx, withAuth } from "@/app/ctx/auth";
+import { useAuthCtx, withAuth } from "@/app/ctx/auth/auth";
 import { HStack } from "@/ui/hstack";
 import { Widget } from "@/ui/widget";
 import { motion } from "framer-motion";
