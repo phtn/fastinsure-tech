@@ -196,12 +196,14 @@ export const TooltipNode = ({
         {hoveredIndex === id && (
           <motion.div
             {...motionPropsII}
-            className="absolute z-50 flex flex-col items-center justify-center rounded-md bg-adam/20 px-1 py-0.5 text-xs shadow-xl backdrop-blur-xl -translate-x-1/2"
+            className="absolute z-50 flex items-center justify-center space-x-2 rounded-md border-[0.33px] border-primary-300/40 bg-steel/10 px-1 py-0.5 text-xs backdrop-blur-lg"
           >
-            <div className="relative z-30 text-base font-bold text-background dark:text-foreground">
+            <div className="font-medium text-secondary dark:text-warning-300">
+              {title}
+            </div>
+            <div className="font-jet text-icon dark:text-icon-dark">
               {description}
             </div>
-            <div className="text-xs text-icon dark:text-icon-dark">{title}</div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -12,9 +12,10 @@ import { SparklesIcon } from "@heroicons/react/24/solid";
 import { User } from "@nextui-org/react";
 import { RotateCcwSquareIcon } from "lucide-react";
 import moment from "moment";
-import { type PropsWithChildren } from "react";
+import { useCallback, type PropsWithChildren } from "react";
 import { DataToolbar } from "./data-table.tsx/toolbar";
 import { useRequests } from "./useRequests";
+import { useRouter } from "next/navigation";
 
 export const All = () => {
   return (
@@ -67,26 +68,24 @@ const RowItem = ({ value, size = "xs" }: TableRowProps) => (
 
 const DataTableHeader = () => {
   return (
-    <div className="flex h-8 items-center">
-      <div className="flex">
-        <HeaderItem value="request id" />
-        <HeaderItem size="xl" value="assured info" />
-        <HeaderItem size="2xl" value="agent" />
-        <HeaderItem size="2xl" value="underwriter" />
-        <HeaderItem size="md" value="policy type" center />
-        <HeaderItem size="md" value="service type" center />
-        <HeaderItem size="md" value="status" center />
-        <HeaderItem size="lg" value="created at" />
-        <HeaderItem size="lg" value="updated at" />
-      </div>
+    <div className="flex h-8 items-center justify-start border-b-[0.33px] border-dotted border-primary-300 tracking-tight">
+      <HeaderItem size="sm" value="id" center />
+      <HeaderItem size="lg" value="assured" />
+      <HeaderItem size="2xl" value="agent" />
+      <HeaderItem size="2xl" value="underwriter" />
+      <HeaderItem size="md" value="policy type" center />
+      <HeaderItem size="md" value="service type" center />
+      <HeaderItem size="lg" value="status" center />
+      <HeaderItem size="lg" value="created at" />
+      <HeaderItem size="lg" value="updated at" />
     </div>
   );
 };
 
 const TableRow = (request: SelectRequest) => {
   return (
-    <div className="flex h-20 items-center">
-      <RowItem value={request?.request_id.split("-")[0]} />
+    <div className="flex h-20 items-center justify-start">
+      <RequestIdCell id={request?.request_id} />
       <RowItem size="xl" value={request?.assured_name} />
       <UserCell id={request?.agent_id} agent />
       <UserCell id={request?.underwriter_id} />
@@ -95,6 +94,23 @@ const TableRow = (request: SelectRequest) => {
       <StatusCell status={request?.status} />
       <DateCell date={request?._creationTime} />
       <DateCell date={request?.updated_at} />
+    </div>
+  );
+};
+
+const RequestIdCell = (props: { id: string }) => {
+  const router = useRouter();
+  const route = `/dashboard/request/viewer?rid=${props.id}`;
+  router.prefetch(route);
+  const viewRequest = useCallback(() => {
+    router.push(route);
+  }, [router, route]);
+  return (
+    <div
+      onClick={viewRequest}
+      className="flex w-20 items-center justify-center px-2 font-jet text-[11px] hover:cursor-pointer dark:text-secondary-300"
+    >
+      {props.id.split("-")[0]}
     </div>
   );
 };
@@ -134,26 +150,22 @@ const ServiceTypeCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "new":
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-100 px-2">
-            <SparklesIcon className="size-3" />
-            <span className="text-xs font-semibold capitalize tracking-tight">
-              Brand new
-            </span>
+          <div className="flex h-7 items-center gap-1.5 rounded-lg bg-amber-200/80 px-2 dark:bg-amber-200/60">
+            <SparklesIcon className="size-3 text-amber-600 dark:text-amber-50" />
+            <span className="capitalize tracking-tight">new</span>
           </div>
         );
       default:
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-100 px-2">
-            <RotateCcwSquareIcon className="size-3" />
-            <span className="text-xs font-semibold capitalize tracking-tight">
-              Renewal
-            </span>
+          <div className="flex h-7 items-center gap-1.5 rounded-lg bg-indigo-200/80 px-2 dark:bg-indigo-300/40">
+            <RotateCcwSquareIcon className="size-3 text-indigo-600 dark:text-indigo-50" />
+            <span className="capitalize tracking-tight">Renewal</span>
           </div>
         );
     }
   };
   return (
-    <FlexRow className="h-full w-32 items-center justify-center">
+    <FlexRow className="h-full w-32 items-center justify-center text-xs font-semibold">
       {serviceType()}
     </FlexRow>
   );
@@ -164,26 +176,26 @@ const StatusCell = (props: { status: string | undefined }) => {
     switch (props.status) {
       case "submitted":
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-100 px-2">
+          <div className="flex h-7 items-center gap-2 rounded-lg bg-sky-200/80 px-2 dark:bg-sky-300/40">
             <span className="text-xs font-semibold capitalize tracking-tight">
-              Brand new
+              submitted
             </span>
-            <PaperAirplaneIcon className="size-3 -rotate-[30deg]" />
+            <PaperAirplaneIcon className="size-3 text-sky-600 -rotate-[30deg] dark:text-sky-50" />
           </div>
         );
       default:
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-100 px-2">
+          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-100/80 px-2">
             <span className="text-xs font-semibold capitalize tracking-tight">
               draft
             </span>
-            <DocumentTextIcon className="size-3" />
+            <DocumentTextIcon className="size-3 text-primary-600/80" />
           </div>
         );
     }
   };
   return (
-    <div className="flex h-full w-32 items-center justify-center">
+    <div className="flex h-full w-40 items-center justify-center">
       {status()}
     </div>
   );
@@ -210,7 +222,7 @@ const UserCell = (props: { id: string; agent?: boolean }) => {
       id={vx?.uid}
       name={vx?.nickname}
       description={
-        <div className="text-xs text-blue-500 drop-shadow-sm hover:text-blue-500 hover:opacity-100 hover:drop-shadow-md dark:text-secondary">
+        <div className="text-xs text-blue-500 drop-shadow-sm hover:text-blue-500 hover:opacity-100 hover:drop-shadow-md dark:text-secondary-300">
           {vx?.email}
         </div>
       }
@@ -235,7 +247,7 @@ const DataTableRow = ({ requests }: DataTableRowProps) => {
     <HyperList
       data={requests}
       component={TableRow}
-      itemStyle="border-b-[0.33px] border-primary-300/60"
+      itemStyle="border-b-[0.33px] border-primary-300/60 last:border-0"
     />
   );
 };

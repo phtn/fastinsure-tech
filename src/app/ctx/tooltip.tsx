@@ -81,23 +81,21 @@ export const TooltipProvider = ({ children }: PropsWithChildren) => {
   const motionPropsII = useMemo(
     () =>
       ({
-        initial: { opacity: 0, x: -36 },
+        initial: { opacity: 0, y: -36 },
         animate: {
           opacity: 1,
-          x: -56,
+          y: -26,
           transition: {
             stiffness: 100,
             duration: 0.2,
           },
         },
-        exit: { opacity: 0, x: -36 },
+        exit: { opacity: 0, y: -36 },
         style: {
-          translateX: translateX,
-          rotate: rotate,
           whiteSpace: "nowrap",
         },
       }) as MotionProps,
-    [translateX, rotate],
+    [],
   );
 
   return (

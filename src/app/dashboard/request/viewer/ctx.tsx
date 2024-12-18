@@ -16,7 +16,8 @@ import {
 interface RequestViewerValues {
   pending: boolean;
   vxrequest: SelectRequest | null;
-  underwriter: SelectUser | null;
+  vxusers: SelectUser[] | null;
+  underwriters: SelectUser[] | null;
 }
 export const RequestViewerCtx = createContext<RequestViewerValues | null>(null);
 export interface RequestViewProps {
@@ -29,7 +30,8 @@ export const RequestViewerContext = ({
 }: RequestViewProps) => {
   const { request, usr } = useVex();
   const [vxrequest, setRequest] = useState<SelectRequest | null>(null);
-  const [underwriter, setUnderwriter] = useState<SelectUser | null>(null);
+  const [vxusers, setvxusers] = useState<SelectUser[] | null>(null);
+  const [underwriters, setUnderwriters] = useState<SelectUser[] | null>(null);
 
   const [pending, fn] = useTransition();
 
@@ -54,22 +56,25 @@ export const RequestViewerContext = ({
     setFn(fn, getvxRequest, setRequest);
   }, [getvxRequest]);
 
-  const getvxUnderwriter = useCallback(async () => {
-    if (!vxrequest?.underwriter_id) return null;
-    return await usr.get.byId(vxrequest.underwriter_id);
-  }, [vxrequest?.underwriter_id, usr.get]);
+  const getvxUnderwriters = useCallback(async () => {
+    if (!vxrequest?.group_code) return null;
+    const vx = await usr.get.byGroup(vxrequest.group_code);
+    setvxusers(vx);
+    const unds = vx.filter((v) => v.role === "underwriter");
+    return unds;
+  }, [vxrequest?.group_code, usr.get]);
 
-  const getUnderwriter = useCallback(() => {
-    setFn(fn, getvxUnderwriter, setUnderwriter);
-  }, [getvxUnderwriter]);
+  const getUnderwriters = useCallback(() => {
+    setFn(fn, getvxUnderwriters, setUnderwriters);
+  }, [getvxUnderwriters]);
 
   useEffect(() => {
     getRequest();
-    getUnderwriter();
-  }, [getRequest, getUnderwriter]);
+    getUnderwriters();
+  }, [getRequest, getUnderwriters]);
 
   return (
-    <RequestViewerCtx value={{ pending, vxrequest, underwriter }}>
+    <RequestViewerCtx value={{ pending, vxrequest, vxusers, underwriters }}>
       {children}
     </RequestViewerCtx>
   );

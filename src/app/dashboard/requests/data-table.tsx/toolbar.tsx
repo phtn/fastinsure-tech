@@ -23,7 +23,7 @@ export const DataToolbar = ({ searchFn, search }: DataToolbarProps) => {
 
   return (
     <div className="z-[100] flex h-fit w-full items-center justify-between rounded-t-xl border-x-[0.33px] border-t-[0.33px] border-primary-300 bg-primary-200/70 px-2">
-      <div className="flex items-center space-x-1 md:space-x-4">
+      <div className="flex items-center space-x-1 py-1 md:space-x-4">
         <ToolbarTitle title="All Requests" />
         <Searchbar />
       </div>

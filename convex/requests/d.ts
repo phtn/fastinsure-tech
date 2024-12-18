@@ -23,7 +23,7 @@ const RequestStatusSchema = v.union(
   v.literal("submitted"),
   v.literal("received"),
   v.literal("processing"),
-  v.literal("complete"),
+  v.literal("completed"),
   v.literal("voided"),
 );
 export type RequestStatus = Infer<typeof RequestStatusSchema>;

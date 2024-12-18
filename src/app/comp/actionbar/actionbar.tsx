@@ -21,10 +21,7 @@ import { ServerHealth, ServerIcon } from "./server-status";
 import { ButtSqx } from "@/ui/button/button";
 
 const DATA = {
-  navbar: [
-    // { href: "/", icon: SlashIcon, label: "Home" },
-    { href: "/dashboard/account", icon: UserIcon, label: "Profile" },
-  ],
+  navbar: [{ href: "/dashboard/account", icon: UserIcon, label: "Profile" }],
   quicklinks: {
     alerts: {
       Chat: {
@@ -92,13 +89,19 @@ export function ActionBar() {
             <Icon href={item.href} icon={item.icon} />
           </DockIcon>
         ))}
-        <Separator orientation="vertical" className="h-1/3 py-2" />
+        <Separator
+          orientation="vertical"
+          className="group/dock-hover:flex hidden h-1/3 py-2"
+        />
         {Object.entries(DATA.quicklinks.alerts).map(([name, item]) => (
           <DockIcon key={name}>
             <Icon href={item.url} icon={item.icon} />
           </DockIcon>
         ))}
-        <Separator orientation="vertical" className="h-1/3 py-2" />
+        <Separator
+          orientation="vertical"
+          className="group/dock-hover:flex hidden h-1/3 py-2"
+        />
         <DockIcon>
           <ThemeSwitch />
         </DockIcon>
@@ -117,14 +120,7 @@ interface DockIcon {
   href: string;
   icon: DualIcon;
 }
-const Icon = ({ icon }: DockIcon) => (
-  <ButtSqx
-    size="md"
-    inverted
-    // className="group flex size-8 items-center justify-center rounded-lg text-icon-dark transition-colors duration-300 ease-out hover:bg-primary/10 dark:text-icon-dark"
-    icon={icon}
-  />
-);
+const Icon = ({ icon }: DockIcon) => <ButtSqx size="md" inverted icon={icon} />;
 
 interface ActionButton {
   livez: LivezResponse | null;
