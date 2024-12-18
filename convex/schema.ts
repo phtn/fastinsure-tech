@@ -5,6 +5,7 @@ import { auto_schema } from "./autos/d";
 import { address_schema } from "./address/d";
 import { subject_schema } from "./subjects/d";
 import { log_schema } from "./logs/d";
+import { notification_schema } from "./notifications/d";
 
 export default defineSchema({
   users: defineTable(user_schema)
@@ -99,5 +100,15 @@ export default defineSchema({
     "device",
     "geolocation",
     "ip",
+  ]),
+
+  notifications: defineTable(notification_schema).index("by_receiver_id", [
+    "receiver_id",
+    "notif_id",
+    "sender_id",
+    "type",
+    "title",
+    "content",
+    "category",
   ]),
 });

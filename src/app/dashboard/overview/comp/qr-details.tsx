@@ -143,7 +143,7 @@ const CodeContent = ({ children }: PropsWithChildren) => (
 );
 const ExpiryContent = ({ children }: PropsWithChildren) => (
   <div className="font-arc mx-10 my-3 flex h-10 w-fit items-center space-x-4 rounded-md border border-primary-300 bg-primary-50 px-4 text-sm font-medium text-primary drop-shadow-lg">
-    <ExclamationTriangleIcon className="size-5 animate-pulse text-warning" />
+    <ExclamationTriangleIcon className="size-5 stroke-void/80 text-warning" />
     <span>{children}</span>
   </div>
 );

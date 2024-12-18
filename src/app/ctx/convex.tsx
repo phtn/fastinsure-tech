@@ -3,6 +3,10 @@ import { env } from "@/env";
 import type { InsertAddress } from "@convex/address/d";
 import type { InsertAuto } from "@convex/autos/d";
 import type { InsertLog, SelectLog } from "@convex/logs/d";
+import type {
+  InsertNotification,
+  SelectNotification,
+} from "@convex/notifications/d";
 import type { InsertRequest, SelectRequest } from "@convex/requests/d";
 import type { InsertSubject } from "@convex/subjects/d";
 import type { InsertUser, SelectUser, UpdateUser } from "@convex/users/d";
@@ -78,6 +82,10 @@ interface VexCtxValues {
         group_code: string,
       ) => Promise<Id<"users"> | null>;
       role: (uid: string, role: string) => Promise<Id<"users"> | null>;
+      commission: (
+        uid: string,
+        commission_pct: number,
+      ) => Promise<Id<"users"> | null>;
       userInfo: (args: UpdateUser) => Promise<Id<"users"> | null>;
     };
   };
@@ -87,6 +95,14 @@ interface VexCtxValues {
     ) => Promise<(string & { __tableName: "logs" }) | null>;
     get: {
       byId: (uid: string) => Promise<SelectLog[] | null>;
+    };
+  };
+  notifications: {
+    create: (
+      args: InsertNotification,
+    ) => Promise<(string & { __tableName: "notifications" }) | null>;
+    get: {
+      byReceiverId: (uid: string) => Promise<SelectNotification[] | null>;
     };
   };
   updating: boolean;
@@ -169,6 +185,7 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
   const updateUser = useMutation(api.users.update.userInfo);
   const updateGroupCode = useMutation(api.users.update.groupCode);
   const updateRole = useMutation(api.users.update.role);
+  const updateCommission = useMutation(api.users.update.commission);
 
   const usr = useMemo(
     () => ({
@@ -186,6 +203,8 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
           await updateGroupCode({ uid, group_code }),
         role: async (uid: string, role: string) =>
           await updateRole({ uid, role }),
+        commission: async (uid: string, commission_pct: number) =>
+          await updateCommission({ uid, commission_pct }),
       },
       //
     }),
@@ -197,6 +216,7 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
       getUsersByRole,
       getUserByEmail,
       updateGroupCode,
+      updateCommission,
       updateRole,
     ],
   );
@@ -214,9 +234,35 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
     [createLog, getLogById],
   );
 
+  const createNotification = useMutation(api.notifications.create.default);
+  const getNotificationByReceiverId = useMutation(
+    api.notifications.get.byReceiverId,
+  );
+
+  const notifications = useMemo(
+    () => ({
+      create: async (args: InsertNotification) =>
+        await createNotification(args),
+      get: {
+        byReceiverId: async (id: string) =>
+          await getNotificationByReceiverId({ receiver_id: id }),
+      },
+    }),
+    [createNotification, getNotificationByReceiverId],
+  );
+
   return (
     <VexCtx.Provider
-      value={{ address, logs, request, subject, auto, usr, updating }}
+      value={{
+        address,
+        logs,
+        notifications,
+        request,
+        subject,
+        auto,
+        usr,
+        updating,
+      }}
     >
       {children}
     </VexCtx.Provider>

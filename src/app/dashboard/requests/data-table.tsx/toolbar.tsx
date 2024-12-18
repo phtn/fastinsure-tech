@@ -1,5 +1,6 @@
 import { useCallback, type ChangeEvent } from "react";
 import { cn } from "@/lib/utils";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 interface DataToolbarProps {
   searchFn: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -8,16 +9,19 @@ interface DataToolbarProps {
 export const DataToolbar = ({ searchFn, search }: DataToolbarProps) => {
   const Searchbar = useCallback(() => {
     return (
-      <input
-        className={cn(
-          "h-8 max-w-[40ch] flex-grow rounded-md border-[0.33px] border-primary-200 pe-4 ps-4 font-jet text-xs outline-none",
-          "bg-goddess/40 shadow-inner placeholder:text-primary-500 focus:bg-goddess",
-          "dark:bg-primary-100/50 dark:text-icon-dark",
-        )}
-        defaultValue={search}
-        onChange={searchFn}
-        autoFocus
-      />
+      <div className="relative w-full">
+        <input
+          className={cn(
+            "h-8 max-w-[40ch] flex-grow rounded-md border-[0.33px] border-primary-200 pe-4 ps-7 font-jet text-xs outline-none dark:border-primary-300",
+            "bg-goddess/40 shadow-inner placeholder:text-primary-500 focus:bg-goddess",
+            "dark:bg-primary-100/50 dark:text-icon-dark",
+          )}
+          defaultValue={search}
+          onChange={searchFn}
+          autoFocus
+        />
+        <MagnifyingGlassIcon className="absolute left-2.5 top-2.5 size-3.5 text-primary-400" />
+      </div>
     );
   }, [search, searchFn]);
 

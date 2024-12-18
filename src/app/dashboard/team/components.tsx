@@ -34,9 +34,16 @@ import {
   Tab,
   Tabs,
 } from "@nextui-org/react";
-import { UserCog2 } from "lucide-react";
+import { PercentIcon, UserCog2 } from "lucide-react";
 import moment from "moment";
-import { type ReactElement, use, useCallback, useMemo } from "react";
+import {
+  type ReactElement,
+  use,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { TeamContext, TeamCtx } from "./ctx";
 
 interface UserConfigProps {
@@ -69,6 +76,7 @@ export const UserConfig = ({
       <TeamContext
         uid={vx?.uid}
         currentRole={vx?.role?.split(",") as UserRole[]}
+        currentComm={vx?.commission_pct}
         logs={logs}
       >
         <Body />
@@ -248,8 +256,16 @@ const LogItem = (props: SelectLog) => {
 };
 
 const Settings = () => {
-  const { roleSelected, currentRole, updateRole, loading, isDone } =
-    use(TeamCtx)!;
+  const {
+    roleSelected,
+    currentRole,
+    currentComm,
+    commissionPct,
+    updateRole,
+    updateCommPct,
+    loading,
+    isDone,
+  } = use(TeamCtx)!;
   const SettingFnComponent = useCallback(
     () => (
       <ButtSex inverted size="lg" className="flex">
@@ -272,15 +288,20 @@ const Settings = () => {
         newValue: roleSelected,
         loading,
         isDone,
+        icon: KeyIcon,
       },
       {
         title: "Commission Rate",
-        component: <SettingFnComponent />,
-        saveFn: updateRole,
-        isModified: false,
-        newValue: "",
+        description: "You can configure your agent's commission rate here. ",
+        value: currentComm ?? 0,
+        component: <CommPctComponent />,
+        saveFn: updateCommPct,
+        isModified:
+          commissionPct !== 0 && commissionPct !== Number(currentComm),
+        newValue: isDone ? commissionPct : currentComm,
         loading,
-        isDone: false,
+        isDone,
+        icon: PercentIcon,
       },
       {
         title: "Group Assignment",
@@ -290,6 +311,7 @@ const Settings = () => {
         isModified: false,
         loading,
         isDone: false,
+        icon: PercentIcon,
       },
       {
         title: "Branch Assignment",
@@ -299,15 +321,19 @@ const Settings = () => {
         isModified: false,
         loading,
         isDone: false,
+        icon: PercentIcon,
       },
     ],
     [
       SettingFnComponent,
       currentRole,
+      currentComm,
       updateRole,
       roleSelected,
       isDone,
       loading,
+      commissionPct,
+      updateCommPct,
     ],
   );
 
@@ -332,6 +358,7 @@ interface UserSetting {
   isModified: boolean;
   loading: boolean;
   isDone: boolean;
+  icon: DualIcon;
 }
 const SettingsItem = (props: UserSetting) => {
   return (
@@ -351,7 +378,7 @@ const SettingsItem = (props: UserSetting) => {
               Save changes
             </ButtSex>
           ) : (
-            <ButtSqx disabled icon={KeyIcon} />
+            <ButtSqx disabled icon={props.icon} />
           )}
         </FlexRow>
         <FlexRow className="h-2/5 w-full items-start rounded-md bg-gradient-to-b from-steel/5 to-transparent px-1.5 py-1">
@@ -435,5 +462,50 @@ const UserRoleSelect = () => {
         </SelectItem>
       )}
     </Select>
+  );
+};
+
+const CommPctComponent = () => {
+  const { setPercentage, setPctValue, commissionPct } = use(TeamCtx)!;
+
+  const [inputVal, setInputVal] = useState(String(commissionPct));
+
+  const suggestions = [10, 15, 20, 30];
+
+  useEffect(() => {
+    setInputVal(commissionPct.toString());
+  }, [commissionPct]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputVal(value);
+    if (value && !isNaN(parseFloat(value))) {
+      setPercentage(parseFloat(value));
+    }
+  };
+  return (
+    <FlexRow className="h-fit items-center space-x-2 px-1">
+      <div className="flex">
+        {suggestions.map((pct) => (
+          <ButtSex
+            key={pct}
+            onClick={setPctValue(pct)}
+            size="md"
+            inverted={+commissionPct === pct}
+          >
+            {pct}
+            <span className="text-[8px]">%</span>
+          </ButtSex>
+        ))}
+      </div>
+      <div className="relative ml-2 w-full">
+        <input
+          className="h-[38px] w-20 shrink-0 rounded-lg border-[0.33px] border-primary-300/100 bg-primary-100/50 pe-3 text-right"
+          value={inputVal}
+          onChange={handleInputChange}
+        />
+        <span className="absolute left-3 top-3 text-xs text-adam">%</span>
+      </div>
+    </FlexRow>
   );
 };

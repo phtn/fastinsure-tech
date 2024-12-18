@@ -2,6 +2,7 @@
 
 import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useVex } from "@/app/ctx/convex";
+import { onSuccess, onWarn } from "@/app/ctx/toasts";
 import type { SpecialEntity } from "@/lib/docai/resource";
 import { Err } from "@/utils/helpers";
 import { type InsertAddress } from "@convex/address/d";
@@ -9,22 +10,18 @@ import type { InsertAuto } from "@convex/autos/d";
 import type { InsertSubject } from "@convex/subjects/d";
 import type { InsertRequest } from "convex/requests/d";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { onSuccess, onWarn } from "@/app/ctx/toasts";
+import { useCallback, useState } from "react";
 
 export type SubmitType = "save" | "submit";
 //
 export const useForm = (file?: File) => {
   const { vxuser } = useAuthCtx();
   const { request, address, auto, subject, logs } = useVex();
+
   const [submitType, setSubmitType] = useState<SubmitType>("save");
   const [parsedScanResults, setParsedScanResults] = useState<
     Record<string, string>[]
   >([]);
-
-  useEffect(() => {
-    console.log(file, file?.type);
-  }, [file]);
 
   const applyScanResultsData = (scanResults: SpecialEntity[]) => {
     const parsedResults = scanResults?.map(({ type, mentionText }) => ({

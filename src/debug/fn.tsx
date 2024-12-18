@@ -8,15 +8,15 @@ import {
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
-import { Button } from "@nextui-org/react";
-import { type TestFunction, useFunction } from "./useFunction";
 import { cn } from "@/lib/utils";
 import Json from "@/ui/json";
-import { toggleState } from "@/utils/helpers";
-import { DevToolbar } from "./toolbar";
 import { HyperList } from "@/ui/list";
-import { useWindow } from "@/ui/window/useWindow";
 import { DialogWindow } from "@/ui/window";
+import { useWindow } from "@/ui/window/useWindow";
+import { toggleState } from "@/utils/helpers";
+import { Button } from "@nextui-org/react";
+import { DevToolbar } from "./toolbar";
+import { type TestFunction, useFunction } from "./useFunction";
 
 export function DevButton(props: { fn: VoidFunction }) {
   return (
@@ -175,6 +175,7 @@ export function DevCommands(props: DevCommandProps) {
           "space-y-2 p-4 border-b-[0.33px]",
           " border-icon/80 last:border-0 dark:border-void",
           "h-fit w-full cursor-pointer overflow-clip",
+          "dark:bg-adam",
         )}
       />
     </DialogWindow>

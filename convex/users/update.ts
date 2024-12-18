@@ -1,5 +1,5 @@
 import { mutation } from "@vex/server";
-import { user_role_schema, user_updateable_schema } from "./d";
+import { user_updateable_schema } from "./d";
 import { checkUser } from "./create";
 import { v } from "convex/values";
 
@@ -64,6 +64,19 @@ export const role = mutation({
     }
 
     await db.patch(user._id, { role, updated_at: Date.now() });
+    return user._id;
+  },
+});
+export const commission = mutation({
+  args: { uid: v.string(), commission_pct: v.number() },
+  handler: async ({ db }, { uid, commission_pct }) => {
+    const user = await checkUser(db, uid);
+
+    if (user === null || !commission_pct) {
+      return null;
+    }
+
+    await db.patch(user._id, { commission_pct, updated_at: Date.now() });
     return user._id;
   },
 });

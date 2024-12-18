@@ -18,6 +18,11 @@ interface TeamCtxValues {
   logs: SelectLog[] | null;
   updateRole: () => Promise<void>;
   currentRole: UserRole[] | undefined;
+  currentComm: number | undefined;
+  commissionPct: number;
+  setPercentage: (pct: number) => void;
+  setPctValue: (value: number) => () => void;
+  updateCommPct: () => Promise<void>;
   onRoleSelect: (e: ChangeEvent<HTMLSelectElement>) => void;
   loading: boolean;
   isDone: boolean;
@@ -28,11 +33,13 @@ interface TeamContextProps {
   children: ReactNode;
   logs: SelectLog[] | null;
   currentRole: UserRole[] | undefined;
+  currentComm: number | undefined;
   uid: string | undefined;
 }
 export const TeamContext = ({
   children,
   currentRole,
+  currentComm,
   logs,
   uid,
 }: TeamContextProps) => {
@@ -40,6 +47,17 @@ export const TeamContext = ({
   const [roleSelected, setRoleSelected] = useState("");
   const [loading, setLoading] = useState(false);
   const [isDone, setIsDone] = useState(false);
+  const [commissionPct, setCommissionPct] = useState(0);
+
+  const setPercentage = useCallback((pct: number) => {
+    setCommissionPct(Math.max(0, pct));
+  }, []);
+  const setPctValue = useCallback(
+    (value: number) => {
+      return () => setPercentage(value);
+    },
+    [setPercentage],
+  );
 
   const onRoleSelect = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
     setRoleSelected(e.target.value);
@@ -54,6 +72,16 @@ export const TeamContext = ({
         .catch(Err(setLoading))
         .finally(() => setIsDone(true));
   }, [usr.update, roleSelected, uid]);
+
+  const updateCommPct = useCallback(async () => {
+    setLoading(true);
+    if (uid)
+      await usr.update
+        .commission(uid, commissionPct)
+        .then(Ok(setLoading, "Commission Percentage updated!"))
+        .catch(Err(setLoading))
+        .finally(() => setIsDone(true));
+  }, [usr.update, commissionPct, uid]);
 
   const roles: HyperSelectOption[] = useMemo(
     () => [
@@ -88,8 +116,13 @@ export const TeamContext = ({
         loading,
         updateRole,
         currentRole,
+        currentComm,
         roleSelected,
         onRoleSelect,
+        setPercentage,
+        setPctValue,
+        commissionPct,
+        updateCommPct,
         isDone,
       }}
     >

@@ -53,7 +53,7 @@ const Content = ({ children, title, close }: ContentProps) => (
 );
 
 const Body = ({ children }: PropsWithChildren) => (
-  <div className="flex w-fit items-start justify-between text-foreground">
+  <div className="flex h-[36rem] w-fit items-start justify-between text-foreground">
     {children}
   </div>
 );
@@ -65,7 +65,7 @@ const Code = ({ children }: PropsWithChildren) => (
 );
 
 const Detail = ({ children }: PropsWithChildren) => (
-  <div className="h-[19rem] w-[30rem] space-y-2 overflow-auto py-4">
+  <div className="h-full w-[30rem] space-y-2 overflow-auto py-4">
     {children}
   </div>
 );

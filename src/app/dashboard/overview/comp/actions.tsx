@@ -1,17 +1,17 @@
 import { useAuthCtx } from "@/app/ctx/auth/auth";
-import { useManager } from "@/lib/hooks/useManager";
-import { ActionCard, Action, ActionLink } from "@/ui/action-card";
-import { BookOpenIcon, QrCodeIcon } from "@heroicons/react/24/outline";
-import { type ReactNode, useCallback, useMemo, useState } from "react";
-import { Qr } from "./qr-viewer";
-import { Button } from "@nextui-org/react";
-import { Square2StackIcon } from "@heroicons/react/24/solid";
-import { QrDetails } from "./qr-details";
-import { QrCodegen } from "./qr-codegen";
-import { copyFn, Err, toggleState } from "@/utils/helpers";
-import { FileSymlinkIcon } from "lucide-react";
 import { type DualIcon } from "@/app/types";
+import { useManager } from "@/lib/hooks/useManager";
+import { Action, ActionCard, ActionLink } from "@/ui/action-card";
+import { ButtSqx } from "@/ui/button/button";
+import { copyFn, Err, toggleState } from "@/utils/helpers";
+import { BookOpenIcon, QrCodeIcon } from "@heroicons/react/24/outline";
+import { Square2StackIcon } from "@heroicons/react/24/solid";
+import { FileSymlinkIcon } from "lucide-react";
+import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { useRequest } from "../../hooks/useRequest";
+import { QrCodegen } from "./qr-codegen";
+import { QrDetails } from "./qr-details";
+import { Qr } from "./qr-viewer";
 
 export const CreateAgentCode = () => {
   const { user } = useAuthCtx();
@@ -100,15 +100,7 @@ const FooterContent = ({ text }: FooterContent) => {
   const copyText = () => text && copyFn({ name: "Activation URL", text });
   return (
     <Qr.Url url={text}>
-      <Button
-        size="sm"
-        isIconOnly
-        variant="flat"
-        className="border-0 dark:hover:bg-zinc-900"
-        onPress={copyText}
-      >
-        <Square2StackIcon className="size-5 text-primary-700" />
-      </Button>
+      <ButtSqx size="md" onClick={copyText} icon={Square2StackIcon} />
     </Qr.Url>
   );
 };

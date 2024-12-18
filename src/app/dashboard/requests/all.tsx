@@ -4,6 +4,8 @@ import { FlexRow } from "@/ui/flex";
 import { HyperList } from "@/ui/list";
 import { type SelectRequest } from "@convex/requests/d";
 import {
+  Bars2Icon,
+  Bars4Icon,
   DocumentTextIcon,
   PaperAirplaneIcon,
   TruckIcon,
@@ -12,10 +14,10 @@ import { SparklesIcon } from "@heroicons/react/24/solid";
 import { User } from "@nextui-org/react";
 import { RotateCcwSquareIcon } from "lucide-react";
 import moment from "moment";
+import { useRouter } from "next/navigation";
 import { useCallback, type PropsWithChildren } from "react";
 import { DataToolbar } from "./data-table.tsx/toolbar";
 import { useRequests } from "./useRequests";
-import { useRouter } from "next/navigation";
 
 export const All = () => {
   return (
@@ -34,7 +36,7 @@ interface TableRowProps {
 const HeaderItem = ({ value, size = "xs", center = false }: TableRowProps) => (
   <div
     className={cn(
-      "w-24 text-xs font-semibold capitalize",
+      "w-24 text-xs font-semibold capitalize dark:text-slate-300",
       {
         "w-28": size === "sm",
       },
@@ -69,15 +71,15 @@ const RowItem = ({ value, size = "xs" }: TableRowProps) => (
 const DataTableHeader = () => {
   return (
     <div className="flex h-8 items-center justify-start border-b-[0.33px] border-dotted border-primary-300 tracking-tight">
-      <HeaderItem size="sm" value="id" center />
-      <HeaderItem size="lg" value="assured" />
+      <HeaderItem value="id" center />
+      <HeaderItem size="lg" value="created at" />
+      <HeaderItem size="xl" value="assured" />
+      <HeaderItem size="md" value="type" center />
+      <HeaderItem size="md" value="coverage" center />
+      <HeaderItem size="md" value="service" center />
+      <HeaderItem size="lg" value="status" center />
       <HeaderItem size="2xl" value="agent" />
       <HeaderItem size="2xl" value="underwriter" />
-      <HeaderItem size="md" value="policy type" center />
-      <HeaderItem size="md" value="service type" center />
-      <HeaderItem size="lg" value="status" center />
-      <HeaderItem size="lg" value="created at" />
-      <HeaderItem size="lg" value="updated at" />
     </div>
   );
 };
@@ -86,14 +88,14 @@ const TableRow = (request: SelectRequest) => {
   return (
     <div className="flex h-20 items-center justify-start">
       <RequestIdCell id={request?.request_id} />
+      <DateCell date={request?._creationTime} create />
       <RowItem size="xl" value={request?.assured_name} />
-      <UserCell id={request?.agent_id} agent />
-      <UserCell id={request?.underwriter_id} />
       <PolicyTypeCell type={request?.policy_type} />
+      <PolicyCoverageCell type={request?.policy_coverage} />
       <ServiceTypeCell type={request?.service_type} />
       <StatusCell status={request?.status} />
-      <DateCell date={request?._creationTime} />
-      <DateCell date={request?.updated_at} />
+      <UserCell id={request?.agent_id} agent />
+      <UserCell id={request?.underwriter_id} />
     </div>
   );
 };
@@ -108,7 +110,7 @@ const RequestIdCell = (props: { id: string }) => {
   return (
     <div
       onClick={viewRequest}
-      className="flex w-20 items-center justify-center px-2 font-jet text-[11px] hover:cursor-pointer dark:text-secondary-300"
+      className="flex w-24 items-center justify-center px-2 font-jet text-[11px] font-medium text-secondary drop-shadow-sm hover:cursor-pointer dark:text-secondary-300"
     >
       {props.id.split("-")[0]}
     </div>
@@ -145,20 +147,50 @@ const PolicyTypeCell = (props: { type: string | undefined }) => {
   );
 };
 
+const PolicyCoverageCell = (props: { type: string | undefined }) => {
+  const coverage = () => {
+    switch (props.type) {
+      case "comprehensive":
+        return (
+          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-100 px-2">
+            <Bars4Icon className="size-3" />
+            <span className="text-xs font-semibold capitalize tracking-tight">
+              comprehensive
+            </span>
+          </div>
+        );
+      default:
+        return (
+          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-100 px-2">
+            <Bars2Icon className="size-3" />
+            <span className="text-xs font-semibold capitalize tracking-tight">
+              CTPL
+            </span>
+          </div>
+        );
+    }
+  };
+  return (
+    <FlexRow className="h-full w-32 items-center justify-center">
+      {coverage()}
+    </FlexRow>
+  );
+};
+
 const ServiceTypeCell = (props: { type: string | undefined }) => {
   const serviceType = () => {
     switch (props.type) {
       case "new":
         return (
-          <div className="flex h-7 items-center gap-1.5 rounded-lg bg-amber-200/80 px-2 dark:bg-amber-200/60">
-            <SparklesIcon className="size-3 text-amber-600 dark:text-amber-50" />
+          <div className="flex h-7 items-center gap-1.5 rounded-lg bg-amber-200/80 px-2 dark:bg-primary-300/40">
+            <SparklesIcon className="size-3 text-amber-600 dark:text-amber-300" />
             <span className="capitalize tracking-tight">new</span>
           </div>
         );
       default:
         return (
-          <div className="flex h-7 items-center gap-1.5 rounded-lg bg-indigo-200/80 px-2 dark:bg-indigo-300/40">
-            <RotateCcwSquareIcon className="size-3 text-indigo-600 dark:text-indigo-50" />
+          <div className="flex h-7 items-center gap-1.5 rounded-lg bg-indigo-200/80 px-2 dark:bg-primary-300/40">
+            <RotateCcwSquareIcon className="size-3 text-indigo-600 dark:text-indigo-400" />
             <span className="capitalize tracking-tight">Renewal</span>
           </div>
         );
@@ -176,16 +208,16 @@ const StatusCell = (props: { status: string | undefined }) => {
     switch (props.status) {
       case "submitted":
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg bg-sky-200/80 px-2 dark:bg-sky-300/40">
+          <div className="flex h-7 items-center gap-2 rounded-lg bg-sky-200/80 px-2 dark:bg-primary-300/40">
             <span className="text-xs font-semibold capitalize tracking-tight">
               submitted
             </span>
-            <PaperAirplaneIcon className="size-3 text-sky-600 -rotate-[30deg] dark:text-sky-50" />
+            <PaperAirplaneIcon className="size-3 text-sky-600 -rotate-[30deg] dark:text-sky-300" />
           </div>
         );
       default:
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-100/80 px-2">
+          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-300/40 px-2">
             <span className="text-xs font-semibold capitalize tracking-tight">
               draft
             </span>
@@ -201,13 +233,20 @@ const StatusCell = (props: { status: string | undefined }) => {
   );
 };
 
-const DateCell = (props: { date: number | undefined }) => {
+const DateCell = (props: { date: number | undefined; create?: boolean }) => {
   return (
     <div className="w-40">
-      <div className="text-sm font-medium tracking-tight">
+      <div
+        className={cn(
+          "text-xs font-medium tracking-tight dark:text-indigo-200",
+          { "dark:text-warning-100/90": props.create },
+        )}
+      >
         {moment(props?.date).calendar()}
       </div>
-      <div className="text-[11px]">{moment(props?.date).fromNow()}</div>
+      <div className="text-[11px] dark:text-steel">
+        {moment(props?.date).fromNow()}
+      </div>
     </div>
   );
 };
@@ -222,7 +261,7 @@ const UserCell = (props: { id: string; agent?: boolean }) => {
       id={vx?.uid}
       name={vx?.nickname}
       description={
-        <div className="text-xs text-blue-500 drop-shadow-sm hover:text-blue-500 hover:opacity-100 hover:drop-shadow-md dark:text-secondary-300">
+        <div className="text-xs text-secondary drop-shadow-sm hover:opacity-100 hover:drop-shadow-md dark:text-secondary-300">
           {vx?.email}
         </div>
       }

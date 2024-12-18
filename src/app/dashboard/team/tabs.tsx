@@ -1,8 +1,12 @@
 "use client";
 
 import { Tab, Tabs } from "@nextui-org/react";
-import { ListBulletIcon, Squares2X2Icon } from "@heroicons/react/24/outline";
-import { CalendarIcon, UsersIcon } from "@heroicons/react/24/solid";
+import {
+  CalendarDaysIcon,
+  ListBulletIcon,
+  Squares2X2Icon,
+} from "@heroicons/react/24/outline";
+import { UserGroupIcon } from "@heroicons/react/24/solid";
 
 import {
   type Key,
@@ -104,12 +108,12 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           "space-x-4",
         )}
       >
-        <ButtSex size="md" start={CalendarIcon} onClick={handleCreate}>
+        <ButtSex size="md" start={CalendarDaysIcon} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
             Schedule Meetings
           </p>
         </ButtSex>
-        <ButtSex size="md" start={UsersIcon} onClick={handleCreate}>
+        <ButtSex size="md" start={UserGroupIcon} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
             Create Groups
           </p>
