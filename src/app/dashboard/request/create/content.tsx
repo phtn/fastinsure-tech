@@ -1,8 +1,8 @@
 "use client";
-import { RequestContext } from "./ctx";
+import { CreateRequestContext } from "./ctx";
 import { CreateNew } from "./forms/create-new";
 export const Content = () => (
-  <RequestContext>
+  <CreateRequestContext>
     <CreateNew />
-  </RequestContext>
+  </CreateRequestContext>
 );

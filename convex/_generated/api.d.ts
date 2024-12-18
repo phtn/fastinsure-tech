@@ -13,9 +13,9 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as addresses_create from "../addresses/create.js";
-import type * as addresses_d from "../addresses/d.js";
-import type * as addresses_get from "../addresses/get.js";
+import type * as address_create from "../address/create.js";
+import type * as address_d from "../address/d.js";
+import type * as address_get from "../address/get.js";
 import type * as autos_create from "../autos/create.js";
 import type * as autos_d from "../autos/d.js";
 import type * as autos_get from "../autos/get.js";
@@ -43,9 +43,9 @@ import type * as users_update from "../users/update.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  "addresses/create": typeof addresses_create;
-  "addresses/d": typeof addresses_d;
-  "addresses/get": typeof addresses_get;
+  "address/create": typeof address_create;
+  "address/d": typeof address_d;
+  "address/get": typeof address_get;
   "autos/create": typeof autos_create;
   "autos/d": typeof autos_d;
   "autos/get": typeof autos_get;

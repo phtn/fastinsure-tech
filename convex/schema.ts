@@ -2,7 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { user_schema } from "./users/d";
 import { request_schema } from "./requests/d";
 import { auto_schema } from "./autos/d";
-import { address_schema } from "./addresses/d";
+import { address_schema } from "./address/d";
 import { subject_schema } from "./subjects/d";
 import { log_schema } from "./logs/d";
 
@@ -31,13 +31,14 @@ export default defineSchema({
 
     .index("by_role", [
       "role",
+      "uid",
+      "email",
       "fullname",
       "group_code",
-      "email",
       "phone_number",
     ]),
 
-  addresses: defineTable(address_schema)
+  address: defineTable(address_schema)
     .index("by_address_id", ["address_id", "city", "country"])
     .index("by_country", ["country", "city", "address_id"]),
 

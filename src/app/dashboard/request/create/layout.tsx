@@ -6,7 +6,7 @@ import { Header } from "@/app/dashboard/components/header";
 export default function RequestLayout({ children }: PropsWithChildren) {
   return (
     <main>
-      <Header title="requests" xs />
+      <Header title="request" xs />
       {children}
     </main>
   );

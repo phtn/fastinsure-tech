@@ -197,6 +197,7 @@ export interface HyperSelectOption {
   id: string | number;
   value: string;
   color?: string;
+  photo_url?: string;
 }
 export interface HyperSelectProps {
   id: string;

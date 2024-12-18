@@ -67,21 +67,22 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
 
   return (
     <div className="relative pt-1">
+      <div className="flex w-full border-t-[0.33px] border-dotted border-primary-200/50" />
       <section className="flex px-4">
-        <div className="flex w-full"></div>
         <Tabs
           items={tabs}
           onSelectionChange={handleSelect}
           defaultSelectedKey={"all"}
           selectedKey={selected}
-          size="md"
-          color="primary"
-          variant="underlined"
-          className="absolute -top-[3.25rem] right-0 z-[200] border-b-[0.5px] border-primary-300"
+          size="sm"
+          variant="bordered"
+          color="secondary"
+          className="_border-b-[0.5px] absolute -top-[3.2rem] right-4 z-[200] border-primary-300"
           isVertical={false}
           classNames={{
-            tabList: "w-full px-3 dark:-mb-1.5 -mb-[5px]",
-            tab: "w-32",
+            tabList:
+              "w-full border border-primary-300 dark:border-primary-500/40",
+            tab: "w-fit font-semibold tracking-tight text-xs",
           }}
         >
           {tabs.map((tab) => (
@@ -92,30 +93,30 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
         </Tabs>
       </section>
 
-      <div className="-mt-2 h-[calc(90vh)] px-12">{children}</div>
+      <div className="-mt-2 h-[calc(93vh)] px-12">{children}</div>
       <div
         ref={midbarRef}
         style={{ left: centerpoint.x, width: 500 }}
         className={cn(
-          "absolute -top-[3.25rem] z-50",
+          "absolute -top-[3.5rem] z-50",
           "flex items-center justify-center",
           "transfor-gpu transition-all duration-500 ease-out",
           "space-x-4",
         )}
       >
-        <ButtSex size="sm" start={CalendarIcon} onClick={handleCreate}>
+        <ButtSex size="md" start={CalendarIcon} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
             Schedule Meetings
           </p>
         </ButtSex>
-        <ButtSex size="sm" start={UsersIcon} onClick={handleCreate}>
+        <ButtSex size="md" start={UsersIcon} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
             Create Groups
           </p>
         </ButtSex>
-        <section className="flex rounded-xl border-[0.33px] border-primary-100/60">
-          <ButtSqx size="sm" variant="god" icon={ListBulletIcon} />
-          <ButtSqx size="sm" variant="goddess" icon={Squares2X2Icon} />
+        <section className="flex h-[38px] items-center rounded-[11px] border border-primary-300 bg-goddess px-0.5 dark:border-primary-500/40 dark:bg-void">
+          <ButtSqx size="sm" variant="god" disabled icon={ListBulletIcon} />
+          <ButtSqx size="sm" variant="active" icon={Squares2X2Icon} />
         </section>
       </div>
     </div>

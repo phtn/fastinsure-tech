@@ -1,6 +1,46 @@
 "use client";
 
+import type { DualIcon } from "@/app/types";
+import { cn } from "@/lib/utils";
+import { ConfirmButton } from "@/ui/button";
+import { ButtSex } from "@/ui/button/index";
+import { FlexRow } from "@/ui/flex";
+import {
+  FastField,
+  FastFieldGroup,
+  FastFieldGroupII,
+  FastFieldGroupIII,
+  FastFile,
+} from "@/ui/input";
 import { RadioGroupCard } from "@/ui/radio";
+import type { HyperSelectOption } from "@/ui/select";
+import { opts } from "@/utils/helpers";
+import { ArrowDownOnSquareIcon } from "@heroicons/react/24/outline";
+import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import {
+  Image,
+  Select,
+  type SelectedItems,
+  SelectItem,
+} from "@nextui-org/react";
+import { CircleSlash2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import {
+  type ChangeEvent,
+  type MouseEvent,
+  type ReactNode,
+  use,
+  useActionState,
+  useCallback,
+  useEffect,
+} from "react";
+import {
+  type FieldValues,
+  type UseFormRegister,
+  type UseFormSetValue,
+  useForm as useHookForm,
+} from "react-hook-form";
+import { CreateRequestCtx } from "../ctx";
 import {
   CardGroup,
   HiddenCanvas,
@@ -24,63 +64,33 @@ import {
   auto_fields_V,
   auto_fields_VI,
   autoFields,
+  hidden_fields,
   request_policy_coverage,
   request_policy_types,
   request_service_type,
   resultFields,
 } from "./fields";
-import {
-  FastFieldGroup,
-  FastFieldGroupII,
-  FastFieldGroupIII,
-  FastFile,
-} from "@/ui/input";
-import { type FieldValues, useForm as useHookForm } from "react-hook-form";
-import {
-  type ChangeEvent,
-  type MouseEvent,
-  type ReactNode,
-  use,
-  useCallback,
-} from "react";
-import { useGeolocator } from "./useGeolocator";
-import {
-  Input,
-  Select,
-  type SelectedItems,
-  SelectItem,
-} from "@nextui-org/react";
-import { useSearchParams } from "next/navigation";
-import { type SubmitType, useForm } from "./useForm";
-import { opts } from "@/utils/helpers";
-import { cn } from "@/lib/utils";
-import { useFile } from "./useFile";
-import { useScanner } from "./useScanner";
-import { useAuthCtx } from "@/app/ctx/auth/auth";
-import type { DualIcon } from "@/app/types";
-import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
-import { ButtSex } from "@/ui/button/index";
-import { CircleSlash2 } from "lucide-react";
-import { ConfirmButton } from "@/ui/button";
-import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
-import { FlexRow } from "@/ui/flex";
-import type { HyperSelectOption } from "@/ui/select";
-import { RequestCtx } from "../ctx";
+import { useFile } from "@request/hooks/useFile";
+import { type SubmitType, useForm } from "@request/hooks/useForm";
+import { useGeolocator } from "@request/hooks/useGeolocator";
+import { useScanner } from "@request/hooks/useScanner";
 
+const defaultValues = {
+  ...assured_contact,
+  ...address_fields_I,
+  ...address_fields_II,
+  ...auto_fields_I,
+  ...auto_fields_II,
+  ...auto_fields_III,
+  ...auto_fields_IV,
+};
+export type InsertValues = typeof defaultValues;
 export const CreateNew = () => {
-  const { vxuser } = useAuthCtx();
-  const { register, reset, setValue } = useHookForm<FieldValues>({
-    ...assured_contact,
-    ...address_fields_I,
-    ...address_fields_II,
-    ...auto_fields_I,
-    ...auto_fields_II,
-    ...auto_fields_III,
-    ...auto_fields_IV,
-  });
-  const { getLocation } = useGeolocator();
   const searchParams = useSearchParams();
-  const { setSubmitType, generateIDs } = useForm();
+  const request_id = searchParams.get("rid");
+
+  const { register, setValue } = useHookForm<FieldValues>(defaultValues);
+  const { getLocation } = useGeolocator();
   const { handleScanDocument, loading, result, elapsed } = useScanner();
   const {
     imageData,
@@ -88,24 +98,21 @@ export const CreateNew = () => {
     inputRef,
     handleFileChange,
     rawDocument,
+    selectedFile,
     format,
     size,
   } = useFile();
 
-  const request_id = searchParams.get("rid");
-  const ids = generateIDs(request_id);
+  const { submitAction, setSubmitType } = useForm(selectedFile);
+  const [_, actionFn, pending] = useActionState(submitAction, {});
 
   const handlePostalCodeChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const location = getLocation(e.target.value);
-      reset({
-        line_2: location?.line_2,
-        city: location?.city,
-        state: location?.state,
-        country: "PH",
-      });
+      if (location) Object.entries(location).map(([k, v]) => setValue(k, v));
+      setValue("country", "PH");
     },
-    [getLocation, reset],
+    [getLocation, setValue],
   );
 
   const handleSetSubmitType = useCallback(
@@ -114,19 +121,6 @@ export const CreateNew = () => {
     },
     [setSubmitType],
   );
-
-  const ViewOptions = useCallback(() => {
-    const withImage = typeof imageData !== "undefined";
-    const options = opts(
-      <ImageViewer imageData={imageData} clearFile={clearFile} />,
-      <FastFile
-        ref={inputRef}
-        onChange={handleFileChange}
-        className="[22.4rem] -mt-[1px] h-96"
-      />,
-    );
-    return <>{options.get(withImage)}</>;
-  }, [clearFile, imageData, handleFileChange, inputRef]);
 
   const applyResults = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
@@ -138,24 +132,11 @@ export const CreateNew = () => {
         );
 
       if (!filteredList || filteredList.length === 0) {
-        // console.warn("No filtered List");
         return;
       }
       const values = filteredList.map(({ mentionText }) => mentionText);
 
-      // type ResetValues = Record<(typeof autoFields)[number], string>;
-      // const resetValues = autoFields.reduce<ResetValues>((acc, key, idx) => {
-      //   const value = values[idx];
-      //   if (value !== undefined) {
-      //     // console.table({ key, value });
-      //     // setValue(key, value);
-      //     acc[key] = value;
-      //   }
-      //   return acc;
-      // }, {} as ResetValues);
-
       autoFields.forEach((k, i) => {
-        // console.log(k, values[i]);
         setValue(k, values[i]);
       });
     },
@@ -166,12 +147,25 @@ export const CreateNew = () => {
     autoFields.forEach((k) => setValue(k, ""));
   }, [setValue]);
 
+  const ViewOptions = useCallback(() => {
+    const withImage = typeof imageData !== "undefined";
+    const options = opts(
+      <ImageViewer imageData={imageData} clearFile={clearFile} />,
+      <FastFile
+        ref={inputRef}
+        onChange={handleFileChange}
+        className="-mt-[1px] h-96"
+      />,
+    );
+    return <>{options.get(withImage)}</>;
+  }, [clearFile, imageData, handleFileChange, inputRef]);
+
   const ResultOptions = useCallback(() => {
     const options = opts(
       <ScanResults entities={result} />,
       <div
         className={cn(
-          "flex h-48 w-full items-center justify-center font-inst text-xs opacity-80",
+          "flex h-96 w-full items-center justify-center bg-primary-100/20 font-inst text-xs opacity-80",
           {
             "animate-pulse": loading,
           },
@@ -185,17 +179,29 @@ export const CreateNew = () => {
 
   return (
     <main className="flex h-[calc(93vh)] w-full overflow-y-scroll border-t-[0.33px] border-primary-200/50 bg-chalk p-6 dark:bg-void">
-      <form className="w-full">
+      <form action={actionFn} className="w-full">
         <FlexRow className="absolute -top-4 right-0 z-[250] h-24 w-fit items-center space-x-6 xl:space-x-36">
+          <ButtSex>
+            <span className="text-[10px] font-normal">
+              <span className="font-bold">id</span>: {request_id}
+            </span>
+          </ButtSex>
           <UnderwriterSelect />
           <section className="flex items-center space-x-4 px-10">
-            <SButton fn={handleSetSubmitType("save")} end={ArrowDownTrayIcon}>
-              <SButtonLabel label="Save as draft" />
+            <SButton
+              fn={handleSetSubmitType("save")}
+              end={ArrowDownOnSquareIcon}
+              loading={pending}
+            >
+              <SButtonLabel
+                label={pending ? "Saving data..." : "Save as draft"}
+              />
             </SButton>
             <SButton
               inverted
-              fn={handleSetSubmitType("save")}
+              fn={handleSetSubmitType("submit")}
               end={PaperAirplaneIcon}
+              loading={pending}
             >
               <SButtonLabel label="Submit Request" />
             </SButton>
@@ -203,17 +209,17 @@ export const CreateNew = () => {
         </FlexRow>
         <section className="grid w-full grid-cols-6 gap-6 bg-background">
           <div className="col-span-4">
-            <div className="flex h-[30rem] w-full flex-col justify-center rounded-[2rem] border-2 border-secondary bg-primary-50 shadow-2xl shadow-primary-400/50 dark:border-secondary-400/80 dark:bg-primary-200 dark:shadow-secondary-500/40">
-              <NewCardGroup title="Policy Type">
-                <div className="overflow-x-scroll">
+            <div className="flex h-[30rem] w-full flex-col justify-center rounded-[2rem] border-2 border-secondary bg-primary-50 pb-4 shadow-2xl shadow-primary-400/50 dark:border-secondary-400/80 dark:bg-primary-200 dark:shadow-secondary-500/40">
+              <div className="flex w-full overflow-x-scroll">
+                <NewCardGroup title="Policy Type">
                   <RadioGroupCard
                     name="policy_type"
                     items={request_policy_types}
                     orientation="horizontal"
                   />
-                </div>
-              </NewCardGroup>
-              <div className="flex">
+                </NewCardGroup>
+              </div>
+              <div className="flex w-full overflow-x-scroll">
                 <NewCardGroup title="Policy Coverage">
                   <RadioGroupCard
                     name="policy_coverage"
@@ -238,7 +244,7 @@ export const CreateNew = () => {
                 />
               </NewCardGroup>
             </div>
-            <div className="py-6">
+            <div className="py-8">
               <NewCardGroup title="Assured Contact Info">
                 <div className="space-y-8">
                   <FastFieldGroup
@@ -277,41 +283,16 @@ export const CreateNew = () => {
                     listOne={auto_fields_V}
                     listTwo={auto_fields_VI}
                     group="Denomination"
+                    description="( weight unit in kilograms )"
                   />
                 </div>
               </NewCardGroup>
             </div>
-            <div className="hidden">
-              <CardGroup title="Hidden Info">
-                <div className="space-y-8">
-                  <Input
-                    label="group_code"
-                    name="group_code"
-                    defaultValue={vxuser?.group_code}
-                  />
-                  <Input
-                    label="request_id"
-                    name="request_id"
-                    defaultValue={request_id ?? undefined}
-                  />
-                  <Input
-                    label="address_id"
-                    name="address_id"
-                    defaultValue={ids?.address_id ?? undefined}
-                  />
-                  <Input
-                    label="vehicle_id"
-                    name="vehicle_id"
-                    defaultValue={ids?.vehicle_id ?? undefined}
-                  />
-                  <Input
-                    label="subject_id"
-                    name="subject_id"
-                    defaultValue={ids?.subject_id ?? undefined}
-                  />
-                </div>
-              </CardGroup>
-            </div>
+            <HiddenInputGroup
+              request_id={request_id}
+              register={register}
+              setValue={setValue}
+            />
           </div>
           <div className="col-span-2">
             <SpecialGroup
@@ -343,15 +324,55 @@ export const CreateNew = () => {
             </SpecialGroup>
           </div>
         </section>
-        <div className="flex h-28 w-full items-center p-8">
+        <div className="flex h-20 w-full items-center p-8">
           <ConfirmButton
             label="clear all fields"
             icon={CircleSlash2}
             confirmFn={clearAllFields}
           />
         </div>
+        <div className="h-24" />
       </form>
     </main>
+  );
+};
+
+const HiddenInputGroup = (props: {
+  request_id: string | null;
+  setValue: UseFormSetValue<FieldValues>;
+  register: UseFormRegister<FieldValues>;
+}) => {
+  const { request_id, setValue, register } = props;
+  const { ids, generateIDs } = use(CreateRequestCtx)!;
+  useEffect(() => {
+    if (request_id) generateIDs(request_id);
+  }, [generateIDs, request_id]);
+
+  const setValues = useCallback(() => {
+    if (ids) {
+      Object.entries(ids).map(([k, v]) => setValue(k, v));
+    }
+  }, [setValue, ids]);
+
+  useEffect(() => {
+    setValues();
+  }, [setValues]);
+
+  return (
+    <div className="hidden">
+      <CardGroup title="Hidden Info">
+        <div className="space-y-8">
+          {hidden_fields.map((field) => (
+            <FastField
+              key={field.name}
+              {...register(field.name, {
+                required: field.required,
+              })}
+            />
+          ))}
+        </div>
+      </CardGroup>
+    </div>
   );
 };
 
@@ -361,15 +382,24 @@ interface SButtonProps {
   children?: ReactNode;
   start?: DualIcon;
   end?: DualIcon;
+  loading: boolean;
 }
-const SButton = ({ fn, inverted, start, end, children }: SButtonProps) => (
+const SButton = ({
+  fn,
+  inverted,
+  start,
+  end,
+  loading,
+  children,
+}: SButtonProps) => (
   <ButtSex
     size="sm"
-    onMouseEnter={fn}
-    type="submit"
-    inverted={inverted}
-    start={start}
     end={end}
+    start={start}
+    type="submit"
+    onMouseEnter={fn}
+    inverted={inverted}
+    loading={loading}
   >
     {children}
   </ButtSex>
@@ -380,28 +410,40 @@ const SButtonLabel = (props: { label: string }) => (
 );
 
 const UnderwriterSelect = () => {
-  const { underwriters, underwriter, onUnderwriterSelect } = use(RequestCtx)!;
+  const { pending, underwriters, underwriter_id, onUnderwriterSelect } =
+    use(CreateRequestCtx)!;
 
   return (
     <Select
       size="sm"
       variant="flat"
-      items={underwriters}
+      aria-label="underwriters"
+      color="primary"
+      isLoading={pending}
+      items={underwriters ?? []}
       placeholder="Select underwriter"
-      className="z-[200] w-[16rem] rounded-lg border-[0.33px] border-steel"
-      selectedKeys={[underwriter]}
+      className="z-[200] w-[16rem] rounded-lg border-[0.33px] border-steel bg-goddess placeholder:text-xs placeholder:tracking-tight dark:bg-transparent"
+      selectedKeys={[underwriter_id]}
       onChange={onUnderwriterSelect}
       renderValue={(options: SelectedItems<HyperSelectOption>) =>
         options.map((option) => (
           <FlexRow key={option.data?.id} className="items-center capitalize">
-            <div
-              className={cn(
-                "flex size-5 items-center justify-center space-x-4 rounded-md bg-indigo-100/10 uppercase text-indigo-400 drop-shadow-sm",
-              )}
-            >
-              <span className="text-xs font-bold capitalize">u</span>
-            </div>
-            <span className={cn("truncate font-inst")}>
+            <section className="flex items-center space-x-1">
+              <div
+                className={cn(
+                  "flex size-5 items-center justify-center rounded-full border-[0.33px] border-indigo-500 bg-chalk uppercase text-indigo-500 shadow-inner drop-shadow-sm",
+                )}
+              >
+                <span className="text-sm font-extrabold capitalize">u</span>
+              </div>
+              <Image
+                isBlurred
+                className="size-5"
+                alt={`avatar-of-${option.data?.value}`}
+                src={option.data?.photo_url}
+              />
+            </section>
+            <span className={cn("truncate font-inst font-medium")}>
               {option.data?.value}
             </span>
           </FlexRow>
@@ -414,22 +456,30 @@ const UnderwriterSelect = () => {
         <SelectItem
           key={option.id}
           textValue={option.value}
-          className="group data-[hover=true]:bg-steel/10 data-[selected=true]:bg-steel"
+          className="group bg-adam placeholder:text-xs data-[hover=true]:bg-steel/10 data-[selected=true]:bg-steel/50 dark:bg-transparent"
           classNames={{
-            wrapper: "border",
-            base: "py-2",
+            wrapper: "",
+            base: "py-2 data-[focus=false]:text-steel data-[selected=true]:bg-steel data-[open=true]:bg-steel ",
           }}
         >
           <FlexRow className="items-center capitalize">
             <div
               className={cn(
-                "flex size-5 items-center justify-center space-x-4 rounded-md bg-indigo-400/20 uppercase text-indigo-500 drop-shadow-sm",
+                "flex size-5 items-center justify-center space-x-4 rounded-full bg-indigo-400/20 uppercase text-indigo-500 drop-shadow-sm",
               )}
             >
               <span className="text-xs font-bold capitalize">u</span>
             </div>
+            <Image
+              isBlurred
+              className="size-5"
+              alt={`avatar-of-${option.value}`}
+              src={option.photo_url}
+            />
             <span
-              className={cn("truncate font-inst group-hover:text-icon-dark")}
+              className={cn(
+                "truncate font-inst font-medium text-icon-dark data-[focus=false]:text-void",
+              )}
             >
               {option.value}
             </span>

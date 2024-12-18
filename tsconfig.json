@@ -31,6 +31,7 @@
       "@convex/*": ["./convex/*"],
       "@ctx/*": ["./src/app/ctx/*"],
       "@lib/*": ["src/lib/*"],
+      "@request/*": ["src/app/dashboard/request/*"],
       "test-utils": ["./src/utils/test-utils"],
       "utils": ["./src/utils"]
     }

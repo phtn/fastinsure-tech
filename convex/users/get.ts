@@ -31,3 +31,12 @@ export const byGroup = mutation({
       .withIndex("by_group_code", (q) => q.eq("group_code", group_code))
       .collect(),
 });
+
+export const byRole = mutation({
+  args: { role: v.string() },
+  handler: async ({ db }, { role }) =>
+    await db
+      .query("users")
+      .withIndex("by_role", (q) => q.eq("role", role))
+      .collect(),
+});

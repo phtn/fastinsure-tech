@@ -9,7 +9,7 @@ import {
   type RawDocument,
 } from "@/lib/docai/resource";
 
-export const useFile = () => {
+export const useFile = (canvas_id?: string) => {
   const { request } = useVex();
   const [selectedFile, setSelectedFile] = useState<File>();
   const [rawDocument, setRawDocument] = useState<RawDocument | null>(null);
@@ -29,7 +29,7 @@ export const useFile = () => {
     e.preventDefault();
     const file = e.target.files?.[0];
     if (!file) return;
-
+    setSelectedFile(file);
     const fileSize = file && file.size / 1000000;
     if (fileSize > 10) {
       onError("File size is too large");
@@ -43,7 +43,6 @@ export const useFile = () => {
       return;
     }
     setFormat(fileFormat);
-    setSelectedFile(file);
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -53,9 +52,9 @@ export const useFile = () => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.getElementById(
-          "grayscale-canvas",
+          canvas_id ?? "grayscale-canvas",
         ) as HTMLCanvasElement;
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
         if (!ctx) {
           console.error("Unable to get 2D context");

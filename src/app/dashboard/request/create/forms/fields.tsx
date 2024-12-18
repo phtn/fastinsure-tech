@@ -16,8 +16,54 @@ import { DevicePhoneMobileIcon, UserIcon } from "@heroicons/react/24/outline";
 import type { DualIcon } from "@/app/types";
 import type { ChangeEvent, HTMLInputTypeAttribute } from "react";
 import type { InsertSubject } from "convex/subjects/d";
-import type { InsertAddress } from "convex/addresses/d";
+import type { InsertAddress } from "convex/address/d";
 import type { InsertAuto } from "@convex/autos/d";
+
+type HiddenFieldNames =
+  | "group_code"
+  | "underwriter_id"
+  | "request_id"
+  | "address_id"
+  | "vehicle_id"
+  | "subject_id";
+export interface HiddenFields {
+  name: HiddenFieldNames;
+  label: string;
+  required: boolean;
+}
+
+export const hidden_fields: HiddenFields[] = [
+  {
+    name: "group_code",
+    label: "group_code",
+    required: true,
+  },
+  {
+    name: "underwriter_id",
+    label: "underwriter_id",
+    required: true,
+  },
+  {
+    name: "request_id",
+    label: "request_id",
+    required: true,
+  },
+  {
+    name: "address_id",
+    label: "address_id",
+    required: true,
+  },
+  {
+    name: "vehicle_id",
+    label: "vehicle_id",
+    required: true,
+  },
+  {
+    name: "subject_id",
+    label: "subject_id",
+    required: true,
+  },
+];
 
 export interface RadioFields<K, T> {
   title: K;
@@ -403,6 +449,7 @@ export const auto_fields_V: InsertFields<InsertAuto>[] = [
     id: "type",
     placeholder: "Private or Public",
     required: false,
+    defaultValue: "private",
     type: "text",
   },
 

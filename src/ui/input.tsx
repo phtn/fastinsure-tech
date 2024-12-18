@@ -19,6 +19,7 @@ import { BoltIcon, PhotoIcon } from "@heroicons/react/24/solid";
 import { Button } from "@nextui-org/react";
 import { AsteriskIcon } from "lucide-react";
 import {
+  type FormEvent,
   forwardRef,
   useCallback,
   useMemo,
@@ -30,7 +31,7 @@ import {
 
 import { type InsertFields } from "@/app/dashboard/request/create/forms/fields";
 import type { InsertAuto } from "@convex/autos/d";
-import type { InsertAddress } from "convex/addresses/d";
+import type { InsertAddress } from "convex/address/d";
 import type { InsertSubject } from "convex/subjects/d";
 import type { FieldValues, UseFormRegister } from "react-hook-form";
 import { ButtSpc, ButtSqx } from "./button/button";
@@ -527,6 +528,7 @@ const RenderInputList = (props: {
 
 interface FieldGroupIIIProps {
   group: string;
+  description?: string;
   register: UseFormRegister<FieldValues>;
   listOne: GroupFields;
   listTwo: GroupFields;
@@ -543,7 +545,8 @@ export const FastFieldGroupIII = (props: FieldGroupIIIProps & InputProps) => {
       )}
     >
       <div className="full flex h-10 items-center border-b-[0.33px] border-primary-300 px-2 font-inter text-sm font-semibold tracking-tighter text-primary-800">
-        {props.group}
+        <span>{props.group}</span>
+        <span className="ps-4 text-xs font-normal">{props.description}</span>
       </div>
       <RenderInputIII data={props.listOne} {...props} />
       <RenderInputIII data={props.listTwo} {...props} />
@@ -812,12 +815,16 @@ export const InputFieldName = forwardRef<
   HTMLInputElement,
   InputProps & { label: string | undefined; index: number }
 >(({ className, type, label, index, ...props }, ref) => {
-  const handleCopyValue = useCallback(async () => {
-    await copyFn({
-      name: props.defaultValue as string,
-      text: props.defaultValue as string,
-    });
-  }, [props.defaultValue]);
+  const handleCopyValue = useCallback(
+    async (e: FormEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      await copyFn({
+        name: props.defaultValue as string,
+        text: props.defaultValue as string,
+      });
+    },
+    [props.defaultValue],
+  );
   return (
     <div
       className={cn(

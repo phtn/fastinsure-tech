@@ -173,7 +173,7 @@ const ListContent = <T extends SelectUser>({
       <HyperList
         data={data}
         component={comp}
-        container="space-y-3"
+        container="space-y-3 pb-8"
         itemStyle="rounded-2xl"
         keyId={"uid"}
       />

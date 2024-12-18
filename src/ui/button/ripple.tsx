@@ -132,7 +132,7 @@ export const ButtSex = ({
             "h-8 gap-2 rounded-lg": size === "sm",
           },
           {
-            "h-10 gap-3 rounded-[11px]": size === "md",
+            "h-[38px] gap-3 rounded-[11px]": size === "md",
           },
           {
             "h-12 gap-4 rounded-xl": size === "lg",
@@ -149,7 +149,7 @@ export const ButtSex = ({
           className={cn(
             "relative z-[200] flex h-full items-center overflow-hidden whitespace-nowrap",
             "font-inter text-xs font-semibold capitalize tracking-tight text-void",
-            "drop-shadow-md group-hover:text-void/90",
+            "drop-shadow-sm group-hover:text-void/90",
             "dark:text-icon-dark dark:group-hover:text-chalk/80",
             { "text-chalk/90 group-hover:text-chalk": inverted },
             { "dark:text-void dark:group-hover:text-void": inverted },

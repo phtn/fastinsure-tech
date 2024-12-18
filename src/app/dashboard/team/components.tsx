@@ -358,8 +358,10 @@ const SettingsItem = (props: UserSetting) => {
           <p className="text-sm font-light leading-5">{props.description}</p>
         </FlexRow>
         <FlexRow className="_border mb-4 h-1/5 w-full items-center justify-between gap-4 rounded-lg border-secondary bg-secondary-100/60 px-3 text-secondary">
-          <p className="font-inst text-sm font-semibold">Current value</p>
-          <p className="font-inter font-semibold uppercase tracking-wide drop-shadow-md">
+          <p className="font-inst text-sm font-semibold text-void">
+            Current value
+          </p>
+          <p className="font-inter text-sm font-semibold uppercase tracking-wide drop-shadow-md">
             {props.isDone ? props.newValue : props?.value}
           </p>
         </FlexRow>

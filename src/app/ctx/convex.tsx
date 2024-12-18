@@ -1,5 +1,6 @@
 "use client";
 import { env } from "@/env";
+import type { InsertAddress } from "@convex/address/d";
 import type { InsertAuto } from "@convex/autos/d";
 import type { InsertLog, SelectLog } from "@convex/logs/d";
 import type { InsertRequest, SelectRequest } from "@convex/requests/d";
@@ -24,6 +25,14 @@ import {
 const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
 
 interface VexCtxValues {
+  address: {
+    create: (
+      args: InsertAddress,
+    ) => Promise<(string & { __tableName: "address" }) | null>;
+    get: {
+      byId: (id: string) => Promise<InsertAddress | null>;
+    };
+  };
   request: {
     create: (
       args: InsertRequest,
@@ -36,9 +45,6 @@ interface VexCtxValues {
     storage: {
       generateUrl: () => Promise<string>;
     };
-    // delete: {
-    //   byId: (id: string) => Promise<null>;
-    // };
   };
   subject: {
     create: (
@@ -64,6 +70,7 @@ interface VexCtxValues {
       byId: (id: string) => Promise<SelectUser | null>;
       byEmail: (email: string) => Promise<SelectUser | null>;
       byGroup: (group_code: string) => Promise<SelectUser[]>;
+      byRole: (role: string) => Promise<SelectUser[]>;
     };
     update: {
       groupCode: (
@@ -88,6 +95,19 @@ interface VexCtxValues {
 const VexCtxProvider = ({ children }: PropsWithChildren) => {
   const [updating] = useState<boolean>(false);
 
+  const createAddress = useMutation(api.address.create.default);
+  const getAddressById = useMutation(api.address.get.byId);
+
+  const address = useMemo(
+    () => ({
+      create: async (args: InsertAddress) => await createAddress(args),
+      get: {
+        byId: async (id: string) => await getAddressById({ address_id: id }),
+      },
+    }),
+    [createAddress, getAddressById],
+  );
+
   const createRequest = useMutation(api.requests.create.default);
   const getAllRequests = useQuery(api.requests.get.all);
   const getRequestById = useMutation(api.requests.get.byId);
@@ -96,10 +116,10 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
 
   const request = useMemo(
     () => ({
-      create: (args: InsertRequest) => createRequest(args),
+      create: async (args: InsertRequest) => await createRequest(args),
       get: {
         all: () => getAllRequests,
-        byId: (id: string) => getRequestById({ request_id: id }),
+        byId: async (id: string) => await getRequestById({ request_id: id }),
         byAgentId: async (uid: string) => await getRequestsByAgentId({ uid }),
       },
       storage: {
@@ -145,6 +165,7 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
   const getUserById = useMutation(api.users.get.byId);
   const getUserByEmail = useMutation(api.users.get.byEmail);
   const getUsersByGroup = useMutation(api.users.get.byGroup);
+  const getUsersByRole = useMutation(api.users.get.byRole);
   const updateUser = useMutation(api.users.update.userInfo);
   const updateGroupCode = useMutation(api.users.update.groupCode);
   const updateRole = useMutation(api.users.update.role);
@@ -157,6 +178,7 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
         byEmail: async (email: string) => await getUserByEmail({ email }),
         byGroup: async (group_code: string) =>
           await getUsersByGroup({ group_code }),
+        byRole: async (role: string) => await getUsersByRole({ role }),
       },
       update: {
         userInfo: async (args: UpdateUser) => await updateUser(args),
@@ -172,6 +194,7 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
       getUserById,
       updateUser,
       getUsersByGroup,
+      getUsersByRole,
       getUserByEmail,
       updateGroupCode,
       updateRole,
@@ -192,7 +215,9 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
   );
 
   return (
-    <VexCtx.Provider value={{ logs, request, subject, auto, usr, updating }}>
+    <VexCtx.Provider
+      value={{ address, logs, request, subject, auto, usr, updating }}
+    >
       {children}
     </VexCtx.Provider>
   );

@@ -57,7 +57,7 @@ export const ButtSqx = (props: ButtIconProps) => {
     size = "md",
     loading = false,
     variant = "goddess",
-    disabled,
+    disabled = false,
     className,
     inverted = false,
   } = props;
@@ -74,17 +74,19 @@ export const ButtSqx = (props: ButtIconProps) => {
           { "size-6": size === "lg" },
           { "text-icon/50 dark:text-icon-dark/50": disabled },
           { "text-icon-dark": inverted },
+          { "text-secondary dark:text-secondary": variant === "active" },
         )}
       />,
     );
     return <>{options.get(loading)}</>;
-  }, [loading, size, props, disabled, inverted]);
+  }, [loading, size, props, disabled, inverted, variant]);
 
   return (
     <button
       onClick={props.onClick}
+      disabled={disabled}
       className={cn(
-        "group relative flex cursor-pointer items-center justify-center overflow-hidden",
+        "group relative flex cursor-pointer items-center justify-center overflow-hidden disabled:cursor-vertical-text",
         "transition-all duration-200 transform-gpu",
         "active:scale-90",
         { "size-8": size === "sm" },
@@ -105,6 +107,7 @@ export const ButtSqx = (props: ButtIconProps) => {
           "fill-god/80",
           { "fill-demigod/80": variant === "demigod" },
           { "fill-god/80": variant === "goddess" },
+          { "size-8 fill-god": variant === "active" },
           "dark:fill-primary-300/30",
           {
             "group-hover:fill-primary-300/20 dark:group-hover:fill-primary-300/50":

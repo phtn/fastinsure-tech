@@ -1,4 +1,4 @@
-import { type DualIcon } from "@/app/types";
+import type { ClassName, DualIcon } from "@/app/types";
 import { type SpecialEntity } from "@/lib/docai/resource";
 import { cn } from "@/lib/utils";
 import { ButtSex } from "@/ui/button/ripple";
@@ -6,7 +6,12 @@ import { InputFieldName } from "@/ui/input";
 import { ArrowUturnLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Button, Image } from "@nextui-org/react";
 import { FileSymlinkIcon, ScanIcon, ScanTextIcon } from "lucide-react";
-import type { MouseEvent, PropsWithChildren, ReactNode } from "react";
+import type {
+  FormEvent,
+  MouseEvent,
+  PropsWithChildren,
+  ReactNode,
+} from "react";
 
 export const Wrapper = ({ children }: PropsWithChildren) => (
   <div
@@ -98,9 +103,21 @@ export const SpecialGroup = ({ children, title, subtext }: CardGroup) => (
 interface ImageViewerProps {
   imageData: string | undefined;
   clearFile: VoidFunction;
+  className?: ClassName;
+  children?: ReactNode;
 }
-export const ImageViewer = ({ imageData, clearFile }: ImageViewerProps) => (
-  <div className="-mt-[1px] h-[22.4rem] w-full overflow-hidden rounded-lg border-[0.33px] border-primary-300 bg-primary-50 dark:border-primary-400">
+export const ImageViewer = ({
+  imageData,
+  clearFile,
+  className,
+  children,
+}: ImageViewerProps) => (
+  <div
+    className={cn(
+      "-mt-[1px] h-[22.4rem] w-full overflow-hidden rounded-lg border-[0.33px] border-primary-300 bg-primary/80 dark:border-primary-400",
+      className,
+    )}
+  >
     <div className="group relative flex size-full cursor-pointer items-center overflow-hidden rounded-md">
       <Image
         src={imageData}
@@ -113,10 +130,11 @@ export const ImageViewer = ({ imageData, clearFile }: ImageViewerProps) => (
         color="primary"
         variant={`solid`}
         onPress={clearFile}
-        className="absolute right-1 top-1 z-50 hidden size-6 items-center rounded-full border group-hover:flex"
+        className="absolute right-1 top-1 z-50 hidden size-6 animate-enter items-center rounded-full border group-hover:flex"
       >
         <XMarkIcon className={"size-4 text-background"} />
       </Button>
+      {children}
     </div>
   </div>
 );
@@ -131,9 +149,15 @@ export const HSeparator = () => (
   />
 );
 
-export const HiddenCanvas = () => (
-  <div className="hidden space-y-4 p-4">
-    <canvas id="grayscale-canvas" className="h-auto w-full" />
+export const HiddenCanvas = (props: {
+  visible?: boolean;
+  canvas_id?: string;
+}) => (
+  <div className={cn("hidden space-y-4 p-4", { flex: props.visible })}>
+    <canvas
+      id={props.canvas_id ?? "grayscale-canvas"}
+      className="h-auto w-full"
+    />
   </div>
 );
 
@@ -174,7 +198,10 @@ export const ScanDetail = ({
   <div className="border-[0.33px]a grid h-12 w-full grid-cols-4 border-primary/20 px-2 text-xs font-light">
     <DetailItem value={size ? `${size?.toFixed(2)}mb` : null} label={"size"} />
     <DetailItem value={format} label={"format"} />
-    <DetailItem value={elapsed ? `${elapsed}s` : null} label={"elapsed"} />
+    <DetailItem
+      value={elapsed ? `${elapsed.toFixed(2)}s` : null}
+      label={"elapsed"}
+    />
     <DetailItem value={ents ? `${ents}` : null} label={"items"} />
   </div>
 );
@@ -190,9 +217,9 @@ const DetailItem = (props: {
     )}
   >
     {props.value ? (
-      <div className="animate-enter space-y-1.5 leading-none">
-        <p className="font-medium">{props.value}</p>
-        <p className="text-[10px] font-light tracking-tight">{props.label}</p>
+      <div className="animate-enter space-y-1 leading-none tracking-tight">
+        <p className="font-medium dark:text-secondary-300">{props.value}</p>
+        <p className="text-[10px] font-light dark:opacity-60">{props.label}</p>
       </div>
     ) : null}
   </div>
@@ -202,7 +229,7 @@ interface ScanButtonProps {
   loading: boolean;
   imageData: string | undefined;
   result: boolean;
-  onPress: VoidFunction;
+  onPress: (e: FormEvent<HTMLButtonElement>) => void;
 }
 export const ScanButton = ({
   imageData,
@@ -214,7 +241,7 @@ export const ScanButton = ({
     <ButtSex
       size="lg"
       loading={loading}
-      disabled={!imageData || result}
+      disabled={!imageData || !!result || loading}
       className={cn("w-36 font-inter font-medium tracking-tight", {
         "cursor-not-allowed bg-primary-100 text-primary-400":
           loading || !imageData || result,
@@ -257,7 +284,7 @@ export const ResultsWrapper = ({
     </div>
     <div
       className={cn(
-        "h-48 w-full overflow-scroll rounded-lg border-[0.33px] border-primary-200 bg-background font-medium",
+        "h-96 w-full overflow-scroll rounded-lg border-[0.33px] border-primary-200 bg-background font-medium",
         { "relative h-[100vh]": withResult },
       )}
     >
