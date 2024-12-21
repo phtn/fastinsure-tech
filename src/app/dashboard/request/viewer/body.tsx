@@ -1,8 +1,7 @@
-import { type DualIcon } from "@/app/types";
+import type { ClassName, DualIcon } from "@/app/types";
 import { cn } from "@/lib/utils";
 import { ButtSex } from "@/ui/button/ripple";
 import { FlexRow } from "@/ui/flex";
-import { TooltipNode } from "@/ui/tooltip";
 import { type SelectUser } from "@convex/users/d";
 import {
   ArrowPathRoundedSquareIcon,
@@ -12,6 +11,10 @@ import {
   PaperAirplaneIcon,
   RectangleStackIcon,
   SparklesIcon,
+  DocumentIcon,
+  PencilSquareIcon,
+  UserIcon,
+  TruckIcon,
 } from "@heroicons/react/24/outline";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { Accordion, AccordionItem, Avatar } from "@nextui-org/react";
@@ -19,6 +22,12 @@ import { FileSymlinkIcon } from "lucide-react";
 import moment from "moment";
 import { type FC, use, useCallback, useMemo } from "react";
 import { RequestViewerCtx } from "./ctx";
+import { PdfObject } from "./object";
+import type { SelectRequest } from "@convex/requests/d";
+import type { SelectAuto } from "@convex/autos/d";
+import type { SelectAddress } from "@convex/address/d";
+import type { SelectSubject } from "@convex/subjects/d";
+import { opts } from "@/utils/helpers";
 
 interface DetailItem {
   value: string;
@@ -27,99 +36,237 @@ interface DetailItem {
   fields: FC;
 }
 
+type ReqFieldProps = Omit<
+  SelectRequest,
+  "metadata" | "policy_id" | "files" | "updates"
+>;
+type AutoFieldProps = Omit<SelectAuto, "metadata">;
+type SubjectFieldProps = Omit<SelectSubject, "metadata" | "file">;
+type AddressFieldProps = Omit<SelectAddress, "metadata">;
+
 export const ContentBody = () => {
-  const { vxrequest, underwriters, vxusers } = use(RequestViewerCtx)!;
+  const {
+    vxrequest,
+    vxauto,
+    vxaddress,
+    vxsubject,
+    underwriters,
+    vxusers,
+    submitRequest,
+    loading,
+  } = use(RequestViewerCtx)!;
   const vxund = underwriters?.find((u) => u.uid === vxrequest?.underwriter_id);
   const vxusr = vxusers?.find((u) => u.uid === vxrequest?.agent_id);
 
-  const RequestFields: FC = useCallback(() => {
-    const requestEntries = vxrequest && Object.entries(vxrequest);
-    const list = requestEntries?.map(([k, v]) => ({ k, v }));
-    return (
-      <>
-        {list
-          ?.filter(
-            (e) =>
-              typeof e.v !== "string" ||
-              typeof e.v !== "number" ||
-              e.k !== "files",
-          )
-          .map(({ k, v }) => (
-            <FlexRow
-              key={k}
-              className="h-10 items-center space-y-2 px-4 odd:bg-primary-100/30"
-            >
-              <div className="w-36 font-jet text-sm text-adam dark:text-steel">
-                {k}
-              </div>
-              <div className="flex w-fit items-center font-jet text-sm font-medium dark:text-secondary-400">
-                {v as string}
-              </div>
-            </FlexRow>
-          ))}
-      </>
-    );
-  }, [vxrequest]);
+  const excludedKeys = useMemo(
+    () => [
+      "metadata",
+      "policy_id",
+      "files",
+      "updates",
+      "_id",
+      "agent_id",
+      "underwriter_id",
+      "file",
+    ],
+    [],
+  );
+  const cleanReq = useMemo(
+    () => excludeProps(vxrequest, excludedKeys),
+    [vxrequest, excludedKeys],
+  );
+  const cleanAddress = useMemo(
+    () => excludeProps(vxaddress, excludedKeys),
+    [vxaddress, excludedKeys],
+  );
+  const cleanSubject = useMemo(
+    () => excludeProps(vxsubject, excludedKeys),
+    [vxsubject, excludedKeys],
+  );
+  const cleanAuto = useMemo(
+    () => excludeProps(vxauto, excludedKeys),
+    [vxauto, excludedKeys],
+  );
+  const reqfields = useMemo(
+    () => cleanReq && Object.fromEntries(cleanReq),
+    [cleanReq],
+  );
+  const ReqFields = useCallback(
+    () => <Fields title="Request Info" fields={reqfields as ReqFieldProps} />,
+    [reqfields],
+  );
+  const ReqFieldsPDF = useCallback(
+    () => (
+      <Fields title="Request Info" fields={reqfields as ReqFieldProps} pdf />
+    ),
+    [reqfields],
+  );
+
+  const autofields = useMemo(
+    () => cleanAuto && Object.fromEntries(cleanAuto),
+    [cleanAuto],
+  );
+  const AutoFields = useCallback(
+    () => <Fields title="Vehicle Info" fields={autofields as AutoFieldProps} />,
+    [autofields],
+  );
+  const AutoFieldsPDF = useCallback(
+    () => (
+      <Fields title="Vehicle Info" fields={autofields as AutoFieldProps} pdf />
+    ),
+    [autofields],
+  );
+
+  const addresssfields = useMemo(
+    () => cleanAddress && Object.fromEntries(cleanAddress),
+    [cleanAddress],
+  );
+  const AddressFields = useCallback(
+    () => (
+      <Fields title="Address" fields={addresssfields as AddressFieldProps} />
+    ),
+    [addresssfields],
+  );
+  const AddressFieldsPDF = useCallback(
+    () => (
+      <Fields
+        title="Assured Address"
+        fields={addresssfields as AddressFieldProps}
+        pdf
+      />
+    ),
+    [addresssfields],
+  );
+
+  const subjectfields = useMemo(
+    () => cleanSubject && Object.fromEntries(cleanSubject),
+    [cleanSubject],
+  );
+  const SubjectFields = useCallback(
+    () => (
+      <Fields title="Basic Info" fields={subjectfields as SubjectFieldProps} />
+    ),
+    [subjectfields],
+  );
+  const SubjectFieldsPDF = useCallback(
+    () => (
+      <Fields
+        title="Assured Basic Info"
+        fields={subjectfields as SubjectFieldProps}
+        pdf
+      />
+    ),
+    [subjectfields],
+  );
+
+  const AssuredFields = useCallback(
+    () => (
+      <div>
+        <SubjectFields />
+        <AddressFields />
+      </div>
+    ),
+    [SubjectFields, AddressFields],
+  );
+
+  const PDF = useCallback(
+    () => (
+      <PdfObject
+        address={AddressFieldsPDF}
+        auto={AutoFieldsPDF}
+        request={ReqFieldsPDF}
+        subject={SubjectFieldsPDF}
+        title="Policy Request Info"
+        description={vxrequest?.request_id}
+      />
+    ),
+    [
+      AddressFieldsPDF,
+      AutoFieldsPDF,
+      ReqFieldsPDF,
+      SubjectFieldsPDF,
+      vxrequest?.request_id,
+    ],
+  );
 
   const request_detail: DetailItem[] = useMemo(
     () => [
       {
-        value: "request",
+        value: "Request Info",
         description: "View all request fields.",
-        fields: RequestFields,
+        fields: ReqFields,
         icon: FileSymlinkIcon,
       },
       {
-        value: "assured",
-        icon: FileSymlinkIcon,
-        fields: RequestFields,
+        value: "Assured Info",
+        icon: UserIcon,
+        fields: AssuredFields,
       },
       {
-        value: "auto",
-        icon: FileSymlinkIcon,
-        fields: RequestFields,
+        value: "Vehicle Info",
+        icon: TruckIcon,
+        fields: AutoFields,
+      },
+      {
+        value: "Download PDF",
+        icon: DocumentIcon,
+        fields: PDF,
       },
     ],
-    [RequestFields],
+    [AutoFields, ReqFields, AssuredFields, PDF],
   );
 
+  const draft = useMemo(
+    () => vxrequest?.status === "draft",
+    [vxrequest?.status],
+  );
+
+  const UpdateButton = useCallback(() => {
+    const options = opts(
+      <ButtSex
+        size="lg"
+        inverted
+        end={PaperAirplaneIcon}
+        onClick={submitRequest}
+        loading={loading}
+      >
+        <span className="px-6">Submit Request</span>
+      </ButtSex>,
+      <ButtSex size="lg" inverted end={PencilSquareIcon}>
+        <span className="px-6">Update Request</span>
+      </ButtSex>,
+    );
+    return <>{options.get(draft)}</>;
+  }, [draft, submitRequest, loading]);
+
   return (
-    <div className="flex h-[calc(93vh)] w-full overflow-y-scroll bg-chalk p-6 dark:bg-void">
-      <FlexRow className="absolute right-4 top-5 h-fit w-full items-center justify-end">
-        {/* <h1 className="pb-3 font-semibold tracking-tight text-adam dark:text-steel">
-          Policy Request Details
-        </h1> */}
-        <TooltipNode
+    <div className="flex h-full w-full overflow-y-scroll bg-chalk p-6 dark:bg-void">
+      <FlexRow className="absolute right-6 top-5 z-40 h-fit w-full items-center justify-end">
+        <h2
           id="request-id"
-          title="Request ID"
-          description="- used as reference no."
+          className="text:adam font-jet text-sm dark:text-steel"
         >
-          <h2 id="request-id" className="text:adam font-jet dark:text-steel">
-            {vxrequest?.request_id}
-          </h2>
-        </TooltipNode>
+          Request ID: {vxrequest?.request_id}
+        </h2>
       </FlexRow>
-      <div className="relative -top-6 w-full space-y-4 rounded-xl">
-        <FlexRow className="h-fit w-fit items-center">
-          <PolicyPill type={vxrequest?.service_type} label="issuance" />
-          <PolicyPill
-            type={vxrequest?.policy_coverage}
-            label="policy coverage"
-          />
-          <CreatedAt created={vxrequest?._creationTime} />
-          <UserPill vx={vxusr} label="create by" />
-          <UserPill vx={vxund} label="underwriter" />
-          <Status status={vxrequest?.status} />
-          <ButtSex size="md" inverted end={PaperAirplaneIcon}>
-            {vxrequest?.status === "draft" ? "Submit Request" : "Update"}
-          </ButtSex>
+      <div className="relative -top-6 w-full space-y-4 overflow-hidden rounded-xl">
+        <FlexRow className="h-fit w-full items-center justify-between">
+          <FlexRow className="h-fit items-center">
+            <PolicyPill type={vxrequest?.service_type} label="issuance" />
+            <PolicyPill
+              type={vxrequest?.policy_coverage}
+              label="policy coverage"
+            />
+            <CreatedAt created={vxrequest?._creationTime} />
+            <UserPill vx={vxusr} label="created by" />
+            <UserPill vx={vxund} label="underwriter" />
+            <Status status={vxrequest?.status} />
+          </FlexRow>
+          <UpdateButton />
         </FlexRow>
-        <div className="space-y-6 rounded-xl border-[0.33px] border-primary-300">
-          <div className="grid w-full grid-cols-1 gap-x-4 md:grid-cols-6">
-            <Accordion
-              defaultExpandedKeys={["request"]}
-              className="col-span-4 h-[calc(75vh)] w-full overflow-y-scroll p-6"
-            >
+        <div className="h-[calc(81vh)] space-y-6 overflow-hidden rounded-xl border-[0.33px] border-primary-300">
+          <div className="grid h-[calc(81vh)] w-full grid-cols-1 gap-x-4 md:grid-cols-6">
+            <Accordion className="col-span-4 h-[calc(84vh)] w-full overflow-y-scroll p-6">
               {request_detail.map((detail) => (
                 <AccordionItem
                   classNames={{
@@ -130,7 +277,11 @@ export const ContentBody = () => {
                   startContent={
                     <detail.icon className="size-7 stroke-1 text-secondary dark:text-steel" />
                   }
-                  title={<h2 className="capitalize">{detail.value} info</h2>}
+                  title={
+                    <h2 className="font-medium tracking-tight">
+                      {detail.value}
+                    </h2>
+                  }
                   subtitle={
                     <p className="text-xs opacity-60">{detail.description}</p>
                   }
@@ -139,7 +290,7 @@ export const ContentBody = () => {
                 </AccordionItem>
               ))}
             </Accordion>
-            <div className="col-span-2 h-[calc(82vh)] w-full rounded-xl rounded-l-none border-l-[0.33px] border-primary-300 bg-steel/20 p-6">
+            <div className="col-span-2 h-[calc(81vh)] w-full rounded-xl rounded-l-none border-l-[0.33px] border-primary-300 bg-steel/20 p-6">
               <FlexRow className="h-fit items-center space-x-1 border-b border-steel/60 pb-3">
                 <PencilIcon className="size-4 text-secondary -rotate-12" />
                 <h2 className="text-sm font-semibold capitalize tracking-tight text-adam dark:text-steel">
@@ -236,3 +387,71 @@ const CreatedAt = (props: { created: number | undefined }) => {
     </ButtSex>
   );
 };
+
+// Helper function to format values
+const formatValue = (value: string | number): string => {
+  return typeof value === "number"
+    ? moment(value).format("MMMM Do YYYY, h:mm:ss a")
+    : String(value);
+};
+
+// Component for rendering a row
+const RenderRow: FC<{
+  keyName: string;
+  value: string | number;
+  className: ClassName;
+}> = ({ keyName, value, className }) => (
+  <div
+    key={keyName}
+    style={{ display: "flex", alignItems: "center", height: "36px" }}
+    className={`flex items-center px-4 odd:bg-primary-100/30 ${className}`}
+  >
+    <div
+      className={`flex w-36 items-center font-jet text-adam dark:text-steel ${className}`}
+    >
+      {keyName}
+    </div>
+    <div
+      className={`flex w-fit items-center font-jet font-medium ${className}`}
+    >
+      {formatValue(value)}
+    </div>
+  </div>
+);
+
+const Fields: FC<{
+  title: string;
+  fields:
+    | ReqFieldProps
+    | AutoFieldProps
+    | AddressFieldProps
+    | SubjectFieldProps;
+  pdf?: boolean;
+}> = ({ title, fields, pdf = false }) => {
+  const entries = fields ? Object.entries(fields) : [];
+
+  // Filter and map entries into rows
+  const renderFilteredRows = (rowClass: ClassName) => {
+    return entries
+      .filter(
+        ([_, value]) => typeof value !== "string" || typeof value !== "number",
+      )
+      .map(([key, value]) => (
+        <RenderRow key={key} keyName={key} value={value} className={rowClass} />
+      ));
+  };
+
+  return (
+    <div className="mb-4">
+      <div className="overflow-hidden rounded-xl border-[0.33px] border-primary-300 dark:border-adam/60">
+        <div className="flex h-[39px] w-full items-center bg-void px-4 font-medium tracking-tight text-chalk dark:bg-adam/60 dark:text-warning-300">
+          {title}
+        </div>
+        {renderFilteredRows(pdf ? "h-6 text-xs items-center" : "h-10 text-sm")}
+      </div>
+    </div>
+  );
+};
+
+const excludeProps = <T,>(o: T | null, keys: string[]) =>
+  o && Object.entries(o).filter(([k, _]) => !keys.includes(k));

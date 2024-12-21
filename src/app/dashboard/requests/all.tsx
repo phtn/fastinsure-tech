@@ -4,20 +4,20 @@ import { FlexRow } from "@/ui/flex";
 import { HyperList } from "@/ui/list";
 import { type SelectRequest } from "@convex/requests/d";
 import {
-  Bars2Icon,
-  Bars4Icon,
-  DocumentTextIcon,
-  PaperAirplaneIcon,
+  ArrowLongUpIcon,
+  ChevronDoubleUpIcon,
+  ChevronUpIcon,
+  PencilIcon,
   TruckIcon,
 } from "@heroicons/react/24/outline";
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import { User } from "@nextui-org/react";
-import { RotateCcwSquareIcon } from "lucide-react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
-import { useCallback, type PropsWithChildren } from "react";
+import { useCallback, useMemo, type PropsWithChildren } from "react";
 import { DataToolbar } from "./data-table.tsx/toolbar";
 import { useRequests } from "./useRequests";
+import { RotateCcwSquareIcon } from "lucide-react";
 
 export const All = () => {
   return (
@@ -51,23 +51,6 @@ const HeaderItem = ({ value, size = "xs", center = false }: TableRowProps) => (
   </div>
 );
 
-const RowItem = ({ value, size = "xs" }: TableRowProps) => (
-  <div
-    className={cn(
-      "w-24 truncate text-xs capitalize",
-      {
-        "w-28": size === "sm",
-      },
-      { "w-32": size === "md" },
-      { "w-40": size === "lg" },
-      { "w-48": size === "xl" },
-      { "w-[11rem]": size === "2xl" },
-    )}
-  >
-    {value}
-  </div>
-);
-
 const DataTableHeader = () => {
   return (
     <div className="flex h-8 items-center justify-start border-b-[0.33px] border-dotted border-primary-300 tracking-tight">
@@ -89,7 +72,7 @@ const TableRow = (request: SelectRequest) => {
     <div className="flex h-20 items-center justify-start">
       <RequestIdCell id={request?.request_id} />
       <DateCell date={request?._creationTime} create />
-      <RowItem size="xl" value={request?.assured_name} />
+      <AssuredCell id={request?.subject_id} />
       <PolicyTypeCell type={request?.policy_type} />
       <PolicyCoverageCell type={request?.policy_coverage} />
       <ServiceTypeCell type={request?.service_type} />
@@ -122,8 +105,8 @@ const PolicyTypeCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "auto":
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-100 px-2">
-            <TruckIcon className="size-3" />
+          <div className="flex h-8 items-center gap-2 rounded-lg border border-slate-400 bg-slate-400/30 px-2">
+            <TruckIcon className="size-4" />
             <span className="text-xs font-semibold capitalize tracking-tight">
               auto
             </span>
@@ -131,8 +114,8 @@ const PolicyTypeCell = (props: { type: string | undefined }) => {
         );
       default:
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-100 px-2">
-            <TruckIcon className="size-3" />
+          <div className="flex h-8 items-center gap-2 rounded-lg bg-primary-100 px-2">
+            <TruckIcon className="size-4" />
             <span className="text-xs font-semibold capitalize tracking-tight">
               auto
             </span>
@@ -152,17 +135,17 @@ const PolicyCoverageCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "comprehensive":
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-100 px-2">
-            <Bars4Icon className="size-3" />
-            <span className="text-xs font-semibold capitalize tracking-tight">
-              comprehensive
+          <div className="flex h-8 items-center gap-2 rounded-lg border border-steel bg-steel/50 px-2">
+            <ChevronDoubleUpIcon className="size-4 stroke-2 dark:text-rose-300" />
+            <span className="text-xs font-semibold uppercase tracking-tight">
+              full
             </span>
           </div>
         );
       default:
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-100 px-2">
-            <Bars2Icon className="size-3" />
+          <div className="flex h-8 items-center gap-2 rounded-lg border border-steel bg-steel/15 px-2">
+            <ChevronUpIcon className="size-4 stroke-2 dark:text-secondary-300" />
             <span className="text-xs font-semibold capitalize tracking-tight">
               CTPL
             </span>
@@ -182,16 +165,16 @@ const ServiceTypeCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "new":
         return (
-          <div className="flex h-7 items-center gap-1.5 rounded-lg bg-amber-200/80 px-2 dark:bg-primary-300/40">
-            <SparklesIcon className="size-3 text-amber-600 dark:text-amber-300" />
+          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-warning/80 bg-warning-100/60 px-2 dark:bg-primary-300/40">
+            <SparklesIcon className="size-4 stroke-2 text-warning-700 drop-shadow-sm dark:text-warning-100" />
             <span className="capitalize tracking-tight">new</span>
           </div>
         );
       default:
         return (
-          <div className="flex h-7 items-center gap-1.5 rounded-lg bg-indigo-200/80 px-2 dark:bg-primary-300/40">
-            <RotateCcwSquareIcon className="size-3 text-indigo-600 dark:text-indigo-400" />
-            <span className="capitalize tracking-tight">Renewal</span>
+          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-indigo-400/80 bg-indigo-100/80 px-2 dark:bg-primary-300/40">
+            <RotateCcwSquareIcon className="size-4 stroke-2 text-indigo-600 dark:text-indigo-400" />
+            <span className="capitalize tracking-tight">Renew</span>
           </div>
         );
     }
@@ -208,20 +191,20 @@ const StatusCell = (props: { status: string | undefined }) => {
     switch (props.status) {
       case "submitted":
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg bg-sky-200/80 px-2 dark:bg-primary-300/40">
+          <div className="flex h-8 items-center gap-2 rounded-lg border border-secondary/80 bg-secondary-100/80 px-2 dark:bg-primary-300/40">
             <span className="text-xs font-semibold capitalize tracking-tight">
               submitted
             </span>
-            <PaperAirplaneIcon className="size-3 text-sky-600 -rotate-[30deg] dark:text-sky-300" />
+            <ArrowLongUpIcon className="size-4 stroke-2 text-secondary dark:text-secondary" />
           </div>
         );
       default:
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg bg-primary-300/40 px-2">
+          <div className="flex h-8 items-center gap-2 rounded-lg border border-primary-300 bg-primary-300/40 px-2">
             <span className="text-xs font-semibold capitalize tracking-tight">
               draft
             </span>
-            <DocumentTextIcon className="size-3 text-primary-600/80" />
+            <PencilIcon className="stroke size-4 text-primary-600/80 -rotate-12" />
           </div>
         );
     }
@@ -242,10 +225,37 @@ const DateCell = (props: { date: number | undefined; create?: boolean }) => {
           { "dark:text-warning-100/90": props.create },
         )}
       >
-        {moment(props?.date).calendar()}
+        {moment(props?.date).format("lll")}
       </div>
-      <div className="text-[11px] dark:text-steel">
-        {moment(props?.date).fromNow()}
+      <div className="space-x-1 text-[11px] dark:text-steel">
+        <span>{moment(props?.date).format("ddd")}</span>
+        <span>{moment(props?.date).fromNow()}</span>
+      </div>
+    </div>
+  );
+};
+
+const AssuredCell = (props: { id: string | undefined }) => {
+  const { vxsubjects } = useRequests();
+
+  const subject = useMemo(
+    () => vxsubjects?.find((s) => s.subject_id === props.id),
+    [props.id, vxsubjects],
+  );
+
+  console.log(vxsubjects);
+
+  return (
+    <div className="w-48">
+      <div
+        className={cn(
+          "text-xs font-medium tracking-tight dark:text-indigo-200",
+        )}
+      >
+        {subject?.email ?? props.id}
+      </div>
+      <div className="space-x-1 text-[11px] dark:text-steel">
+        {/* <span>{props.email ?? props.phone_number}</span> */}
       </div>
     </div>
   );

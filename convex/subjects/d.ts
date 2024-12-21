@@ -17,3 +17,4 @@ export const subject_schema = v.object({
 });
 
 export type InsertSubject = Infer<typeof subject_schema>;
+export type SelectSubject = Infer<typeof subject_schema>;

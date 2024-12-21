@@ -176,15 +176,15 @@ export const ActionCard: TActionComp = Object.assign(Component, {
 const ComponentII = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
-      "h-[28rem] w-full cursor-pointer overflow-clip",
+      "h-[30rem] w-full cursor-pointer overflow-clip",
       "_border-[0.33px] rounded-b-xl border-foreground",
       "transition-all duration-300 ease-out",
-      "bg-gradient-to-b from-stone-50/10 via-zinc-300/50 to-slate-100/10",
-      "dark:border-primary-500/50 dark:from-zinc-500/10 dark:via-zinc-400/40 dark:to-slate-300/10",
-      "ml-4",
+      "bg-gradient-to-b from-stone-50/10 via-zinc-300/30 to-chalk",
+      "dark:border-primary-500/50 dark:from-void dark:via-void dark:to-zinc-800/10",
+      "",
     )}
   >
-    <div className="flex h-full items-center space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-8">
+    <div className="flex h-full items-center space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-8 dark:bg-transparent">
       {children}
     </div>
   </div>

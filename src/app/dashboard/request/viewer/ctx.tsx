@@ -1,5 +1,9 @@
 import { useVex } from "@/app/ctx/convex";
+import { Err, Ok } from "@/utils/helpers";
+import type { SelectAddress } from "@convex/address/d";
+import type { SelectAuto } from "@convex/autos/d";
 import type { SelectRequest } from "@convex/requests/d";
+import type { SelectSubject } from "@convex/subjects/d";
 import type { SelectUser } from "@convex/users/d";
 import {
   createContext,
@@ -9,6 +13,7 @@ import {
   type TransitionStartFunction,
   useCallback,
   useEffect,
+  useMemo,
   useState,
   useTransition,
 } from "react";
@@ -16,8 +21,13 @@ import {
 interface RequestViewerValues {
   pending: boolean;
   vxrequest: SelectRequest | null;
+  vxaddress: SelectAddress | null;
+  vxauto: SelectAuto | null;
+  vxsubject: SelectSubject | null;
   vxusers: SelectUser[] | null;
   underwriters: SelectUser[] | null;
+  submitRequest: () => Promise<void>;
+  loading: boolean;
 }
 export const RequestViewerCtx = createContext<RequestViewerValues | null>(null);
 export interface RequestViewProps {
@@ -28,10 +38,19 @@ export const RequestViewerContext = ({
   children,
   request_id,
 }: RequestViewProps) => {
-  const { request, usr } = useVex();
+  const { request, usr, address, auto, subject } = useVex();
   const [vxrequest, setRequest] = useState<SelectRequest | null>(null);
+  const [vxaddress, setAddress] = useState<SelectAddress | null>(null);
+  const [vxauto, setAuto] = useState<SelectAuto | null>(null);
+  const [vxsubject, setSubject] = useState<SelectSubject | null>(null);
   const [vxusers, setvxusers] = useState<SelectUser[] | null>(null);
   const [underwriters, setUnderwriters] = useState<SelectUser[] | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const address_id = useMemo(
+    () => vxrequest?.request_id.split("-")[0],
+    [vxrequest?.request_id],
+  );
 
   const [pending, fn] = useTransition();
 
@@ -68,13 +87,64 @@ export const RequestViewerContext = ({
     setFn(fn, getvxUnderwriters, setUnderwriters);
   }, [getvxUnderwriters]);
 
+  const getvxaddress = useCallback(async () => {
+    if (!address_id) return null;
+    return await address.get.byId(address_id);
+  }, [address.get, address_id]);
+
+  const getAddress = useCallback(() => {
+    setFn(fn, getvxaddress, setAddress);
+  }, [getvxaddress]);
+
+  const getvxauto = useCallback(async () => {
+    if (!vxrequest?.vehicle_id) return null;
+    return await auto.get.byId(vxrequest.vehicle_id);
+  }, [auto.get, vxrequest?.vehicle_id]);
+
+  const getAuto = useCallback(() => {
+    setFn(fn, getvxauto, setAuto);
+  }, [getvxauto]);
+
+  const getvxsubject = useCallback(async () => {
+    if (!vxrequest?.subject_id) return null;
+    return await subject.get.byId(vxrequest.subject_id);
+  }, [subject.get, vxrequest?.subject_id]);
+
+  const getSubject = useCallback(() => {
+    setFn(fn, getvxsubject, setSubject);
+  }, [getvxsubject]);
+
   useEffect(() => {
     getRequest();
     getUnderwriters();
-  }, [getRequest, getUnderwriters]);
+    getAddress();
+    getAuto();
+    getSubject();
+  }, [getRequest, getUnderwriters, getAddress, getAuto, getSubject]);
+
+  const submitRequest = useCallback(async () => {
+    setLoading(true);
+    if (!vxrequest?.request_id) return;
+    await request.update
+      .status(vxrequest?.request_id, "submitted")
+      .then(Ok(setLoading, "Request submitted."))
+      .catch(Err(setLoading, "Update failed."));
+  }, [vxrequest?.request_id, request.update]);
 
   return (
-    <RequestViewerCtx value={{ pending, vxrequest, vxusers, underwriters }}>
+    <RequestViewerCtx
+      value={{
+        pending,
+        vxrequest,
+        vxaddress,
+        vxauto,
+        vxsubject,
+        vxusers,
+        underwriters,
+        submitRequest,
+        loading,
+      }}
+    >
       {children}
     </RequestViewerCtx>
   );

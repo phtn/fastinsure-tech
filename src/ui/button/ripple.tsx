@@ -11,8 +11,8 @@ import type {
   RefObject,
 } from "react";
 import { useCallback, useEffect, useState } from "react";
-import { SpinMX2 } from "../spinner";
 import type { ButtSize } from "./types";
+import { Spinner } from "@nextui-org/react";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   rippleColor?: string;
@@ -24,6 +24,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtSize;
   ref?: RefObject<HTMLButtonElement>;
   type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
+  variant?: "default" | "secondary" | "danger" | "success";
 }
 
 export const ButtSex = ({
@@ -31,6 +32,7 @@ export const ButtSex = ({
   inverted = false,
   loading = false,
   size = "sm",
+  variant = "default",
   className,
   disabled,
   children,
@@ -79,7 +81,7 @@ export const ButtSex = ({
   const Icon = useCallback(
     (props: { icon: DualIcon; loading: boolean }) =>
       (loading ? (
-        <SpinMX2 />
+        <Spinner size="sm" color={inverted ? "warning" : "primary"} />
       ) : (
         <props.icon
           className={cn(
@@ -94,10 +96,14 @@ export const ButtSex = ({
               "size-6": size === "lg",
             },
             { "text-icon-dark dark:text-void/80": inverted },
+            {
+              "stroke-1 text-void group-hover:text-chalk":
+                variant === "secondary",
+            },
           )}
         />
       )) as ReactElement,
-    [inverted, size, loading],
+    [inverted, size, loading, variant],
   );
 
   const StartOption = useCallback(() => {
@@ -132,10 +138,14 @@ export const ButtSex = ({
             "h-8 gap-2 rounded-lg": size === "sm",
           },
           {
-            "h-[38px] gap-3 rounded-[11px]": size === "md",
+            "h-[38px] gap-3 rounded-[10px]": size === "md",
           },
           {
             "h-12 gap-4 rounded-xl": size === "lg",
+          },
+          {
+            "bg-secondary-300 group-hover:bg-secondary":
+              variant === "secondary",
           },
           className,
         )}
@@ -153,6 +163,7 @@ export const ButtSex = ({
             "dark:text-icon-dark dark:group-hover:text-chalk/80",
             { "text-chalk/90 group-hover:text-chalk": inverted },
             { "dark:text-void dark:group-hover:text-void": inverted },
+            { "text-void group-hover:text-chalk": variant === "secondary" },
           )}
         >
           {children}

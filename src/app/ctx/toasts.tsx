@@ -50,8 +50,8 @@ export const onWarn = (msg: string) =>
     },
   });
 
-export const onAwait = <T,>(fn: Promise<T>, ...args: string[]) =>
-  toast.promise(fn, {
+export const onAwait = async (fn: () => Promise<void>, ...args: string[]) =>
+  await toast.promise(fn(), {
     loading: args[0],
     success: args[1],
     error: (err: Error) => err.message,

@@ -2,6 +2,8 @@ import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useVex } from "@/app/ctx/convex";
 import { type SelectRequest } from "@convex/requests/d";
 import { type SelectUser } from "@convex/users/d";
+import { api } from "@vex/api";
+import { useQuery } from "convex/react";
 import {
   type ChangeEvent,
   type Dispatch,
@@ -9,6 +11,7 @@ import {
   type TransitionStartFunction,
   useCallback,
   useEffect,
+  useMemo,
   useState,
   useTransition,
 } from "react";
@@ -18,6 +21,15 @@ export const useRequests = () => {
   const [search, setSearch] = useState<string>("");
   const [underwriters, setUnderwriters] = useState<SelectUser[] | null>(null);
   const [vxusers, setVxusers] = useState<SelectUser[] | null>(null);
+
+  const { vxuser } = useAuthCtx();
+  const { request, usr } = useVex();
+
+  const ids = useMemo(
+    () => requests?.map((r) => r.subject_id) as string[],
+    [requests],
+  ) ?? [""];
+  const vxsubjects = useQuery(api.subjects.get.byIds, { ids });
 
   const searchFn = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -45,10 +57,6 @@ export const useRequests = () => {
         .slice(0, max ?? 10),
     [search],
   );
-
-  const { vxuser } = useAuthCtx();
-  const { request, usr } = useVex();
-
   const [pending, fn] = useTransition();
 
   const setFn = <T>(
@@ -99,5 +107,6 @@ export const useRequests = () => {
     filterFn,
     underwriters,
     vxusers,
+    vxsubjects,
   };
 };

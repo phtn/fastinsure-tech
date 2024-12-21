@@ -18,7 +18,7 @@ const PolicyCoverageSchema = v.union(
 );
 export type PolicyCoverage = Infer<typeof PolicyCoverageSchema>;
 
-const RequestStatusSchema = v.union(
+export const RequestStatusSchema = v.union(
   v.literal("draft"),
   v.literal("submitted"),
   v.literal("received"),
@@ -52,13 +52,13 @@ export const request_schema = v.object({
   assured_name: v.string(),
   agent_name: v.optional(v.string()),
   agent_email: v.string(),
-  group_code: v.optional(v.string()),
+  group_code: v.string(),
   group_name: v.optional(v.string()),
   underwriter_id: v.string(),
   underwriter_name: v.optional(v.string()),
   underwriter_email: v.optional(v.string()),
   status: RequestStatusSchema,
-  updated_at: v.optional(v.float64()),
+  updated_at: v.float64(),
   date_delivered: v.optional(v.string()),
   remarks: v.optional(v.string()),
   metadata: v.optional(v.record(v.string(), v.any())),
@@ -84,7 +84,7 @@ export const insert_request_schema = v.object({
   agent_id: v.string(),
   agent_name: v.optional(v.string()),
   agent_email: v.string(),
-  group_code: v.optional(v.string()),
+  group_code: v.string(),
   group_name: v.optional(v.string()),
   underwriter_id: v.string(),
   underwriter_name: v.optional(v.string()),

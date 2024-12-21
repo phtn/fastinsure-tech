@@ -12,3 +12,4 @@ export const address_schema = v.object({
 });
 
 export type InsertAddress = Infer<typeof address_schema>;
+export type SelectAddress = Infer<typeof address_schema>;

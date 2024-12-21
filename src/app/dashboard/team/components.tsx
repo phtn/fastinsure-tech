@@ -15,6 +15,7 @@ import {
   ArrowDownRightIcon,
   ArrowPathIcon,
   ArrowTrendingUpIcon,
+  CheckCircleIcon,
   ChevronUpDownIcon,
   CogIcon,
   InboxIcon,
@@ -45,6 +46,7 @@ import {
   useState,
 } from "react";
 import { TeamContext, TeamCtx } from "./ctx";
+import { opts } from "@/utils/helpers";
 
 interface UserConfigProps {
   open: boolean;
@@ -361,25 +363,34 @@ interface UserSetting {
   icon: DualIcon;
 }
 const SettingsItem = (props: UserSetting) => {
+  const { title, icon, isModified, isDone, loading, value, newValue, saveFn } =
+    props;
+
+  const sameAsCurrent = useMemo(() => value === newValue, [value, newValue]);
+  const SaveOptions = useCallback(() => {
+    const options = opts(
+      <ButtSex
+        inverted
+        onClick={saveFn}
+        loading={loading}
+        disabled={sameAsCurrent}
+        end={sameAsCurrent ? CheckCircleIcon : ArrowPathIcon}
+      >
+        {isModified && sameAsCurrent ? "Current value" : "Save changes"}
+      </ButtSex>,
+      <ButtSqx disabled icon={icon} />,
+    );
+    return <>{options.get(isModified)}</>;
+  }, [loading, icon, saveFn, isModified, sameAsCurrent]);
+
   return (
     <div className="h-[20rem] w-full overflow-hidden rounded-lg border-[0.33px] border-icon bg-chalk py-2 shadow-md">
       <section className="flex h-3/4 flex-col justify-start px-4">
         <FlexRow className="flex h-2/5 items-center justify-between pt-2">
           <header className="font-inst text-lg font-medium tracking-tight">
-            {props.title}
+            {title}
           </header>
-          {props.isModified ? (
-            <ButtSex
-              inverted
-              onClick={props.saveFn}
-              end={ArrowPathIcon}
-              loading={props.loading}
-            >
-              Save changes
-            </ButtSex>
-          ) : (
-            <ButtSqx disabled icon={props.icon} />
-          )}
+          <SaveOptions />
         </FlexRow>
         <FlexRow className="h-2/5 w-full items-start rounded-md bg-gradient-to-b from-steel/5 to-transparent px-1.5 py-1">
           <p className="text-sm font-light leading-5">{props.description}</p>
@@ -389,7 +400,7 @@ const SettingsItem = (props: UserSetting) => {
             Current value
           </p>
           <p className="font-inter text-sm font-semibold uppercase tracking-wide drop-shadow-md">
-            {props.isDone ? props.newValue : props?.value}
+            {isDone ? newValue : value}
           </p>
         </FlexRow>
       </section>

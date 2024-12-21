@@ -6,6 +6,9 @@ import { address_schema } from "./address/d";
 import { subject_schema } from "./subjects/d";
 import { log_schema } from "./logs/d";
 import { notification_schema } from "./notifications/d";
+import { chat_schema } from "./chats/d";
+import { room_schema } from "./rooms/d";
+import { message_like_schema } from "./message_likes/d";
 
 export default defineSchema({
   users: defineTable(user_schema)
@@ -111,4 +114,18 @@ export default defineSchema({
     "content",
     "category",
   ]),
+
+  chats: defineTable(chat_schema)
+    .index("by_chat_id", ["chat_id"])
+    .index("by_author_uid", ["author_uid"])
+    .index("by_author_name", ["author_name"])
+    .index("by_room_id", ["room_id"]),
+
+  message_likes: defineTable(message_like_schema)
+    .index("by_chat_id", ["chat_id"])
+    .index("by_liker_uid", ["liker_uid"]),
+
+  rooms: defineTable(room_schema)
+    .index("by_room_id", ["room_id", "room_name", "members"])
+    .index("by_room_name", ["room_name", "members"]),
 });

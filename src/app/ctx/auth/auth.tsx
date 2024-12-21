@@ -39,13 +39,17 @@ import {
 } from "@/app/actions";
 
 import { EmailAndPasswordSchema } from "@/app/auth/schema";
-import type { OnSigninVerificationResponse } from "@/server/secure/resource";
-import { onError, onSuccess, onWarn } from "../toasts";
+import type {
+  AccountActivationResponse,
+  OnSigninVerificationResponse,
+} from "@/server/secure/resource";
+import { onSuccess, onWarn } from "../toasts";
 import { Loader } from "@/ui/loader";
 import { useVex } from "../convex";
 import type { UserRole, SelectUser } from "@convex/users/d";
 import moment from "moment";
 import { initVerification } from "./utils";
+import { activateAccount } from "@/trpc/secure/callers/auth";
 
 interface AuthCtxValues {
   loading: boolean;
@@ -60,6 +64,7 @@ interface AuthCtxValues {
   setClaims: Dispatch<SetStateAction<UserRole[] | null>>;
   vresult: OnSigninVerificationResponse | null;
   vxuser: SelectUser | null;
+  activateFn: (hcode: string) => Promise<AccountActivationResponse | undefined>;
 }
 
 const AuthCtx = createContext<AuthCtxValues | null>(null);
@@ -75,7 +80,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     null,
   );
 
-  const pathname = usePathname();
   const [vxuser, setVxuser] = useState<SelectUser | null>(null);
   const { usr, logs } = useVex();
 
@@ -168,17 +172,17 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     createvx().catch(Err);
   }, [createvx]);
 
-  const updateClaims = useCallback(async () => {
-    const role = (claims?.join(",") ?? "neo") as UserRole;
-    if (!uid) return;
-    if (vxuser && vxuser?.role !== role) {
-      await usr.update.userInfo({ uid, role });
-    }
-  }, [claims, uid, usr, vxuser]);
+  // const updateClaims = useCallback(async () => {
+  //   const role = (claims?.join(",") ?? "neo") as UserRole;
+  //   if (!uid) return;
+  //   if (vxuser && vxuser?.role !== role && role !== "") {
+  //     await usr.update.userInfo({ uid, role });
+  //   }
+  // }, [claims, uid, usr, vxuser]);
 
-  useEffect(() => {
-    updateClaims().catch(Err);
-  }, [updateClaims]);
+  // useEffect(() => {
+  //   updateClaims().catch(Err);
+  // }, [updateClaims]);
 
   const cleanUpCookies = useCallback(async () => {
     await deleteSession();
@@ -226,7 +230,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       }
     });
     return () => unsubscribe();
-  }, [signOut, getClaims, checkLastLogin, pathname]);
+  }, [getClaims, checkLastLogin]);
 
   const signUserWithEmail = useCallback(
     async (f: FormData) => {
@@ -247,7 +251,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         auth,
         email,
         password,
-      );
+      ).catch(Err(setLoading, "Invalid Credentials"));
       const u = userCredential?.user;
       setLoading(false);
       if (u) {
@@ -256,7 +260,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         await verify(u);
         onSuccess("Logged in!");
       } else {
-        onError("Unable to sign in.");
         setLoading(false);
       }
     },
@@ -279,6 +282,20 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     setGoogleSigning(false);
   }, [verify, createLog]);
 
+  const activateFn = useCallback(
+    async (hcode: string) => {
+      if (!user) {
+        onWarn("You need to re-authenticate.");
+        return;
+      }
+      const id_token = await user.getIdToken();
+      const email = user?.email ?? "";
+      const uid = user?.uid;
+      return await activateAccount({ uid, email, id_token, hcode });
+    },
+    [user],
+  );
+
   const stableValues = useMemo(
     () => ({
       user,
@@ -293,6 +310,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       vresult,
       loading,
       vxuser,
+      activateFn,
     }),
     [
       user,
@@ -307,6 +325,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       vresult,
       loading,
       vxuser,
+      activateFn,
     ],
   );
 
