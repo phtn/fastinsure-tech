@@ -1,6 +1,5 @@
 "use client";
 import { useAuthCtx } from "@/app/ctx/auth/auth";
-import { onAwait } from "@/app/ctx/toasts";
 import { Loader } from "@/ui/loader";
 import { Err } from "@/utils/helpers";
 import { useRouter } from "next/navigation";
@@ -9,11 +8,19 @@ import { useCallback, useEffect } from "react";
 export const Content = () => {
   const { signOut } = useAuthCtx();
   const router = useRouter();
-  const goHome = useCallback(() => {
+  const goHome = useCallback(async () => {
+    await signOut();
     router.push("/");
-  }, [router]);
+  }, [router, signOut]);
   useEffect(() => {
-    onAwait(signOut, "Signing out...", "Signed out.").then(goHome).catch(Err);
+    goHome().catch(Err);
   }, [signOut, goHome]);
-  return <Loader />;
+  return (
+    <div className="p-6">
+      <p className="font-inst font-medium tracking-tight text-void dark:text-warning-300">
+        Signing out . . .
+      </p>
+      <Loader />
+    </div>
+  );
 };

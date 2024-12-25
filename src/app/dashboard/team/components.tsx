@@ -13,9 +13,7 @@ import { type SelectLog } from "@convex/logs/d";
 import type { SelectUser, UserRole } from "@convex/users/d";
 import {
   ArrowDownRightIcon,
-  ArrowPathIcon,
   ArrowTrendingUpIcon,
-  CheckCircleIcon,
   ChevronUpDownIcon,
   CogIcon,
   InboxIcon,
@@ -268,14 +266,14 @@ const Settings = () => {
     loading,
     isDone,
   } = use(TeamCtx)!;
-  const SettingFnComponent = useCallback(
-    () => (
-      <ButtSex inverted size="lg" className="flex">
-        <div className="w-[12rem] px-4">Select Component</div>
-      </ButtSex>
-    ),
-    [],
-  );
+  // const SettingFnComponent = useCallback(
+  //   () => (
+  //     <ButtSex inverted size="lg" className="flex">
+  //       <div className="w-[12rem] px-4">Select Component</div>
+  //     </ButtSex>
+  //   ),
+  //   [],
+  // );
 
   const settings_data: UserSetting[] = useMemo(
     () => [
@@ -305,29 +303,29 @@ const Settings = () => {
         isDone,
         icon: PercentIcon,
       },
-      {
-        title: "Group Assignment",
-        component: <SettingFnComponent />,
-        saveFn: updateRole,
-        newValue: "",
-        isModified: false,
-        loading,
-        isDone: false,
-        icon: PercentIcon,
-      },
-      {
-        title: "Branch Assignment",
-        component: <SettingFnComponent />,
-        saveFn: updateRole,
-        newValue: "",
-        isModified: false,
-        loading,
-        isDone: false,
-        icon: PercentIcon,
-      },
+      // {
+      //   title: "Group Assignment",
+      //   component: <SettingFnComponent />,
+      //   saveFn: updateRole,
+      //   newValue: "",
+      //   isModified: false,
+      //   loading,
+      //   isDone: false,
+      //   icon: PercentIcon,
+      // },
+      // {
+      //   title: "Branch Assignment",
+      //   component: <SettingFnComponent />,
+      //   saveFn: updateRole,
+      //   newValue: "",
+      //   isModified: false,
+      //   loading,
+      //   isDone: false,
+      //   icon: PercentIcon,
+      // },
     ],
     [
-      SettingFnComponent,
+      // SettingFnComponent,
       currentRole,
       currentComm,
       updateRole,
@@ -366,22 +364,15 @@ const SettingsItem = (props: UserSetting) => {
   const { title, icon, isModified, isDone, loading, value, newValue, saveFn } =
     props;
 
-  const sameAsCurrent = useMemo(() => value === newValue, [value, newValue]);
   const SaveOptions = useCallback(() => {
     const options = opts(
-      <ButtSex
-        inverted
-        onClick={saveFn}
-        loading={loading}
-        disabled={sameAsCurrent}
-        end={sameAsCurrent ? CheckCircleIcon : ArrowPathIcon}
-      >
-        {isModified && sameAsCurrent ? "Current value" : "Save changes"}
+      <ButtSex variant="secondary" onClick={saveFn} loading={loading}>
+        Save changes
       </ButtSex>,
       <ButtSqx disabled icon={icon} />,
     );
     return <>{options.get(isModified)}</>;
-  }, [loading, icon, saveFn, isModified, sameAsCurrent]);
+  }, [loading, icon, saveFn, isModified]);
 
   return (
     <div className="h-[20rem] w-full overflow-hidden rounded-lg border-[0.33px] border-icon bg-chalk py-2 shadow-md">

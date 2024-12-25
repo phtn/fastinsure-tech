@@ -12,22 +12,6 @@ export const userInfo = mutation({
       return null;
     }
 
-    // const data_kv = Object.entries(data)
-    //   .filter((f) => f[0] === "uid")
-    //   .map(([k, v]) => [k, v]);
-
-    // for (const d of data_kv) {
-    //   await db.patch(user._id, Object.fromEntries([d]) as UpdateUser);
-    // }
-
-    // if (data.group_code && user.group_code !== data.group_code) {
-    //   await db.patch(user._id, { group_code: data.group_code });
-    // }
-
-    // if (user.role !== data.role && data.role?.length !== 0) {
-    //   await db.patch(user._id, { role: data.role });
-    // }
-
     if (
       typeof data.is_verified !== "undefined" &&
       user.is_verified !== data.is_verified

@@ -5,8 +5,9 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 interface DataToolbarProps {
   searchFn: (e: ChangeEvent<HTMLInputElement>) => void;
   search: string;
+  count: number;
 }
-export const DataToolbar = ({ searchFn, search }: DataToolbarProps) => {
+export const DataToolbar = ({ searchFn, search, count }: DataToolbarProps) => {
   const Searchbar = useCallback(() => {
     return (
       <div className="relative w-full">
@@ -28,7 +29,8 @@ export const DataToolbar = ({ searchFn, search }: DataToolbarProps) => {
   return (
     <div className="z-[100] flex h-fit w-full items-center justify-between rounded-t-xl border-x-[0.33px] border-t-[0.33px] border-primary-300 bg-primary-200/70 px-2">
       <div className="flex items-center space-x-1 py-1 md:space-x-4">
-        <ToolbarTitle title="All Requests" />
+        <ToolbarTitle title={`On the List`} />
+        <span className="px-2">{count}</span>
         <Searchbar />
       </div>
     </div>

@@ -4,12 +4,6 @@ import { Widget } from "@/ui/widget";
 import { motion } from "framer-motion";
 import { CreateAgentCode, CreateRequest } from "./comp/actions";
 import { Splash } from "./comp/splash";
-
-import { Window } from "@/ui/window";
-import {
-  ArrowTrendingUpIcon,
-  ChatBubbleLeftRightIcon,
-} from "@heroicons/react/24/outline";
 import { Flag } from "./comp/status-flag";
 import { useCallback } from "react";
 import { opts } from "@/utils/helpers";
@@ -30,25 +24,27 @@ const MOverview = () => {
   return (
     <div className="h-[99vh] overflow-auto rounded-tl-3xl p-4">
       <Splash text={""}>
-        <div className="absolute top-4 z-[60] flex h-1/2 w-1/3 items-center space-x-2 border-primary px-12 font-inst text-2xl delay-1000">
-          <UserOptions />
-        </div>
-        <div className="absolute bottom-0 z-[60] h-1/2 w-full px-12">
-          <motion.section
-            initial={{ height: "0%" }}
-            animate={{ height: "66%" }}
-            transition={{ duration: 2, delay: 3 }}
-            className="flex h-2/3 w-full flex-col items-start justify-start space-y-[2px] border-l-[0.33px] border-primary/40"
-          >
-            <Flag
-              metric={vxuser?.group_code !== ""}
-              label={["account", vxuser?.group_code, "NOT REGISTERED"]}
-            />
-            <Flag
-              metric={!!vxuser && vxuser?.group_code !== "NEO"}
-              label={["status", "active", "inactive"]}
-            />
-          </motion.section>
+        <div>
+          <div className="absolute top-4 z-[60] flex h-1/2 w-1/3 items-center space-x-2 border-primary px-12 font-inst text-2xl delay-1000">
+            <UserOptions />
+          </div>
+          <div className="absolute bottom-0 z-[60] h-1/2 w-full px-12">
+            <motion.section
+              initial={{ height: "0%" }}
+              animate={{ height: "66%" }}
+              transition={{ duration: 2, delay: 3 }}
+              className="flex h-2/3 w-full flex-col items-start justify-start space-y-[2px] border-l-[0.33px] border-primary/40"
+            >
+              <Flag
+                metric={vxuser?.group_code !== ""}
+                label={["account", vxuser?.group_code, "NOT REGISTERED"]}
+              />
+              <Flag
+                metric={!!vxuser && vxuser?.group_code !== "NEO"}
+                label={["status", "active", "inactive"]}
+              />
+            </motion.section>
+          </div>
         </div>
       </Splash>
       <Widget>
@@ -74,25 +70,7 @@ const MOverview = () => {
       <Widget>
         <Widget.BaseII>
           <HStack>
-            <HStack.LgCol>
-              <div className="flex w-full justify-between space-x-4">
-                <Window
-                  title="Activity"
-                  icon={ArrowTrendingUpIcon}
-                  variant="god"
-                >
-                  <div className="flex h-96 w-full bg-chalk dark:bg-slate-300/80"></div>
-                </Window>
-
-                <Window
-                  title="Messages"
-                  icon={ChatBubbleLeftRightIcon}
-                  variant="god"
-                >
-                  <div className="flex h-96 w-full bg-chalk dark:bg-slate-300/80"></div>
-                </Window>
-              </div>
-            </HStack.LgCol>
+            <HStack.LgCol></HStack.LgCol>
           </HStack>
         </Widget.BaseII>
       </Widget>

@@ -1,9 +1,8 @@
 import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useVex } from "@/app/ctx/convex";
 import { type SelectRequest } from "@convex/requests/d";
+import { type SelectSubject } from "@convex/subjects/d";
 import { type SelectUser } from "@convex/users/d";
-import { api } from "@vex/api";
-import { useQuery } from "convex/react";
 import {
   type ChangeEvent,
   type Dispatch,
@@ -21,15 +20,10 @@ export const useRequests = () => {
   const [search, setSearch] = useState<string>("");
   const [underwriters, setUnderwriters] = useState<SelectUser[] | null>(null);
   const [vxusers, setVxusers] = useState<SelectUser[] | null>(null);
+  const [vxsubjects, setSubjects] = useState<SelectSubject[] | null>();
 
   const { vxuser } = useAuthCtx();
-  const { request, usr } = useVex();
-
-  const ids = useMemo(
-    () => requests?.map((r) => r.subject_id) as string[],
-    [requests],
-  ) ?? [""];
-  const vxsubjects = useQuery(api.subjects.get.byIds, { ids });
+  const { request, usr, subject } = useVex();
 
   const searchFn = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -73,10 +67,16 @@ export const useRequests = () => {
   };
 
   const allRequests = useCallback(async () => {
-    const uid = vxuser?.uid;
-    if (!uid) return;
-    return await request.get.byAgentId(uid);
-  }, [request.get, vxuser?.uid]);
+    if (!vxuser) return;
+    const isUnderwriter = vxuser.role === "underwriter";
+    const uid = vxuser.uid;
+    const agentReqs = await request.get.byUnderwriterId(uid);
+    const underReqs = await request.get.byAgentId(uid);
+    const ids = agentReqs?.map((r) => r.subject_id) as string[];
+    const s = await subject.get.byIds(ids);
+    setSubjects(s);
+    return isUnderwriter ? agentReqs : underReqs;
+  }, [request.get, vxuser, subject.get]);
 
   const getAll = useCallback(() => {
     setFn(fn, allRequests, setRequests);
@@ -94,6 +94,8 @@ export const useRequests = () => {
     setFn(fn, getvxUnderwriters, setUnderwriters);
   }, [getvxUnderwriters]);
 
+  const role = useMemo(() => vxuser?.role, [vxuser?.role]);
+
   useEffect(() => {
     getAll();
     getUnderwriters();
@@ -108,5 +110,7 @@ export const useRequests = () => {
     underwriters,
     vxusers,
     vxsubjects,
+    role,
+    // ids,
   };
 };

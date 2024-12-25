@@ -36,9 +36,7 @@ export const ServerIcon = (props: IconProps) => {
       showOutline={false}
       isDot
     >
-      <CircleStackIcon
-        className={cn("size-5 text-chalk dark:text-icon-dark")}
-      />
+      <CircleStackIcon className={cn("size-5 text-void dark:text-icon-dark")} />
     </Badge>
   );
 };

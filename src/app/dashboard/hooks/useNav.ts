@@ -122,13 +122,14 @@ export const useNav = () => {
     [],
   );
 
-  const { claims } = useAuthCtx();
+  const { vxuser } = useAuthCtx();
   const getUserNavs = useCallback(() => {
-    if (!claims || claims.length < 1) {
+    if (!vxuser?.role || vxuser?.role.length < 1) {
       setNavs(n_navs);
       return;
     }
-    claims?.forEach((claim) => {
+    const roles = vxuser.role.split(",");
+    roles.forEach((claim) => {
       switch (claim) {
         case "admin":
           setNavs(s_navs);
@@ -147,7 +148,7 @@ export const useNav = () => {
           break;
       }
     });
-  }, [claims, m_navs, s_navs, n_navs, a_navs, u_navs]);
+  }, [m_navs, s_navs, n_navs, a_navs, u_navs, vxuser]);
 
   useEffect(() => {
     getUserNavs();

@@ -64,10 +64,10 @@ export default defineSchema({
       "amount",
     ])
     .index("by_underwriter_id", [
+      "underwriter_id",
       "policy_id",
       "agent_name",
       "subject_id",
-      "underwriter_id",
       "status",
       "amount",
     ])
@@ -94,6 +94,7 @@ export default defineSchema({
     "firstname",
     "lastname",
     "middlename",
+    "email",
   ]),
 
   logs: defineTable(log_schema).index("by_uid", [

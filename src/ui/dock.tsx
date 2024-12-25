@@ -32,7 +32,7 @@ const DEFAULT_MAGNIFICATION = 50;
 const DEFAULT_DISTANCE = 100;
 
 const dockVariants = cva(
-  "group/dock opacity-20 hover:opacity-100 hover:bg-dock-dark bg-dock-dark/20 dark:hover:bg-void dark:bg-transparent mx-auto flex h-[42px] overflow-hidden hover:w-max w-24 gap-4 rounded-lg border-[0.33px] border-dock-border dark:border-fade-dark py-2 px-0",
+  "group/dock bg-fade/70 backdrop-blur-xl dark:bg-void mx-auto flex h-[42px] overflow-hidden w-max gap-4 rounded-lg border-[0.33px] border-dock-dark dark:border-fade-dark py-2 px-0",
 );
 
 const Dock = forwardRef<HTMLDivElement, DockProps>(
@@ -90,6 +90,8 @@ export interface DockIconProps {
   className?: string;
   children?: React.ReactNode;
   props?: PropsWithChildren;
+  onClick?: VoidFunction;
+  prefetch?: VoidFunction;
 }
 
 const DockIcon = ({
@@ -98,6 +100,8 @@ const DockIcon = ({
   mouseX,
   className,
   children,
+  onClick,
+  prefetch,
   ...props
 }: DockIconProps) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -122,6 +126,8 @@ const DockIcon = ({
 
   return (
     <motion.div
+      onMouseEnter={prefetch}
+      onClick={onClick}
       ref={ref}
       style={{ width }}
       className={cn(

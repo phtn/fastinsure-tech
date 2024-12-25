@@ -23,10 +23,10 @@ import {
   useMutation,
   useQuery,
 } from "convex/react";
-import { type FunctionReference } from "convex/server";
 import {
   createContext,
   type PropsWithChildren,
+  useCallback,
   useContext,
   useMemo,
   useState,
@@ -51,6 +51,7 @@ interface VexCtxValues {
       all: () => SelectRequest[] | undefined;
       byId: (id: string) => Promise<SelectRequest | null>;
       byAgentId: (uid: string) => Promise<SelectRequest[]>;
+      byUnderwriterId: (uid: string) => Promise<SelectRequest[]>;
     };
     storage: {
       generateUrl: () => Promise<string>;
@@ -68,6 +69,7 @@ interface VexCtxValues {
     ) => Promise<(string & { __tableName: "subjects" }) | null>;
     get: {
       byId: (id: string) => Promise<SelectSubject | null>;
+      byIds: (ids: string[]) => Promise<SelectSubject[] | null>;
     };
   };
   auto: {
@@ -100,6 +102,12 @@ interface VexCtxValues {
       ) => Promise<Id<"users"> | null>;
       userInfo: (args: UpdateUser) => Promise<Id<"users"> | null>;
     };
+    add: {
+      metadata: (
+        uid: string,
+        record: Record<string, number | string | boolean>,
+      ) => Promise<Id<"users"> | null>;
+    };
   };
   logs: {
     create: (
@@ -117,8 +125,11 @@ interface VexCtxValues {
       byReceiverId: (uid: string) => Promise<SelectNotification[] | null>;
     };
   };
+  files: {
+    create: (file?: File) => Promise<string | null>;
+    get: (id: string) => Promise<string | null>;
+  };
   updating: boolean;
-  subref: FunctionReference<"query">;
 }
 
 const VexCtxProvider = ({ children }: PropsWithChildren) => {
@@ -140,6 +151,9 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
   const createRequest = useMutation(api.requests.create.default);
   const getAllRequests = useQuery(api.requests.get.all);
   const getRequestById = useMutation(api.requests.get.byId);
+  const getRequestByUnderwriterId = useMutation(
+    api.requests.get.byUnderwriterId,
+  );
   const getRequestsByAgentId = useMutation(api.requests.get.byAgentId);
   const generateUrl = useMutation(api.requests.storage.generateUrl);
   const updateRequestStatus = useMutation(api.requests.update.status);
@@ -151,6 +165,8 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
         all: () => getAllRequests,
         byId: async (id: string) => await getRequestById({ request_id: id }),
         byAgentId: async (uid: string) => await getRequestsByAgentId({ uid }),
+        byUnderwriterId: async (uid: string) =>
+          await getRequestByUnderwriterId({ uid }),
       },
       storage: {
         generateUrl,
@@ -167,21 +183,23 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
       getRequestsByAgentId,
       generateUrl,
       updateRequestStatus,
+      getRequestByUnderwriterId,
     ],
   );
 
   const createSubject = useMutation(api.subjects.create.default);
   const getSubjectById = useMutation(api.subjects.get.byId);
-  const subref = api.subjects.get.byIds;
+  const getSubjectsByIds = useMutation(api.subjects.get.byIds);
 
   const subject = useMemo(
     () => ({
       create: async (args: InsertSubject) => await createSubject(args),
       get: {
         byId: async (id: string) => await getSubjectById({ subject_id: id }),
+        byIds: async (ids: string[]) => await getSubjectsByIds({ ids }),
       },
     }),
-    [createSubject, getSubjectById],
+    [createSubject, getSubjectById, getSubjectsByIds],
   );
 
   const createAuto = useMutation(api.autos.create.default);
@@ -206,6 +224,7 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
   const updateGroupCode = useMutation(api.users.update.groupCode);
   const updateRole = useMutation(api.users.update.role);
   const updateCommission = useMutation(api.users.update.commission);
+  const addMetadata = useMutation(api.users.add.metadata);
 
   const usr = useMemo(
     () => ({
@@ -226,9 +245,16 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
         commission: async (uid: string, commission_pct: number) =>
           await updateCommission({ uid, commission_pct }),
       },
+      add: {
+        metadata: async (
+          uid: string,
+          record: Record<string, string | number | boolean>,
+        ) => await addMetadata({ uid, record }),
+      },
       //
     }),
     [
+      addMetadata,
       createUser,
       getUserById,
       updateUser,
@@ -271,9 +297,39 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
     [createNotification, getNotificationByReceiverId],
   );
 
+  const generateFileUrl = useMutation(api.files.create.url);
+  const getFileUrl = useMutation(api.files.get.url);
+
+  const createUrl = useCallback(
+    async (file?: File) => {
+      if (!file) return null;
+      const postUrl = await generateFileUrl();
+      const result = (
+        await fetch(postUrl, {
+          method: "POST",
+          body: file,
+          headers: {
+            "Content-Type": file?.type ?? "image/*",
+          },
+        })
+      ).json() as Promise<{ storageId: string }>;
+      return (await result).storageId;
+    },
+    [generateFileUrl],
+  );
+
+  const files = useMemo(
+    () => ({
+      create: async (file?: File) => await createUrl(file),
+      get: async (storageId: string) => await getFileUrl({ storageId }),
+    }),
+    [createUrl, getFileUrl],
+  );
+
   return (
     <VexCtx.Provider
       value={{
+        files,
         address,
         logs,
         notifications,
@@ -282,7 +338,6 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
         auto,
         usr,
         updating,
-        subref,
       }}
     >
       {children}

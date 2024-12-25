@@ -117,7 +117,7 @@ export const ToolbarSearch = (props: ToolbarSearchProps) => {
 export const Toolbar = memo(ToolbarComponent);
 
 export const StaticToolbar = ({
-  closeFn = () => null,
+  closeFn,
   children,
   title,
   variant = "demigod",

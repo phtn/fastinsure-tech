@@ -13,6 +13,7 @@ interface PdfProps {
   subject: FC;
   title: string;
   description?: string;
+  id: string | undefined;
 }
 export const PdfObject = ({
   title,
@@ -21,6 +22,7 @@ export const PdfObject = ({
   auto,
   address,
   subject,
+  id,
 }: PdfProps) => {
   const componentRef = useRef(null);
   const [pdfBlob, setPdfBlob] = useState<string | null>(null);
@@ -47,7 +49,7 @@ export const PdfObject = ({
     pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
 
     // If the content is long, handle page breaks
-    while (imgHeight > pageHeight) {
+    if (imgHeight > pageHeight) {
       position -= pageHeight;
       pdf.addPage();
       pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
@@ -64,54 +66,27 @@ export const PdfObject = ({
   return (
     <div>
       {/* Section to generate PDF */}
-      <div
-        ref={componentRef}
-        className="border-[0.33px] border-primary-300 p-5 shadow-md"
-      >
-        <header className="flex h-fit items-start justify-between pt-4">
-          <div className="flex items-center space-x-1">
-            <Image
-              alt="fastinsure-logo"
-              src="/svg/f_v2.svg"
-              radius="none"
-              style={{ height: "28px" }}
-            />
-            <div
-              style={{
-                height: 32,
-                flexDirection: "column",
-                fontSize: "12px",
-                color: "#6F7385",
-              }}
-              className="flex flex-col justify-center font-inst text-xs leading-none tracking-tight"
-            >
-              <div>FastInsure</div>
-              <div style={{ height: "2px" }} />
-              <div>Technologies</div>
-            </div>
+      <div ref={componentRef}>
+        <div className="border-[0.33px] border-primary-300 p-5 shadow-md">
+          <FileHeader page={1} title={title} id={id} />
+          <div className="flex h-full justify-between">
+            <div className="h-full pt-5">{subject({})}</div>
+            <div className="h-full pt-5">{address({})}</div>
           </div>
-          <div>
-            <div className="font-inst font-semibold tracking-tight">
-              {title}
-            </div>
-            <div className="font-jet text-[10px]">ID: {description}</div>
-          </div>
-          <div style={{ height: 48 }}>
-            <div className="font-jet text-[10px] font-thin text-primary">
-              {moment(Date.now()).format("MMMM Do YYYY, h:mm:ss a")}
-            </div>
-          </div>
-        </header>
-        <div className="h-4 border-b-[0.33px] border-primary"></div>
-        <div className="py-2"></div>
-        <div className="flex h-full justify-between">
-          <div className="h-full pt-5">{subject({})}</div>
-          <div className="h-full pt-5">{address({})}</div>
-        </div>
-        <div className="h-full pt-5">{request({})}</div>
-        <div className="h-full">{auto({})}</div>
-      </div>
+          <div className="h-full pt-5">{request({})}</div>
 
+          <div className="flex h-[7.25rem] w-full items-end justify-center">
+            <div className="h-px w-full border-b-[0.33px] border-dashed border-primary-300/60" />
+          </div>
+        </div>
+
+        <div className="border-[0.33px] border-primary-300 p-5 shadow-md">
+          <FileHeader page={2} title={title} id={id} />
+          <section className="py-4">
+            <div className="h-full">{auto({})}</div>
+          </section>
+        </div>
+      </div>
       {/* Buttons */}
       <div className="flex h-24 items-center justify-end pt-4">
         <ButtSex
@@ -148,3 +123,51 @@ export const PdfObject = ({
     </div>
   );
 };
+
+const FileHeader = (props: {
+  page: number;
+  title: string;
+  id: string | undefined;
+}) => (
+  <div>
+    <header className="flex h-fit items-start justify-between pt-4">
+      <div className="flex items-center space-x-1">
+        <Image
+          alt="fastinsure-logo"
+          src="/svg/f_v2.svg"
+          radius="none"
+          style={{ height: "28px" }}
+        />
+        <div
+          style={{
+            height: 32,
+            flexDirection: "column",
+            fontSize: "12px",
+            color: "#6F7385",
+          }}
+          className="flex flex-col justify-center font-inst text-xs leading-none tracking-tight"
+        >
+          <div>FastInsure</div>
+          <div style={{ height: "2px" }} />
+          <div>Technologies</div>
+        </div>
+      </div>
+      <div className="space-y-1">
+        <div className="font-inst font-semibold tracking-tight">
+          {props.title}
+        </div>
+        <div className="font-jet text-[10px]">ID: {props.id}</div>
+      </div>
+      <div style={{ height: 48 }}>
+        <div className="font-jet text-[10px] font-thin text-primary">
+          {moment(Date.now()).format("MMMM Do YYYY, h:mm:ss a")}
+        </div>
+        <div className="font-jet text-[10px] font-thin text-primary">
+          Page {props.page} of 2
+        </div>
+      </div>
+    </header>
+
+    <div className="h-4 border-b-[0.33px] border-primary py-1"></div>
+  </div>
+);

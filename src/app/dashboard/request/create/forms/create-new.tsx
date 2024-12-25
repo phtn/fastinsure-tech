@@ -1,6 +1,5 @@
 "use client";
 
-import type { DualIcon } from "@/app/types";
 import { cn } from "@/lib/utils";
 import { ConfirmButton } from "@/ui/button";
 import { ButtSex } from "@/ui/button/index";
@@ -33,6 +32,7 @@ import {
   useActionState,
   useCallback,
   useEffect,
+  useMemo,
 } from "react";
 import {
   type FieldValues,
@@ -74,6 +74,7 @@ import { useFile } from "@request/hooks/useFile";
 import { type SubmitType, useForm } from "@request/hooks/useForm";
 import { useGeolocator } from "@request/hooks/useGeolocator";
 import { useScanner } from "@request/hooks/useScanner";
+import { type ButtonProps } from "@/ui/button/ripple";
 
 const defaultValues = {
   ...assured_contact,
@@ -103,7 +104,7 @@ export const CreateNew = () => {
     size,
   } = useFile();
 
-  const { submitAction, setSubmitType } = useForm(selectedFile);
+  const { submitAction, submitType, setSubmitType } = useForm(selectedFile);
   const [_, actionFn, pending] = useActionState(submitAction, {});
 
   const handlePostalCodeChange = useCallback(
@@ -117,9 +118,10 @@ export const CreateNew = () => {
 
   const handleSetSubmitType = useCallback(
     (type: SubmitType) => () => {
+      console.log(submitType);
       setSubmitType(type);
     },
-    [setSubmitType],
+    [setSubmitType, submitType],
   );
 
   const applyResults = useCallback(
@@ -177,33 +179,39 @@ export const CreateNew = () => {
     return <>{options.get(!!result)}</>;
   }, [loading, result]);
 
+  const saveDisabled = useMemo(() => submitType === "save", [submitType]);
+  const submitDisabled = useMemo(() => submitType === "submit", [submitType]);
+
   return (
     <main className="flex h-[calc(93vh)] w-full overflow-y-scroll border-t-[0.33px] border-primary-200/50 bg-chalk p-6 dark:bg-void">
       <form action={actionFn} className="w-full">
         <FlexRow className="absolute -top-4 right-0 z-[250] h-24 w-fit items-center space-x-6 xl:space-x-36">
-          <ButtSex>
-            <span className="text-[10px] font-normal">
-              <span className="font-bold">id</span>: {request_id}
-            </span>
-          </ButtSex>
           <UnderwriterSelect />
           <section className="flex items-center space-x-4 px-10">
             <SButton
               fn={handleSetSubmitType("save")}
               end={ArrowDownOnSquareIcon}
-              loading={pending}
+              loading={pending && saveDisabled}
+              disabled={saveDisabled}
             >
               <SButtonLabel
-                label={pending ? "Saving data..." : "Save as draft"}
+                label={pending ? "Saving data...." : "Save as draft"}
               />
             </SButton>
             <SButton
               inverted
               fn={handleSetSubmitType("submit")}
               end={PaperAirplaneIcon}
-              loading={pending}
+              disabled={submitDisabled}
+              loading={pending && submitDisabled}
             >
-              <SButtonLabel label="Submit Request" />
+              <SButtonLabel
+                label={
+                  pending && submitDisabled
+                    ? "Submitting...."
+                    : "Submit Request"
+                }
+              />
             </SButton>
           </section>
         </FlexRow>
@@ -376,31 +384,12 @@ const HiddenInputGroup = (props: {
   );
 };
 
-interface SButtonProps {
+interface SButtonProps extends ButtonProps {
   fn: (e: MouseEvent<HTMLButtonElement>) => void;
-  inverted?: boolean;
   children?: ReactNode;
-  start?: DualIcon;
-  end?: DualIcon;
-  loading: boolean;
 }
-const SButton = ({
-  fn,
-  inverted,
-  start,
-  end,
-  loading,
-  children,
-}: SButtonProps) => (
-  <ButtSex
-    size="sm"
-    end={end}
-    start={start}
-    type="submit"
-    onMouseEnter={fn}
-    inverted={inverted}
-    loading={loading}
-  >
+const SButton = ({ fn, children, inverted }: SButtonProps) => (
+  <ButtSex inverted={inverted} size="sm" type="submit" onMouseEnter={fn}>
     {children}
   </ButtSex>
 );
@@ -417,10 +406,11 @@ const UnderwriterSelect = () => {
     <Select
       size="sm"
       variant="flat"
-      aria-label="underwriters"
       color="primary"
       isLoading={pending}
+      aria-label="underwriters"
       items={underwriters ?? []}
+      defaultSelectedKeys={[underwriters?.[0]?.id ?? ""]}
       placeholder="Select underwriter"
       className="z-[200] w-[16rem] rounded-lg border-[0.33px] border-steel bg-goddess placeholder:text-xs placeholder:tracking-tight dark:bg-transparent"
       selectedKeys={[underwriter_id]}

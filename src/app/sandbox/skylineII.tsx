@@ -16,7 +16,7 @@ const ToweringCubes = () => {
 
   const createBuildings = (side: "left" | "right") => {
     const buildings = [];
-    const offsetX = side === "left" ? -100 : 20;
+    const offsetX = side === "left" ? -80 : 30;
 
     const fib: number[] = [1, 1, 2, 3, 5, 8, 13, 25, 38, 63];
 
@@ -31,8 +31,12 @@ const ToweringCubes = () => {
           key={`${side}-${i}`}
         >
           <boxGeometry args={[20, (height * height) / 10, 15]} />
-          <meshBasicMaterial color="tomato" transparent opacity={0.2} />
-          <Edges color="white" />
+          <meshBasicMaterial color="black" transparent opacity={0.0} />
+          <Edges
+            color={
+              i % 7 === 0 ? "#14141b" : i % 8 === 0 ? "cyan" : "papayawhip"
+            }
+          />
         </mesh>,
       );
     }
@@ -57,7 +61,7 @@ const SkylineEffect = () => {
         far: 1000,
       }}
     >
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={0.2} />
       <ToweringCubes />
     </Canvas>
   );
@@ -65,7 +69,7 @@ const SkylineEffect = () => {
 
 export default function SkylineII() {
   return (
-    <div style={{ width: "100vw", height: "100vh", backgroundColor: "black" }}>
+    <div style={{ width: "100%", height: "100%", backgroundColor: "#9ca3af" }}>
       <SkylineEffect />
     </div>
   );

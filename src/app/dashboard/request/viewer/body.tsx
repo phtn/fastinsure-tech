@@ -20,14 +20,14 @@ import { PencilIcon } from "@heroicons/react/24/solid";
 import { Accordion, AccordionItem, Avatar } from "@nextui-org/react";
 import { FileSymlinkIcon } from "lucide-react";
 import moment from "moment";
-import { type FC, use, useCallback, useMemo } from "react";
+import { type FC, use, useCallback, useMemo, useState } from "react";
 import { RequestViewerCtx } from "./ctx";
 import { PdfObject } from "./object";
 import type { SelectRequest } from "@convex/requests/d";
 import type { SelectAuto } from "@convex/autos/d";
 import type { SelectAddress } from "@convex/address/d";
 import type { SelectSubject } from "@convex/subjects/d";
-import { opts } from "@/utils/helpers";
+import { opts, toggleState } from "@/utils/helpers";
 
 interface DetailItem {
   value: string;
@@ -54,6 +54,7 @@ export const ContentBody = () => {
     vxusers,
     submitRequest,
     loading,
+    role,
   } = use(RequestViewerCtx)!;
   const vxund = underwriters?.find((u) => u.uid === vxrequest?.underwriter_id);
   const vxusr = vxusers?.find((u) => u.uid === vxrequest?.agent_id);
@@ -177,7 +178,8 @@ export const ContentBody = () => {
         request={ReqFieldsPDF}
         subject={SubjectFieldsPDF}
         title="Policy Request Info"
-        description={vxrequest?.request_id}
+        description=""
+        id={vxrequest?.request_id}
       />
     ),
     [
@@ -259,7 +261,14 @@ export const ContentBody = () => {
             />
             <CreatedAt created={vxrequest?._creationTime} />
             <UserPill vx={vxusr} label="created by" />
-            <UserPill vx={vxund} label="underwriter" />
+            <UserPill
+              vx={
+                role === "underwriter"
+                  ? vxund
+                  : vxusers?.find((u) => u.role === "supervisor")
+              }
+              label={role === "underwriter" ? "supervisor" : "underwriter"}
+            />
             <Status status={vxrequest?.status} />
           </FlexRow>
           <UpdateButton />
@@ -375,13 +384,24 @@ const PolicyPill = (props: { type: string | undefined; label: string }) => {
   );
 };
 
-const CreatedAt = (props: { created: number | undefined }) => {
+const CreatedAt = ({ created }: { created: number | undefined }) => {
+  const [toggle, setToggle] = useState(false);
+  const handleToggle = useCallback(() => toggleState(setToggle), [setToggle]);
   return (
-    <ButtSex size="lg" start={ClockIcon}>
-      <div className="w-full text-left">
-        <p>{moment(props.created).calendar()}</p>
+    <ButtSex size="lg" start={ClockIcon} onClick={handleToggle}>
+      <div className="w-40 text-left">
+        {toggle ? (
+          <p className="">{moment(created).format("lll")}</p>
+        ) : (
+          <p>
+            {moment(created).format("dddd")}
+            <span className="px-2 dark:text-adam">⏺</span>
+
+            <span className="lowercase">{moment(created).fromNow()}</span>
+          </p>
+        )}
         <p className="font-jet text-[11px] font-normal lowercase drop-shadow-sm dark:text-warning-300">
-          created at
+          {toggle ? "created on" : "created on"}
         </p>
       </div>
     </ButtSex>
@@ -444,7 +464,10 @@ const Fields: FC<{
   return (
     <div className="mb-4">
       <div className="overflow-hidden rounded-xl border-[0.33px] border-primary-300 dark:border-adam/60">
-        <div className="flex h-[39px] w-full items-center bg-void px-4 font-medium tracking-tight text-chalk dark:bg-adam/60 dark:text-warning-300">
+        <div
+          style={{ paddingBottom: pdf ? 10 : 0 }}
+          className="flex h-[39px] w-full items-center bg-void px-4 font-medium tracking-tight text-chalk dark:bg-adam/60 dark:text-warning-300"
+        >
           {title}
         </div>
         {renderFilteredRows(pdf ? "h-6 text-xs items-center" : "h-10 text-sm")}

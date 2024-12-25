@@ -11,12 +11,18 @@ export const byId = mutation({
       .first(),
 });
 
-export const byIds = query({
+export const byIds = mutation({
   args: { ids: v.array(v.string()) },
   handler: async ({ db }, { ids }) => {
     return await db
       .query("subjects")
       .filter((q) => q.or(...ids.map((id) => q.eq("subject_id", id))))
+      .order("desc")
       .collect();
   },
+});
+
+export const all = query({
+  args: {},
+  handler: async ({ db }) => await db.query("subjects").collect(),
 });

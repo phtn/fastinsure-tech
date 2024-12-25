@@ -1,3 +1,4 @@
+import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useVex } from "@/app/ctx/convex";
 import { Err, Ok } from "@/utils/helpers";
 import type { SelectAddress } from "@convex/address/d";
@@ -28,6 +29,7 @@ interface RequestViewerValues {
   underwriters: SelectUser[] | null;
   submitRequest: () => Promise<void>;
   loading: boolean;
+  role: string | undefined;
 }
 export const RequestViewerCtx = createContext<RequestViewerValues | null>(null);
 export interface RequestViewProps {
@@ -46,6 +48,10 @@ export const RequestViewerContext = ({
   const [vxusers, setvxusers] = useState<SelectUser[] | null>(null);
   const [underwriters, setUnderwriters] = useState<SelectUser[] | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const { vxuser } = useAuthCtx();
+
+  const role = useMemo(() => vxuser?.role, [vxuser?.role]);
 
   const address_id = useMemo(
     () => vxrequest?.request_id.split("-")[0],
@@ -131,21 +137,32 @@ export const RequestViewerContext = ({
       .catch(Err(setLoading, "Update failed."));
   }, [vxrequest?.request_id, request.update]);
 
-  return (
-    <RequestViewerCtx
-      value={{
-        pending,
-        vxrequest,
-        vxaddress,
-        vxauto,
-        vxsubject,
-        vxusers,
-        underwriters,
-        submitRequest,
-        loading,
-      }}
-    >
-      {children}
-    </RequestViewerCtx>
+  const value = useMemo(
+    () => ({
+      pending,
+      vxrequest,
+      vxaddress,
+      vxauto,
+      vxsubject,
+      vxusers,
+      underwriters,
+      submitRequest,
+      loading,
+      role,
+    }),
+    [
+      pending,
+      vxrequest,
+      vxaddress,
+      vxauto,
+      vxsubject,
+      vxusers,
+      underwriters,
+      submitRequest,
+      loading,
+      role,
+    ],
   );
+
+  return <RequestViewerCtx value={value}>{children}</RequestViewerCtx>;
 };

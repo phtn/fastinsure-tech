@@ -73,7 +73,7 @@ export const ButtSqx = (props: ButtIconProps) => {
           { "size-5": size === "md" },
           { "size-6": size === "lg" },
           { "text-icon/50 dark:text-icon-dark/50": disabled },
-          { "text-icon-dark": inverted },
+          { "text-void dark:text-void": inverted },
           { "text-secondary dark:text-secondary": variant === "active" },
         )}
       />,
@@ -98,19 +98,20 @@ export const ButtSqx = (props: ButtIconProps) => {
     >
       <Squircle
         className={cn(
-          "pointer-events-none absolute size-1 text-transparent opacity-5",
+          "pointer-events-none absolute size-0 text-transparent opacity-40",
           "transition-all duration-200 transform-gpu",
           "group-hover:opacity-100",
           { "group-hover:size-8": size === "sm" },
           { "group-hover:size-[40px]": size === "md" },
           { "group-hover:size-[48px]": size === "lg" },
-          "fill-god/80",
+          // "fill-god/80",
+          // { "size-8 fill-adam": inverted },
           { "fill-demigod/80": variant === "demigod" },
           { "fill-god/80": variant === "goddess" },
           { "size-8 fill-god": variant === "active" },
           "dark:fill-primary-300/30",
           {
-            "group-hover:fill-primary-300/20 dark:group-hover:fill-primary-300/50":
+            "stroke-white group-hover:fill-steel/20 group-hover:stroke-1 dark:group-hover:fill-steel/60":
               inverted,
           },
         )}

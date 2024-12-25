@@ -19,6 +19,7 @@ import { Err, opts } from "@/utils/helpers";
 import { DevCommands } from "@/debug/fn";
 import { ServerHealth, ServerIcon } from "./server-status";
 import { ButtSqx } from "@/ui/button/button";
+import { useRouter } from "next/navigation";
 
 const DATA = {
   navbar: [{ href: "/dashboard/account", icon: UserIcon, label: "Profile" }],
@@ -49,6 +50,7 @@ export function ActionBar() {
   const { livez, checkServerStatus } = useServer();
   const [elapsed, setElapsed] = useState(0);
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   const DevCMD = useCallback(
     () => <DevCommands open={open} setOpen={setOpen} />,
@@ -81,11 +83,29 @@ export function ActionBar() {
     return <>{options.get(!!livez)}</>;
   }, [livez, elapsed]);
 
+  const prefetchRoute = useCallback(
+    (route: string) => () => {
+      router.prefetch(route);
+    },
+    [router],
+  );
+
+  const handleIconClick = useCallback(
+    (route: string) => () => {
+      router.push(route);
+    },
+    [router],
+  );
+
   return (
     <div className="fixed bottom-8 right-8 z-[300] flex h-fit w-fit flex-col items-center justify-center rounded-lg dark:bg-background">
       <Dock direction="middle">
         {DATA.navbar.map((item) => (
-          <DockIcon key={item.label}>
+          <DockIcon
+            key={item.label}
+            prefetch={prefetchRoute(item.href)}
+            onClick={handleIconClick(item.href)}
+          >
             <Icon href={item.href} icon={item.icon} />
           </DockIcon>
         ))}
@@ -120,7 +140,7 @@ interface DockIcon {
   href: string;
   icon: DualIcon;
 }
-const Icon = ({ icon }: DockIcon) => <ButtSqx size="md" inverted icon={icon} />;
+const Icon = ({ icon }: DockIcon) => <ButtSqx size="md" icon={icon} />;
 
 interface ActionButton {
   livez: LivezResponse | null;

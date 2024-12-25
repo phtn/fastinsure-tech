@@ -34,6 +34,9 @@ export const ServiceTypeSchema = v.union(
 );
 export type ServiceType = Infer<typeof ServiceTypeSchema>;
 
+export const MetadataSchema = v.optional(v.record(v.string(), v.any()));
+export type Metadata = Infer<typeof MetadataSchema>;
+
 export const request_schema = v.object({
   request_id: v.string(),
   policy_id: v.optional(v.string()),
@@ -61,7 +64,7 @@ export const request_schema = v.object({
   updated_at: v.float64(),
   date_delivered: v.optional(v.string()),
   remarks: v.optional(v.string()),
-  metadata: v.optional(v.record(v.string(), v.any())),
+  metadata: MetadataSchema,
   _creationTime: v.float64(),
 });
 

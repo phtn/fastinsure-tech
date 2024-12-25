@@ -7,10 +7,9 @@ import {
   ArrowLongUpIcon,
   ChevronDoubleUpIcon,
   ChevronUpIcon,
-  PencilIcon,
   TruckIcon,
 } from "@heroicons/react/24/outline";
-import { SparklesIcon } from "@heroicons/react/24/solid";
+import { PencilIcon, SparklesIcon } from "@heroicons/react/24/solid";
 import { User } from "@nextui-org/react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
@@ -51,7 +50,7 @@ const HeaderItem = ({ value, size = "xs", center = false }: TableRowProps) => (
   </div>
 );
 
-const DataTableHeader = () => {
+const DataTableHeader = (props: { role: string | undefined }) => {
   return (
     <div className="flex h-8 items-center justify-start border-b-[0.33px] border-dotted border-primary-300 tracking-tight">
       <HeaderItem value="id" center />
@@ -62,7 +61,10 @@ const DataTableHeader = () => {
       <HeaderItem size="md" value="service" center />
       <HeaderItem size="lg" value="status" center />
       <HeaderItem size="2xl" value="agent" />
-      <HeaderItem size="2xl" value="underwriter" />
+      <HeaderItem
+        size="2xl"
+        value={props.role === "underwriter" ? "supervisor" : "underwriter"}
+      />
     </div>
   );
 };
@@ -93,7 +95,7 @@ const RequestIdCell = (props: { id: string }) => {
   return (
     <div
       onClick={viewRequest}
-      className="flex w-24 items-center justify-center px-2 font-jet text-[11px] font-medium text-secondary drop-shadow-sm hover:cursor-pointer dark:text-secondary-300"
+      className="flex h-8 w-24 items-start justify-center px-2 font-jet text-[11px] font-medium text-secondary drop-shadow-sm hover:cursor-pointer dark:text-secondary-300"
     >
       {props.id.split("-")[0]}
     </div>
@@ -135,7 +137,7 @@ const PolicyCoverageCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "comprehensive":
         return (
-          <div className="flex h-8 items-center gap-2 rounded-lg border border-steel bg-steel/50 px-2">
+          <div className="flex h-8 items-center gap-2 rounded-lg border border-steel bg-steel/50 px-2 dark:bg-steel/15">
             <ChevronDoubleUpIcon className="size-4 stroke-2 dark:text-rose-300" />
             <span className="text-xs font-semibold uppercase tracking-tight">
               full
@@ -172,7 +174,7 @@ const ServiceTypeCell = (props: { type: string | undefined }) => {
         );
       default:
         return (
-          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-indigo-400/80 bg-indigo-100/80 px-2 dark:bg-primary-300/40">
+          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-indigo-400/80 bg-indigo-100/80 px-2 dark:bg-steel/15">
             <RotateCcwSquareIcon className="size-4 stroke-2 text-indigo-600 dark:text-indigo-400" />
             <span className="capitalize tracking-tight">Renew</span>
           </div>
@@ -191,7 +193,7 @@ const StatusCell = (props: { status: string | undefined }) => {
     switch (props.status) {
       case "submitted":
         return (
-          <div className="flex h-8 items-center gap-2 rounded-lg border border-secondary/80 bg-secondary-100/80 px-2 dark:bg-primary-300/40">
+          <div className="flex h-8 items-center gap-2 rounded-lg border border-secondary/80 bg-secondary-100/80 px-2 dark:bg-steel/15">
             <span className="text-xs font-semibold capitalize tracking-tight">
               submitted
             </span>
@@ -200,11 +202,11 @@ const StatusCell = (props: { status: string | undefined }) => {
         );
       default:
         return (
-          <div className="flex h-8 items-center gap-2 rounded-lg border border-primary-300 bg-primary-300/40 px-2">
+          <div className="flex h-8 items-center gap-4 rounded-lg border border-primary-300 bg-steel/10 px-2">
             <span className="text-xs font-semibold capitalize tracking-tight">
               draft
             </span>
-            <PencilIcon className="stroke size-4 text-primary-600/80 -rotate-12" />
+            <PencilIcon className="size-3.5 stroke-1 text-primary-600/80 -rotate-[35deg]" />
           </div>
         );
     }
@@ -236,37 +238,36 @@ const DateCell = (props: { date: number | undefined; create?: boolean }) => {
 };
 
 const AssuredCell = (props: { id: string | undefined }) => {
-  const { vxsubjects } = useRequests();
-
+  const data = useRequests().vxsubjects;
+  // const data = useQuery(api.subjects.get.all);
+  //
   const subject = useMemo(
-    () => vxsubjects?.find((s) => s.subject_id === props.id),
-    [props.id, vxsubjects],
+    () => data?.find((s) => s.subject_id === props.id),
+    [props.id, data],
   );
-
-  console.log(vxsubjects);
 
   return (
     <div className="w-48">
       <div
-        className={cn(
-          "text-xs font-medium tracking-tight dark:text-indigo-200",
-        )}
+        className={cn("text-xs font-medium tracking-tight dark:text-indigo-50")}
       >
-        {subject?.email ?? props.id}
+        {data?.length}-{subject?.fullname ?? props.id}
       </div>
       <div className="space-x-1 text-[11px] dark:text-steel">
-        {/* <span>{props.email ?? props.phone_number}</span> */}
+        <span>{subject?.email ?? subject?.phone_number}</span>
       </div>
     </div>
   );
 };
 
 const UserCell = (props: { id: string; agent?: boolean }) => {
-  const { underwriters, vxusers } = useRequests();
+  const { underwriters, vxusers, role } = useRequests();
   const vx = props.agent
     ? vxusers?.find((u) => u.uid === props.id)
-    : underwriters?.find((u) => u.uid === props.id);
-  return (
+    : role === "underwriter"
+      ? vxusers?.find((u) => u.role === "supervisor")
+      : underwriters?.find((u) => u.uid === props.id);
+  return props.id !== "" ? (
     <User
       id={vx?.uid}
       name={vx?.nickname}
@@ -284,6 +285,10 @@ const UserCell = (props: { id: string; agent?: boolean }) => {
         wrapper: "w-[9rem] truncate",
       }}
     />
+  ) : (
+    <span className="flex h-[36px] items-center rounded-xl border border-primary-300/60 bg-steel/10 px-3 font-jet text-sm">
+      Not set
+    </span>
   );
 };
 
@@ -296,19 +301,25 @@ const DataTableRow = ({ requests }: DataTableRowProps) => {
     <HyperList
       data={requests}
       component={TableRow}
+      container="h-[calc(84vh)] overflow-y-scroll"
       itemStyle="border-b-[0.33px] border-primary-300/60 last:border-0"
+      orderBy="_creationTime"
     />
   );
 };
 
 const DataTable = () => {
-  const { search, searchFn, filterFn, requests } = useRequests();
-  const filteredRequests = filterFn(requests ?? []);
+  const { search, searchFn, filterFn, requests, role } = useRequests();
+  const filteredRequests = filterFn(requests ?? [], 25);
 
   return (
     <div className="w-full rounded-xl border-x-[0.5px] border-b-[0.5px] border-primary-300">
-      <DataToolbar search={search} searchFn={searchFn} />
-      <DataTableHeader />
+      <DataToolbar
+        count={filteredRequests.length}
+        search={search}
+        searchFn={searchFn}
+      />
+      <DataTableHeader role={role} />
       <DataTableRow requests={filteredRequests} />
     </div>
   );

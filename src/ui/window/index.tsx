@@ -109,9 +109,10 @@ interface WindowProps {
   toolbar?: FC<StaticToolbarProps>;
   title?: string;
   icon?: DualIcon;
+  closeFn?: VoidFunction;
 }
 export function Window(props: WindowProps) {
-  const { children, shadow = "xl", title, variant } = props;
+  const { children, shadow = "xl", title, variant, closeFn } = props;
 
   return (
     <AnimatePresence>
@@ -143,7 +144,57 @@ export function Window(props: WindowProps) {
           {props.toolbar ? (
             <props.toolbar title={title} variant={variant} />
           ) : (
-            <StaticToolbar icon={props.icon} title={title} variant={variant} />
+            <StaticToolbar
+              closeFn={closeFn}
+              icon={props.icon}
+              title={title}
+              variant={variant}
+            />
+          )}
+
+          <WindowContent>{children}</WindowContent>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+export function FlatWindow(props: WindowProps) {
+  const { children, shadow = "xl", title, variant, closeFn } = props;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className={cn(
+          "flex w-full items-center justify-center rounded-2xl bg-void",
+        )}
+      >
+        <motion.div
+          initial={{ opacity: 0, borderRadius: 16 }}
+          animate={{ opacity: 1, borderRadius: 16 }}
+          className={cn(
+            "w-full overflow-hidden shadow-xl",
+            "rounded-2xl",
+            { "shadow-xl": shadow === "xl" },
+            { "shadow-lg": shadow === "lg" },
+            { "shadow-md": shadow === "md" },
+            { "shadow-sm": shadow === "sm" },
+            "dark:border-fade-dark/90 dark:bg-void",
+            "border-[0.33px] border-fade-dark/20 bg-chalk",
+          )}
+        >
+          {props.toolbar ? (
+            <props.toolbar title={title} variant={variant} />
+          ) : (
+            <StaticToolbar
+              closeFn={closeFn}
+              icon={props.icon}
+              title={title}
+              variant={variant}
+            />
           )}
 
           <WindowContent>{children}</WindowContent>

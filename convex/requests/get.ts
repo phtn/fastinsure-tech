@@ -22,5 +22,17 @@ export const byAgentId = mutation({
     await db
       .query("requests")
       .withIndex("by_agent_id", (q) => q.eq("agent_id", uid))
+      .order("desc")
       .collect(),
+});
+
+export const byUnderwriterId = mutation({
+  args: { uid: v.string() },
+  handler: async ({ db }, { uid }) => {
+    const reqs = await db
+      .query("requests")
+      .withIndex("by_underwriter_id", (q) => q.eq("underwriter_id", uid))
+      .collect();
+    return reqs.filter((r) => r.status !== "draft");
+  },
 });

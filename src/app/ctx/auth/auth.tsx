@@ -111,23 +111,20 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     setFn(fn, getCustomClaims, setClaims);
   }, []);
 
-  const verify = useCallback(
-    async (u: User) => {
-      const vres = await initVerification(
-        u,
-        setUserRecord,
-        setClaims,
-        setLoading,
-      );
-      const group_code = vres.Data.group_code;
-      if (!vxuser?.group_code && group_code) {
-        await usr.update.groupCode(u.uid, group_code);
-      }
+  const verify = useCallback(async (u: User) => {
+    const vres = await initVerification(
+      u,
+      setUserRecord,
+      setClaims,
+      setLoading,
+    );
+    // const group_code = vres.Data.group_code;
+    // if (!vxuser?.group_code && group_code) {
+    //   await usr.update.groupCode(u.uid, group_code);
+    // }
 
-      setVResult(vres);
-    },
-    [usr, vxuser?.group_code],
-  );
+    setVResult(vres);
+  }, []);
 
   const getvx = useCallback(
     async (uid: string) => {

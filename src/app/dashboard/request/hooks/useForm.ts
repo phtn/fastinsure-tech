@@ -54,10 +54,9 @@ export const useForm = (file?: File) => {
     [logs, submitType, vxuser?.uid, router],
   );
 
-  const submitAction = useCallback(
-    async (defaultValues: object, data: FormData) => {
+  const createPhotoUrl = useCallback(async () => {
+    if (file) {
       const postUrl = await request.storage.generateUrl();
-
       const result = (
         await fetch(postUrl, {
           method: "POST",
@@ -67,8 +66,14 @@ export const useForm = (file?: File) => {
           },
         })
       ).json() as Promise<{ storageId: string }>;
-
       const files: string[] = [(await result).storageId];
+      return files;
+    }
+  }, [file, request.storage]);
+
+  const submitAction = useCallback(
+    async (defaultValues: object, data: FormData) => {
+      const files = await createPhotoUrl();
 
       const fullname = `${data.get("firstname") as string} ${data.get("middlename") as string} ${data.get("lastname") as string}`;
 
@@ -83,6 +88,7 @@ export const useForm = (file?: File) => {
         city: data.get("city") as string,
         state: data.get("state") as string,
         country: data.get("country") as string,
+        postal_code: data.get("postal_code") as string,
       } as InsertAddress;
 
       await address.create(addressData).catch(Err);
@@ -157,7 +163,16 @@ export const useForm = (file?: File) => {
       return defaultValues;
     },
 
-    [submitType, vxuser, address, auto, request, subject, createLog, file],
+    [
+      submitType,
+      vxuser,
+      address,
+      auto,
+      request,
+      subject,
+      createLog,
+      createPhotoUrl,
+    ],
   );
 
   const generateIDs = useCallback((rid: string | null) => {
@@ -174,6 +189,7 @@ export const useForm = (file?: File) => {
     applyScanResultsData,
     submitAction,
     setSubmitType,
+    submitType,
     generateIDs,
   };
 };
