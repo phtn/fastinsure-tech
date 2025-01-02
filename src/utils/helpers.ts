@@ -1,28 +1,20 @@
-// import type { OCR_DE_FieldSchema } from "@/server/resource/ocr";
 import type { Dispatch, ReactElement, SetStateAction } from "react";
-// import { v4 as uuidv4 } from "uuid";
-// import JSZip from "jszip";
-// import { saveAs } from "file-saver";
-import pkg from "../../package.json";
 import { onError, onSuccess, onWarn } from "@/app/ctx/toasts";
-
-// import { type IImageList } from "@/app/account/@dashboard/(hooks)/file-handler";
-// import type { MonthName } from "@/app/types.index";
+import pkg from "../../package.json";
 
 export const getVersion = () => {
   return pkg.version;
 };
-// import { type VehicleSchema } from "@/app/account/@dashboard/(old)/(autos)/active-form";
 
-export const degreesToRadians = (degrees: number | string): number => {
+export const ded2Rad = (deg: number | string): number => {
   const getRad = (d: number) => (d * Math.PI) / 180;
 
-  if (typeof degrees === "string") {
-    const deg = parseInt(degrees);
-    return getRad(deg);
+  if (typeof deg === "string") {
+    const parsed = parseInt(deg);
+    return getRad(parsed);
   }
 
-  return getRad(degrees);
+  return getRad(deg);
 };
 
 export const rawUriDecoder = <T>(params: T) => {

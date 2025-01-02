@@ -14,16 +14,25 @@ interface CommonProps {
 const Component = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
-      "h-fit w-full cursor-pointer overflow-clip",
-      "hover:border-foreground hover:shadow-lg",
-      "dark:primary-300 rounded-md border-[0.33px] border-foreground",
+      "h-fit w-full overflow-clip bg-army",
+      "rounded-md border-[0.33px] border-foreground",
+      "",
+
       "transition-all duration-300 ease-out",
-      "bg-gradient-to-tr from-stone-300/20 via-zinc-300/40 to-slate-300/20",
-      "dark:border-primary-500/50 dark:from-primary-100",
+      "hover:border-foreground hover:shadow-lg",
+      "dark:border-primary-300/60",
     )}
   >
-    <div className="flex h-full items-center space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-6">
-      {children}
+    <div
+      className={cn(
+        "h-fit w-full cursor-pointer",
+        "bg-gradient-to-tr from-stone-300/20 via-zinc-300/40 to-slate-300/20 dark:from-adam",
+        "dark:text-primary-300",
+      )}
+    >
+      <div className="flex h-full items-center space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-6">
+        {children}
+      </div>
     </div>
   </div>
 );
@@ -54,10 +63,7 @@ const Icon = (props: IconProps) => (
   <div className="h-full items-center justify-center rounded-md">
     {
       <props.icon
-        className={cn(
-          "size-8 stroke-1 text-foreground lg:size-7",
-          props.className,
-        )}
+        className={cn("hidden size-8 text-primary xl:flex", props.className)}
       />
     }
   </div>
@@ -94,7 +100,7 @@ const Btn = ({ children, loading, onPress }: BtnProps) => (
     onClick={onPress}
     loading={loading}
     inverted
-    // className={cn("", className)}
+    className={cn("border-void")}
   >
     {children}
   </ButtSex>
@@ -177,10 +183,10 @@ const ComponentII = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
       "h-[30rem] w-full cursor-pointer overflow-clip",
-      "_border-[0.33px] rounded-b-xl border-foreground",
+      "_border-[0.33px] rounded-b-xl border-foreground backdrop-blur-lg",
       "transition-all duration-300 ease-out",
-      "bg-gradient-to-b from-stone-50/10 via-zinc-300/30 to-chalk",
-      "dark:border-primary-500/50 dark:from-void dark:via-void dark:to-zinc-800/10",
+      "bg-gradient-to-b from-stone-50/10 via-cake/40 to-chalk",
+      "dark:border-primary-500/50 dark:from-void/80 dark:via-void dark:to-zinc-800/10",
       "",
     )}
   >

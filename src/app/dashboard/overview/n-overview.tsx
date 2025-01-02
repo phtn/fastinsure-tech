@@ -25,11 +25,10 @@ export const NeoOverview = () => {
   return (
     <div className="overflow-auto p-4 pb-6">
       <Splash text={"Account Activation"}>
-        <FlexRow className="relative -top-3 z-[300] h-full w-2/3 items-start space-x-7 p-4">
+        <FlexRow className="relative -top-3 z-[300] h-full w-2/3 items-start space-x-7 border border-pink-500 p-4">
           <UserCardOptions />
         </FlexRow>
       </Splash>
-      {/* <div className="mx-2 h-4 backdrop-blur-xl" /> */}
       <Widget>
         <Widget.BaseII>
           <HStack.LgCol>

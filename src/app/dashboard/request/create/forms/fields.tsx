@@ -4,12 +4,7 @@ import type {
   PolicyType,
   ServiceType,
 } from "convex/requests/d";
-import {
-  CatIcon,
-  CrossIcon,
-  PlaneTakeoffIcon,
-  RotateCcwIcon,
-} from "lucide-react";
+import { PlaneTakeoffIcon, RotateCcwIcon } from "lucide-react";
 import { SparklesIcon, TruckIcon } from "@heroicons/react/24/solid";
 import { DevicePhoneMobileIcon, UserIcon } from "@heroicons/react/24/outline";
 
@@ -135,14 +130,14 @@ export const request_policy_types: RadioFields<PolicyType, InsertRequest>[] = [
     description: "Travel Insurance",
     disabled: true,
   },
-  {
-    title: "health",
-    icon: CrossIcon,
-    name: "policy_type",
-    type: "radio",
-    description: "Health Insurance",
-    disabled: true,
-  },
+  // {
+  //   title: "health",
+  //   icon: CrossIcon,
+  //   name: "policy_type",
+  //   type: "radio",
+  //   description: "Health Insurance",
+  //   disabled: true,
+  // },
   {
     title: "device",
     icon: DevicePhoneMobileIcon,
@@ -151,14 +146,14 @@ export const request_policy_types: RadioFields<PolicyType, InsertRequest>[] = [
     description: "Phone Insurance",
     disabled: true,
   },
-  {
-    title: "pet",
-    icon: CatIcon,
-    name: "policy_type",
-    type: "radio",
-    description: "Pet Insurance",
-    disabled: true,
-  },
+  // {
+  //   title: "pet",
+  //   icon: CatIcon,
+  //   name: "policy_type",
+  //   type: "radio",
+  //   description: "Pet Insurance",
+  //   disabled: true,
+  // },
 ];
 
 export interface RequestFields {

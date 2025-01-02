@@ -3,20 +3,14 @@ import { cn } from "@/lib/utils";
 import { FlexRow } from "@/ui/flex";
 import { HyperList } from "@/ui/list";
 import { type SelectRequest } from "@convex/requests/d";
-import {
-  ArrowLongUpIcon,
-  ChevronDoubleUpIcon,
-  ChevronUpIcon,
-  TruckIcon,
-} from "@heroicons/react/24/outline";
-import { PencilIcon, SparklesIcon } from "@heroicons/react/24/solid";
+import { ArrowLongUpIcon } from "@heroicons/react/24/outline";
+import { PencilIcon } from "@heroicons/react/24/solid";
 import { User } from "@nextui-org/react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, type PropsWithChildren } from "react";
+import { memo, useCallback, useMemo, type PropsWithChildren } from "react";
 import { DataToolbar } from "./data-table.tsx/toolbar";
 import { useRequests } from "./useRequests";
-import { RotateCcwSquareIcon } from "lucide-react";
 
 export const All = () => {
   return (
@@ -50,29 +44,15 @@ const HeaderItem = ({ value, size = "xs", center = false }: TableRowProps) => (
   </div>
 );
 
-const DataTableHeader = (props: { role: string | undefined }) => {
-  return (
-    <div className="flex h-8 items-center justify-start border-b-[0.33px] border-dotted border-primary-300 tracking-tight">
-      <HeaderItem value="id" center />
-      <HeaderItem size="lg" value="created at" />
-      <HeaderItem size="xl" value="assured" />
-      <HeaderItem size="md" value="type" center />
-      <HeaderItem size="md" value="coverage" center />
-      <HeaderItem size="md" value="service" center />
-      <HeaderItem size="lg" value="status" center />
-      <HeaderItem size="2xl" value="agent" />
-      <HeaderItem
-        size="2xl"
-        value={props.role === "underwriter" ? "supervisor" : "underwriter"}
-      />
-    </div>
-  );
-};
-
 const TableRow = (request: SelectRequest) => {
+  const router = useRouter();
+  const routeToRequest = useCallback(() => {
+    const route = `/dashboard/request/viewer?rid=${request?.request_id}`;
+    router.push(route);
+  }, [router, request?.request_id]);
   return (
     <div className="flex h-20 items-center justify-start">
-      <RequestIdCell id={request?.request_id} />
+      <RequestIdCell routeFn={routeToRequest} id={request?.request_id} />
       <DateCell date={request?._creationTime} create />
       <AssuredCell id={request?.subject_id} />
       <PolicyTypeCell type={request?.policy_type} />
@@ -85,20 +65,16 @@ const TableRow = (request: SelectRequest) => {
   );
 };
 
-const RequestIdCell = (props: { id: string }) => {
-  const router = useRouter();
-  const route = `/dashboard/request/viewer?rid=${props.id}`;
-  router.prefetch(route);
-  const viewRequest = useCallback(() => {
-    router.push(route);
-  }, [router, route]);
+const MemoizedTableRow = memo(TableRow);
+
+const RequestIdCell = (props: { id: string; routeFn: VoidFunction }) => {
   return (
-    <div
-      onClick={viewRequest}
-      className="flex h-8 w-24 items-start justify-center px-2 font-jet text-[11px] font-medium text-secondary drop-shadow-sm hover:cursor-pointer dark:text-secondary-300"
+    <button
+      onClick={props.routeFn}
+      className="flex h-8 w-24 items-start justify-center px-2 font-jet text-[11px] font-medium text-adam underline-offset-2 drop-shadow-sm hover:cursor-pointer hover:underline dark:text-secondary-300"
     >
       {props.id.split("-")[0]}
-    </div>
+    </button>
   );
 };
 
@@ -107,9 +83,8 @@ const PolicyTypeCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "auto":
         return (
-          <div className="flex h-8 items-center gap-2 rounded-lg border border-slate-400 bg-slate-400/30 px-2">
-            <TruckIcon className="size-4" />
-            <span className="text-xs font-semibold capitalize tracking-tight">
+          <div className="flex h-fit items-center gap-2 rounded-lg bg-gradient-to-tr from-army/30 via-cake/10 to-transparent px-1">
+            <span className="font-inst text-sm font-semibold capitalize tracking-tight">
               auto
             </span>
           </div>
@@ -117,7 +92,6 @@ const PolicyTypeCell = (props: { type: string | undefined }) => {
       default:
         return (
           <div className="flex h-8 items-center gap-2 rounded-lg bg-primary-100 px-2">
-            <TruckIcon className="size-4" />
             <span className="text-xs font-semibold capitalize tracking-tight">
               auto
             </span>
@@ -137,8 +111,7 @@ const PolicyCoverageCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "comprehensive":
         return (
-          <div className="flex h-8 items-center gap-2 rounded-lg border border-steel bg-steel/50 px-2 dark:bg-steel/15">
-            <ChevronDoubleUpIcon className="size-4 stroke-2 dark:text-rose-300" />
+          <div className="bg-coal flex h-7 items-center gap-2 rounded-lg px-2 dark:bg-steel/15">
             <span className="text-xs font-semibold uppercase tracking-tight">
               full
             </span>
@@ -146,8 +119,7 @@ const PolicyCoverageCell = (props: { type: string | undefined }) => {
         );
       default:
         return (
-          <div className="flex h-8 items-center gap-2 rounded-lg border border-steel bg-steel/15 px-2">
-            <ChevronUpIcon className="size-4 stroke-2 dark:text-secondary-300" />
+          <div className="flex h-7 items-center gap-2 rounded-lg px-2">
             <span className="text-xs font-semibold capitalize tracking-tight">
               CTPL
             </span>
@@ -167,16 +139,18 @@ const ServiceTypeCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "new":
         return (
-          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-warning/80 bg-warning-100/60 px-2 dark:bg-primary-300/40">
-            <SparklesIcon className="size-4 stroke-2 text-warning-700 drop-shadow-sm dark:text-warning-100" />
-            <span className="capitalize tracking-tight">new</span>
+          <div className="to-cool flex h-fit items-center gap-1.5 rounded-md bg-gradient-to-tr from-orange-300/50 via-orange-200/10 px-1 dark:bg-primary-300/40">
+            <span className="font-inst text-sm font-semibold capitalize tracking-tight text-orange-950">
+              new
+            </span>
           </div>
         );
       default:
         return (
-          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-indigo-400/80 bg-indigo-100/80 px-2 dark:bg-steel/15">
-            <RotateCcwSquareIcon className="size-4 stroke-2 text-indigo-600 dark:text-indigo-400" />
-            <span className="capitalize tracking-tight">Renew</span>
+          <div className="flex h-fit items-center gap-1.5 rounded-md bg-gradient-to-tr from-teal-300/50 via-teal-200/10 to-transparent px-1 dark:bg-primary-300/40">
+            <span className="font-inter text-sm capitalize tracking-tight text-teal-950">
+              Renew
+            </span>
           </div>
         );
     }
@@ -193,8 +167,8 @@ const StatusCell = (props: { status: string | undefined }) => {
     switch (props.status) {
       case "submitted":
         return (
-          <div className="flex h-8 items-center gap-2 rounded-lg border border-secondary/80 bg-secondary-100/80 px-2 dark:bg-steel/15">
-            <span className="text-xs font-semibold capitalize tracking-tight">
+          <div className="flex h-fit items-center rounded-md bg-gradient-to-tr from-blue-300/50 via-blue-200/10 to-transparent ps-1 dark:bg-steel/15">
+            <span className="text-sm font-semibold capitalize tracking-tight text-blue-950">
               submitted
             </span>
             <ArrowLongUpIcon className="size-4 stroke-2 text-secondary dark:text-secondary" />
@@ -270,18 +244,20 @@ const UserCell = (props: { id: string; agent?: boolean }) => {
   return props.id !== "" ? (
     <User
       id={vx?.uid}
-      name={vx?.nickname}
+      name={vx?.nickname?.split(" ")[0]}
       description={
-        <div className="text-xs text-secondary drop-shadow-sm hover:opacity-100 hover:drop-shadow-md dark:text-secondary-300">
-          {vx?.email}
+        <div className="flex items-center font-mono text-xs tracking-tight text-adam drop-shadow-sm hover:opacity-100 hover:drop-shadow-md dark:text-secondary-300">
+          {/* {vx?.email} */}
+          {/* <ChatBubbleBottomCenterTextIcon className="size-4" /> */}
         </div>
       }
       avatarProps={{
         src: vx?.photo_url,
         size: "sm",
+        className: "size-4",
       }}
       classNames={{
-        name: " font-semibold text-primary/80 capitalize tracking-tight",
+        name: " font-semibold text-primary/90 font-inter capitalize tracking-tight",
         wrapper: "w-[9rem] truncate",
       }}
     />
@@ -300,11 +276,30 @@ const DataTableRow = ({ requests }: DataTableRowProps) => {
   return (
     <HyperList
       data={requests}
-      component={TableRow}
+      component={MemoizedTableRow}
       container="h-[calc(84vh)] overflow-y-scroll"
       itemStyle="border-b-[0.33px] border-primary-300/60 last:border-0"
       orderBy="_creationTime"
     />
+  );
+};
+
+const DataTableHeader = (props: { role: string | undefined }) => {
+  return (
+    <div className="flex h-8 items-center justify-start border-b-[0.33px] border-dotted border-primary-300 bg-steel/20 tracking-tight text-adam dark:bg-adam">
+      <HeaderItem value="id" center />
+      <HeaderItem size="lg" value="created at" />
+      <HeaderItem size="xl" value="assured" />
+      <HeaderItem size="md" value="type" center />
+      <HeaderItem size="md" value="coverage" center />
+      <HeaderItem size="md" value="service" center />
+      <HeaderItem size="lg" value="status" center />
+      <HeaderItem size="2xl" value="agent" />
+      <HeaderItem
+        size="2xl"
+        value={props.role === "underwriter" ? "supervisor" : "underwriter"}
+      />
+    </div>
   );
 };
 
@@ -313,7 +308,7 @@ const DataTable = () => {
   const filteredRequests = filterFn(requests ?? [], 25);
 
   return (
-    <div className="w-full rounded-xl border-x-[0.5px] border-b-[0.5px] border-primary-300">
+    <div className="w-full rounded-xl">
       <DataToolbar
         count={filteredRequests.length}
         search={search}

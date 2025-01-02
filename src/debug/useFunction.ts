@@ -10,7 +10,7 @@ import {
   type UserVerificationResponse,
   type LivezResponse,
 } from "@/server/secure/resource";
-import { type NavItem } from "@/ui/sidebar";
+import { type INavItem } from "@/ui/sidebar/types";
 import type { SelectUser, UserRole } from "@convex/users/d";
 import { CircleStackIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { IdentificationIcon } from "@heroicons/react/24/solid";
@@ -38,7 +38,7 @@ export interface TestFunction {
 }
 
 interface UserInitValues {
-  navs: NavItem[] | undefined;
+  navs: INavItem[] | undefined;
   claims: UserRole[] | null;
 }
 

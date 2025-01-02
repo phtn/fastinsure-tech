@@ -1,5 +1,5 @@
 import { useAuthCtx } from "@/app/ctx/auth/auth";
-import { type NavItem } from "@/ui/sidebar";
+import { type INavItem } from "@/ui/sidebar/types";
 import {
   ShieldCheckIcon,
   Squares2X2Icon,
@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-// const f_navs: NavItem[] = [
+// const f_navs: INavItem[] = [
 //   {
 //     id: 3,
 //     label: "Overview",
@@ -30,9 +30,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 // ];
 
 export const useNav = () => {
-  const [navs, setNavs] = useState<NavItem[] | undefined>();
+  const [navs, setNavs] = useState<INavItem[] | undefined>();
 
-  const n_navs: NavItem[] = useMemo(
+  const n_navs: INavItem[] = useMemo(
     () => [
       {
         label: "Activation",
@@ -43,7 +43,7 @@ export const useNav = () => {
     [],
   );
 
-  const s_navs: NavItem[] = useMemo(
+  const s_navs: INavItem[] = useMemo(
     () => [
       {
         label: "Overview",
@@ -64,7 +64,7 @@ export const useNav = () => {
     [],
   );
 
-  const a_navs: NavItem[] = useMemo(
+  const a_navs: INavItem[] = useMemo(
     () => [
       {
         label: "Overview",
@@ -85,7 +85,7 @@ export const useNav = () => {
     [],
   );
 
-  const m_navs: NavItem[] = useMemo(
+  const m_navs: INavItem[] = useMemo(
     () => [
       {
         label: "Overview",
@@ -106,7 +106,7 @@ export const useNav = () => {
     [],
   );
 
-  const u_navs: NavItem[] = useMemo(
+  const u_navs: INavItem[] = useMemo(
     () => [
       {
         label: "Overview",

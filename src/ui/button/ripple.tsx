@@ -129,21 +129,13 @@ export const ButtSex = ({
           "dark:shadow-secondary dark:group-hover:drop-shadow-md",
           "cursor-pointer text-center text-primary active:scale-[99%]",
           "transition-all duration-300 transform-gpu",
-          { "bg-void group-hover:bg-void": inverted },
           {
+            "bg-void group-hover:bg-void dark:border-void/60": inverted,
             "dark:bg-primary dark:group-hover:border-void/80 dark:group-hover:bg-white":
               inverted,
-          },
-          {
             "h-8 gap-2 rounded-lg": size === "sm",
-          },
-          {
             "h-[38px] gap-3 rounded-[10px]": size === "md",
-          },
-          {
             "h-12 gap-4 rounded-xl": size === "lg",
-          },
-          {
             "bg-secondary-300 group-hover:bg-secondary":
               variant === "secondary",
           },

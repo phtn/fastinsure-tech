@@ -29,7 +29,7 @@ export const HStackComponent = ({
 );
 
 const XsCol = ({ children }: PropsWithChildren) => (
-  <div className="col-span-1 flex h-full w-full items-start justify-center">
+  <div className="bg-teal-300_ col-span-1 flex items-start justify-center overflow-hidden lg:size-72 xl:size-full">
     {children}
   </div>
 );

@@ -6,11 +6,12 @@ import { InputFieldName } from "@/ui/input";
 import { ArrowUturnLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Button, Image } from "@nextui-org/react";
 import { FileSymlinkIcon, ScanIcon, ScanTextIcon } from "lucide-react";
-import type {
-  FormEvent,
-  MouseEvent,
-  PropsWithChildren,
-  ReactNode,
+import {
+  memo,
+  type FormEvent,
+  type MouseEvent,
+  type PropsWithChildren,
+  type ReactNode,
 } from "react";
 
 export const Wrapper = ({ children }: PropsWithChildren) => (
@@ -76,7 +77,8 @@ export const CardGroup = ({ children, title }: CardGroup) => (
     {children}
   </div>
 );
-export const NewCardGroup = ({ children, title }: CardGroup) => (
+
+const NewCard = ({ children, title }: CardGroup) => (
   <div className="w-full space-y-2 rounded-lg p-6">
     <p className="font-inter font-medium tracking-tighter dark:text-icon-dark">
       {title}
@@ -84,8 +86,9 @@ export const NewCardGroup = ({ children, title }: CardGroup) => (
     {children}
   </div>
 );
+export const NewCardGroup = memo(NewCard);
 
-export const SpecialGroup = ({ children, title, subtext }: CardGroup) => (
+const SpecialCard = ({ children, title, subtext }: CardGroup) => (
   <div className="col-span-2 h-full w-full space-y-[22px] px-4 py-6 drop-shadow-sm backdrop-blur-xl">
     <header className="flex items-start gap-3">
       <ScanTextIcon className="size-6 stroke-1" />
@@ -99,6 +102,7 @@ export const SpecialGroup = ({ children, title, subtext }: CardGroup) => (
     {children}
   </div>
 );
+export const SpecialGroup = memo(SpecialCard);
 
 interface ImageViewerProps {
   imageData: string | undefined;
@@ -106,7 +110,7 @@ interface ImageViewerProps {
   className?: ClassName;
   children?: ReactNode;
 }
-export const ImageViewer = ({
+const ImageView = ({
   imageData,
   clearFile,
   className,
@@ -138,6 +142,7 @@ export const ImageViewer = ({
     </div>
   </div>
 );
+export const ImageViewer = memo(ImageView);
 
 export const HSeparator = () => (
   <div
@@ -149,10 +154,7 @@ export const HSeparator = () => (
   />
 );
 
-export const HiddenCanvas = (props: {
-  visible?: boolean;
-  canvas_id?: string;
-}) => (
+const HiddenCard = (props: { visible?: boolean; canvas_id?: string }) => (
   <div className={cn("hidden space-y-4 p-4", { flex: props.visible })}>
     <canvas
       id={props.canvas_id ?? "grayscale-canvas"}
@@ -160,11 +162,12 @@ export const HiddenCanvas = (props: {
     />
   </div>
 );
+export const HiddenCanvas = memo(HiddenCard);
 
 interface ScanResultsProps {
   entities: SpecialEntity[] | null;
 }
-export const ScanResults = ({ entities }: ScanResultsProps) => {
+const ScanResultsComponent = ({ entities }: ScanResultsProps) => {
   return (
     <div className="relative z-[40]">
       {entities?.map((entity, index) => (
@@ -182,6 +185,7 @@ export const ScanResults = ({ entities }: ScanResultsProps) => {
     </div>
   );
 };
+export const ScanResults = memo(ScanResultsComponent);
 
 interface ScanDetailProps {
   elapsed: number;
@@ -189,7 +193,8 @@ interface ScanDetailProps {
   size: number | undefined;
   ents: number | undefined;
 }
-export const ScanDetail = ({
+
+const ScanDetailComponent = ({
   elapsed,
   ents,
   format,
@@ -205,8 +210,9 @@ export const ScanDetail = ({
     <DetailItem value={ents ? `${ents}` : null} label={"items"} />
   </div>
 );
+export const ScanDetail = memo(ScanDetailComponent);
 
-const DetailItem = (props: {
+const DetailItemComponent = (props: {
   value: string | number | null | undefined;
   label?: string;
 }) => (
@@ -224,6 +230,7 @@ const DetailItem = (props: {
     ) : null}
   </div>
 );
+export const DetailItem = memo(DetailItemComponent);
 
 interface ScanButtonProps {
   loading: boolean;
@@ -231,7 +238,7 @@ interface ScanButtonProps {
   result: boolean;
   onPress: (e: FormEvent<HTMLButtonElement>) => void;
 }
-export const ScanButton = ({
+const ScanButtonComponent = ({
   imageData,
   loading,
   result,
@@ -252,17 +259,15 @@ export const ScanButton = ({
     </ButtSex>
   </div>
 );
+export const ScanButton = memo(ScanButtonComponent);
 
 interface ResultsWrapperProps {
   children: ReactNode;
   withResult: boolean;
   applyFn: (e: MouseEvent<HTMLButtonElement>) => void;
 }
-export const ResultsWrapper = ({
-  children,
-  withResult,
-  applyFn,
-}: ResultsWrapperProps) => (
+
+const Results = ({ children, withResult, applyFn }: ResultsWrapperProps) => (
   <div className="relative">
     <div
       className={cn(
@@ -292,6 +297,7 @@ export const ResultsWrapper = ({
     </div>
   </div>
 );
+export const ResultsWrapper = memo(Results);
 
 export const exampleResult: SpecialEntity[] = [
   {

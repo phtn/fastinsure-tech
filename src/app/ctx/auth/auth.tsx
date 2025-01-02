@@ -33,7 +33,6 @@ import {
   deleteSession,
   deleteUID,
   getCustomClaims,
-  getGroupCode,
   getLastLogin,
   setLastLogin,
 } from "@/app/actions";
@@ -136,11 +135,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       //   await usr.update.userInfo({ uid, role: claimsStr });
       // }
 
-      const group_code = await getGroupCode();
-      if (group_code && !vx?.group_code) {
-        // await usr.update({ uid, group_code });
-        // update server
-      }
+      // const group_code = await getGroupCode();
+      // if (group_code && !vx?.group_code) {
+      //   await usr.update({ uid, group_code });
+      // }
     },
     [usr],
   );

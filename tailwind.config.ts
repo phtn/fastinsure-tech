@@ -233,8 +233,16 @@ export default {
     "./src/**/*.tsx",
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
+  mode: "jit",
   theme: {
     extend: {
+      backgroundSize: {
+        "size-200": "200% 200%",
+      },
+      backgroundPosition: {
+        "pos-0": "0% 0%",
+        "pos-100": "100% 100%",
+      },
       fontFamily: {
         sans: ["var(--font-geist-sans)"],
         inter: ["var(--font-inter)"],
@@ -379,6 +387,34 @@ export default {
         "i-br-md-m": "inset -15px -30px 40px -20px rgba(175, 175, 175, 0.8)",
       },
       colors: {
+        ///////////////////
+        //MACOS
+        "macl-red": "#FF3B2F",
+        "macd-red": "#FE453A",
+        "macl-orange": "#FF9500",
+        "macd-orange": "#FF9E0B",
+        "macl-yellow": "#FFCC01",
+        "macd-yellow": "#FFD608",
+        "macl-green": "#26CD41",
+        "macd-green": "#32D74B",
+        "macl-mint": "#02C7BE",
+        "macd-mint": "#66D4CF",
+        "macl-teal": "#59ADC4",
+        "macd-teal": "#69C4DC",
+        "macl-cyan": "#54BEF0",
+        "macd-cyan": "#5AC8F4",
+        "macl-blue": "#007AFE",
+        "macd-blue": "#0A84FF",
+        "macl-indigo": "#5856D6",
+        "macd-indigo": "#5E5CE6",
+        "macl-purple": "#AE52DE",
+        "macd-purple": "#BE5AF2",
+        "macl-pink": "#FF375F",
+        "macd-pink": "#FF6482",
+        "macl-brown": "#A2845E",
+        "macd-brown": "#AC8E68",
+        "macl-gray": "#8E8E93",
+        "macd-gray": "#98989D",
         // void: "#1b1f22",
         void: "#14141B",
         //
@@ -407,6 +443,14 @@ export default {
         demigod: "#d9d9d9",
         goddess: "#F7F6F4",
         god: "#EAE9E7",
+        coolgray: "#eceff1",
+        cake: "#F3F1FF",
+        ice: "#ECEEFF", //#E7EBFF
+        coolice: "#D6E3FF", //#CEE0FF
+        coolbreeze: "#E3FAED",
+        vanilla: "#F3FCEE",
+        army: "#AAB5B5",
+        darkarmy: "#4C5C67",
       },
     },
   },

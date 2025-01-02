@@ -105,7 +105,7 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
         </Tabs>
       </section>
 
-      <div className="-mt-6 h-[calc(93vh)] px-12">{children}</div>
+      <div className="-mx-4 -mt-6 h-[calc(93vh)] px-12">{children}</div>
       <div
         ref={midbarRef}
         style={{ left: centerpoint.x, width: 300 }}

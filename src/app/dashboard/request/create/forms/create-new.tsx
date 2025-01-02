@@ -1,17 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ConfirmButton } from "@/ui/button";
 import { ButtSex } from "@/ui/button/index";
+import { type ButtonProps } from "@/ui/button/ripple";
 import { FlexRow } from "@/ui/flex";
-import {
-  FastField,
-  FastFieldGroup,
-  FastFieldGroupII,
-  FastFieldGroupIII,
-  FastFile,
-} from "@/ui/input";
-import { RadioGroupCard } from "@/ui/radio";
+import { FastField, FastFile } from "@/ui/input";
 import type { HyperSelectOption } from "@/ui/select";
 import { opts } from "@/utils/helpers";
 import { ArrowDownOnSquareIcon } from "@heroicons/react/24/outline";
@@ -22,10 +15,14 @@ import {
   type SelectedItems,
   SelectItem,
 } from "@nextui-org/react";
-import { CircleSlash2 } from "lucide-react";
+import { useFile } from "@request/hooks/useFile";
+import { type SubmitType, useForm } from "@request/hooks/useForm";
+import { useGeolocator } from "@request/hooks/useGeolocator";
+import { useScanner } from "@request/hooks/useScanner";
 import { useSearchParams } from "next/navigation";
 import {
   type ChangeEvent,
+  memo,
   type MouseEvent,
   type ReactNode,
   use,
@@ -45,7 +42,6 @@ import {
   CardGroup,
   HiddenCanvas,
   ImageViewer,
-  NewCardGroup,
   ResultsWrapper,
   ScanButton,
   ScanDetail,
@@ -56,25 +52,23 @@ import {
   address_fields_I,
   address_fields_II,
   assured_contact,
-  assured_name,
   auto_fields_I,
   auto_fields_II,
   auto_fields_III,
   auto_fields_IV,
-  auto_fields_V,
-  auto_fields_VI,
   autoFields,
   hidden_fields,
-  request_policy_coverage,
-  request_policy_types,
-  request_service_type,
   resultFields,
 } from "./fields";
-import { useFile } from "@request/hooks/useFile";
-import { type SubmitType, useForm } from "@request/hooks/useForm";
-import { useGeolocator } from "@request/hooks/useGeolocator";
-import { useScanner } from "@request/hooks/useScanner";
-import { type ButtonProps } from "@/ui/button/ripple";
+import {
+  AddressFields,
+  AssuredInfoFields,
+  AutoFields,
+  CoverageAndServiceFields,
+  PolicyTypeFields,
+} from "./groups";
+import { ConfirmButton } from "@/ui/button";
+import { CircleSlash2 } from "lucide-react";
 
 const defaultValues = {
   ...assured_contact,
@@ -86,6 +80,7 @@ const defaultValues = {
   ...auto_fields_IV,
 };
 export type InsertValues = typeof defaultValues;
+//
 export const CreateNew = () => {
   const searchParams = useSearchParams();
   const request_id = searchParams.get("rid");
@@ -149,7 +144,7 @@ export const CreateNew = () => {
     autoFields.forEach((k) => setValue(k, ""));
   }, [setValue]);
 
-  const ViewOptions = useCallback(() => {
+  const ViewOptions = useMemo(() => {
     const withImage = typeof imageData !== "undefined";
     const options = opts(
       <ImageViewer imageData={imageData} clearFile={clearFile} />,
@@ -162,7 +157,7 @@ export const CreateNew = () => {
     return <>{options.get(withImage)}</>;
   }, [clearFile, imageData, handleFileChange, inputRef]);
 
-  const ResultOptions = useCallback(() => {
+  const ResultOptions = useMemo(() => {
     const options = opts(
       <ScanResults entities={result} />,
       <div
@@ -179,154 +174,78 @@ export const CreateNew = () => {
     return <>{options.get(!!result)}</>;
   }, [loading, result]);
 
-  const saveDisabled = useMemo(() => submitType === "save", [submitType]);
-  const submitDisabled = useMemo(() => submitType === "submit", [submitType]);
+  const ScannerSection = useMemo(() => {
+    return (
+      <div className="flex items-center justify-between px-2">
+        <ScanDetail
+          format={format}
+          size={size}
+          elapsed={elapsed}
+          ents={result?.length}
+        />
+        <ScanButton
+          loading={loading}
+          imageData={imageData}
+          result={result !== null}
+          onPress={handleScanDocument(rawDocument)}
+        />
+      </div>
+    );
+  }, [
+    elapsed,
+    format,
+    handleScanDocument,
+    imageData,
+    loading,
+    rawDocument,
+    result,
+    size,
+  ]);
+
+  const HiddenFieldsGroup = useMemo(() => {
+    return (
+      <HiddenInputGroup
+        request_id={request_id}
+        register={register}
+        setValue={setValue}
+      />
+    );
+  }, [register, request_id, setValue]);
 
   return (
-    <main className="flex h-[calc(93vh)] w-full overflow-y-scroll border-t-[0.33px] border-primary-200/50 bg-chalk p-6 dark:bg-void">
-      <form action={actionFn} className="w-full">
-        <FlexRow className="absolute -top-4 right-0 z-[250] h-24 w-fit items-center space-x-6 xl:space-x-36">
-          <UnderwriterSelect />
-          <section className="flex items-center space-x-4 px-10">
-            <SButton
-              fn={handleSetSubmitType("save")}
-              end={ArrowDownOnSquareIcon}
-              loading={pending && saveDisabled}
-              disabled={saveDisabled}
-            >
-              <SButtonLabel
-                label={pending ? "Saving data...." : "Save as draft"}
-              />
-            </SButton>
-            <SButton
-              inverted
-              fn={handleSetSubmitType("submit")}
-              end={PaperAirplaneIcon}
-              disabled={submitDisabled}
-              loading={pending && submitDisabled}
-            >
-              <SButtonLabel
-                label={
-                  pending && submitDisabled
-                    ? "Submitting...."
-                    : "Submit Request"
-                }
-              />
-            </SButton>
-          </section>
-        </FlexRow>
-        <section className="grid w-full grid-cols-6 gap-6 bg-background">
+    <main className="flex h-[calc(93vh)] w-[calc(98vw)] overflow-scroll border-t-[0.33px] border-primary-200/50 bg-chalk p-6 dark:bg-void">
+      <form action={actionFn} className="h-full w-full">
+        <TopActionsPanel
+          submitType={submitType}
+          onHover={handleSetSubmitType}
+          pending={pending}
+        />
+        <section className="bg-background_ grid w-full grid-cols-6 gap-6">
           <div className="col-span-4">
-            <div className="flex h-[30rem] w-full flex-col justify-center rounded-[2rem] border-2 border-secondary bg-primary-50 pb-4 shadow-2xl shadow-primary-400/50 dark:border-secondary-400/80 dark:bg-primary-200 dark:shadow-secondary-500/40">
-              <div className="flex w-full overflow-x-scroll">
-                <NewCardGroup title="Policy Type">
-                  <RadioGroupCard
-                    name="policy_type"
-                    items={request_policy_types}
-                    orientation="horizontal"
-                  />
-                </NewCardGroup>
-              </div>
-              <div className="flex w-full overflow-x-scroll">
-                <NewCardGroup title="Policy Coverage">
-                  <RadioGroupCard
-                    name="policy_coverage"
-                    items={request_policy_coverage}
-                    orientation="horizontal"
-                  />
-                </NewCardGroup>
-                <NewCardGroup title="Service Type">
-                  <RadioGroupCard
-                    name="service_type"
-                    items={request_service_type}
-                    orientation="horizontal"
-                  />
-                </NewCardGroup>
-              </div>
-
-              <NewCardGroup title="Assured Basic Info">
-                <FastFieldGroup
-                  register={register}
-                  items={assured_name}
-                  group="Full name"
-                />
-              </NewCardGroup>
+            <div className="pb-4; flex h-fit w-full flex-col justify-center rounded-[2rem] border-2 border-secondary bg-primary-50 shadow-lg shadow-primary-400/50 dark:border-secondary-400/80 dark:bg-primary-200">
+              <PolicyTypeFields />
+              <CoverageAndServiceFields />
+              <AssuredInfoFields register={register} />
             </div>
-            <div className="py-8">
-              <NewCardGroup title="Assured Contact Info">
-                <div className="space-y-8">
-                  <FastFieldGroup
-                    register={register}
-                    items={assured_contact}
-                    group="Contact details"
-                  />
-                  <FastFieldGroupII
-                    register={register}
-                    listOne={address_fields_I}
-                    listTwo={address_fields_II}
-                    changeFn={handlePostalCodeChange}
-                    changeField="postal_code"
-                    group="Address"
-                  />
-                </div>
-              </NewCardGroup>
-            </div>
-            <div className="py-2">
-              <NewCardGroup title="Motor Vehicle Info">
-                <div className="space-y-8">
-                  <FastFieldGroupIII
-                    register={register}
-                    listOne={auto_fields_I}
-                    listTwo={auto_fields_II}
-                    group="Registration"
-                  />
-                  <FastFieldGroupIII
-                    register={register}
-                    listOne={auto_fields_III}
-                    listTwo={auto_fields_IV}
-                    group="Body"
-                  />
-                  <FastFieldGroupIII
-                    register={register}
-                    listOne={auto_fields_V}
-                    listTwo={auto_fields_VI}
-                    group="Denomination"
-                    description="( weight unit in kilograms )"
-                  />
-                </div>
-              </NewCardGroup>
-            </div>
-            <HiddenInputGroup
-              request_id={request_id}
+            <AddressFields
               register={register}
-              setValue={setValue}
+              changeFn={handlePostalCodeChange}
             />
+            <AutoFields register={register} />
+            {HiddenFieldsGroup}
           </div>
           <div className="col-span-2">
             <SpecialGroup
               title="Document Scanner"
               subtext="This feature is currently unavailable."
             >
-              <ViewOptions />
-              <div className="flex items-center justify-between px-2">
-                <ScanDetail
-                  format={format}
-                  size={size}
-                  elapsed={elapsed}
-                  ents={result?.length}
-                />
-                <ScanButton
-                  loading={loading}
-                  imageData={imageData}
-                  result={result !== null}
-                  onPress={handleScanDocument(rawDocument)}
-                />
-              </div>
+              {ViewOptions}
+              {ScannerSection}
               <ResultsWrapper
                 withResult={result !== null}
                 applyFn={applyResults}
               >
-                <ResultOptions />
+                {ResultOptions}
                 <HiddenCanvas />
               </ResultsWrapper>
             </SpecialGroup>
@@ -398,7 +317,7 @@ const SButtonLabel = (props: { label: string }) => (
   <p className="font-inter font-medium tracking-tight">{props.label}</p>
 );
 
-const UnderwriterSelect = () => {
+const Underwriter = () => {
   const { pending, underwriters, underwriter_id, onUnderwriterSelect } =
     use(CreateRequestCtx)!;
 
@@ -479,3 +398,43 @@ const UnderwriterSelect = () => {
     </Select>
   );
 };
+export const UnderwriterSelect = memo(Underwriter);
+
+interface ITopActionsPanel {
+  onHover: (type: SubmitType) => () => void;
+  submitType: "save" | "submit";
+  pending: boolean;
+}
+const TopActionsPanelComponent = ({
+  onHover,
+  pending,
+  submitType,
+}: ITopActionsPanel) => {
+  const saveDisabled = submitType === "save";
+  const submitDisabled = submitType === "submit";
+  return (
+    <FlexRow className="absolute -top-4 right-0 z-[250] h-24 w-fit items-center space-x-6 xl:space-x-36">
+      <UnderwriterSelect />
+      <section className="flex items-center space-x-4 px-10">
+        <SButton
+          fn={onHover("save")}
+          end={ArrowDownOnSquareIcon}
+          loading={pending && saveDisabled}
+          disabled={saveDisabled}
+        >
+          <SButtonLabel label={pending ? "Saving data...." : "Save as draft"} />
+        </SButton>
+        <SButton
+          inverted
+          fn={onHover("submit")}
+          end={PaperAirplaneIcon}
+          disabled={submitDisabled}
+          loading={pending}
+        >
+          <SButtonLabel label={pending ? "Submitting...." : "Submit Request"} />
+        </SButton>
+      </section>
+    </FlexRow>
+  );
+}; //, [handleSetSubmitType, pending, submitType]);
+const TopActionsPanel = memo(TopActionsPanelComponent);

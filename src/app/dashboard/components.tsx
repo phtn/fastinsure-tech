@@ -1,6 +1,7 @@
 import { Image, Link } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { type PropsWithChildren } from "react";
 
 export const Logo = () => {
   return (
@@ -11,7 +12,7 @@ export const Logo = () => {
       >
         <Image
           alt="admin-logo"
-          src={"/svg/f.svg"}
+          src={"/svg/f_v2.svg"}
           className="animate-enter bg-void px-0.5"
           width={28}
           height={28}
@@ -30,3 +31,13 @@ export const Logo = () => {
     </div>
   );
 };
+
+export const Container = ({ children }: PropsWithChildren) => (
+  <div
+    className={cn(
+      "flex h-screen w-full flex-1 flex-col overflow-hidden md:flex-row",
+    )}
+  >
+    {children}
+  </div>
+);

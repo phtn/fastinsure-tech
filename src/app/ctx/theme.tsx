@@ -7,7 +7,13 @@ import {
   useEffect,
   useMemo,
   useState,
-  type PropsWithChildren,
+  useTransition,
+} from "react";
+import type {
+  PropsWithChildren,
+  Dispatch,
+  SetStateAction,
+  TransitionStartFunction,
 } from "react";
 import { getTheme, type Modes, setTheme } from "../actions";
 import { Switch } from "@nextui-org/react";
@@ -23,9 +29,38 @@ const ThemeCtx = createContext<ThemeProps | null>(null);
 export const Theme = ({ children }: PropsWithChildren) => {
   const [theme, setThemeState] = useState<Modes>("dark");
 
-  useEffect(() => {
-    getTheme().then(setThemeState).catch(Err);
+  const [pending, fn] = useTransition();
+  const setFn = <T,>(
+    tx: TransitionStartFunction,
+    action: () => Promise<T>,
+    set: Dispatch<SetStateAction<T>>,
+  ) => {
+    tx(() => {
+      tx(async () => {
+        set(await action());
+      });
+    });
+  };
+
+  const getThemeFromCookies = useCallback(async () => {
+    const cookieTheme = await getTheme();
+    return cookieTheme;
   }, []);
+
+  const getThemeState = useCallback(() => {
+    setFn(fn, getThemeFromCookies, setThemeState);
+  }, [getThemeFromCookies]);
+
+  useEffect(() => {
+    getThemeState();
+  }, [getThemeState]);
+
+  useEffect(() => {
+    if (pending) {
+      console.table({ fn: "getTheme", status: "loading" });
+    }
+    console.table({ fn: "getTheme", status: "done" });
+  }, [pending]);
 
   const stableValues = useMemo(
     () => ({
