@@ -29,9 +29,9 @@ interface TableRowProps {
 const HeaderItem = ({ value, size = "xs", center = false }: TableRowProps) => (
   <div
     className={cn(
-      "w-24 text-xs font-semibold capitalize dark:text-slate-300",
+      "w-28 text-xs font-semibold capitalize dark:text-slate-300",
       {
-        "w-28": size === "sm",
+        "w-36": size === "sm",
       },
       { "w-32": size === "md" },
       { "w-40": size === "lg" },
@@ -71,10 +71,52 @@ const RequestIdCell = (props: { id: string; routeFn: VoidFunction }) => {
   return (
     <button
       onClick={props.routeFn}
-      className="flex h-8 w-24 items-start justify-center px-2 font-jet text-[11px] font-medium text-adam underline-offset-2 drop-shadow-sm hover:cursor-pointer hover:underline dark:text-secondary-300"
+      className="dark:text-cool flex h-10 w-28 items-start justify-center px-2 font-mono text-sm font-medium text-adam underline-offset-2 drop-shadow-sm hover:cursor-pointer hover:underline"
     >
       {props.id.split("-")[0]}
     </button>
+  );
+};
+
+const DateCell = (props: { date: number | undefined; create?: boolean }) => {
+  return (
+    <div className="h-fit w-44">
+      <div
+        className={cn(
+          "h-5 text-sm font-medium tracking-tight dark:text-indigo-200",
+          { "dark:text-vanilla": props.create },
+        )}
+      >
+        {moment(props?.date).format("lll")}
+      </div>
+      <div className="h-5 space-x-1 text-sm tracking-tight opacity-80 dark:text-steel">
+        <span>{moment(props?.date).format("ddd")}</span>
+        <span>{moment(props?.date).fromNow()}</span>
+      </div>
+    </div>
+  );
+};
+
+const AssuredCell = (props: { id: string | undefined }) => {
+  const data = useRequests().vxsubjects;
+  // const data = useQuery(api.subjects.get.all);
+  //
+  const subject = useMemo(
+    () => data?.find((s) => s.subject_id === props.id),
+    [props.id, data],
+  );
+
+  return (
+    <div className="h-10 w-48">
+      <div
+        className={cn("text-xs font-medium tracking-tight dark:text-indigo-50")}
+      >
+        {data?.length}-{subject?.fullname ?? props.id}
+      </div>
+      <div className="space-x-1 text-[11px] dark:text-steel">
+        <span>{subject?.email ?? subject?.phone_number}</span>
+      </div>
+    </div>
   );
 };
 
@@ -83,16 +125,16 @@ const PolicyTypeCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "auto":
         return (
-          <div className="flex h-fit items-center gap-2 rounded-lg bg-gradient-to-tr from-army/30 via-cake/10 to-transparent px-1">
-            <span className="font-inst text-sm font-semibold capitalize tracking-tight">
+          <div className="h-h6 flex items-center gap-2 rounded-md bg-gradient-to-tr from-army/30 via-cake/10 to-transparent px-1">
+            <span className="font-inst text-sm font-medium capitalize tracking-tight dark:text-chalk">
               auto
             </span>
           </div>
         );
       default:
         return (
-          <div className="flex h-8 items-center gap-2 rounded-lg bg-primary-100 px-2">
-            <span className="text-xs font-semibold capitalize tracking-tight">
+          <div className="flex h-6 items-center gap-2 rounded-lg bg-primary-100 px-1">
+            <span className="text-xs font-medium capitalize tracking-tight dark:text-chalk">
               auto
             </span>
           </div>
@@ -111,16 +153,16 @@ const PolicyCoverageCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "comprehensive":
         return (
-          <div className="bg-coal flex h-7 items-center gap-2 rounded-lg px-2 dark:bg-steel/15">
-            <span className="text-xs font-semibold uppercase tracking-tight">
+          <div className="bg-coal flex h-6 items-center gap-2 rounded-md px-1 dark:bg-steel/15 dark:text-chalk">
+            <span className="text-xs font-medium uppercase tracking-tight dark:text-chalk">
               full
             </span>
           </div>
         );
       default:
         return (
-          <div className="flex h-7 items-center gap-2 rounded-lg px-2">
-            <span className="text-xs font-semibold capitalize tracking-tight">
+          <div className="flex h-6 items-center gap-2 rounded-xl px-1">
+            <span className="text-xs font-medium capitalize tracking-tight dark:text-chalk">
               CTPL
             </span>
           </div>
@@ -139,16 +181,16 @@ const ServiceTypeCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "new":
         return (
-          <div className="to-cool flex h-fit items-center gap-1.5 rounded-md bg-gradient-to-tr from-orange-300/50 via-orange-200/10 px-1 dark:bg-primary-300/40">
-            <span className="font-inst text-sm font-semibold capitalize tracking-tight text-orange-950">
+          <div className="to-cool flex h-6 items-center gap-1.5 rounded-md bg-gradient-to-tr from-orange-300/50 via-orange-200/10 px-1 dark:bg-primary-300/40 dark:from-slate-800/20">
+            <span className="font-inst text-sm font-medium capitalize tracking-tight text-orange-950 dark:text-chalk">
               new
             </span>
           </div>
         );
       default:
         return (
-          <div className="flex h-fit items-center gap-1.5 rounded-md bg-gradient-to-tr from-teal-300/50 via-teal-200/10 to-transparent px-1 dark:bg-primary-300/40">
-            <span className="font-inter text-sm capitalize tracking-tight text-teal-950">
+          <div className="flex h-6 items-center gap-1.5 rounded-md bg-gradient-to-tr from-teal-300/50 via-teal-200/10 to-transparent px-1 dark:from-slate-800/20">
+            <span className="font-inter text-sm capitalize tracking-tight text-teal-950 dark:text-chalk">
               Renew
             </span>
           </div>
@@ -167,8 +209,8 @@ const StatusCell = (props: { status: string | undefined }) => {
     switch (props.status) {
       case "submitted":
         return (
-          <div className="flex h-fit items-center rounded-md bg-gradient-to-tr from-blue-300/50 via-blue-200/10 to-transparent ps-1 dark:bg-steel/15">
-            <span className="text-sm font-semibold capitalize tracking-tight text-blue-950">
+          <div className="flex h-6 items-center rounded-md bg-gradient-to-tr from-blue-300/50 via-blue-200/10 to-transparent ps-1 dark:bg-steel/15 dark:from-slate-800/20 dark:text-chalk">
+            <span className="text-sm font-medium capitalize tracking-tight text-blue-950 dark:text-chalk">
               submitted
             </span>
             <ArrowLongUpIcon className="size-4 stroke-2 text-secondary dark:text-secondary" />
@@ -176,8 +218,8 @@ const StatusCell = (props: { status: string | undefined }) => {
         );
       default:
         return (
-          <div className="flex h-8 items-center gap-4 rounded-lg border border-primary-300 bg-steel/10 px-2">
-            <span className="text-xs font-semibold capitalize tracking-tight">
+          <div className="flex h-6 items-center gap-4 rounded-lg border border-primary-300 bg-steel/10 px-2 dark:text-chalk">
+            <span className="text-xs font-medium capitalize tracking-tight">
               draft
             </span>
             <PencilIcon className="size-3.5 stroke-1 text-primary-600/80 -rotate-[35deg]" />
@@ -188,48 +230,6 @@ const StatusCell = (props: { status: string | undefined }) => {
   return (
     <div className="flex h-full w-40 items-center justify-center">
       {status()}
-    </div>
-  );
-};
-
-const DateCell = (props: { date: number | undefined; create?: boolean }) => {
-  return (
-    <div className="w-40">
-      <div
-        className={cn(
-          "text-xs font-medium tracking-tight dark:text-indigo-200",
-          { "dark:text-warning-100/90": props.create },
-        )}
-      >
-        {moment(props?.date).format("lll")}
-      </div>
-      <div className="space-x-1 text-[11px] dark:text-steel">
-        <span>{moment(props?.date).format("ddd")}</span>
-        <span>{moment(props?.date).fromNow()}</span>
-      </div>
-    </div>
-  );
-};
-
-const AssuredCell = (props: { id: string | undefined }) => {
-  const data = useRequests().vxsubjects;
-  // const data = useQuery(api.subjects.get.all);
-  //
-  const subject = useMemo(
-    () => data?.find((s) => s.subject_id === props.id),
-    [props.id, data],
-  );
-
-  return (
-    <div className="w-48">
-      <div
-        className={cn("text-xs font-medium tracking-tight dark:text-indigo-50")}
-      >
-        {data?.length}-{subject?.fullname ?? props.id}
-      </div>
-      <div className="space-x-1 text-[11px] dark:text-steel">
-        <span>{subject?.email ?? subject?.phone_number}</span>
-      </div>
     </div>
   );
 };
@@ -246,7 +246,7 @@ const UserCell = (props: { id: string; agent?: boolean }) => {
       id={vx?.uid}
       name={vx?.nickname?.split(" ")[0]}
       description={
-        <div className="flex items-center font-mono text-xs tracking-tight text-adam drop-shadow-sm hover:opacity-100 hover:drop-shadow-md dark:text-secondary-300">
+        <div className="flex items-center font-mono text-xs tracking-tight text-adam drop-shadow-sm hover:opacity-100 hover:drop-shadow-md dark:text-chalk">
           {/* {vx?.email} */}
           {/* <ChatBubbleBottomCenterTextIcon className="size-4" /> */}
         </div>
@@ -257,7 +257,7 @@ const UserCell = (props: { id: string; agent?: boolean }) => {
         className: "size-4",
       }}
       classNames={{
-        name: " font-semibold text-primary/90 font-inter capitalize tracking-tight",
+        name: " font-medium text-primary/90 font-inter capitalize tracking-tight",
         wrapper: "w-[9rem] truncate",
       }}
     />
@@ -288,9 +288,9 @@ const DataTableHeader = (props: { role: string | undefined }) => {
   return (
     <div className="flex h-8 items-center justify-start border-b-[0.33px] border-dotted border-primary-300 bg-steel/20 tracking-tight text-adam dark:bg-adam">
       <HeaderItem value="id" center />
-      <HeaderItem size="lg" value="created at" />
-      <HeaderItem size="xl" value="assured" />
-      <HeaderItem size="md" value="type" center />
+      <HeaderItem size="xl" value="created at" />
+      <HeaderItem size="lg" value="assured" />
+      <HeaderItem size="sm" value="type" center />
       <HeaderItem size="md" value="coverage" center />
       <HeaderItem size="md" value="service" center />
       <HeaderItem size="lg" value="status" center />

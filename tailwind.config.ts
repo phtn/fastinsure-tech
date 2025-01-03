@@ -245,6 +245,7 @@ export default {
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)"],
+        mono: ["var(--font-mono)"],
         inter: ["var(--font-inter)"],
         jet: ["var(--font-jet)"],
         inst: ["var(--font-inst)"],

@@ -55,10 +55,7 @@ export function VBar(props: { requests: IDMRequest[] | undefined }) {
   }));
   return (
     <Card
-      className={cn(
-        "mb-10 h-fit w-full text-foreground",
-        "rounded-md border-[0.33px] border-primary-500",
-      )}
+      className={cn("h-full w-full border-0 text-foreground", "rounded-md")}
     >
       <CardHeader className="">
         <CardTitle className="text-sm leading-4">Request / Completed</CardTitle>

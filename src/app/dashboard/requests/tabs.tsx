@@ -85,7 +85,7 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           size="sm"
           variant="bordered"
           color="secondary"
-          className="_border-b-[0.5px] absolute -top-[3.2rem] right-4 z-[200] border-primary-300"
+          className="absolute -top-[3.2rem] right-4 z-[200]"
           isVertical={false}
           classNames={{
             tabList:
