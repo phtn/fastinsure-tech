@@ -18,6 +18,22 @@ export const status = mutation({
   },
 });
 
+export const files = mutation({
+  args: { request_id: v.string(), files: v.array(v.string()) },
+  handler: async ({ db }, { request_id, files }) => {
+    const request = await checkRequest(db, request_id);
+
+    if (request === null || !status) {
+      return null;
+    }
+
+    const update = request.files ? [...request.files, ...files] : files;
+
+    await db.patch(request._id, { files: update, updated_at: Date.now() });
+    return request._id;
+  },
+});
+
 export const checkRequest = async <DB extends GenericDatabaseWriter<DataModel>>(
   db: DB,
   request_id: string,

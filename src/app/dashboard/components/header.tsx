@@ -22,7 +22,7 @@ export const Header = ({ title, sm, xs }: HeaderProps) => {
         { "px-2 py-2": xs },
       )}
     >
-      <section className="flex h-full items-center px-6 leading-none">
+      <section className="flex h-full items-center px-3 leading-none">
         <Link
           href={`/dashboard/${title}`}
           className="font-inter text-xl font-semibold capitalize tracking-tighter text-foreground opacity-100"

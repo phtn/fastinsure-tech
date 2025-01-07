@@ -1,5 +1,4 @@
-// import { Sandbox } from "./content";
 // import Skyline from "./skyline";
-import SkylineII from "./skylineII";
-const Page = async () => <SkylineII />;
+import { Sandbox } from "./content";
+const Page = async () => <Sandbox />;
 export default Page;

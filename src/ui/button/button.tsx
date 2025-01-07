@@ -1,4 +1,4 @@
-import { type DualIcon } from "@/app/types";
+import type { ClassName, DualIcon } from "@/app/types";
 import { Button, Spinner } from "@nextui-org/react";
 import { Squircle } from "lucide-react";
 import { type ReactNode, type RefObject, useCallback } from "react";
@@ -9,17 +9,19 @@ import type { ButtSize, ButtIconProps } from "./types";
 interface ButtStatProps {
   value?: string;
   size?: ButtSize;
+  className?: ClassName;
+  valueStyle?: ClassName;
 }
 export const ButtStat = (props: ButtStatProps) => {
-  const { value = "", size = "md" } = props;
+  const { value = "", size = "md", className, valueStyle } = props;
   return (
     <div
       className={cn(
-        "group relative flex cursor-pointer items-center justify-center overflow-hidden",
+        "group relative flex cursor-pointer items-center justify-center",
         "transition-all duration-200 transform-gpu",
         "active:scale-90",
-        { "size-8": size === "sm" },
-        { "size-10": size === "md" },
+        { "size-6": size === "sm" },
+        { "size-7": size === "md" },
         { "size-12": size === "lg" },
       )}
     >
@@ -28,14 +30,20 @@ export const ButtStat = (props: ButtStatProps) => {
           "pointer-events-none absolute text-transparent opacity-100",
           "transition-all duration-200 transform-gpu",
           "group-hover:opacity-100",
-          { "size-8": size === "sm" },
+          { "size-9": size === "sm" },
           { "size-9": size === "md" },
           { "size-[42px]": size === "lg" },
           "fill-god/80",
           "dark:fill-primary-300/50",
+          className,
         )}
       />
-      <span className="z-[40] font-semibold text-icon group-hover:opacity-100 dark:text-icon-dark">
+      <span
+        className={cn(
+          "z-[40] font-semibold text-icon group-hover:opacity-100 dark:text-icon-dark",
+          valueStyle,
+        )}
+      >
         {value}
       </span>
     </div>
@@ -60,6 +68,7 @@ export const ButtSqx = (props: ButtIconProps) => {
     disabled = false,
     className,
     inverted = false,
+    iconStyle,
   } = props;
   const Opts = useCallback(() => {
     const options = opts(
@@ -68,25 +77,28 @@ export const ButtSqx = (props: ButtIconProps) => {
         className={cn(
           "z-40 size-4 stroke-[1.5px]",
           "group-hover:drop-shadow-md",
-          "text-icon",
-          "dark:text-icon-dark",
-          { "size-5": size === "md" },
-          { "size-6": size === "lg" },
-          { "text-icon/50 dark:text-icon-dark/50": disabled },
-          { "text-void dark:text-void": inverted },
-          { "text-secondary dark:text-secondary": variant === "active" },
+          "text-icon dark:text-icon-dark",
+          { "size-5": size === "md", "size-6": size === "lg" },
+          {
+            "text-icon/40 dark:text-icon-dark/50": disabled,
+            "text-void dark:text-void": inverted,
+            "text-secondary dark:text-secondary": variant === "active",
+            "group-hover:text-void":
+              variant === "steel" || variant === "bright",
+          },
+          iconStyle,
         )}
       />,
     );
     return <>{options.get(loading)}</>;
-  }, [loading, size, props, disabled, inverted, variant]);
+  }, [loading, size, props, disabled, inverted, variant, iconStyle]);
 
   return (
     <button
       onClick={props.onClick}
       disabled={disabled}
       className={cn(
-        "group relative flex cursor-pointer items-center justify-center overflow-hidden disabled:cursor-vertical-text",
+        "group relative flex cursor-pointer items-center justify-center overflow-hidden disabled:cursor-auto",
         "transition-all duration-200 transform-gpu",
         "active:scale-90",
         { "size-8": size === "sm" },
@@ -101,18 +113,23 @@ export const ButtSqx = (props: ButtIconProps) => {
           "pointer-events-none absolute size-0 text-transparent opacity-40",
           "transition-all duration-200 transform-gpu",
           "group-hover:opacity-100",
-          { "group-hover:size-8": size === "sm" },
-          { "group-hover:size-[40px]": size === "md" },
-          { "group-hover:size-[48px]": size === "lg" },
-          // "fill-god/80",
-          // { "size-8 fill-adam": inverted },
-          { "fill-demigod/80": variant === "demigod" },
-          { "fill-god/80": variant === "goddess" },
-          { "size-8 fill-god": variant === "active" },
+          {
+            "group-hover:size-8": size === "sm",
+            "group-hover:size-[40px]": size === "md",
+            "group-hover:size-[48px]": size === "lg",
+          },
+          {
+            "fill-demigod/80": variant === "demigod",
+            "fill-god/80": variant === "goddess",
+            "size-8 fill-god": variant === "active",
+          },
           "dark:fill-primary-300/30",
           {
             "stroke-white group-hover:fill-steel/20 group-hover:stroke-1 dark:group-hover:fill-steel/60":
               inverted,
+            "stroke-steel group-hover:fill-steel": variant === "steel",
+            "stroke-chalk group-hover:fill-chalk dark:stroke-steel dark:group-hover:fill-chalk":
+              variant === "bright",
           },
         )}
       />

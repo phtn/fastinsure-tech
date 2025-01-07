@@ -92,7 +92,6 @@ export const useForm = (file?: File) => {
       } as InsertAddress;
 
       await address.create(addressData).catch(Err);
-      // console.table(addressData);
 
       const subjectData = {
         subject_id: data.get("subject_id") as string,

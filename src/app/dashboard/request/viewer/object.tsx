@@ -65,6 +65,27 @@ export const PdfObject = ({
 
   return (
     <div>
+      {/* Buttons */}
+      <div className="flex h-24 items-center space-x-4 border-b">
+        <ButtSex
+          size="md"
+          inverted
+          onClick={generatePdf}
+          end={FileInputIcon}
+          loading={loading}
+        >
+          <span className="px-4">PDF</span>
+        </ButtSex>
+        <ButtSex
+          size="md"
+          inverted
+          onClick={generatePdf}
+          end={FileInputIcon}
+          loading={loading}
+        >
+          <span className="px-4">CSV</span>
+        </ButtSex>
+      </div>
       {/* Section to generate PDF */}
       <div ref={componentRef}>
         <div className="border-[0.33px] border-primary-300 p-5 shadow-md">
@@ -86,18 +107,6 @@ export const PdfObject = ({
             <div className="h-full">{auto({})}</div>
           </section>
         </div>
-      </div>
-      {/* Buttons */}
-      <div className="flex h-24 items-center justify-end pt-4">
-        <ButtSex
-          onClick={generatePdf}
-          size="lg"
-          inverted
-          end={FileInputIcon}
-          loading={loading}
-        >
-          <span className="px-4">Generate PDF</span>
-        </ButtSex>
       </div>
 
       {/* Preview PDF */}

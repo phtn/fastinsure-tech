@@ -4,6 +4,11 @@ import { type NextConfig } from "next";
 
 const config: NextConfig = {
   experimental: {
+    turbo: {
+      resolveAlias: {
+        canvas: "./empty-module.ts",
+      },
+    },
     reactCompiler: true,
   },
   reactStrictMode: true,

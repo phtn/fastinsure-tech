@@ -13,6 +13,7 @@ import type {
   RequestStatus,
   SelectRequest,
 } from "@convex/requests/d";
+import { type GetFilesResponse } from "@convex/requests/attachment";
 import type { InsertSubject, SelectSubject } from "@convex/subjects/d";
 import type { InsertUser, SelectUser, UpdateUser } from "@convex/users/d";
 import { api } from "@vex/api";
@@ -56,10 +57,17 @@ interface VexCtxValues {
     storage: {
       generateUrl: () => Promise<string>;
     };
+    attachments: {
+      get: (ids: string[]) => GetFilesResponse;
+    };
     update: {
       status: (
         request_id: string,
         status: RequestStatus,
+      ) => Promise<Id<"requests"> | null>;
+      files: (
+        request_id: string,
+        files: (string | null)[],
       ) => Promise<Id<"requests"> | null>;
     };
   };
@@ -156,7 +164,9 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
   );
   const getRequestsByAgentId = useMutation(api.requests.get.byAgentId);
   const generateUrl = useMutation(api.requests.storage.generateUrl);
+  const getAttachedFiles = useMutation(api.requests.attachment.get);
   const updateRequestStatus = useMutation(api.requests.update.status);
+  const updateRequestFiles = useMutation(api.requests.update.files);
 
   const request = useMemo(
     () => ({
@@ -171,9 +181,16 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
       storage: {
         generateUrl,
       },
+      attachments: {
+        get: async (storageIds: string[]) => getAttachedFiles({ storageIds }),
+      },
       update: {
         status: async (request_id: string, status: RequestStatus) =>
           await updateRequestStatus({ request_id, status }),
+        files: async (request_id: string, files: (string | null)[]) => {
+          const sfiles = files.filter((file) => typeof file === "string");
+          return await updateRequestFiles({ request_id, files: sfiles });
+        },
       },
     }),
     [
@@ -182,7 +199,9 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
       getRequestById,
       getRequestsByAgentId,
       generateUrl,
+      getAttachedFiles,
       updateRequestStatus,
+      updateRequestFiles,
       getRequestByUnderwriterId,
     ],
   );

@@ -68,7 +68,7 @@ import {
   PolicyTypeFields,
 } from "./groups";
 import { ConfirmButton } from "@/ui/button";
-import { CircleSlash2 } from "lucide-react";
+import { CircleSlash2, ScanIcon } from "lucide-react";
 
 const defaultValues = {
   ...assured_contact,
@@ -162,13 +162,16 @@ export const CreateNew = () => {
       <ScanResults entities={result} />,
       <div
         className={cn(
-          "flex h-96 w-full items-center justify-center bg-primary-100/20 font-inst text-xs opacity-80",
+          "flex h-96 w-full items-center justify-center space-x-3 bg-primary-100/20 font-inst text-sm opacity-80",
           {
             "animate-pulse": loading,
           },
         )}
       >
-        {loading ? "Awaiting scan results..." : "Scan Results here."}
+        <ScanIcon className="size-5" />
+        <span>
+          {loading ? "Awaiting scan results..." : "Scan Results Area."}
+        </span>
       </div>,
     );
     return <>{options.get(!!result)}</>;
@@ -213,16 +216,16 @@ export const CreateNew = () => {
   }, [register, request_id, setValue]);
 
   return (
-    <main className="flex h-[calc(93vh)] w-[calc(98vw)] overflow-scroll border-t-[0.33px] border-primary-200/50 bg-chalk p-6 dark:bg-void">
-      <form action={actionFn} className="h-full w-full">
+    <main className="flex h-[calc(93vh)] w-[calc(97vw)] overflow-scroll border border-t-[0.33px] border-primary-200/50 border-l-macl-mint bg-chalk p-6 dark:bg-void">
+      <form action={actionFn}>
         <TopActionsPanel
           submitType={submitType}
           onHover={handleSetSubmitType}
           pending={pending}
         />
-        <section className="bg-background_ grid w-full grid-cols-6 gap-6">
+        <section className="bg-background_ grid h-fit w-full grid-cols-6 gap-4">
           <div className="col-span-4">
-            <div className="pb-4; flex h-fit w-full flex-col justify-center rounded-[2rem] border-2 border-secondary bg-primary-50 shadow-lg shadow-primary-400/50 dark:border-secondary-400/80 dark:bg-primary-200">
+            <div className="flex h-fit w-full flex-col justify-center rounded-[2rem] border-2 border-secondary bg-primary-50 pb-4 shadow-lg shadow-primary-400/50 dark:border-secondary-400/80 dark:bg-primary-200">
               <PolicyTypeFields />
               <CoverageAndServiceFields />
               <AssuredInfoFields register={register} />
@@ -413,9 +416,9 @@ const TopActionsPanelComponent = ({
   const saveDisabled = submitType === "save";
   const submitDisabled = submitType === "submit";
   return (
-    <FlexRow className="absolute -top-4 right-0 z-[250] h-24 w-fit items-center space-x-6 xl:space-x-36">
+    <FlexRow className="absolute -top-4 right-9 z-[250] h-24 w-fit items-center space-x-6">
       <UnderwriterSelect />
-      <section className="flex items-center space-x-4 px-10">
+      <section className="flex items-center space-x-4">
         <SButton
           fn={onHover("save")}
           end={ArrowDownOnSquareIcon}

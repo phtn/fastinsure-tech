@@ -3,7 +3,6 @@ import type { ClassName } from "@/app/types";
 import { cn } from "@/lib/utils";
 import { ButtSex } from "@/ui/button/ripple";
 import { FlexRow } from "@/ui/flex";
-import { toggleState } from "@/utils/helpers";
 import type { SelectUser } from "@convex/users/d";
 import {
   DocumentTextIcon,
@@ -13,29 +12,14 @@ import {
 } from "@heroicons/react/24/outline";
 import { Avatar } from "@nextui-org/react";
 import { CheckCircleIcon, SparklesIcon, ClockIcon } from "lucide-react";
-import { useState, useCallback, type FC, memo, type ReactNode } from "react";
+import { type FC, memo, type ReactNode, useMemo } from "react";
+import { useToggle } from "@/utils/hooks/useToggle";
 
 const UserPill = (props: { vx: SelectUser | undefined; label: string }) => {
   return (
     <ButtSex size="lg">
-      <Avatar
-        src={props.vx?.photo_url}
-        className={cn("mr-4 shrink-0 border border-warning-300", {
-          "border-indigo-400": props.label === "underwriter",
-        })}
-        size="sm"
-      />
-      <div className="w-full text-left">
-        <p>{props.vx?.nickname}</p>
-        <p
-          className={cn(
-            "font-jet text-[11px] font-normal lowercase drop-shadow-sm dark:text-secondary-300",
-            { "dark:text-indigo-300": props.label === "underwriter" },
-          )}
-        >
-          {props.label}
-        </p>
-      </div>
+      <Avatar className="mr-2.5 shrink-0" src={props.vx?.photo_url} size="sm" />
+      <PillDetail value={props.vx?.nickname} label={props.label} />
     </ButtSex>
   );
 };
@@ -52,12 +36,7 @@ const Status = (props: { status: string | undefined }) => {
             : CheckCircleIcon
       }
     >
-      <div className="w-full text-left">
-        <p>{props.status}</p>
-        <p className="font-jet text-[11px] font-normal lowercase drop-shadow-sm dark:text-secondary-300">
-          status
-        </p>
-      </div>
+      <PillDetail value={props.status} label="status" />
     </ButtSex>
   );
 };
@@ -67,43 +46,38 @@ const PolicyPill = (props: { type: string | undefined; label: string }) => {
     <ButtSex
       size="lg"
       start={
-        props.label === "issuance"
+        props.label === "policy"
           ? props.type === "new"
             ? SparklesIcon
             : ArrowPathRoundedSquareIcon
           : RectangleStackIcon
       }
     >
-      <div className="w-full text-left">
-        <p>{props.type}</p>
-        <p className="font-jet text-[11px] font-normal lowercase drop-shadow-sm dark:text-pink-200">
-          {props.label}
-        </p>
-      </div>
+      <PillDetail value={props.type} label={props.label} />
     </ButtSex>
   );
 };
 
 const CreatedAt = ({ created }: { created: number | undefined }) => {
-  const [toggle, setToggle] = useState(false);
-  const handleToggle = useCallback(() => toggleState(setToggle), [setToggle]);
+  const { open, toggle } = useToggle();
+  const value = useMemo(() => {
+    const v1 = moment(created).format("lll");
+    const v2 = (
+      <>
+        <span>{moment(created).format("dddd")}</span>
+        <span className="px-2.5 opacity-30">⏺</span>
+        <span className="lowercase">{moment(created).fromNow()}</span>
+      </>
+    );
+    return open ? v1 : v2;
+  }, [created, open]);
   return (
-    <ButtSex size="lg" start={ClockIcon} onClick={handleToggle}>
-      <div className="w-40 text-left">
-        {toggle ? (
-          <p className="">{moment(created).format("lll")}</p>
-        ) : (
-          <p>
-            {moment(created).format("dddd")}
-            <span className="px-2 dark:text-adam">⏺</span>
-
-            <span className="lowercase">{moment(created).fromNow()}</span>
-          </p>
-        )}
-        <p className="font-jet text-[11px] font-normal lowercase drop-shadow-sm dark:text-warning-300">
-          {toggle ? "created on" : "created on"}
-        </p>
-      </div>
+    <ButtSex size="lg" start={ClockIcon} onClick={toggle}>
+      <PillDetail
+        value={value}
+        label={open ? "created on" : "created on"}
+        className="w-40"
+      />
     </ButtSex>
   );
 };
@@ -124,7 +98,7 @@ export const RenderRow: FC<{
   <div
     key={keyName}
     style={{ display: "flex", alignItems: "center", height: "36px" }}
-    className={`flex items-center px-4 odd:bg-primary-100/30 ${className}`}
+    className={`flex items-center px-4 odd:bg-steel/20 ${className}`}
   >
     <div
       className={`flex w-36 items-center font-jet text-adam dark:text-steel ${className}`}
@@ -143,9 +117,12 @@ export const excludeProps = <T,>(o: T | null, keys: string[]) =>
   o && Object.entries(o).filter(([k, _]) => !keys.includes(k));
 
 const RequestIdComp = ({ id }: { id: string | undefined }) => (
-  <FlexRow className="absolute right-6 top-5 z-40 h-fit w-full items-center justify-end">
-    <h2 id="request-id" className="font-jet text-sm text-adam dark:text-steel">
-      Request ID: {id}
+  <FlexRow className="absolute left-48 top-[22px] z-40 h-fit w-full items-center">
+    <h2
+      id="request-id"
+      className="font-jet text-sm tracking-wide text-adam dark:text-steel"
+    >
+      id: {id}
     </h2>
   </FlexRow>
 );
@@ -173,25 +150,42 @@ const TopPanelComp = ({
   vxund,
   vxusers,
   role,
-  children,
 }: ITopPanel) => (
-  <FlexRow className="h-fit w-full items-center justify-between px-4">
-    <FlexRow className="h-fit items-center">
-      <PolicyPill type={service_type} label="issuance" />
-      <PolicyPill type={policy_coverage} label="policy coverage" />
-      <CreatedAt created={_creationTime} />
-      <UserPill vx={vxusr} label="created by" />
-      <UserPill
-        vx={
-          role === "underwriter"
-            ? vxund
-            : vxusers?.find((u) => u.role === "supervisor")
-        }
-        label={role === "underwriter" ? "supervisor" : "underwriter"}
-      />
-      <Status status={status} />
-    </FlexRow>
-    {children}
+  <FlexRow className="h-fit w-full items-center space-x-1 from-void/40 to-void/20 px-4 py-2 backdrop-blur-xl dark:bg-gradient-to-r">
+    {/* <FlexRow className="h-fit w-full items-center space-x-2"> */}
+    <PolicyPill type={service_type} label="policy" />
+    <PolicyPill type={policy_coverage} label="coverage" />
+    <CreatedAt created={_creationTime} />
+    <UserPill vx={vxusr} label="created by" />
+    <UserPill
+      vx={
+        role === "underwriter"
+          ? vxund
+          : vxusers?.find((u) => u.role === "supervisor")
+      }
+      label={role === "underwriter" ? "supervisor" : "underwriter"}
+    />
+    <Status status={status} />
+    {/* </FlexRow> */}
   </FlexRow>
 );
 export const TopPanel = memo(TopPanelComp);
+
+interface IPillDetal {
+  value: ReactNode | undefined;
+  label?: string;
+  className?: ClassName;
+}
+const PillDetail = (props: IPillDetal) => (
+  <div
+    className={cn(
+      "flex w-full text-left font-sans text-sm font-medium leading-none",
+      props.className,
+    )}
+  >
+    <div>
+      <p className="h-4">{props.value}</p>
+      <p className="h-4 font-normal lowercase opacity-60">{props.label}</p>
+    </div>
+  </div>
+);

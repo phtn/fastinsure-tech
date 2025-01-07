@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { type ChangeEvent, memo, type ReactNode } from "react";
 import { type WindowVariant } from ".";
 import {
+  ArrowRightIcon,
   MagnifyingGlassIcon,
   WindowIcon,
   XMarkIcon,
@@ -13,7 +14,7 @@ import { type ButtIconProps } from "../button/types";
 export interface StaticToolbarProps {
   closeFn?: VoidFunction;
   children?: ReactNode;
-  title?: string;
+  title?: ReactNode;
   variant?: WindowVariant;
   loading?: boolean;
   icon?: DualIcon;
@@ -23,7 +24,7 @@ export interface StaticToolbarProps {
 export interface ToolbarProps<T> {
   closeFn: VoidFunction;
   children?: ReactNode;
-  title?: string;
+  title?: ReactNode;
   variant?: WindowVariant;
   loading?: boolean;
   icon?: DualIcon;
@@ -72,7 +73,7 @@ const ToolbarComponent = <T,>({
   );
 };
 
-const Title = (props: { title?: string }) => {
+const Title = (props: { title?: ReactNode }) => {
   return (
     <h2 className="text-sm font-semibold tracking-tight text-icon dark:text-icon-dark">
       {props.title}
@@ -145,7 +146,7 @@ export const StaticToolbar = ({
         {children}
       </section>
 
-      <CloseButton onClick={closeFn} icon={XMarkIcon} />
+      <CloseButton onClick={closeFn} icon={ArrowRightIcon} />
     </div>
   );
 };

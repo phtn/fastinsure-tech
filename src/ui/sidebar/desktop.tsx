@@ -56,13 +56,13 @@ export const DesktopSidebar = ({
         }}
         {...props}
       >
-        <>
-          <div className="space-y-4">
+        <div className="">
+          <div className="flex h-[calc(85vh)] flex-col space-y-4">
             <LogoLight />
             <NavItems />
           </div>
           <UserSection open={open} />
-        </>
+        </div>
       </motion.div>
     </div>
   );

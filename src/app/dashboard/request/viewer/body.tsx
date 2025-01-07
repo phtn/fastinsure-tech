@@ -1,12 +1,9 @@
 import { ButtSex } from "@/ui/button/ripple";
-import { FlexRow } from "@/ui/flex";
 import {
-  DocumentTextIcon,
   PaperAirplaneIcon,
-  DocumentIcon,
-  PencilSquareIcon,
   UserIcon,
   TruckIcon,
+  DocumentArrowDownIcon,
 } from "@heroicons/react/24/outline";
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import { FileSymlinkIcon } from "lucide-react";
@@ -27,6 +24,9 @@ import {
   TopPanel,
 } from "./components";
 import type { ClassName, DualIcon } from "@/app/types";
+import { AttachedFiles } from "./fileviewer";
+import { ArrowUpCircleIcon } from "@heroicons/react/24/solid";
+import { FileUpload } from "./fileuploader";
 
 type ReqFieldProps = Omit<
   SelectRequest,
@@ -59,11 +59,11 @@ const Fields: FC<{
   };
 
   return (
-    <div className="mb-4">
-      <div className="overflow-hidden rounded-xl border-[0.33px] border-primary-300 dark:border-adam/60">
+    <div className="mb-4 bg-steel/5 backdrop-blur-2xl">
+      <div className="overflow-hidden rounded-md border-[0.33px] border-primary-300 dark:border-adam/60">
         <div
           style={{ paddingBottom: pdf ? 10 : 0 }}
-          className="flex h-[39px] w-full items-center bg-void px-4 font-medium tracking-tight text-chalk dark:bg-adam/60 dark:text-warning-300"
+          className="flex h-[39px] w-full items-center bg-steel/50 px-4 font-medium tracking-tight text-void"
         >
           {title}
         </div>
@@ -83,7 +83,9 @@ export const ContentBody = () => {
     vxusers,
     submitRequest,
     loading,
+    pending,
     role,
+    attachedFiles,
   } = use(RequestViewerCtx)!;
   const vxund = underwriters?.find((u) => u.uid === vxrequest?.underwriter_id);
   const vxusr = vxusers?.find((u) => u.uid === vxrequest?.agent_id);
@@ -239,8 +241,8 @@ export const ContentBody = () => {
         fields: AutoFields,
       },
       {
-        value: "Download PDF",
-        icon: DocumentIcon,
+        value: "Downloads ",
+        icon: DocumentArrowDownIcon,
         fields: PDF,
       },
     ],
@@ -261,10 +263,10 @@ export const ContentBody = () => {
         onClick={submitRequest}
         loading={loading}
       >
-        <span className="px-6">Submit Request</span>
+        <span className="px-3">Submit Request</span>
       </ButtSex>,
-      <ButtSex size="lg" inverted end={PencilSquareIcon}>
-        <span className="px-6">Update Request</span>
+      <ButtSex size="md" inverted end={ArrowUpCircleIcon}>
+        <span className="px-3 text-sm">Update Request</span>
       </ButtSex>,
     );
     return <>{options.get(draft)}</>;
@@ -294,22 +296,29 @@ export const ContentBody = () => {
   );
 
   return (
-    <div className="flex h-full w-full overflow-y-scroll bg-chalk py-6 dark:bg-void">
+    <div className="h-full w-full overflow-y-scroll bg-chalk from-void via-slate-900/80 to-void py-6 dark:bg-gradient-to-tl">
       <RequestId id={vxrequest?.request_id} />
-      <div className="relative -top-6 w-full space-y-4 overflow-hidden rounded-xl">
-        <TopPanel {...panelProps}>{UpdateButton}</TopPanel>
-        <div className="flex h-[calc(84vh)] w-full justify-center space-y-6 overflow-hidden border-y-[0.33px] border-primary-300">
+
+      <div className="absolute right-1.5 top-1.5 z-50 flex items-center space-x-1">
+        <FileUpload />
+        {UpdateButton}
+      </div>
+      <div className="pointer-events-none absolute top-0 z-[100] h-16 w-full bg-gradient-to-l from-void/20 via-transparent to-transparent"></div>
+      <div className="relative -top-6 w-full overflow-hidden">
+        <TopPanel {...panelProps} />
+        <div className="flex h-[calc(84vh)] w-full justify-center overflow-hidden border-y-[0.33px] border-primary-300">
           <div className="grid w-full grid-cols-1 gap-x-4 md:grid-cols-6">
-            <Accordion className="col-span-4 h-[calc(84vh)] w-full overflow-y-scroll p-6">
+            <Accordion className="col-span-4 h-[calc(84vh)] w-full overflow-y-scroll">
               {request_detail.map((detail) => (
                 <AccordionItem
                   classNames={{
-                    trigger: "h-20",
+                    trigger: "h-24 px-4",
+                    content: "px-4",
                   }}
                   key={detail.value}
                   aria-label={detail.value}
                   startContent={
-                    <detail.icon className="size-7 stroke-1 text-secondary dark:text-steel" />
+                    <detail.icon className="size-6 stroke-1 text-adam dark:text-steel" />
                   }
                   title={
                     <h2 className="font-medium tracking-tight">
@@ -317,34 +326,20 @@ export const ContentBody = () => {
                     </h2>
                   }
                   subtitle={
-                    <p className="text-xs opacity-60">{detail.description}</p>
+                    <p className="text-sm opacity-60">{detail.description}</p>
                   }
                 >
                   {detail.fields({})}
                 </AccordionItem>
-                // <DetailItem {...detail} key={detail.value} />
               ))}
-              {/* <HyperList data={request_detail} component={} /> */}
             </Accordion>
-            <AttachedFiles />
+            <AttachedFiles pending={pending} attachedFiles={attachedFiles} />
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-const AttachedFiles = () => (
-  <div className="col-span-2 h-[calc(84vh)] w-full border-l-[0.33px] border-primary-300 bg-steel/20 p-6">
-    <FlexRow className="h-fit items-center space-x-1">
-      <DocumentTextIcon className="size-4" />
-      <h2 className="text-sm font-medium capitalize tracking-tight">
-        Attached Files
-      </h2>
-    </FlexRow>
-    <div className="min-h-[32rem]"></div>
-  </div>
-);
 
 interface IDetailItem {
   value: string;

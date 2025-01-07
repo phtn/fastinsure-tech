@@ -1,4 +1,4 @@
-import type { DualIcon } from "@/app/types";
+import type { ClassName, DualIcon } from "@/app/types";
 import type { ButtonHTMLAttributes } from "react";
 
 export type ButtSize = "xs" | "sm" | "md" | "lg" | "xl";
@@ -7,7 +7,8 @@ export type ButtIconVariant =
   | "god"
   | "goddess"
   | "active"
-  | "steel";
+  | "steel"
+  | "bright";
 export interface ButtIconProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   variant?: ButtIconVariant;
@@ -15,4 +16,6 @@ export interface ButtIconProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtSize;
   inverted?: boolean;
   disables?: boolean;
+  iconStyle?: ClassName;
+  className?: ClassName;
 }

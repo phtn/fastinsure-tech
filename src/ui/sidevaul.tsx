@@ -43,13 +43,13 @@ const Handle = ({ close }: { close: VoidFunction }) => (
 );
 
 const Body = ({ children }: PropsWithChildren) => (
-  <div className="flex w-full items-start justify-between overflow-hidden border-[0.33px] border-b-0 border-steel/80 bg-chalk text-foreground dark:bg-steel">
+  <div className="flex w-full items-start justify-between overflow-hidden border-[0.33px] border-steel border-b-[0.1] bg-chalk text-foreground dark:border-god dark:bg-steel">
     {children}
   </div>
 );
 
 const Footer = ({ children }: PropsWithChildren) => (
-  <div className="w-full rounded-b-lg border-t-[0.5px] border-steel bg-god px-4 py-2 backdrop-blur-3xl dark:border-t-[0.5px] dark:bg-background">
+  <div className="w-full rounded-b-lg border-t-[0.5px] border-steel bg-god px-2 py-1 backdrop-blur-2xl dark:border-t-[0.5px] dark:border-steel dark:bg-background">
     <div className="mx-auto flex items-center justify-between">{children}</div>
   </div>
 );

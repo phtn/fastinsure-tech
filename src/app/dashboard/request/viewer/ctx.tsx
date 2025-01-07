@@ -30,6 +30,8 @@ interface RequestViewerValues {
   submitRequest: () => Promise<void>;
   loading: boolean;
   role: string | undefined;
+  attachedFiles: (string | null)[];
+  updateRequestFiles: (files: (string | null)[]) => Promise<void>;
 }
 export const RequestViewerCtx = createContext<RequestViewerValues | null>(null);
 export interface RequestViewProps {
@@ -48,6 +50,7 @@ export const RequestViewerContext = ({
   const [vxusers, setvxusers] = useState<SelectUser[] | null>(null);
   const [underwriters, setUnderwriters] = useState<SelectUser[] | null>(null);
   const [loading, setLoading] = useState(false);
+  const [attachedFiles, setAttachedFiles] = useState<(string | null)[]>([]);
 
   const { vxuser } = useAuthCtx();
 
@@ -67,7 +70,7 @@ export const RequestViewerContext = ({
   ) => {
     xt(() => {
       xt(async () => {
-        set(await action());
+        return set(await action());
       });
     });
   };
@@ -120,13 +123,41 @@ export const RequestViewerContext = ({
     setFn(fn, getvxsubject, setSubject);
   }, [getvxsubject]);
 
+  /////////////
+  //ATTACHED FILES
+  const getvxfiles = useCallback(async () => {
+    if (!vxrequest?.files) return [null];
+    const files = await request.attachments.get(vxrequest.files);
+    return files;
+  }, [request.attachments, vxrequest?.files]);
+
+  const getAttachments = useCallback(() => {
+    setFn(fn, getvxfiles, setAttachedFiles);
+  }, [getvxfiles]);
+
   useEffect(() => {
-    getRequest();
-    getUnderwriters();
-    getAddress();
-    getAuto();
     getSubject();
   }, [getRequest, getUnderwriters, getAddress, getAuto, getSubject]);
+
+  useEffect(() => {
+    getAuto();
+  }, [getAuto]);
+
+  useEffect(() => {
+    getAddress();
+  }, [getAddress]);
+
+  useEffect(() => {
+    getUnderwriters();
+  }, [getUnderwriters]);
+
+  useEffect(() => {
+    getRequest();
+  }, [getRequest]);
+
+  useEffect(() => {
+    getAttachments();
+  }, [getAttachments]);
 
   const submitRequest = useCallback(async () => {
     setLoading(true);
@@ -136,6 +167,14 @@ export const RequestViewerContext = ({
       .then(Ok(setLoading, "Request submitted."))
       .catch(Err(setLoading, "Update failed."));
   }, [vxrequest?.request_id, request.update]);
+
+  const updateRequestFiles = useCallback(
+    async (files: (string | null)[]) => {
+      if (!vxrequest?.request_id) return;
+      await request.update.files(vxrequest?.request_id, files);
+    },
+    [vxrequest?.request_id, request.update],
+  );
 
   const value = useMemo(
     () => ({
@@ -149,6 +188,8 @@ export const RequestViewerContext = ({
       submitRequest,
       loading,
       role,
+      attachedFiles,
+      updateRequestFiles,
     }),
     [
       pending,
@@ -161,6 +202,8 @@ export const RequestViewerContext = ({
       submitRequest,
       loading,
       role,
+      attachedFiles,
+      updateRequestFiles,
     ],
   );
 

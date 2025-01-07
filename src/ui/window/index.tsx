@@ -21,7 +21,7 @@ interface DialogWindowProps<S> extends UseWindow {
   variant?: WindowVariant;
   shadow?: "sm" | "md" | "lg" | "xl";
   toolbar?: FC<ToolbarProps<S>>;
-  title?: string;
+  title?: ReactNode;
 }
 
 export const DialogWindow = <T,>(props: DialogWindowProps<T>) => {
@@ -107,7 +107,7 @@ interface WindowProps {
   variant?: WindowVariant;
   shadow?: "sm" | "md" | "lg" | "xl";
   toolbar?: FC<StaticToolbarProps>;
-  title?: string;
+  title?: ReactNode;
   icon?: DualIcon;
   closeFn?: VoidFunction;
 }
@@ -169,7 +169,7 @@ export function FlatWindow(props: WindowProps) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className={cn(
-          "flex w-full items-center justify-center rounded-2xl bg-void",
+          "_bg-void flex w-full items-center justify-center rounded-2xl",
         )}
       >
         <motion.div
@@ -183,7 +183,7 @@ export function FlatWindow(props: WindowProps) {
             { "shadow-md": shadow === "md" },
             { "shadow-sm": shadow === "sm" },
             "dark:border-fade-dark/90 dark:bg-void",
-            "border-[0.33px] border-fade-dark/20 bg-chalk",
+            "border-[0px] border-fade-dark/20 bg-chalk",
           )}
         >
           {props.toolbar ? (

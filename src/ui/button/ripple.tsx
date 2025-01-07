@@ -85,17 +85,17 @@ export const ButtSex = ({
       ) : (
         <props.icon
           className={cn(
-            "text-icon dark:text-icon-dark",
+            "stroke-1 text-void/90 dark:text-icon-dark",
+            "group-hover:text-void dark:group-hover:text-chalk",
             {
-              "size-4": size === "sm",
-            },
-            {
+              "size-3": size === "sm",
               "size-4": size === "md",
-            },
-            {
               "size-6": size === "lg",
             },
-            { "text-icon-dark dark:text-void/80": inverted },
+            {
+              "text-chalk group-hover:text-white dark:text-void/80": inverted,
+              "dark:group-hover:text-void": inverted,
+            },
             {
               "stroke-1 text-void group-hover:text-chalk":
                 variant === "secondary",
@@ -117,12 +117,12 @@ export const ButtSex = ({
   }, [end, Icon, loading]);
 
   return (
-    <Container inverted={inverted} size={size}>
+    <Container size={size} inverted={inverted} disabled={disabled}>
       <button
         disabled={disabled ?? loading}
         className={cn(
           "relative flex w-full items-center justify-center overflow-hidden",
-          "rounded-lg border px-3",
+          "rounded-lg border",
           "border-primary/40 bg-goddess group-hover:bg-white",
           "dark:bg-void dark:group-hover:bg-void",
           "dark:border-primary-500/40 dark:group-hover:border-primary-500/50",
@@ -130,15 +130,16 @@ export const ButtSex = ({
           "cursor-pointer text-center text-primary active:scale-[99%]",
           "transition-all duration-300 transform-gpu",
           {
-            "bg-void group-hover:bg-void dark:border-void/60": inverted,
-            "dark:bg-primary dark:group-hover:border-void/80 dark:group-hover:bg-white":
-              inverted,
-            "h-8 gap-2 rounded-lg": size === "sm",
-            "h-[38px] gap-3 rounded-[10px]": size === "md",
-            "h-12 gap-4 rounded-xl": size === "lg",
+            "bg-void dark:bg-primary": inverted,
+            "dark:border-void/60 dark:group-hover:border-void/80": inverted,
+            "group-hover:bg-void dark:group-hover:bg-white": inverted,
+            "h-8 gap-2 rounded-lg px-2 py-1.5": size === "sm",
+            "h-10 gap-2.5 rounded-xl px-2.5 py-2": size === "md",
+            "h-14 gap-2.5 rounded-xl px-2.5 py-2": size === "lg",
             "bg-secondary-300 group-hover:bg-secondary":
               variant === "secondary",
           },
+          { "border-gray-400 bg-gray-400 group-hover:bg-gray-400": disabled },
           className,
         )}
         onClick={handleClick}
@@ -151,11 +152,15 @@ export const ButtSex = ({
           className={cn(
             "relative z-[200] flex h-full items-center overflow-hidden whitespace-nowrap",
             "font-inter text-xs font-semibold capitalize tracking-tight text-void",
-            "drop-shadow-sm group-hover:text-void/90",
-            "dark:text-icon-dark dark:group-hover:text-chalk/80",
+            "px-1 drop-shadow-sm group-hover:text-void/90",
+            "dark:text-chalk/80 dark:group-hover:text-chalk",
             { "text-chalk/90 group-hover:text-chalk": inverted },
             { "dark:text-void dark:group-hover:text-void": inverted },
-            { "text-void group-hover:text-chalk": variant === "secondary" },
+            {
+              "text-void group-hover:text-chalk": variant === "secondary",
+              "text-sm font-semibold": size === "lg",
+              "text-sm font-medium": size === "md",
+            },
           )}
         >
           {children}
@@ -171,8 +176,6 @@ export const ButtSex = ({
                 {
                   "border-steel from-cyan-300/30 via-warning-100/10 to-adam/50":
                     inverted,
-                },
-                {
                   "border-void dark:from-secondary/10 dark:via-success/10 dark:to-indigo-500/60":
                     inverted,
                 },
@@ -184,9 +187,8 @@ export const ButtSex = ({
                 top: `${ripple.y}px`,
                 left: `${ripple.x}px`,
                 backgroundColor: rippleColor,
-                opacity: 0.05,
                 transform: `scale(0)`,
-                //
+                opacity: 0.05,
               }}
             />
           ))}
@@ -201,12 +203,14 @@ interface ContainerProps {
   size?: ButtSize;
   inverted?: boolean;
   containerStyle?: ClassName;
+  disabled?: boolean;
 }
 const Container = ({
   children,
   size,
   inverted,
   containerStyle,
+  disabled = false,
 }: ContainerProps) => {
   return (
     <div
@@ -214,32 +218,31 @@ const Container = ({
         "group relative flex h-fit w-fit items-center justify-center overflow-hidden p-1",
         {
           "rounded-[11px]": size === "sm",
+          "rounded-[14px]": size === "md",
+          "rounded-[16px]": size === "lg",
         },
-        {
-          "rounded-[12px]": size === "md",
-        },
-        { "rounded-[14px]": size === "lg" },
         containerStyle,
       )}
     >
-      <Shadow inverted={inverted} size={size} />
+      <Shadow disabled={disabled} inverted={inverted} size={size} />
       {children}
     </div>
   );
 };
 
 interface ShadowProps {
-  size?: ButtSize;
+  disabled: boolean;
   inverted?: boolean;
+  size?: ButtSize;
 }
-const Shadow = ({ size, inverted }: ShadowProps) => {
+const Shadow = ({ size, inverted, disabled }: ShadowProps) => {
   return (
     <div
       className={cn(
         "absolute size-full overflow-hidden opacity-20",
         "scale-75 group-hover:scale-100",
         { "rounded-[11px]": size === "sm" },
-        { "rounded-[12px]": size === "md" },
+        { "rounded-[14px]": size === "md" },
         { "rounded-[16px]": size === "lg" },
         "group-hover:bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] group-hover:from-slate-300/20 group-hover:via-slate-200/60 group-hover:to-slate-200/50",
         "dark:group-hover:bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] dark:group-hover:from-slate-200/40 dark:group-hover:via-slate-300/30 dark:group-hover:to-slate-500/5",
@@ -251,10 +254,11 @@ const Shadow = ({ size, inverted }: ShadowProps) => {
         {
           "size-full group-hover:border-primary-300 group-hover:from-slate-500/60 group-hover:via-slate-400/60 group-hover:to-slate-400/50 group-hover:scale-100":
             inverted,
-        },
-        {
           "dark:from-slate-300/80 dark:via-slate-400/80 dark:to-slate-300/40 dark:group-hover:bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))]":
             inverted,
+        },
+        {
+          "group-hover:opacity-0": disabled,
         },
       )}
     />

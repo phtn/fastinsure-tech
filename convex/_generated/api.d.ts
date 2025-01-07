@@ -34,6 +34,7 @@ import type * as notifications_create from "../notifications/create.js";
 import type * as notifications_d from "../notifications/d.js";
 import type * as notifications_get from "../notifications/get.js";
 import type * as queries_subjects from "../queries/subjects.js";
+import type * as requests_attachment from "../requests/attachment.js";
 import type * as requests_create from "../requests/create.js";
 import type * as requests_d from "../requests/d.js";
 import type * as requests_get from "../requests/get.js";
@@ -80,6 +81,7 @@ declare const fullApi: ApiFromModules<{
   "notifications/d": typeof notifications_d;
   "notifications/get": typeof notifications_get;
   "queries/subjects": typeof queries_subjects;
+  "requests/attachment": typeof requests_attachment;
   "requests/create": typeof requests_create;
   "requests/d": typeof requests_d;
   "requests/get": typeof requests_get;

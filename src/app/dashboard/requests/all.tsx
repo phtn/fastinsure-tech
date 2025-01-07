@@ -3,14 +3,18 @@ import { cn } from "@/lib/utils";
 import { FlexRow } from "@/ui/flex";
 import { HyperList } from "@/ui/list";
 import { type SelectRequest } from "@convex/requests/d";
-import { ArrowLongUpIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowDownOnSquareIcon,
+  ArrowLongUpIcon,
+} from "@heroicons/react/24/outline";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { User } from "@nextui-org/react";
 import moment from "moment";
-import { useRouter } from "next/navigation";
 import { memo, useCallback, useMemo, type PropsWithChildren } from "react";
 import { DataToolbar } from "./data-table.tsx/toolbar";
 import { useRequests } from "./useRequests";
+import { ButtSqx } from "@/ui/button/button";
+import Link from "next/link";
 
 export const All = () => {
   return (
@@ -45,14 +49,9 @@ const HeaderItem = ({ value, size = "xs", center = false }: TableRowProps) => (
 );
 
 const TableRow = (request: SelectRequest) => {
-  const router = useRouter();
-  const routeToRequest = useCallback(() => {
-    const route = `/dashboard/request/viewer?rid=${request?.request_id}`;
-    router.push(route);
-  }, [router, request?.request_id]);
   return (
     <div className="flex h-20 items-center justify-start">
-      <RequestIdCell routeFn={routeToRequest} id={request?.request_id} />
+      <RequestIdCell id={request?.request_id} />
       <DateCell date={request?._creationTime} create />
       <AssuredCell id={request?.subject_id} />
       <PolicyTypeCell type={request?.policy_type} />
@@ -67,14 +66,21 @@ const TableRow = (request: SelectRequest) => {
 
 const MemoizedTableRow = memo(TableRow);
 
-const RequestIdCell = (props: { id: string; routeFn: VoidFunction }) => {
+const RequestIdCell = (props: { id: string }) => {
+  const route = `/dashboard/request/viewer?rid=${props.id}`;
+  // const route = `/dashboard`;
+
+  const handleRoute = useCallback(() => {
+    console.log(route);
+  }, [route]);
+
   return (
-    <button
-      onClick={props.routeFn}
-      className="dark:text-cool flex h-10 w-28 items-start justify-center px-2 font-mono text-sm font-medium text-adam underline-offset-2 drop-shadow-sm hover:cursor-pointer hover:underline"
+    <Link
+      href={route}
+      className="flex w-28 items-start justify-center rotate-180"
     >
-      {props.id.split("-")[0]}
-    </button>
+      <ButtSqx onClick={handleRoute} size="lg" icon={ArrowDownOnSquareIcon} />
+    </Link>
   );
 };
 
@@ -125,7 +131,7 @@ const PolicyTypeCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "auto":
         return (
-          <div className="h-h6 flex items-center gap-2 rounded-md bg-gradient-to-tr from-army/30 via-cake/10 to-transparent px-1">
+          <div className="flex h-6 items-center rounded-md bg-gradient-to-tr from-army/30 via-cake/10 to-transparent px-1">
             <span className="font-inst text-sm font-medium capitalize tracking-tight dark:text-chalk">
               auto
             </span>
@@ -133,7 +139,7 @@ const PolicyTypeCell = (props: { type: string | undefined }) => {
         );
       default:
         return (
-          <div className="flex h-6 items-center gap-2 rounded-lg bg-primary-100 px-1">
+          <div className="flex h-6 items-center rounded-md bg-gradient-to-tr from-army/30 via-cake/10 to-transparent px-1">
             <span className="text-xs font-medium capitalize tracking-tight dark:text-chalk">
               auto
             </span>
@@ -153,16 +159,16 @@ const PolicyCoverageCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "comprehensive":
         return (
-          <div className="bg-coal flex h-6 items-center gap-2 rounded-md px-1 dark:bg-steel/15 dark:text-chalk">
-            <span className="text-xs font-medium uppercase tracking-tight dark:text-chalk">
+          <div className="flex h-6 items-center rounded-md bg-gradient-to-tr from-army/30 via-cake/10 to-transparent px-1">
+            <span className="text-sm uppercase tracking-tight dark:text-chalk">
               full
             </span>
           </div>
         );
       default:
         return (
-          <div className="flex h-6 items-center gap-2 rounded-xl px-1">
-            <span className="text-xs font-medium capitalize tracking-tight dark:text-chalk">
+          <div className="flex h-6 items-center rounded-md bg-gradient-to-tr from-army/30 via-cake/10 to-transparent px-1">
+            <span className="text-sm capitalize tracking-tight dark:text-chalk">
               CTPL
             </span>
           </div>
@@ -170,9 +176,7 @@ const PolicyCoverageCell = (props: { type: string | undefined }) => {
     }
   };
   return (
-    <FlexRow className="h-full w-32 items-center justify-center">
-      {coverage()}
-    </FlexRow>
+    <FlexRow className="w-32 items-center justify-center">{coverage()}</FlexRow>
   );
 };
 
@@ -181,16 +185,16 @@ const ServiceTypeCell = (props: { type: string | undefined }) => {
     switch (props.type) {
       case "new":
         return (
-          <div className="to-cool flex h-6 items-center gap-1.5 rounded-md bg-gradient-to-tr from-orange-300/50 via-orange-200/10 px-1 dark:bg-primary-300/40 dark:from-slate-800/20">
-            <span className="font-inst text-sm font-medium capitalize tracking-tight text-orange-950 dark:text-chalk">
+          <div className="flex h-6 items-center rounded-md bg-gradient-to-tr from-orange-300/50 via-orange-200/10 to-transparent px-1 dark:from-slate-800/20">
+            <span className="text-sm font-medium capitalize tracking-tight text-orange-950 dark:text-chalk">
               new
             </span>
           </div>
         );
       default:
         return (
-          <div className="flex h-6 items-center gap-1.5 rounded-md bg-gradient-to-tr from-teal-300/50 via-teal-200/10 to-transparent px-1 dark:from-slate-800/20">
-            <span className="font-inter text-sm capitalize tracking-tight text-teal-950 dark:text-chalk">
+          <div className="flex h-6 items-center rounded-md bg-gradient-to-tr from-teal-300/50 via-teal-200/10 to-transparent px-1 dark:from-slate-800/20">
+            <span className="text-sm font-medium capitalize text-teal-950 dark:text-chalk">
               Renew
             </span>
           </div>
@@ -198,7 +202,7 @@ const ServiceTypeCell = (props: { type: string | undefined }) => {
     }
   };
   return (
-    <FlexRow className="h-full w-32 items-center justify-center text-xs font-semibold">
+    <FlexRow className="h-6 w-32 items-center justify-center">
       {serviceType()}
     </FlexRow>
   );
@@ -210,7 +214,7 @@ const StatusCell = (props: { status: string | undefined }) => {
       case "submitted":
         return (
           <div className="flex h-6 items-center rounded-md bg-gradient-to-tr from-blue-300/50 via-blue-200/10 to-transparent ps-1 dark:bg-steel/15 dark:from-slate-800/20 dark:text-chalk">
-            <span className="text-sm font-medium capitalize tracking-tight text-blue-950 dark:text-chalk">
+            <span className="text-sm font-medium capitalize text-blue-950 dark:text-chalk">
               submitted
             </span>
             <ArrowLongUpIcon className="size-4 stroke-2 text-secondary dark:text-secondary" />
@@ -228,9 +232,7 @@ const StatusCell = (props: { status: string | undefined }) => {
     }
   };
   return (
-    <div className="flex h-full w-40 items-center justify-center">
-      {status()}
-    </div>
+    <div className="flex w-40 items-center justify-center">{status()}</div>
   );
 };
 
