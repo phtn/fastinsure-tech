@@ -9,7 +9,7 @@ import { Accordion, AccordionItem } from "@nextui-org/react";
 import { FileSymlinkIcon } from "lucide-react";
 import { type FC, use, useCallback, useMemo } from "react";
 import { RequestViewerCtx } from "./ctx";
-import { PdfObject } from "./object";
+import { PdfObject } from "./pdf";
 import { opts } from "@/utils/helpers";
 
 import type { SelectRequest } from "@convex/requests/d";
@@ -28,13 +28,13 @@ import { AttachedFiles } from "./fileviewer";
 import { ArrowUpCircleIcon } from "@heroicons/react/24/solid";
 import { FileUpload } from "./fileuploader";
 
-type ReqFieldProps = Omit<
+export type ReqFieldProps = Omit<
   SelectRequest,
   "metadata" | "policy_id" | "files" | "updates"
 >;
-type AutoFieldProps = Omit<SelectAuto, "metadata">;
-type SubjectFieldProps = Omit<SelectSubject, "metadata" | "file">;
-type AddressFieldProps = Omit<SelectAddress, "metadata">;
+export type AutoFieldProps = Omit<SelectAuto, "metadata">;
+export type SubjectFieldProps = Omit<SelectSubject, "metadata" | "file">;
+export type AddressFieldProps = Omit<SelectAddress, "metadata">;
 
 const Fields: FC<{
   title: string;
@@ -72,6 +72,13 @@ const Fields: FC<{
     </div>
   );
 };
+
+interface IDetailItem {
+  value: string;
+  icon: DualIcon;
+  description?: string;
+  component: FC;
+}
 
 export const ContentBody = () => {
   const {
@@ -149,25 +156,25 @@ export const ContentBody = () => {
     [autofields],
   );
 
-  const addresssfields = useMemo(
+  const addressfields = useMemo(
     () => cleanAddress && Object.fromEntries(cleanAddress),
     [cleanAddress],
   );
   const AddressFields = useCallback(
     () => (
-      <Fields title="Address" fields={addresssfields as AddressFieldProps} />
+      <Fields title="Address" fields={addressfields as AddressFieldProps} />
     ),
-    [addresssfields],
+    [addressfields],
   );
   const AddressFieldsPDF = useCallback(
     () => (
       <Fields
         title="Assured Address"
-        fields={addresssfields as AddressFieldProps}
+        fields={addressfields as AddressFieldProps}
         pdf
       />
     ),
-    [addresssfields],
+    [addressfields],
   );
 
   const subjectfields = useMemo(
@@ -201,13 +208,17 @@ export const ContentBody = () => {
     [SubjectFields, AddressFields],
   );
 
-  const PDF = useCallback(
+  const PDFViewer = useCallback(
     () => (
       <PdfObject
         address={AddressFieldsPDF}
         auto={AutoFieldsPDF}
         request={ReqFieldsPDF}
         subject={SubjectFieldsPDF}
+        subjectData={subjectfields as SubjectFieldProps}
+        addressData={addressfields as AddressFieldProps}
+        autoData={autofields as AutoFieldProps}
+        requestData={reqfields as ReqFieldProps}
         title="Policy Request Info"
         description=""
         id={vxrequest?.request_id}
@@ -219,6 +230,10 @@ export const ContentBody = () => {
       ReqFieldsPDF,
       SubjectFieldsPDF,
       vxrequest?.request_id,
+      addressfields,
+      autofields,
+      subjectfields,
+      reqfields,
     ],
   );
 
@@ -227,26 +242,26 @@ export const ContentBody = () => {
       {
         value: "Request Info",
         description: "View all request fields.",
-        fields: ReqFields,
+        component: ReqFields,
         icon: FileSymlinkIcon,
       },
       {
         value: "Assured Info",
         icon: UserIcon,
-        fields: AssuredFields,
+        component: AssuredFields,
       },
       {
         value: "Vehicle Info",
         icon: TruckIcon,
-        fields: AutoFields,
+        component: AutoFields,
       },
       {
-        value: "Downloads ",
+        value: "Downloads",
         icon: DocumentArrowDownIcon,
-        fields: PDF,
+        component: PDFViewer,
       },
     ],
-    [AutoFields, ReqFields, AssuredFields, PDF],
+    [AutoFields, ReqFields, AssuredFields, PDFViewer],
   );
 
   const draft = useMemo(
@@ -329,7 +344,7 @@ export const ContentBody = () => {
                     <p className="text-sm opacity-60">{detail.description}</p>
                   }
                 >
-                  {detail.fields({})}
+                  {detail.component({})}
                 </AccordionItem>
               ))}
             </Accordion>
@@ -340,10 +355,3 @@ export const ContentBody = () => {
     </div>
   );
 };
-
-interface IDetailItem {
-  value: string;
-  icon: DualIcon;
-  description?: string;
-  fields: FC;
-}

@@ -1,8 +1,8 @@
-/** @type {import("eslint").Linter.Config} */
 const config = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: true,
+    ecmaVersion: "latest",
   },
   plugins: ["@typescript-eslint", "react-compiler"],
   extends: [
@@ -10,6 +10,7 @@ const config = {
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
   ],
+  ignores: ["**/*.config.js", "!**/eslint.config.mjs", "**/wasm"],
   rules: {
     "react-compiler/react-compiler": "error",
     "@typescript-eslint/array-type": "off",
@@ -41,4 +42,4 @@ const config = {
     ],
   },
 };
-module.exports = config;
+export default config;

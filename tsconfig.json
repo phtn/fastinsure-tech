@@ -31,19 +31,19 @@
       "@convex/*": ["./convex/*"],
       "@ctx/*": ["./src/app/ctx/*"],
       "@lib/*": ["src/lib/*"],
+      "@wasm/*": ["src/wasm/*"],
       "@request/*": ["src/app/dashboard/request/*"],
       "test-utils": ["./src/utils/test-utils"],
       "utils": ["./src/utils"]
     }
   },
   "include": [
-    ".eslintrc.cjs",
+    ".eslintrc.mjs",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mts",
-    "**/*.js",
     ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
