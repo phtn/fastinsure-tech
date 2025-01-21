@@ -17,13 +17,10 @@ export const Features = () => {
         <Screen.Flex relative>
           <Safari
             url="https://fastinsure.dev"
-            src="/svg/centric.svg"
+            src="/images/dash.png"
             className={cn("h-fit w-auto grayscale")}
           />
-          <Iphone15Pro
-            className={cn("h-fit grayscale")}
-            src="/svg/centric.svg"
-          />
+          <Iphone15Pro className={cn("h-fit grayscale")} src="/images/f.png" />
         </Screen.Flex>
       </Screen.Base>
     </Screen>

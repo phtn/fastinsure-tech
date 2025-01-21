@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Screen } from "@/ui/screen";
 import { type ClassName } from "../types";
-import { FileTextIcon } from "lucide-react";
+import { NetworkIcon } from "lucide-react";
 import { BentoCard, type BentoCardProps, BentoGrid } from "@/ui/bento";
 import { ServerIcon } from "@heroicons/react/24/solid";
 
@@ -35,17 +35,17 @@ const Tools = () => {
 
 const tools: BentoCardProps[] = [
   {
-    icon: FileTextIcon,
-    title: "Webhooks",
-    description: "We automatically save your files as you type.",
+    icon: NetworkIcon,
+    title: "Secure Server",
+    description: "Robust API endpoints.",
     href: "/",
     cta: "Learn more",
     className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
   },
   {
     icon: ServerIcon,
-    title: "High-Performance Database",
-    description: "We automatically save your files as you type.",
+    title: "Real-time Database",
+    description: "Remote monitoring enabled.",
     href: "/",
     cta: "Learn more",
     className: "lg:row-start-1 lg:row-end-1 lg:col-start-1 lg:col-end-1",
