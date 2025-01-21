@@ -344,7 +344,7 @@ export const ContentBody = () => {
                     <p className="text-sm opacity-60">{detail.description}</p>
                   }
                 >
-                  {detail.component({})}
+                  <detail.component />
                 </AccordionItem>
               ))}
             </Accordion>

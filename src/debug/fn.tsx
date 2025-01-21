@@ -13,7 +13,6 @@ import Json from "@/ui/json";
 import { HyperList } from "@/ui/list";
 import { DialogWindow } from "@/ui/window";
 import { useWindow } from "@/ui/window/useWindow";
-import { toggleState } from "@/utils/helpers";
 import { Button } from "@nextui-org/react";
 import { DevToolbar } from "./toolbar";
 import { type TestFunction, useFunction } from "./useFunction";
@@ -45,7 +44,7 @@ const ResultComponent = ({ result }: ResultProps) => {
     [result],
   );
   const toggleCollapse = useCallback(
-    () => toggleState(setCollapsed),
+    () => setCollapsed((prev) => !prev),
     [setCollapsed],
   );
   if (!result) return null;

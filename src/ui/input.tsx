@@ -6,7 +6,6 @@ import {
   opts,
   passwordSecure,
   pasteFn,
-  toggleState,
 } from "@/utils/helpers";
 import {
   ClipboardIcon,
@@ -86,7 +85,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     // const [chmap, setChmap] = useState<number[]>([]);
     // const [userInput, setUserInput] = useState("");
 
-    const toggleSecure = () => toggleState(setSecure);
+    const toggleSecure = () => setSecure((prev) => !prev);
 
     const inputType = useMemo(
       () => passwordSecure(props.name ?? "password", secure),

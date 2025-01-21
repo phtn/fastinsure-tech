@@ -1,3 +1,5 @@
+"use client";
+
 import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useVex } from "@/app/ctx/convex";
 import { Err, Ok } from "@/utils/helpers";

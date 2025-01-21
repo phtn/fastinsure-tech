@@ -3,7 +3,7 @@ import { type DualIcon } from "@/app/types";
 import { useManager } from "@/lib/hooks/useManager";
 import { Action, ActionCard, ActionLink } from "@/ui/action-card";
 import { ButtSqx } from "@/ui/button/button";
-import { copyFn, Err, toggleState } from "@/utils/helpers";
+import { copyFn, Err } from "@/utils/helpers";
 import { BookOpenIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 import { Square2StackIcon } from "@heroicons/react/24/solid";
 import { FileSymlinkIcon } from "lucide-react";
@@ -22,7 +22,7 @@ export const CreateAgentCode = () => {
     await newAgentCode(user).then(setOpen).catch(Err);
   }, [newAgentCode, user]);
 
-  const handleToggleOpen = useCallback(() => toggleState(setOpen), []);
+  const handleToggleOpen = useCallback(() => setOpen((prev) => !prev), []);
 
   const url = useMemo(
     () =>

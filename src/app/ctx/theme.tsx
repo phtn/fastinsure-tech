@@ -57,9 +57,8 @@ export const Theme = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (pending) {
-      console.table({ fn: "getTheme", status: "loading" });
+      console.log("loading theme...");
     }
-    console.table({ fn: "getTheme", status: "done" });
   }, [pending]);
 
   const stableValues = useMemo(

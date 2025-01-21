@@ -9,11 +9,12 @@ export const ViewerContent = () => {
   const searchParams = useSearchParams();
   const request_id = searchParams.get("rid");
   return (
-    <RequestViewerContext request_id={request_id}>
-      <main>
-        <Header title="request" xs />
+    <main>
+      <Header title="request" xs />
+
+      <RequestViewerContext request_id={request_id}>
         <ContentBody />
-      </main>
-    </RequestViewerContext>
+      </RequestViewerContext>
+    </main>
   );
 };

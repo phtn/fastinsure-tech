@@ -1,3 +1,5 @@
+"use client";
+
 import moment from "moment";
 import type { ClassName } from "@/app/types";
 import { cn } from "@/lib/utils";
@@ -114,7 +116,7 @@ export const RenderRow: FC<{
 );
 
 export const excludeProps = <T,>(o: T | null, keys: string[]) =>
-  o && Object.entries(o).filter(([k, _]) => !keys.includes(k));
+  o && Object.entries(o).filter(([k]) => !keys.includes(k));
 
 const RequestIdComp = ({ id }: { id: string | undefined }) => (
   <FlexRow className="absolute left-48 top-[22px] z-40 h-fit w-full items-center">

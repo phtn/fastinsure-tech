@@ -1,7 +1,7 @@
 import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { useVex } from "@/app/ctx/convex";
 import { onSuccess } from "@/app/ctx/toasts";
-import { Err, toggleState } from "@/utils/helpers";
+import { Err } from "@/utils/helpers";
 
 import {
   type ChangeEvent,
@@ -122,7 +122,7 @@ export const AccountContext = ({ children }: { children: ReactNode }) => {
     [drawCanvas],
   );
 
-  const toggleEditor = useCallback(() => toggleState(setOpen), [setOpen]);
+  const toggleEditor = useCallback(() => setOpen((prev) => !prev), [setOpen]);
 
   const createUrl = useCallback(async () => {
     if (file) {

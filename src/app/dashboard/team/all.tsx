@@ -26,7 +26,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { Err, opts, toggleState } from "@/utils/helpers";
+import { Err, opts } from "@/utils/helpers";
 import { HyperList } from "@/ui/list";
 import { UserConfig } from "./components";
 
@@ -34,7 +34,10 @@ export const All = () => {
   const { vxmembers, userLogs, getUserLogs, pending } = useTeam();
   const [open2, setOpen2] = useState(false);
   const [selected, setSelected] = useState("");
-  const toggleUserConfig = useCallback(() => toggleState(setOpen2), [setOpen2]);
+  const toggleUserConfig = useCallback(
+    () => setOpen2((prev) => !prev),
+    [setOpen2],
+  );
 
   const vx = useMemo(
     () => vxmembers?.find((v) => v.uid === selected),

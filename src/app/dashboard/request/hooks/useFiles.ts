@@ -2,9 +2,7 @@ import { useVex } from "@/app/ctx/convex";
 import { onAwait } from "@/app/ctx/toasts";
 import { Err } from "@/utils/helpers";
 import { useToggle } from "@/utils/hooks/useToggle";
-
 import { useCallback, useRef, useState } from "react";
-
 import type { ChangeEvent } from "react";
 
 export const useFiles = () => {
@@ -49,15 +47,6 @@ export const useFiles = () => {
     inputFileRef.current.value = "";
     console.log(fileList);
   }, [fileList]);
-
-  // const createUrl = useCallback(
-  //   async (file: File) => {
-  //     if (file) {
-  //       return await files.create(file);
-  //     }
-  //   },
-  //   [files],
-  // );
 
   const generateUrls = useCallback(async () => {
     if (fileList.length) {

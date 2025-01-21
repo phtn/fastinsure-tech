@@ -6,7 +6,7 @@ export const getVersion = () => {
   return pkg.version;
 };
 
-export const ded2Rad = (deg: number | string): number => {
+export const deg2Rad = (deg: number | string): number => {
   const getRad = (d: number) => (d * Math.PI) / 180;
 
   if (typeof deg === "string") {
@@ -38,32 +38,6 @@ export const passwordSecure = (name: string, secure: boolean) => {
   }
   return "text";
 };
-
-// export const createInvoiceNumber = (): string => {
-//   const regex = /-(.*)-/;
-//   const uid = uuidv4();
-
-//   const match = uid.match(regex);
-//   if (match && match.length > 1) {
-//     const stringBetweenDashes = match[1];
-//     return `INV-${stringBetweenDashes}`;
-//   } else {
-//     return `INV-${uid.substring(0, 13)}`;
-//   }
-// };
-
-// export const createReferenceNumber = () => {
-//   const regex = /-(.*)-/;
-//   const uid = uuidv4();
-
-//   const match = uid.match(regex);
-//   if (match && match.length > 1) {
-//     const stringBetweenDashes = match[1];
-//     return `FAST-${stringBetweenDashes}`;
-//   } else {
-//     return `FAST-${uid.substring(0, 13)}`;
-//   }
-// };
 
 export const removeLastEqualSign = (str: string) => {
   const regex = /=+$/;
@@ -203,12 +177,6 @@ export const getNextElement = <T>(
   return nextIndex;
 };
 
-export const toggleState = (
-  setState: Dispatch<SetStateAction<boolean>>,
-): void => {
-  setState((prevState) => !prevState);
-};
-
 export const getFileType = (file_type: string | undefined): string => {
   if (!file_type) {
     return "";
@@ -218,7 +186,7 @@ export const getFileType = (file_type: string | undefined): string => {
   return match?.[1] ?? "";
 };
 
-export const fileSize = (bytes: number | undefined): string => {
+export const getFileSize = (bytes: number | undefined): string => {
   const units = ["bytes", "KB", "MB", "GB", "TB"];
   let unitIndex = 0;
 
@@ -235,109 +203,6 @@ export const fileSize = (bytes: number | undefined): string => {
 
   return `${roundedValue} ${units[unitIndex]}`;
 };
-
-export const sharpenKey = (input: string): string => {
-  let modifiedString = input
-    .replace(/\./g, "")
-    .replace(/\/+/g, " ")
-    .replace(/ +/g, " ")
-    .replace(/ +/g, "_")
-    .replace(/'+/g, "")
-    .replace(/\?+/g, "")
-    .replace(/_{2,}/g, "_")
-    .trim()
-    .toLowerCase();
-
-  if (modifiedString.endsWith("no")) {
-    modifiedString = modifiedString.replace(/no$/, "_no");
-  }
-
-  return modifiedString;
-};
-
-export const screenKey = (input: string): string => {
-  let modifiedString = "";
-
-  for (let i = 0; i < input.length; i++) {
-    const currentChar = input[i];
-    const nextChar = input[i + 1];
-
-    if (currentChar === "_" && nextChar === "_") {
-      continue;
-    } else if (currentChar === " ") {
-      if (i === 0 || i === input.length - 1 || nextChar === " ") {
-        continue;
-      } else {
-        modifiedString += "_";
-      }
-    } else {
-      modifiedString += currentChar;
-    }
-  }
-
-  return modifiedString.trim();
-};
-
-export const filterList = <T>(
-  array: T[],
-  predicate: (el: T) => boolean,
-): T[] => {
-  return array?.filter(predicate);
-};
-
-export type KVFields = {
-  key: string;
-  value: string | number;
-};
-
-// export const extractKV = (array: OCR_DE_FieldSchema) => {
-//   return array?.map(({ key, value }) => ({
-//     key: screenKey(sharpenKey(key)),
-//     value: value.toUpperCase(),
-//   }));
-// };
-
-// export const filterFields = (
-//   array: OCR_DE_FieldSchema,
-//   ...args: string[]
-// ): KVFields[] => {
-//   const excludedKeys = new Set(
-//     args
-//       .concat(
-//         "state_name",
-//         "state_code",
-//         "country_code",
-//         "country_name",
-//         "_no",
-//         "o",
-//         "telephone_no",
-//       )
-//       .map((item) => item),
-//   );
-//   const kv = extractKV(array);
-//   const filteredList = filterList(kv, (item) => !excludedKeys.has(item.key));
-//   return filteredList;
-// };
-
-// export const getVehicleDefaults = (array: OCR_DE_FieldSchema) => {
-//   const filteredArray: KVFields[] = filterFields(array);
-//   const convertedObj = filteredArray.reduce((obj, { key, value }) => {
-//     return { ...obj, [key]: value };
-//   }, {});
-//   return convertedObj;
-// };
-
-// export const filterAutoValues = (values: VehicleSchema) => {
-//   const exclude = new Set(["NO", "O", "TELEPHONE NO"]);
-
-//   const filteredValues = {
-//     ...Object.fromEntries(
-//       Object.entries(values).filter((key) => !exclude.has(key[0])),
-//     ),
-//   };
-
-//   return filteredValues;
-// };
 
 export const withSpaces = (input: string): string => {
   return input.replace(/_/g, " ");
@@ -462,12 +327,12 @@ export const sanitizeText = (value: string) => {
   return commas;
 };
 
-type DisplaynameParams = {
+type FullnameParams = {
   firstName: string | undefined;
   middleName: string | undefined;
   lastName: string | undefined;
 };
-export const formDisplayname = (params: DisplaynameParams) => {
+export const createFullname = (params: FullnameParams) => {
   const { firstName, middleName, lastName } = params;
   if (!middleName) {
     return `${firstName} ${lastName}`;
@@ -518,16 +383,6 @@ export const basedOnTime = (): string => {
   return "Good evening,";
 };
 
-function counter() {
-  let count = 0;
-
-  return function incrementCounter() {
-    return +(count += 0.01).toFixed(2);
-  };
-}
-
-export const onCount = counter();
-
 export const charlimit = (
   text: string | undefined,
   chars?: number,
@@ -535,23 +390,6 @@ export const charlimit = (
   if (!text) return;
   return text.substring(0, chars ?? 12);
 };
-
-// export const downloadFiles = async <T extends IImageList>(
-//   files: T[],
-//   folder: string,
-// ) => {
-//   const zip = new JSZip();
-
-//   for (const file of files) {
-//     const response = await fetch(file.url, { method: "GET", mode: "no-cors" });
-//     const arrayBuffer = await response.arrayBuffer();
-//     zip.file(file.name, new Uint8Array(arrayBuffer));
-//   }
-
-//   await zip.generateAsync({ type: "blob" }).then((content) => {
-//     saveAs(content, folder);
-//   });
-// };
 
 export type MonthName =
   | "January"
@@ -665,4 +503,12 @@ export const pasteFn = async (id: string) => {
     v.replaceAll('"', "");
   }
   return v;
+};
+
+export const urlToFile = async (url: string | null, filename: string) => {
+  if (!url) return;
+  const response = await fetch(url);
+  const blob = await response.blob();
+  const file = new File([blob], filename, { type: blob.type });
+  return file;
 };

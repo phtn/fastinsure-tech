@@ -30,10 +30,10 @@ interface PdfProps {
 export const PdfObject = ({
   title,
   description,
-  request,
-  auto,
-  address,
-  subject,
+  request: Request,
+  auto: Auto,
+  address: Address,
+  subject: Subject,
   subjectData,
   addressData,
   requestData,
@@ -134,7 +134,7 @@ export const PdfObject = ({
     } catch (error) {
       console.error("Error generating CSV:", error);
     }
-  }, [addressData, autoData, subjectData, requestData]);
+  }, [addressData, autoData, subjectData, requestData, id]);
 
   return (
     <div>
@@ -164,10 +164,16 @@ export const PdfObject = ({
         <div className="border-[0.33px] border-primary-300 p-5 shadow-md">
           <FileHeader page={1} title={title} id={id} />
           <div className="flex h-full justify-between">
-            <div className="h-full pt-5">{subject({})}</div>
-            <div className="h-full pt-5">{address({})}</div>
+            <div className="h-full pt-5">
+              <Subject />
+            </div>
+            <div className="h-full pt-5">
+              <Address />
+            </div>
           </div>
-          <div className="h-full pt-5">{request({})}</div>
+          <div className="h-full pt-5">
+            <Request />
+          </div>
 
           <div className="flex h-[7.25rem] w-full items-end justify-center">
             <div className="h-px w-full border-b-[0.33px] border-dashed border-primary-300/60" />
@@ -177,7 +183,9 @@ export const PdfObject = ({
         <div className="border-[0.33px] border-primary-300 p-5 shadow-md">
           <FileHeader page={2} title={title} id={id} />
           <section className="py-4">
-            <div className="h-full">{auto({})}</div>
+            <div className="h-full">
+              <Auto />
+            </div>
           </section>
         </div>
       </div>

@@ -25,6 +25,7 @@ import { useFiles } from "../hooks/useFiles";
 import { LoaderSm } from "@/ui/loader";
 import { RequestViewerCtx } from "./ctx";
 import { Err } from "@/utils/helpers";
+import { ClassName } from "@/app/types";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 export const FileUpload = () => {
@@ -210,7 +211,10 @@ const FileUploadViewer = ({
   );
 };
 
-const PDFDocument = (props: { file: File }) => {
+export const PDFDocument = (props: {
+  file: File | undefined;
+  className?: ClassName;
+}) => {
   const [numPages, setNumPages] = useState<number>();
   const [pageNumber, setPageNumber] = useState<number>(1);
 
@@ -234,7 +238,7 @@ const PDFDocument = (props: { file: File }) => {
   return !props.file ? (
     <LoaderSm />
   ) : (
-    <div className="relative h-[480px] animate-enter">
+    <div className={cn("relative h-[480px] animate-enter", props.className)}>
       <Document file={props.file} onLoadSuccess={onDocumentLoadSuccess}>
         <Page pageNumber={pageNumber} width={360} />
       </Document>
