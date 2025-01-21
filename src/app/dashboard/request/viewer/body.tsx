@@ -51,7 +51,7 @@ const Fields: FC<{
   const renderFilteredRows = (rowClass: ClassName) => {
     return entries
       .filter(
-        ([_, value]) => typeof value !== "string" || typeof value !== "number",
+        ([, value]) => typeof value !== "string" || typeof value !== "number",
       )
       .map(([key, value]) => (
         <RenderRow key={key} keyName={key} value={value} className={rowClass} />
