@@ -15,5 +15,5 @@ export const createAxiosInstance = (config?: AxiosRequestConfig) =>
     baseURL:
       env.NODE_ENV === "production"
         ? env.RE_UP_SECURE_URL
-        : env.RE_UP_SECURE_DEV,
+        : env.RE_UP_SECURE_URL,
   });

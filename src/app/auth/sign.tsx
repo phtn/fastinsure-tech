@@ -26,18 +26,28 @@ function AuthComponent(props: AuthComponentProps) {
     open: props.open,
     setOpen: props.setOpen,
   });
-  const { pending, checkSession, checkServer, checkLastLogin, lastLogin } =
-    useAuthFn();
+  const {
+    pending,
+    checkSession,
+    checkLastLogin,
+    checkServer,
+    lastLogin,
+    livez,
+  } = useAuthFn();
 
   const onLoad = useCallback(() => {
+    console.log("is_open", open);
     if (!open) {
-      checkServer();
       checkSession();
       checkLastLogin();
+      checkServer();
     }
-  }, [open, checkServer, checkSession, checkLastLogin]);
+  }, [open, checkSession, checkLastLogin, checkServer]);
 
-  const { add, remove } = keyListener("j", onLoad);
+  const { add, remove } = useMemo(
+    () => keyListener("j", onLoad),
+    [keyListener, onLoad],
+  );
 
   useEffect(() => {
     add();
@@ -66,6 +76,8 @@ function AuthComponent(props: AuthComponentProps) {
   // WINDOW
 
   const toggleStateValue = useCallback(() => {
+    console.log("is_open", open);
+    console.log("is_pending", pending);
     if (open) {
       state.set(pending ? 1 : 0);
     }
@@ -73,7 +85,7 @@ function AuthComponent(props: AuthComponentProps) {
 
   useEffect(() => {
     toggleStateValue();
-  }, [toggleStateValue]);
+  }, [toggleStateValue, livez]);
 
   const SignCardOptions = useCallback(() => {
     const options = opts(
@@ -122,7 +134,7 @@ function AuthComponent(props: AuthComponentProps) {
               { "shadow-sm": props.shadow === "sm" },
               "dark:border-fade-dark/90 dark:bg-chalk",
               "border-[0.33px] border-fade-dark/40 bg-white",
-              { "bg-transparent dark:bg-transparent": pending },
+              { "bg-transparent dark:bg-transparent": state.get() === 0 },
             )}
             onClick={stopPropagation}
           >

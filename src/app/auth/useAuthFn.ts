@@ -1,44 +1,43 @@
-import type { Dispatch, SetStateAction, TransitionStartFunction } from "react";
-import { useTransition, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { getLastLogin, getUID } from "../actions";
-import { getLivez, getReadyz } from "@/trpc/secure/callers/server";
+import { getLivez } from "@/trpc/secure/callers/server";
+import type { ServerResponse } from "@/server/secure/resource";
 
 export const useAuthFn = () => {
   const [uid, setuid] = useState<string | null>(null);
-  const [pending, fn] = useTransition();
+  const [pending, setPending] = useState(false);
   const [lastLogin, setLastLoginState] = useState<string>();
+  const [livez, setLivez] = useState<ServerResponse | null>(null);
 
-  const startFn = <T>(
-    transition: TransitionStartFunction,
-    fn: () => Promise<T>,
-    set?: Dispatch<SetStateAction<T>>,
-    name?: string,
-  ) => {
-    transition(() => {
-      transition(async () => {
-        const result = await fn();
-        localStorage.setItem(
-          name ?? Date.now().toString(36),
-          JSON.stringify(result),
-        );
-
-        if (set) set(result);
-      });
-    });
-  };
-
-  const checkSession = useCallback(() => {
-    startFn(fn, getUID, setuid, `Session check`);
+  const checkSession = useCallback(async () => {
+    setPending(true);
+    const uid = await getUID();
+    setuid(uid);
+    setPending(false);
   }, []);
 
-  const checkServer = useCallback(() => {
-    startFn(fn, getLivez, undefined, "Get Livez");
-    startFn(fn, getReadyz, undefined, "Get Readyz");
+  const checkServer = useCallback(async () => {
+    setLivez(await getLivez());
   }, []);
 
-  const checkLastLogin = () => {
-    startFn(fn, getLastLogin, setLastLoginState);
-  };
+  const checkLastLogin = useCallback(async () => {
+    setLastLoginState(await getLastLogin());
+  }, []);
 
-  return { checkSession, checkServer, checkLastLogin, pending, uid, lastLogin };
+  return {
+    checkSession,
+    checkServer,
+    checkLastLogin,
+    pending,
+    uid,
+    lastLogin,
+    livez,
+  };
 };
+
+/*
+localStorage.setItem(
+        name ?? Date.now().toString(36),
+        JSON.stringify(result),
+      );
+*/
