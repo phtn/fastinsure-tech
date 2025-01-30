@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const uid = useMemo(() => user?.uid, [user?.uid]);
 
-  const [_, fn] = useTransition();
+  const [, fn] = useTransition();
 
   const setFn = <T, P>(
     transition: TransitionStartFunction,
@@ -207,6 +207,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     await logout(auth);
   }, [checkLastLogin, cleanUpCookies, createLog, uid]);
 
+  const rte = useRouter();
   /////////////////////
   //ON_AUTH_STATE_CHANGE
 
@@ -225,7 +226,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       }
     });
     return () => unsubscribe();
-  }, [getClaims, checkLastLogin]);
+  }, [getClaims, checkLastLogin, rte]);
 
   const signUserWithEmail = useCallback(
     async (f: FormData) => {
@@ -269,13 +270,20 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     if (u) {
       setUser(u);
       await createLog(u.uid, "login");
-      await verify(u);
+      await verify(u)
+        .then(() => {
+          rte.push("/dashboard");
+        })
+        .catch((e: Error) => {
+          console.log(e);
+          setGoogleSigning(false);
+        });
       setGoogleSigning(false);
     }
     const oauthCredential = GoogleAuthProvider.credentialFromResult(creds);
     setOAuth(oauthCredential);
     setGoogleSigning(false);
-  }, [verify, createLog]);
+  }, [verify, createLog, rte]);
 
   const activateFn = useCallback(
     async (hcode: string) => {

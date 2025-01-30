@@ -51,7 +51,7 @@ const ToolbarComponent = <T,>({
         { "h-[80px] items-start": size === "md" },
         { "h-[120px] items-start": size === "lg" },
         // LIGHT
-        "border-b-[0.5px] border-dock-border",
+        "border-b-[0.5px] border-dock-dark",
         { "bg-demigod": variant === "demigod" },
         { "bg-god": variant === "god" },
         { "bg-goddess": variant === "goddess" },

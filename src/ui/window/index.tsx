@@ -177,7 +177,7 @@ export function FlatWindow(props: WindowProps) {
           animate={{ opacity: 1, borderRadius: 16 }}
           className={cn(
             "w-full overflow-hidden shadow-xl",
-            "rounded-2xl",
+            "rounded-xl",
             { "shadow-xl": shadow === "xl" },
             { "shadow-lg": shadow === "lg" },
             { "shadow-md": shadow === "md" },
@@ -209,12 +209,12 @@ export const WindowContent = ({ children }: PropsWithChildren) => (
     className={cn(
       "relative overflow-hidden",
       "rounded-b-2xl",
-      "border-x border-b-[0.33px] border-t-0",
-      "border-dock-border/20",
+      "border-x border-b-[0.5px] border-t-0",
+      "border-shadow-dark/40",
       "dark:border-primary-200/40",
     )}
   >
-    <div className="absolute top-0 h-[0.5px] w-full bg-shadow/90 dark:bg-primary-200/80" />
+    <div className="absolute top-0 h-[0.5px] w-full bg-shadow-dark/40 dark:bg-primary-200/80" />
 
     {children}
   </div>

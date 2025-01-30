@@ -66,14 +66,12 @@ export const RequestViewerContext = ({
   const [pending, fn] = useTransition();
 
   const setFn = <T,>(
-    xt: TransitionStartFunction,
+    tx: TransitionStartFunction,
     action: () => Promise<T>,
     set: Dispatch<SetStateAction<T>>,
   ) => {
-    xt(() => {
-      xt(async () => {
-        return set(await action());
-      });
+    tx(async () => {
+      return set(await action());
     });
   };
 

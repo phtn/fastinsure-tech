@@ -11,10 +11,15 @@ import { AccountCtx } from "./ctx";
 import { PfpEditor } from "./side-pfp";
 import { opts } from "@/utils/helpers";
 import { LoaderSm } from "@/ui/loader";
+import { useRouter } from "next/navigation";
 
 export const Pfp = () => {
   const { vxuser } = useAuthCtx();
   const { fileChange, inputFileRef, browseFile, pfp } = use(AccountCtx)!;
+  const router = useRouter();
+  const handleSignout = useCallback(() => {
+    router.push("/dashboard/prime");
+  }, [router]);
 
   const AvatarOptions = useCallback(() => {
     const options = opts(
@@ -50,7 +55,7 @@ export const Pfp = () => {
           <ButtSex size="md" inverted>
             Edit Profile
           </ButtSex>
-          <ButtSex size="md">
+          <ButtSex size="md" onClick={handleSignout}>
             <p className="font-inter text-xs font-medium tracking-tighter">
               Sign out
             </p>

@@ -1,10 +1,10 @@
 import { cn } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { type ComponentProps, use } from "react";
-import { LogoLight } from "../logo";
 import { UserSection } from "./user-section";
 import { SidebarCtx } from "./ctx";
 import { NavItems } from "./nav-items";
+import { BrandLogo } from "@/app/dashboard/components";
 
 export const DesktopSidebar = ({
   className,
@@ -58,7 +58,7 @@ export const DesktopSidebar = ({
       >
         <div className="">
           <div className="flex h-[calc(85vh)] flex-col space-y-4">
-            <LogoLight />
+            <BrandLogo />
             <NavItems />
           </div>
           <UserSection open={open} />

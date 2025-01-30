@@ -85,7 +85,7 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
         </div>
         <div className="flex w-[18rem] items-center justify-between text-sm">
           <ButtSex
-            size="lg"
+            size="md"
             type="submit"
             loading={loading}
             disabled={loading || googleSigning}
@@ -96,7 +96,7 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
                 Sign in
               </p>
               <ArrowRightEndOnRectangleIcon
-                className={"size-5 shrink-0 text-icon dark:text-icon-dark"}
+                className={"text- size-5 shrink-0 dark:text-icon-dark"}
               />
             </div>
           </ButtSex>
@@ -107,8 +107,9 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
         </div>
         <div className="flex h-16 items-center justify-center text-xs" />
         <Support />
-        <FlexRow className="relative h-12 w-full items-center justify-center">
-          <p className="w-fit space-x-2 whitespace-nowrap rounded-md p-1.5 font-jet text-[10px] font-light capitalize leading-none text-void">
+
+        <FlexRow className="relative h-[36px] w-full items-center justify-center rounded-xl border-x-[0.33px] border-t-[0.33px] border-primary-200/40 bg-ice/10">
+          <p className="w-fit space-x-2 whitespace-nowrap p-1.5 font-jet text-[10px] font-light capitalize leading-none text-void">
             <span>Last login</span>
             <span className="text-[8px]">{`:`}</span>
             <span className="capitalize">{timestamp}</span>
@@ -122,7 +123,7 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
 };
 
 const Support = () => (
-  <div className="flex w-full items-center justify-center space-x-4 pb-6 text-xs font-medium tracking-tight text-warning-200">
+  <div className="flex w-full items-center justify-center space-x-4 pb-6 text-xs font-medium tracking-tight text-primary-200">
     <Link
       href={"#"}
       className="decoration-background/60 underline-offset-4 hover:underline"
@@ -151,7 +152,7 @@ export const GoogleSignin = () => {
 
   return (
     <ButtSex
-      size="lg"
+      size="md"
       loading={googleSigning}
       onClick={handleOnPress}
       inverted
@@ -159,14 +160,14 @@ export const GoogleSignin = () => {
     >
       <div className="flex h-full w-full items-center justify-center gap-3">
         <p className="flex w-full font-inst text-xs font-medium dark:text-void">
-          Continue with
+          Continue <span className="pl-1 lowercase">with</span>
         </p>
-        <div className="flex h-5 w-7 items-center justify-center rounded-full bg-goddess dark:bg-transparent">
+        <div className="flex h-5 w-7 items-center justify-center rounded-full">
           <Image
             alt="google-logo"
             src="/svg/g.svg"
             radius="none"
-            className={"h-4 w-5 shrink-0 drop-shadow-lg"}
+            className={"h-4 w-5 shrink-0 drop-shadow-lg invert dark:invert-0"}
           />
         </div>
       </div>

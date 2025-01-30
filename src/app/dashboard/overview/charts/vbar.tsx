@@ -105,13 +105,14 @@ const GetTrend = (props: { chartData: ReqComData[] }) => {
 
   return (
     <div className="flex gap-2 font-medium leading-none">
-      Submits are {getTrend(percentChange, "up", "down")} by {percentChange}%
-      this month
+      {/* Submits are {getTrend(percentChange, "up", "down")} by {percentChange}% */}
       {getTrend(
         percentChange,
         <TrendingUp className="size-4" />,
         <ArrowTrendingDownIcon className="size-4" />,
       )}
+
+      {` this month.`}
     </div>
   );
 };
@@ -125,5 +126,5 @@ const getTrend = (
     return up;
   } else if (change < 0) {
     return down;
-  } else return "no change";
+  } else return "No trend change";
 };

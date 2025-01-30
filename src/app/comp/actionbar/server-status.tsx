@@ -71,7 +71,7 @@ export function ServerHealth({ children, livez }: ServerHealthProps) {
       <HoverCardTrigger>{children}</HoverCardTrigger>
       <HoverCardContent
         side="top"
-        className="mb-4 mr-8 w-80 max-w-[] overflow-clip rounded-xl p-0"
+        className="mb-4 mr-8 w-80 overflow-clip rounded-xl p-0"
       >
         <HyperList
           data={server_health_data}

@@ -26,14 +26,8 @@ function AuthComponent(props: AuthComponentProps) {
     open: props.open,
     setOpen: props.setOpen,
   });
-  const {
-    pending,
-    checkSession,
-    checkLastLogin,
-    checkServer,
-    lastLogin,
-    livez,
-  } = useAuthFn();
+  const { pending, checkSession, checkLastLogin, checkServer, lastLogin } =
+    useAuthFn();
 
   const onLoad = useCallback(() => {
     console.log("is_open", open);
@@ -44,10 +38,7 @@ function AuthComponent(props: AuthComponentProps) {
     }
   }, [open, checkSession, checkLastLogin, checkServer]);
 
-  const { add, remove } = useMemo(
-    () => keyListener("j", onLoad),
-    [keyListener, onLoad],
-  );
+  const { add, remove } = keyListener("j", onLoad);
 
   useEffect(() => {
     add();
@@ -76,16 +67,12 @@ function AuthComponent(props: AuthComponentProps) {
   // WINDOW
 
   const toggleStateValue = useCallback(() => {
-    console.log("is_open", open);
-    console.log("is_pending", pending);
-    if (open) {
-      state.set(pending ? 1 : 0);
-    }
-  }, [open, pending, state]);
+    state.set(pending ? 1 : 0);
+  }, [pending, state]);
 
   useEffect(() => {
     toggleStateValue();
-  }, [toggleStateValue, livez]);
+  }, [toggleStateValue]);
 
   const SignCardOptions = useCallback(() => {
     const options = opts(
@@ -123,7 +110,13 @@ function AuthComponent(props: AuthComponentProps) {
               borderRadius: r.get(),
               height: h.get(),
             }}
-            exit={{ scale: 0.75, opacity: 0, y: 25 }}
+            exit={{
+              scale: 0.6,
+              opacity: 0.2,
+              y: 50,
+              borderRadius: 400,
+              height: 100,
+            }}
             transition={{}}
             className={cn(
               "h-full w-fit overflow-hidden shadow-xl",
@@ -134,7 +127,7 @@ function AuthComponent(props: AuthComponentProps) {
               { "shadow-sm": props.shadow === "sm" },
               "dark:border-fade-dark/90 dark:bg-chalk",
               "border-[0.33px] border-fade-dark/40 bg-white",
-              { "bg-transparent dark:bg-transparent": state.get() === 0 },
+              { "bg-transparent dark:bg-transparent": pending },
             )}
             onClick={stopPropagation}
           >

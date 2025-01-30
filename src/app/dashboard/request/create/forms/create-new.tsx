@@ -100,7 +100,7 @@ export const CreateNew = () => {
   } = useFile();
 
   const { submitAction, submitType, setSubmitType } = useForm(selectedFile);
-  const [_, actionFn, pending] = useActionState(submitAction, {});
+  const [, actionFn, pending] = useActionState(submitAction, {});
 
   const handlePostalCodeChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {

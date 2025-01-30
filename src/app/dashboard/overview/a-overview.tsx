@@ -10,11 +10,8 @@ import { Greeting } from "./comp/greeting";
 import { motion } from "framer-motion";
 import { Flag } from "./comp/status-flag";
 import { CreateRequest } from "./comp/actions";
-import { Window } from "@/ui/window";
-import {
-  ArrowTrendingUpIcon,
-  ChatBubbleLeftRightIcon,
-} from "@heroicons/react/24/outline";
+import { VBar } from "./charts/vbar";
+import { Recents } from "./comp/recents";
 
 export const AgentOverview = () => {
   const { user, vxuser } = useAuthCtx();
@@ -59,25 +56,20 @@ export const AgentOverview = () => {
                 <CreateRequest />
               </div>
             </HStack.XsCol>
-            <HStack.SmCol>
-              <div className="flex w-full justify-between space-x-4">
-                <Window
-                  title="Activity"
-                  icon={ArrowTrendingUpIcon}
-                  variant="god"
-                >
-                  <div className="flex h-96 w-full bg-chalk dark:bg-slate-300/80"></div>
-                </Window>
-
-                <Window
-                  title="Messages"
-                  icon={ChatBubbleLeftRightIcon}
-                  variant="god"
-                >
-                  <div className="flex h-96 w-full bg-chalk dark:bg-slate-300/80"></div>
-                </Window>
+            <HStack.XsCol>
+              <div className="relative h-96 w-full overflow-hidden">
+                <div className="absolute flex h-full w-full overflow-hidden rounded-md border border-primary backdrop-blur-xl dark:border-army/40">
+                  <VBar requests={[]} />
+                </div>
               </div>
-            </HStack.SmCol>
+            </HStack.XsCol>
+            <HStack.XsCol>
+              <div className="relative h-96 w-full overflow-hidden">
+                <div className="absolute flex h-full w-full overflow-hidden rounded-md border border-primary backdrop-blur-xl dark:border-army/40">
+                  <Recents />
+                </div>
+              </div>
+            </HStack.XsCol>
             <HStack.XsCol>
               <div className="h-full w-full text-background"></div>
             </HStack.XsCol>

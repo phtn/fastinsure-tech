@@ -73,10 +73,8 @@ export const CreateRequestContext = ({ children }: PropsWithChildren) => {
     action: () => Promise<T>,
     set: Dispatch<SetStateAction<T>>,
   ) => {
-    xt(() => {
-      xt(async () => {
-        set(await action());
-      });
+    xt(async () => {
+      set(await action());
     });
   };
 

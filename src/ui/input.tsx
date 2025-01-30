@@ -323,7 +323,7 @@ interface FieldGroupProps {
 export const FastFieldGroup = forwardRef<
   HTMLInputElement,
   InputProps & FieldGroupProps
->(({ className, ...props }, _ref) => {
+>(({ className, ...props }, ref) => {
   const paste = useCallback(
     (id: string) => async (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
@@ -390,6 +390,7 @@ export const FastFieldGroup = forwardRef<
                   "ring-offset-primary-300 focus-visible:ring-offset-0",
                   className,
                 )}
+                ref={ref}
               />
               <ButtSpc
                 size="sm"
@@ -669,7 +670,7 @@ const RenderInputIII = (props: {
 export const FastFieldGroupIV = forwardRef<
   HTMLInputElement,
   InputProps & FieldGroupIIProps
->(({ className, type, ...props }, _ref) => (
+>(({ className, type, ...props }, ref) => (
   <div
     className={cn(
       "w-full overflow-hidden rounded-lg border border-primary-200 bg-primary-200/70 shadow-sm transition-all duration-300 ease-out transform-gpu hover:shadow-md dark:border-primary-300 dark:bg-primary-100",
@@ -725,6 +726,7 @@ export const FastFieldGroupIV = forwardRef<
               className,
             )}
             type={type}
+            ref={ref}
           />
         </div>
       ))}
