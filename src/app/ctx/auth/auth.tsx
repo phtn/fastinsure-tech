@@ -47,7 +47,7 @@ import { Loader } from "@/ui/loader";
 import { useVex } from "../convex";
 import type { UserRole, SelectUser } from "@convex/users/d";
 import moment from "moment";
-import { initVerification } from "./utils";
+// import { initVerification } from "./utils";
 import { activateAccount } from "@/trpc/secure/callers/auth";
 
 interface AuthCtxValues {
@@ -69,15 +69,13 @@ interface AuthCtxValues {
 const AuthCtx = createContext<AuthCtxValues | null>(null);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [userRecord, setUserRecord] = useState<IdTokenResult | null>(null);
+  const [userRecord] = useState<IdTokenResult | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [oauth, setOAuth] = useState<OAuthCredential | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [claims, setClaims] = useState<UserRole[] | null>(null);
   const [googleSigning, setGoogleSigning] = useState(false);
-  const [vresult, setVResult] = useState<OnSigninVerificationResponse | null>(
-    null,
-  );
+  const [vresult] = useState<OnSigninVerificationResponse | null>(null);
 
   const [vxuser, setVxuser] = useState<SelectUser | null>(null);
   const { usr, logs } = useVex();
@@ -110,20 +108,20 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     setFn(fn, getCustomClaims, setClaims);
   }, []);
 
-  const verify = useCallback(async (u: User) => {
-    const vres = await initVerification(
-      u,
-      setUserRecord,
-      setClaims,
-      setLoading,
-    );
-    // const group_code = vres.Data.group_code;
-    // if (!vxuser?.group_code && group_code) {
-    //   await usr.update.groupCode(u.uid, group_code);
-    // }
+  // const verify = useCallback(async (u: User) => {
+  // const vres = await initVerification(
+  //   u,
+  //   setUserRecord,
+  //   setClaims,
+  //   setLoading,
+  // );
+  // const group_code = vres.Data.group_code;
+  // if (!vxuser?.group_code && group_code) {
+  //   await usr.update.groupCode(u.uid, group_code);
+  // }
 
-    setVResult(vres);
-  }, []);
+  // setVResult(vres);
+  // }, []);
 
   const getvx = useCallback(
     async (uid: string) => {
@@ -253,13 +251,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       if (u) {
         setUser(u);
         await createLog(u.uid, "login");
-        await verify(u);
+        // await verify(u);
         onSuccess("Logged in!");
       } else {
         setLoading(false);
       }
     },
-    [verify, createLog],
+    [createLog],
   );
 
   const signWithGoogle = useCallback(async () => {
@@ -270,20 +268,21 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     if (u) {
       setUser(u);
       await createLog(u.uid, "login");
-      await verify(u)
-        .then(() => {
-          rte.push("/dashboard");
-        })
-        .catch((e: Error) => {
-          console.log(e);
-          setGoogleSigning(false);
-        });
+      rte.push("/dashboard");
+      // await verify(u)
+      //   .then(() => {
+      //     rte.push("/dashboard");
+      //   })
+      //   .catch((e: Error) => {
+      //     console.log(e);
+      //     setGoogleSigning(false);
+      //   });
       setGoogleSigning(false);
     }
     const oauthCredential = GoogleAuthProvider.credentialFromResult(creds);
     setOAuth(oauthCredential);
     setGoogleSigning(false);
-  }, [verify, createLog, rte]);
+  }, [createLog, rte]);
 
   const activateFn = useCallback(
     async (hcode: string) => {
