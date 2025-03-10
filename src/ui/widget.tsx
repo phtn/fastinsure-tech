@@ -14,7 +14,7 @@ const Title = ({ children, className }: TextProps) => (
   <h2
     className={cn(
       "font-arc px-2 pt-4 text-sm leading-none",
-      "text-icon dark:text-icon-dark",
+      "text-primary dark:text-icon-dark",
       className,
     )}
   >

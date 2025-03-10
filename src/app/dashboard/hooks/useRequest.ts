@@ -9,6 +9,7 @@ export const useRequest = () => {
   const request = useCallback(() => {
     setLoading(true);
     const request_id = guid();
+    console.log(`/dashboard/request/create?rid=${request_id}`)
     router.push(`/dashboard/request/create?rid=${request_id}`);
     setLoading(false);
   }, [router]);

@@ -87,7 +87,7 @@ export const PdfObject = ({
   }, []);
 
   useEffect(() => {
-    initialize();
+    initialize().catch(console.error);
   }, [initialize]);
 
   const generateCsv = useCallback(async () => {

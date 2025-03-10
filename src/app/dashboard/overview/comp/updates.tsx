@@ -1,26 +1,31 @@
 import { BigActionCard } from "@/ui/action-card";
 import { FlexRow } from "@/ui/flex";
 import { HyperList } from "@/ui/list";
-import { FireIcon, ShieldCheckIcon } from "@heroicons/react/24/solid";
+import { ShieldCheckIcon } from "@heroicons/react/24/solid";
 import { Card } from "@nextui-org/react";
 import type { ReactNode } from "react";
 
 export const UpdatesComponent = () => (
+  <div className="w-full">
+  <div className="h-[45px]" />
   <BigActionCard>
-    <BigActionCard.Icon icon={FireIcon} />
-    <div className="h-full">
+
+    <div>
       <BigActionCard.Header>
         <BigActionCard.Title>Updates</BigActionCard.Title>
         <BigActionCard.Subtext>
           Read blog posts from our team.
         </BigActionCard.Subtext>
       </BigActionCard.Header>
-      <div className="flex h-72 w-96 items-start justify-start pr-4 pt-4 font-inst text-xs">
-        <div className="size-full rounded-lg bg-chalk p-4 drop-shadow dark:bg-chalk/60"></div>
-      </div>
+      <div className="flex size-96 items-start justify-start pt-4 font-inst text-xs">
+                  <div className="size-full rounded-lg bg-chalk p-4 drop-shadow dark:bg-chalk/60">
+                  </div>
+                </div>
+
     </div>
-    <div className="h-full w-full flex-grow-0 overflow-scroll rounded-lg bg-void"></div>
+    {/* <div className="h-full w-full flex-grow-0 overflow-scroll rounded-lg bg-void"></div> */}
   </BigActionCard>
+  </div>
 );
 
 interface ActivationProps {

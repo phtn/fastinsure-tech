@@ -242,19 +242,19 @@ export const FastField = forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => (
     <div
       className={cn(
-        "_bg-primary-100 _border-b-[0.33px] flex h-[50px] w-full items-center border-primary-300 pl-3 ps-2 focus-within:border focus-within:border-warning-400 focus-within:ring-offset-1 active:border-warning-400",
+        "flex h-[50px] w-full items-center pl-3 ps-2 focus:bg-adam/40",
         className,
       )}
     >
       {props.icon ? (
-        <props.icon className="ml-2 size-5 shrink-0 text-chalk/40" />
+        <props.icon className="ml-2 size-5 shrink-0 stroke-1 text-primary dark:text-chalk/40" />
       ) : null}
 
       <input
         {...props}
         type={type}
         ref={ref}
-        className="placeholder:text-clay/50 h-[42px] w-full rounded-md bg-transparent px-2 ps-4 font-sans text-[16px] font-normal tracking-normal focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+        className="placeholder:text-clay/50 h-[42px] w-full rounded-md bg-transparent px-2 ps-4 font-sans text-[16px] font-normal tracking-normal text-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
       />
     </div>
   ),

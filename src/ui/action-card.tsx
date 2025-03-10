@@ -16,7 +16,7 @@ const Component = ({ children }: PropsWithChildren) => (
     className={cn(
       "h-fit w-full overflow-clip bg-army",
       "rounded-md border-[0.33px] border-foreground",
-      "",
+      "shadow-sm",
 
       "transition-all duration-300 ease-out",
       "hover:border-foreground hover:shadow-lg",
@@ -27,10 +27,10 @@ const Component = ({ children }: PropsWithChildren) => (
       className={cn(
         "h-fit w-full cursor-pointer",
         "bg-gradient-to-tr from-stone-300/20 via-zinc-300/40 to-slate-300/20 dark:from-adam",
-        "dark:text-primary-300",
+        "dark:text-primary-300 border rounded-md",
       )}
     >
-      <div className="flex h-full items-center space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-6">
+      <div className="flex h-full items-start space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-6">
         {children}
       </div>
     </div>
@@ -60,10 +60,10 @@ interface IconProps {
   className?: ClassName;
 }
 const Icon = (props: IconProps) => (
-  <div className="h-full items-center justify-center rounded-md">
+  <div className="h-full items-start justify-center rounded-md">
     {
       <props.icon
-        className={cn("hidden size-8 text-primary xl:flex", props.className)}
+        className={cn("hidden stroke-1 size-8 text-primary xl:flex", props.className)}
       />
     }
   </div>
@@ -87,7 +87,7 @@ const Subtext = ({ children, className }: CommonProps) => (
 );
 
 const ActionComp = ({ children, className }: CommonProps) => (
-  <div className={cn("flex items-center", className)}>{children}</div>
+  <div className={cn("flex items-start", className)}>{children}</div>
 );
 
 interface BtnProps extends CommonProps {
@@ -95,6 +95,7 @@ interface BtnProps extends CommonProps {
   loading: boolean;
 }
 const Btn = ({ children, loading, onPress }: BtnProps) => (
+  <div className="h-fit">
   <ButtSex
     size={"sm"}
     onClick={onPress}
@@ -104,6 +105,7 @@ const Btn = ({ children, loading, onPress }: BtnProps) => (
   >
     {children}
   </ButtSex>
+  </div>
 );
 const Label = ({ children, className }: CommonProps) => (
   <p
@@ -183,7 +185,7 @@ const ComponentII = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
       "h-[30rem] w-full cursor-pointer overflow-clip",
-      "_border-[0.33px] rounded-b-xl border-foreground backdrop-blur-lg",
+      "border-[0.33px] rounded-lg border-foreground backdrop-blur-lg",
       "transition-all duration-300 ease-out",
       "bg-gradient-to-b from-stone-50/10 via-cake/40 to-chalk",
       "dark:border-primary-500/50 dark:from-void/80 dark:via-void dark:to-zinc-800/10",

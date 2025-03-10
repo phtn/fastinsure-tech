@@ -10,11 +10,12 @@ import {
   ViewfinderCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { Image, Spinner } from "@nextui-org/react";
-import { memo, useCallback, useEffect, useState } from "react";
+import {Image, Spinner } from "@nextui-org/react";
+import { useCallback, useEffect, useState } from "react";
 import { downloadFile } from "./utils";
 import { PDFDocument } from "./fileuploader";
 import { pdfjs } from "react-pdf";
+import { ErrorBoundary } from "react-error-boundary";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -22,64 +23,99 @@ interface IAttachedFiles {
   attachedFiles: (string | null)[];
   pending: boolean;
 }
+
 export const AttachedFiles = ({ attachedFiles, pending }: IAttachedFiles) => {
   const [attachments, setAttachments] = useState<IAttachmentItem[]>();
 
   const createList = useCallback(async () => {
-    setAttachments(await urlsToFiles(attachedFiles));
+    if (attachedFiles.length >= 1) {
+      const files = await urlsToFiles(attachedFiles);
+      return files;
+    }
   }, [attachedFiles]);
 
   useEffect(() => {
-    createList().catch(Err);
+    createList().then(setAttachments).catch(Err);
   }, [createList]);
+
 
   return (
     <div className="group/attachments relative col-span-2 h-[calc(84vh)] w-full border-l-[0.33px] border-primary-300">
       <FileCounter pending={pending} count={attachedFiles.length} />
-      <HyperList
-        data={attachments}
-        container="h-[calc(84vh)] overflow-y-scroll pb-32"
-        component={Item}
-        keyId="id"
-      />
+      <ErrorBoundary FallbackComponent={FileViewerError}>
+        <HyperList
+          data={attachments}
+          container="h-[calc(84vh)] overflow-y-scroll pb-32"
+          component={AttachmentItem}
+          keyId="id"
+        />
+      </ErrorBoundary>
       <div className="min-h-[32rem]"></div>
     </div>
   );
 };
+
 interface IFileCounter {
   count: number;
   pending: boolean;
 }
+
 const FileCounter = ({ count, pending }: IFileCounter) => (
   <FlexRow
     className={cn(
-      "absolute left-2 top-2 z-50 h-fit items-center justify-between group-hover/attachments:-top-10",
+      "absolute left-1 top-1 z-50 h-fit items-center justify-between group-hover/attachments:-top-10",
       "transition-all duration-500 ease-out",
       { "-top-10": count === 0 },
     )}
   >
-    <div className="flex h-8 w-fit items-center space-x-4 rounded-lg bg-vanilla/60 pe-2 ps-1 text-sm font-medium capitalize leading-none tracking-tight backdrop-blur-xl">
-      <div className="flex size-6 items-center justify-center rounded-lg bg-primary-50/50">
+    <div className="flex h-8 w-fit items-center space-x-1 rounded-md bg-cake/40 pe-3 ps-1 text-sm font-medium capitalize leading-none tracking-tight backdrop-blur-xl">
+      <div className="flex size-5 items-center justify-center rounded-md font-bold">
         {pending ? <Spinner size="sm" /> : count}
       </div>
-      <h2 className="text-slate-950">Attached Files</h2>
+      <h2 className="text-slate-950">File{`${count > 1 ? "s" : ""}`}</h2>
     </div>
   </FlexRow>
 );
 
 interface IAttachmentItem {
   id: number;
-  url: string | undefined;
+  url: string;
   filename: string;
   file: File;
 }
+
 const AttachmentItem = ({ url, filename, file }: IAttachmentItem) => {
+  const [error, setError] = useState<string | null>(null);
+
   const handleDownload = useCallback(async () => {
-    await downloadFile(url, filename);
+    try {
+      await downloadFile(url, filename);
+    } catch (err) {
+      setError("Failed to download file");
+      console.error("Download error:", err);
+    }
   }, [url, filename]);
 
-  const ItemViewerOptions = useCallback(() => {
+    const ItemViewerOptions = useCallback(() => {
     const isPDF = file.type === "application/pdf";
+
+
+    if (error) {
+      return (
+        <div className="flex h-full items-center justify-center text-red-500">
+          {error}
+        </div>
+      );
+    }
+
+    if (!url) {
+      return (
+        <div className="flex h-[300px] items-center justify-center">
+          <Spinner size="lg" />
+        </div>
+      );
+    }
+
     const options = opts(
       <PDFDocument
         file={file}
@@ -87,20 +123,25 @@ const AttachmentItem = ({ url, filename, file }: IAttachmentItem) => {
       />,
       <Image
         src={url}
-        alt={`request-file-${filename}`}
-        className="h-auto w-full"
         radius="none"
+        alt={`request-file-${filename}`}
+        className="aspect-auto h-auto w-full object-contain"
+        isLoading={!url}
       />,
     );
-    return <>{options.get(isPDF)}</>;
-  }, [url, filename, file]);
+    return <div className="h-fit">{options.get(isPDF)}</div>;
+  }, [url, filename, file, error]);
 
   return (
-    <div className={`group/file relative overflow-hidden`}>
+    <div className="group/file relative overflow-hidden">
       <ItemViewerOptions />
 
       <FlexRow
-        className={`absolute -top-10 right-0 z-50 h-12 items-center justify-between bg-void px-2 transition-all duration-300 group-hover/file:top-0 dark:bg-void/80`}
+        className={cn(
+          "absolute -top-12 right-0 z-50 h-12 items-center justify-between bg-void px-2 transition-all duration-300",
+          "group-hover/file:top-0 dark:bg-void/80",
+          { "top-0": error },
+        )}
       >
         <FlexRow className="items-center space-x-1">
           <ButtSqx
@@ -108,13 +149,15 @@ const AttachmentItem = ({ url, filename, file }: IAttachmentItem) => {
             icon={ViewfinderCircleIcon}
             iconStyle="text-chalk"
             variant="steel"
+            disabled={!!error || !url}
           />
           <ButtSqx
             size="md"
             icon={ArrowDownTrayIcon}
             onClick={handleDownload}
-            iconStyle="text-chalk"
+            iconStyle={!url ? "text-gray-600" : "text-chalk"}
             variant="steel"
+            disabled={!!error || !url}
           />
         </FlexRow>
 
@@ -128,17 +171,51 @@ const AttachmentItem = ({ url, filename, file }: IAttachmentItem) => {
     </div>
   );
 };
-const Item = memo(AttachmentItem);
 
-async function urlsToFiles(urls: (string | null)[]) {
-  const filePromises = urls?.map(async (url, i) => {
-    if (!url) url = "_";
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const filename = "FIT" + guid().split("-")[2];
-    const file = new File([blob], filename, { type: blob.type });
-    return { url, filename, file, id: i + 1 };
+const FileViewerError = ({ error }: { error: Error }) => (
+  <div className="flex h-full items-center justify-center p-4 text-center text-red-500">
+    <div>
+      <p className="font-semibold">Error loading file viewer</p>
+      <p className="text-sm">{error.message}</p>
+    </div>
+  </div>
+);
+
+
+async function urlsToFiles(
+  urls: (string | null)[],
+): Promise<IAttachmentItem[]> {
+  if (!urls || urls.length === 0) {
+    console.log("No URLs provided");
+    return [];
+  }
+
+  const filePromises = urls.map(async (url, i) => {
+    if (!url) return null;
+    try {
+      const response = await fetch(url);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const blob = await response.blob();
+      const filename = `FIT${guid().split("-")[2]}`;
+      const file = new File([blob], filename, { type: blob.type });
+      return { url, filename, file, id: i + 1 };
+    } catch (error) {
+      console.error("Error loading file:", error);
+      return null;
+    }
   });
 
-  return Promise.all(filePromises);
+  const results = await Promise.all(filePromises);
+
+  const filteredResults = results.filter(
+    (item): item is IAttachmentItem =>
+      item !== null &&
+      typeof item.url === "string" &&
+      typeof item.filename === "string" &&
+      item.file instanceof File &&
+      typeof item.id === "number",
+  );
+
+  return filteredResults;
 }

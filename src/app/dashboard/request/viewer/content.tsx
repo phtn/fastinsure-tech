@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { RequestViewerContext } from "./ctx";
+import { RequestViewerProvider } from "./ctx";
 import { Header } from "@/app/dashboard/components/header";
 import { ContentBody } from "./body";
 
@@ -12,9 +12,9 @@ export const ViewerContent = () => {
     <main>
       <Header title="request" xs />
 
-      <RequestViewerContext request_id={request_id}>
+      <RequestViewerProvider request_id={request_id}>
         <ContentBody />
-      </RequestViewerContext>
+      </RequestViewerProvider>
     </main>
   );
 };

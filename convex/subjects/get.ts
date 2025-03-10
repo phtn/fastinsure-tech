@@ -11,15 +11,21 @@ export const byId = mutation({
       .first(),
 });
 
-export const byIds = mutation({
+export const byIds = query({
   args: { ids: v.array(v.string()) },
   handler: async ({ db }, { ids }) => {
-    return await db
-      .query("subjects")
-      .filter((q) => q.or(...ids.map((id) => q.eq("subject_id", id))))
-      .order("desc")
-      .collect();
-  },
+      const subjects = await Promise.all(
+        ids
+          .map((id) =>
+            db
+              .query("subjects")
+              .withIndex("by_subject_id", (q) => q.eq("subject_id", id))
+              .collect(),
+          )
+          .reverse(),
+      );
+      return subjects.flat();
+    },
 });
 
 export const all = query({

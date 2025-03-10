@@ -89,9 +89,9 @@ const NewCard = ({ children, title }: CardGroup) => (
 export const NewCardGroup = memo(NewCard);
 
 const SpecialCard = ({ children, title, subtext }: CardGroup) => (
-  <div className="col-span-2 h-full w-full space-y-[22px] px-4 py-6 drop-shadow-sm backdrop-blur-xl">
-    <header className="flex items-start gap-3">
-      <ScanTextIcon className="size-6 stroke-1" />
+  <div className="col-span-2 h-full w-full space-y-10 px-4 drop-shadow-sm backdrop-blur-xl">
+    <header className="flex items-start gap-1.5">
+      <ScanTextIcon className="size-4 stroke-1" />
       <section className="space-y-1 leading-none">
         <p className="font-inter font-medium tracking-tight">{title}</p>
         <p className="font-arc text-xs font-normal tracking-wide text-primary-600">
@@ -200,11 +200,14 @@ const ScanDetailComponent = ({
   format,
   size,
 }: ScanDetailProps) => (
-  <div className="border-[0.33px]a grid h-12 w-full grid-cols-4 border-primary/20 px-2 text-xs font-light">
-    <DetailItem value={size ? `${size?.toFixed(2)}mb` : null} label={"size"} />
-    <DetailItem value={format} label={"format"} />
+  <div className="grid h-10 w-full grid-cols-2 gap-x-8 gap-y-2 pe-4 text-xs font-light xl:gap-x-12">
     <DetailItem
-      value={elapsed ? `${elapsed.toFixed(2)}s` : null}
+      value={size ? `${size?.toFixed(2)}mb`.toUpperCase() : null}
+      label={"size"}
+    />
+    <DetailItem value={format?.toUpperCase()} label={"format"} />
+    <DetailItem
+      value={elapsed ? `${elapsed.toFixed(1)}s` : null}
       label={"elapsed"}
     />
     <DetailItem value={ents ? `${ents}` : null} label={"items"} />
@@ -223,9 +226,11 @@ const DetailItemComponent = (props: {
     )}
   >
     {props.value ? (
-      <div className="animate-enter space-y-1 leading-none tracking-tight">
-        <p className="font-medium dark:text-secondary-300">{props.value}</p>
+      <div className="flex w-full animate-enter items-end justify-between gap-2 leading-none tracking-tight">
         <p className="text-[10px] font-light dark:opacity-60">{props.label}</p>
+        <p className="font-medium text-secondary dark:text-secondary-300">
+          {props.value}
+        </p>
       </div>
     ) : null}
   </div>
@@ -246,11 +251,12 @@ const ScanButtonComponent = ({
 }: ScanButtonProps) => (
   <div className="pl-2">
     <ButtSex
-      size="lg"
+      size="md"
+      inverted
       loading={loading}
       disabled={!imageData || !!result || loading}
-      className={cn("w-36 font-inter font-medium tracking-tight", {
-        "cursor-not-allowed bg-primary-100 text-primary-400":
+      className={cn("w-36", {
+        "cursor-not-allowed":
           loading || !imageData || result,
       })}
       onClick={onPress}
@@ -290,7 +296,7 @@ const Results = ({ children, withResult, applyFn }: ResultsWrapperProps) => (
     <div
       className={cn(
         "h-96 w-full overflow-scroll rounded-lg border-[0.33px] border-primary-200 bg-background font-medium",
-        { "relative h-[100vh]": withResult },
+        { "relative h-[120vh]": withResult },
       )}
     >
       {children}

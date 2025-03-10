@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, use, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { FlexRow } from "@/ui/flex";
 import { ButtSqx } from "@/ui/button/button";
@@ -23,9 +23,9 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { useFiles } from "../hooks/useFiles";
 import { LoaderSm } from "@/ui/loader";
-import { RequestViewerCtx } from "./ctx";
+import { useRequestViewer } from "./ctx";
 import { Err } from "@/utils/helpers";
-import { ClassName } from "@/app/types";
+import { type ClassName } from "@/app/types";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 export const FileUpload = () => {
@@ -43,7 +43,7 @@ export const FileUpload = () => {
     onFileChange,
   } = useFiles();
 
-  const { updateRequestFiles } = use(RequestViewerCtx)!;
+  const { updateRequestFiles } = useRequestViewer();
 
   useEffect(() => {
     if (urlList.length) {

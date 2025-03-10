@@ -11,6 +11,7 @@ export const body_type_schema = v.union(
   v.literal("sidecar"),
   v.literal("trailer"),
   v.literal("hatchback"),
+  v.literal("pick-up"),
 );
 
 export const auto_schema = v.object({

@@ -76,14 +76,14 @@ export const ButtSqx = (props: ButtIconProps) => {
       <props.icon
         className={cn(
           "z-40 size-4 stroke-[1.5px]",
-          "group-hover:drop-shadow-md",
+          "group-hover/btn:drop-shadow-md",
           "text-icon dark:text-icon-dark",
           { "size-5": size === "md", "size-6": size === "lg" },
           {
             "text-icon/40 dark:text-icon-dark/50": disabled,
             "text-void dark:text-void": inverted,
             "text-secondary dark:text-secondary": variant === "active",
-            "group-hover:text-void":
+            "group-hover/btn:text-void":
               variant === "steel" || variant === "bright",
           },
           iconStyle,
@@ -98,7 +98,7 @@ export const ButtSqx = (props: ButtIconProps) => {
       onClick={props.onClick}
       disabled={disabled}
       className={cn(
-        "group relative flex cursor-pointer items-center justify-center overflow-hidden disabled:cursor-auto",
+        "group/btn relative flex cursor-pointer items-center justify-center overflow-hidden disabled:cursor-auto",
         "transition-all duration-200 transform-gpu",
         "active:scale-90",
         { "size-8": size === "sm" },
@@ -112,11 +112,11 @@ export const ButtSqx = (props: ButtIconProps) => {
         className={cn(
           "pointer-events-none absolute size-0 text-transparent opacity-40",
           "transition-all duration-200 transform-gpu",
-          "group-hover:opacity-100",
+          "group-hover/btn:opacity-100",
           {
-            "group-hover:size-8": size === "sm",
-            "group-hover:size-[40px]": size === "md",
-            "group-hover:size-[48px]": size === "lg",
+            "group-hover/btn:size-8": size === "sm",
+            "group-hover/btn:size-[40px]": size === "md",
+            "group-hover/btn:size-[48px]": size === "lg",
           },
           {
             "fill-demigod/80": variant === "demigod",
@@ -125,10 +125,10 @@ export const ButtSqx = (props: ButtIconProps) => {
           },
           "dark:fill-primary-300/30",
           {
-            "stroke-white group-hover:fill-steel/20 group-hover:stroke-1 dark:group-hover:fill-steel/60":
+            "stroke-white group-hover/btn:fill-steel/20 group-hover/btn:stroke-1 dark:group-hover/btn:fill-steel/60":
               inverted,
-            "stroke-steel group-hover:fill-steel": variant === "steel",
-            "stroke-chalk group-hover:fill-chalk dark:stroke-steel dark:group-hover:fill-chalk":
+            "stroke-steel group-hover/btn:fill-steel": variant === "steel",
+            "stroke-chalk group-hover/btn:fill-chalk dark:stroke-steel dark:group-hover/btn:fill-chalk":
               variant === "bright",
           },
         )}

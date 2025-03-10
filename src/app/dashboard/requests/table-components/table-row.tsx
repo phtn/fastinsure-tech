@@ -33,7 +33,7 @@ const TableRow = (request: SelectRequest) => {
     <div className="flex h-20 items-center justify-start">
       <RequestIdCell id={request?.request_id} />
       <DateCell date={request?._creationTime} create />
-      <AssuredCell id={request?.subject_id} />
+      <AssuredCell name={request?.assured_name} email={request?.assured_email} />
       <PolicyTypeCell type={request?.policy_type} />
       <PolicyCoverageCell type={request?.policy_coverage} />
       <ServiceTypeCell type={request?.service_type} />

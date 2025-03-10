@@ -1,18 +1,15 @@
 const config = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: "tsconfig.json",
-    ecmaVersion: "latest",
+    project: true,
   },
-  plugins: ["@typescript-eslint", "react-compiler"],
+  plugins: ["@typescript-eslint"],
   extends: [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
   ],
-  // ignores: ["**/*.config.js", "!**/.eslint.config.cjs", "**/wasm"],
   rules: {
-    "react-compiler/react-compiler": "error",
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/consistent-type-imports": [
@@ -22,13 +19,10 @@ const config = {
         fixStyle: "inline-type-imports",
       },
     ],
-    "no-unused-varls": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
-        args: "all",
         argsIgnorePattern: "^_",
-        varsIgnorePattern: "^_",
       },
     ],
     "@typescript-eslint/require-await": "off",

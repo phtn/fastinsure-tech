@@ -4,7 +4,7 @@ import type {
   PolicyType,
   ServiceType,
 } from "convex/requests/d";
-import { PlaneTakeoffIcon, RotateCcwIcon } from "lucide-react";
+import { CatIcon, PlaneTakeoffIcon, RotateCcwIcon } from "lucide-react";
 import { SparklesIcon, TruckIcon } from "@heroicons/react/24/solid";
 import { DevicePhoneMobileIcon, UserIcon } from "@heroicons/react/24/outline";
 
@@ -17,6 +17,7 @@ import type { InsertAuto } from "@convex/autos/d";
 type HiddenFieldNames =
   | "group_code"
   | "underwriter_id"
+  | "underwriter_name"
   | "request_id"
   | "address_id"
   | "vehicle_id"
@@ -38,6 +39,11 @@ export const hidden_fields: HiddenFields[] = [
     label: "underwriter_id",
     required: true,
   },
+  {
+      name: "underwriter_name",
+      label: "underwriter_name",
+      required: true,
+    },
   {
     name: "request_id",
     label: "request_id",
@@ -146,14 +152,14 @@ export const request_policy_types: RadioFields<PolicyType, InsertRequest>[] = [
     description: "Phone Insurance",
     disabled: true,
   },
-  // {
-  //   title: "pet",
-  //   icon: CatIcon,
-  //   name: "policy_type",
-  //   type: "radio",
-  //   description: "Pet Insurance",
-  //   disabled: true,
-  // },
+  {
+    title: "pet",
+    icon: CatIcon,
+    name: "policy_type",
+    type: "radio",
+    description: "Pet Insurance",
+    disabled: true,
+  },
 ];
 
 export interface RequestFields {
@@ -424,7 +430,6 @@ export const auto_fields_IV: InsertFields<InsertAuto>[] = [
     required: false,
     type: "text",
   },
-
   {
     title: "fuel",
     description: "Fuel type of the vehicle",
@@ -549,40 +554,42 @@ export const init_request_fields: RequestFields[] = [
 ];
 
 export const resultFields: string[] = [
-  "plateNo",
-  "engineNo",
-  "mvFileNo",
   "crNo",
   "crDate",
   "ownersName",
-  "make",
+  "plateNo",
+  "engineNo",
+  "mvFileNo",
   "series",
+  "bodyNo",
+  "yearModel",
   "chassisNo",
   "bodyType",
   "fuel",
   "denomination",
-  "pistonDisplacement",
   "cylinders",
+  "pistonDisplacement",
   "netWt",
   "shippingWt",
   "grossWt",
   "netCapacity",
 ];
 export const autoFields: (keyof InsertAuto)[] = [
-  "plate_no",
-  "vin_no",
-  "mvfile_no",
   "cr_no",
   "cr_date",
   "owner_name",
+  "plate_no",
+  "vin_no",
+  "mvfile_no",
   "make",
   "model",
+  "year",
   "chassis_no",
   "body_type",
   "fuel",
   "denomination",
-  "displacement",
   "cylinders",
+  "displacement",
   "net_wt",
   "shipping_wt",
   "gross_wt",

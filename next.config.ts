@@ -1,15 +1,19 @@
-import { type NextConfig } from "next";
-// await import("./src/env.js");
+import "./src/env.js";
+import { env } from "./src/env.js";
 
-const config: NextConfig = {
+const config = {
+  reactStrictMode: true,
   experimental: {
-    turbo: {
-      resolveAlias: {
-        canvas: "./empty-module.ts",
-      },
-    },
     reactCompiler: true,
   },
-  reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: env.NEXT_PUBLIC_CONVEX_URL,
+      },
+    ],
+  },
 };
+
 export default config;

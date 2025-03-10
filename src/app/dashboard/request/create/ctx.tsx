@@ -7,6 +7,7 @@ import {
   useState,
   useTransition,
   useEffect,
+  useContext,
 } from "react";
 import type {
   TransitionStartFunction,
@@ -20,6 +21,7 @@ export interface HiddenFieldGroupProps {
   request_id: string | undefined;
   group_code: string | undefined;
   underwriter_id: string | undefined;
+  underwriter_name: string | undefined;
   address_id: string | undefined;
   vehicle_id: string | undefined;
   subject_id: string | undefined;
@@ -28,6 +30,7 @@ export interface HiddenFieldGroupProps {
 interface CreateRequestCtxValues {
   pending: boolean;
   underwriters: HyperSelectOption[] | undefined;
+  underwriter: HyperSelectOption | undefined;
   underwriter_id: string;
   onUnderwriterSelect: (e: ChangeEvent<HTMLSelectElement>) => void;
   generateIDs: (request_id: string) => void;
@@ -38,7 +41,8 @@ export const CreateRequestCtx = createContext<CreateRequestCtxValues | null>(
 );
 
 export const CreateRequestContext = ({ children }: PropsWithChildren) => {
-  const [underwriter_id, setUnderwriter] = useState("");
+  const [underwriter_id, setUnderwriterId] = useState("");
+  const [underwriter, setUnderwriter] = useState<HyperSelectOption>();
   const [underwriters, setUnderwriters] = useState<HyperSelectOption[]>();
   const [ids, setids] = useState<HiddenFieldGroupProps>();
 
@@ -56,12 +60,13 @@ export const CreateRequestContext = ({ children }: PropsWithChildren) => {
         group_code,
         request_id,
         underwriter_id,
+        underwriter_name: underwriter?.value,
         subject_id,
         address_id,
         vehicle_id,
       });
     },
-    [vxuser?.group_code, underwriter_id],
+    [vxuser?.group_code, underwriter_id, underwriter?.value],
   );
 
   const { usr } = useVex();
@@ -104,23 +109,20 @@ export const CreateRequestContext = ({ children }: PropsWithChildren) => {
 
   const onUnderwriterSelect = useCallback(
     (e: ChangeEvent<HTMLSelectElement>) => {
-      setUnderwriter(e.target.value);
+      setUnderwriterId(e.target.value);
+      const selected = underwriters?.find(u => u.id === e.target.value);
+      setUnderwriter(selected)
     },
-    [],
+    [underwriters],
   );
 
-  // const setValueUnderwriter = useCallback(
-  //   (setValue: UseFormSetValue<FieldValues>) => {
-  //     setValue("underwriter_id", underwriter);
-  //   },
-  //   [underwriter],
-  // );
 
   return (
     <CreateRequestCtx
       value={{
         pending,
         underwriters,
+        underwriter,
         underwriter_id,
         onUnderwriterSelect,
         generateIDs,
@@ -130,4 +132,12 @@ export const CreateRequestContext = ({ children }: PropsWithChildren) => {
       {children}
     </CreateRequestCtx>
   );
+};
+
+export const useCreateRequest = () => {
+ const context = useContext(CreateRequestCtx);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };

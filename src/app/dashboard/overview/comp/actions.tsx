@@ -139,6 +139,9 @@ export const SpecialAction = ({
 
 export const CreateRequest = () => {
   const create = useRequest();
+  const handleCreate = useCallback(() => {
+    create.request();
+  }, [create]);
 
   return (
     <ActionCard>
@@ -148,7 +151,7 @@ export const CreateRequest = () => {
         <ActionCard.Subtext>New policy request</ActionCard.Subtext>
       </ActionCard.Header>
       <Action>
-        <Action.Btn onPress={create.request} loading={create.loading}>
+        <Action.Btn onPress={handleCreate} loading={create.loading}>
           <Action.Label>Create</Action.Label>
         </Action.Btn>
       </Action>

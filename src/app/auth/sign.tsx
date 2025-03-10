@@ -4,7 +4,6 @@ import {
   AnimatePresence,
   motion,
   useMotionValue,
-  useTransform,
 } from "framer-motion";
 import type { Dispatch, SetStateAction } from "react";
 import { memo, useCallback, useEffect, useMemo } from "react";
@@ -26,17 +25,16 @@ function AuthComponent(props: AuthComponentProps) {
     open: props.open,
     setOpen: props.setOpen,
   });
-  const { pending, checkSession, checkLastLogin, checkServer, lastLogin } =
-    useAuthFn();
+  const { pending, checkSession, lastLogin, uid } = useAuthFn();
 
   const onLoad = useCallback(() => {
-    console.log("is_open", open);
+    console.log("is_open", open, uid);
     if (!open) {
-      checkSession();
-      checkLastLogin();
-      checkServer();
+      checkSession().catch((err) => console.error(err));
+      // await checkLastLogin();
+      // checkServer();
     }
-  }, [open, checkSession, checkLastLogin, checkServer]);
+  }, [open, checkSession, uid]);
 
   const { add, remove } = keyListener("j", onLoad);
 
@@ -49,8 +47,6 @@ function AuthComponent(props: AuthComponentProps) {
   // MOTION
 
   const state = useMotionValue(0);
-  const r = useTransform(state, [0, 1], [384, 16]);
-  const h = useTransform(state, [0, 1], [384, 540]);
 
   const constraints = useMemo(() => {
     if (typeof window !== "undefined") {
@@ -100,26 +96,26 @@ function AuthComponent(props: AuthComponentProps) {
             dragConstraints={constraints}
             initial={{
               scale: 0.8,
-              opacity: 0,
-              borderRadius: r.get(),
-              height: h.get(),
+              // opacity: 0,
+              // borderRadius: r.get(),
+              // height: h.get(),
             }}
             animate={{
               scale: 1,
-              opacity: 1,
-              borderRadius: r.get(),
-              height: h.get(),
+              // opacity: 1,
+              // borderRadius: r.get(),
+              // height: h.get(),
             }}
             exit={{
-              scale: 0.6,
-              opacity: 0.2,
+              scale: 0.2,
+              // opacity: 0.2,
               y: 50,
-              borderRadius: 400,
-              height: 100,
+              // borderRadius: 400,
+              // height: 100,
             }}
             transition={{}}
             className={cn(
-              "h-full w-fit overflow-hidden shadow-xl",
+              "h-fit w-fit overflow-hidden shadow-xl",
               "rounded-2xl",
               { "shadow-xl": props.shadow === "xl" },
               { "shadow-lg": props.shadow === "lg" },
@@ -127,7 +123,7 @@ function AuthComponent(props: AuthComponentProps) {
               { "shadow-sm": props.shadow === "sm" },
               "dark:border-fade-dark/90 dark:bg-chalk",
               "border-[0.33px] border-fade-dark/40 bg-white",
-              { "bg-transparent dark:bg-transparent": pending },
+              { "rounded-full bg-transparent dark:bg-transparent": pending },
             )}
             onClick={stopPropagation}
           >
@@ -147,11 +143,8 @@ interface SignCardProps {
 const SignCard = ({ close, lastLogin }: SignCardProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0.85, scale: 0.3 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0.8, scale: 0.75 }}
-      transition={{}}
-      className="h-[540px] w-fit bg-adam/60 dark:bg-adam/80"
+      initial={false}
+      className="h-[540px] w-fit bg-white dark:bg-adam/80"
     >
       <Toolbar icon={UserIcon} closeFn={close} variant="void" />
       <WindowContent>

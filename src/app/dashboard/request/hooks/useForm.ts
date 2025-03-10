@@ -16,7 +16,7 @@ export type SubmitType = "save" | "submit";
 //
 export const useForm = (file?: File) => {
   const { vxuser } = useAuthCtx();
-  const { request, address, auto, subject, logs } = useVex();
+  const { request, address, auto, subject, logs, files } = useVex();
 
   const [submitType, setSubmitType] = useState<SubmitType>("save");
   const [parsedScanResults, setParsedScanResults] = useState<
@@ -54,26 +54,12 @@ export const useForm = (file?: File) => {
     [logs, submitType, vxuser?.uid, router],
   );
 
-  const createPhotoUrl = useCallback(async () => {
-    if (file) {
-      const postUrl = await request.storage.generateUrl();
-      const result = (
-        await fetch(postUrl, {
-          method: "POST",
-          body: file,
-          headers: {
-            "Content-Type": file?.type ?? "image/*",
-          },
-        })
-      ).json() as Promise<{ storageId: string }>;
-      const files: string[] = [(await result).storageId];
-      return files;
-    }
-  }, [file, request.storage]);
+  const generateUploadUrl = useCallback(async (file: File) => await files.create(file), [files]);
 
   const submitAction = useCallback(
     async (defaultValues: object, data: FormData) => {
-      const files = await createPhotoUrl();
+
+      const fileIds = file && await generateUploadUrl(file);
 
       const fullname = `${data.get("firstname") as string} ${data.get("middlename") as string} ${data.get("lastname") as string}`;
 
@@ -143,9 +129,11 @@ export const useForm = (file?: File) => {
         subject_id: data.get("subject_id") as string,
         vehicle_id: data.get("vehicle_id") as string,
         underwriter_id: data.get("underwriter_id") as string,
+        underwriter_name: data.get("underwriter_name") as string,
         group_code: data.get("group_code") as string,
         assured_name: fullname,
-        files: files,
+        assured_email: data.get("email") as string,
+        files: fileIds,
         agent_id: vxuser?.uid,
         agent_name: vxuser?.fullname ?? vxuser?.nickname ?? vxuser?.email,
         agent_email: vxuser?.email,
@@ -170,7 +158,8 @@ export const useForm = (file?: File) => {
       request,
       subject,
       createLog,
-      createPhotoUrl,
+      generateUploadUrl,
+      file
     ],
   );
 

@@ -3,7 +3,6 @@ import { type PropsWithChildren } from "react";
 import { NextUIProvider } from "@nextui-org/react";
 import { Toasts } from "./toasts";
 import { AuthProvider } from "./auth/auth";
-import { ActionBar } from "../comp/actionbar/actionbar";
 import { Vex } from "./convex";
 import { Theme } from "./theme";
 import { TooltipProvider } from "./tooltip";
@@ -15,7 +14,7 @@ export const Providers = ({ children }: PropsWithChildren) => {
         <Vex>
           <AuthProvider>
             <TooltipProvider>{children}</TooltipProvider>
-            <ActionBar />
+            {/* <ActionBar /> */}
             <Toasts />
           </AuthProvider>
         </Vex>

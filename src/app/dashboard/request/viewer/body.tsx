@@ -7,8 +7,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import { FileSymlinkIcon } from "lucide-react";
-import { type FC, use, useCallback, useMemo } from "react";
-import { RequestViewerCtx } from "./ctx";
+import { type FC, useCallback, useMemo } from "react";
+import { useRequestViewer } from "./ctx";
 import { PdfObject } from "./pdf";
 import { opts } from "@/utils/helpers";
 
@@ -93,7 +93,7 @@ export const ContentBody = () => {
     pending,
     role,
     attachedFiles,
-  } = use(RequestViewerCtx)!;
+  } = useRequestViewer();
   const vxund = underwriters?.find((u) => u.uid === vxrequest?.underwriter_id);
   const vxusr = vxusers?.find((u) => u.uid === vxrequest?.agent_id);
 
@@ -272,7 +272,7 @@ export const ContentBody = () => {
   const UpdateButton = useMemo(() => {
     const options = opts(
       <ButtSex
-        size="lg"
+        size="md"
         inverted
         end={PaperAirplaneIcon}
         onClick={submitRequest}

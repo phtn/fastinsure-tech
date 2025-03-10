@@ -151,7 +151,7 @@ export const ButtSex = ({
         <div
           className={cn(
             "relative z-[200] flex h-full items-center overflow-hidden whitespace-nowrap",
-            "font-inter text-xs font-semibold capitalize tracking-tight text-void",
+            "font-inter text-xs font-bold capitalize tracking-tight text-void",
             "px-1 drop-shadow-sm group-hover:text-void/90",
             "dark:text-chalk/80 dark:group-hover:text-chalk",
             { "text-chalk/90 group-hover:text-chalk": inverted },

@@ -13,7 +13,6 @@ import type {
   RequestStatus,
   SelectRequest,
 } from "@convex/requests/d";
-import { type GetFilesResponse } from "@convex/requests/attachment";
 import type { InsertSubject, SelectSubject } from "@convex/subjects/d";
 import type { InsertUser, SelectUser, UpdateUser } from "@convex/users/d";
 import { api } from "@vex/api";
@@ -54,12 +53,6 @@ interface VexCtxValues {
       byAgentId: (uid: string) => Promise<SelectRequest[]>;
       byUnderwriterId: (uid: string) => Promise<SelectRequest[]>;
     };
-    storage: {
-      generateUrl: () => Promise<string>;
-    };
-    attachments: {
-      get: (ids: string[]) => GetFilesResponse;
-    };
     update: {
       status: (
         request_id: string,
@@ -77,7 +70,7 @@ interface VexCtxValues {
     ) => Promise<(string & { __tableName: "subjects" }) | null>;
     get: {
       byId: (id: string) => Promise<SelectSubject | null>;
-      byIds: (ids: string[]) => Promise<SelectSubject[] | null>;
+      // byIds: (ids: string[]) => Promise<SelectSubject[] | null>;
     };
   };
   auto: {
@@ -163,8 +156,6 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
     api.requests.get.byUnderwriterId,
   );
   const getRequestsByAgentId = useMutation(api.requests.get.byAgentId);
-  const generateUrl = useMutation(api.requests.storage.generateUrl);
-  const getAttachedFiles = useMutation(api.requests.attachment.get);
   const updateRequestStatus = useMutation(api.requests.update.status);
   const updateRequestFiles = useMutation(api.requests.update.files);
 
@@ -177,12 +168,6 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
         byAgentId: async (uid: string) => await getRequestsByAgentId({ uid }),
         byUnderwriterId: async (uid: string) =>
           await getRequestByUnderwriterId({ uid }),
-      },
-      storage: {
-        generateUrl,
-      },
-      attachments: {
-        get: async (storageIds: string[]) => getAttachedFiles({ storageIds }),
       },
       update: {
         status: async (request_id: string, status: RequestStatus) =>
@@ -198,8 +183,6 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
       getAllRequests,
       getRequestById,
       getRequestsByAgentId,
-      generateUrl,
-      getAttachedFiles,
       updateRequestStatus,
       updateRequestFiles,
       getRequestByUnderwriterId,
@@ -208,18 +191,14 @@ const VexCtxProvider = ({ children }: PropsWithChildren) => {
 
   const createSubject = useMutation(api.subjects.create.default);
   const getSubjectById = useMutation(api.subjects.get.byId);
-  const getSubjectsByIds = useMutation(api.subjects.get.byIds);
 
-  const subject = useMemo(
-    () => ({
+  const subject = {
       create: async (args: InsertSubject) => await createSubject(args),
       get: {
         byId: async (id: string) => await getSubjectById({ subject_id: id }),
-        byIds: async (ids: string[]) => await getSubjectsByIds({ ids }),
+        // byIds: useQuery(api.subjects.get.byIds, "skip"),
       },
-    }),
-    [createSubject, getSubjectById, getSubjectsByIds],
-  );
+    }
 
   const createAuto = useMutation(api.autos.create.default);
   const getAutoById = useMutation(api.autos.get.byId);

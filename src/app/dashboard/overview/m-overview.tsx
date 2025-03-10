@@ -5,28 +5,18 @@ import { motion } from "framer-motion";
 import { CreateAgentCode, CreateRequest } from "./comp/actions";
 import { Splash } from "./comp/splash";
 import { Flag } from "./comp/status-flag";
-import { useCallback } from "react";
-import { opts } from "@/utils/helpers";
-import { Greeting } from "./comp/greeting";
 import { UpdatesComponent } from "./comp/updates";
 import { Separator } from "@/ui/separator";
 
 const MOverview = () => {
   const { user, vxuser } = useAuthCtx();
 
-  const UserOptions = useCallback(() => {
-    const options = opts(
-      <Greeting name={user?.displayName} email={user?.email} />,
-      null,
-    );
-    return <>{options.get(!!user)}</>;
-  }, [user]);
   return (
     <div className="h-[99vh] overflow-auto rounded-tl-3xl p-4">
       <Splash text={""}>
         <div>
-          <div className="absolute top-4 z-[60] flex h-1/2 w-1/3 items-center space-x-2 border-primary px-12 font-inst text-2xl delay-1000">
-            <UserOptions />
+          <div className="absolute top-4 z-[60] flex h-1/2 w-1/3 items-center space-x-2 border-primary px-12 font-inst text-xl delay-1000">
+            <p>{user?.email}</p>
           </div>
           <div className="absolute bottom-0 z-[60] h-1/2 w-full px-12">
             <motion.section
@@ -52,17 +42,18 @@ const MOverview = () => {
           <HStack cols={3} className="gap-4 px-4">
             <HStack.XsCol>
               <div className="h-full w-full space-y-4 text-foreground">
-                <Widget.Title>Functions</Widget.Title>
+                <Widget.Title><span className="text-secondary">⏺</span> Actions</Widget.Title>
                 <CreateAgentCode />
                 <CreateRequest />
               </div>
             </HStack.XsCol>
+
             <HStack.SmCol>
               <UpdatesComponent />
             </HStack.SmCol>
-            <HStack.XsCol>
+            {/* <HStack.XsCol>
               <div className="h-full w-full text-background"></div>
-            </HStack.XsCol>
+            </HStack.XsCol> */}
           </HStack>
         </Widget.BaseII>
       </Widget>

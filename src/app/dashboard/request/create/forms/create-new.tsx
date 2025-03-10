@@ -25,7 +25,6 @@ import {
   memo,
   type MouseEvent,
   type ReactNode,
-  use,
   useActionState,
   useCallback,
   useEffect,
@@ -37,7 +36,7 @@ import {
   type UseFormSetValue,
   useForm as useHookForm,
 } from "react-hook-form";
-import { CreateRequestCtx } from "../ctx";
+import { useCreateRequest } from "../ctx";
 import {
   CardGroup,
   HiddenCanvas,
@@ -87,7 +86,7 @@ export const CreateNew = () => {
 
   const { register, setValue } = useHookForm<FieldValues>(defaultValues);
   const { getLocation } = useGeolocator();
-  const { handleScanDocument, loading, result, elapsed } = useScanner();
+  const { handleScanDocument, loading, result, elapsed, runningTime } = useScanner();
   const {
     imageData,
     clearFile,
@@ -113,10 +112,9 @@ export const CreateNew = () => {
 
   const handleSetSubmitType = useCallback(
     (type: SubmitType) => () => {
-      console.log(submitType);
       setSubmitType(type);
     },
-    [setSubmitType, submitType],
+    [setSubmitType],
   );
 
   const applyResults = useCallback(
@@ -179,11 +177,11 @@ export const CreateNew = () => {
 
   const ScannerSection = useMemo(() => {
     return (
-      <div className="flex items-center justify-between px-2">
+      <div className="flex items-center justify-between">
         <ScanDetail
           format={format}
           size={size}
-          elapsed={elapsed}
+          elapsed={runningTime ?? elapsed}
           ents={result?.length}
         />
         <ScanButton
@@ -201,6 +199,7 @@ export const CreateNew = () => {
     imageData,
     loading,
     rawDocument,
+    runningTime,
     result,
     size,
   ]);
@@ -216,7 +215,7 @@ export const CreateNew = () => {
   }, [register, request_id, setValue]);
 
   return (
-    <main className="flex h-[calc(93vh)] w-[calc(97vw)] overflow-scroll border border-t-[0.33px] border-primary-200/50 border-l-macl-mint bg-chalk p-6 dark:bg-void">
+    <main className="flex h-[calc(93vh)] w-[calc(97vw)] overflow-scroll border border-t-[0.33px] border-primary-200/50 bg-chalk p-6 dark:bg-void">
       <form action={actionFn}>
         <TopActionsPanel
           submitType={submitType}
@@ -240,8 +239,9 @@ export const CreateNew = () => {
           <div className="col-span-2">
             <SpecialGroup
               title="Document Scanner"
-              subtext="This feature is currently unavailable."
+              subtext="Currently optimized to scan Certificate of Registration."
             >
+              <div className="space-y-12">
               {ViewOptions}
               {ScannerSection}
               <ResultsWrapper
@@ -251,6 +251,7 @@ export const CreateNew = () => {
                 {ResultOptions}
                 <HiddenCanvas />
               </ResultsWrapper>
+              </div>
             </SpecialGroup>
           </div>
         </section>
@@ -273,7 +274,7 @@ const HiddenInputGroup = (props: {
   register: UseFormRegister<FieldValues>;
 }) => {
   const { request_id, setValue, register } = props;
-  const { ids, generateIDs } = use(CreateRequestCtx)!;
+  const { ids, generateIDs } = useCreateRequest()
   useEffect(() => {
     if (request_id) generateIDs(request_id);
   }, [generateIDs, request_id]);
@@ -322,7 +323,7 @@ const SButtonLabel = (props: { label: string }) => (
 
 const Underwriter = () => {
   const { pending, underwriters, underwriter_id, onUnderwriterSelect } =
-    use(CreateRequestCtx)!;
+    useCreateRequest()
 
   return (
     <Select
@@ -416,9 +417,9 @@ const TopActionsPanelComponent = ({
   const saveDisabled = submitType === "save";
   const submitDisabled = submitType === "submit";
   return (
-    <FlexRow className="absolute -top-4 right-9 z-[250] h-24 w-fit items-center space-x-6">
+    <FlexRow className="absolute -top-4 right-9 z-[250] h-24 w-fit items-center space-x-3">
       <UnderwriterSelect />
-      <section className="flex items-center space-x-4">
+      <section className="flex items-center space-x-1.5">
         <SButton
           fn={onHover("save")}
           end={ArrowDownOnSquareIcon}

@@ -10,7 +10,7 @@ import {
 } from "@/lib/docai/resource";
 
 export const useFile = (canvas_id?: string) => {
-  const { request } = useVex();
+  const { files } = useVex();
   const [selectedFile, setSelectedFile] = useState<File>();
   const [rawDocument, setRawDocument] = useState<RawDocument | null>(null);
   const [imageData, setImageData] = useState<string>();
@@ -92,7 +92,7 @@ export const useFile = (canvas_id?: string) => {
 
   const generateUrl = async (e: FormEvent) => {
     e.preventDefault();
-    return await request.storage.generateUrl();
+    return await files.create();
   };
 
   return {

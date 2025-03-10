@@ -209,7 +209,7 @@ export const WindowContent = ({ children }: PropsWithChildren) => (
     className={cn(
       "relative overflow-hidden",
       "rounded-b-2xl",
-      "border-x border-b-[0.5px] border-t-0",
+      "border-b-[0.0px] border-t-0",
       "border-shadow-dark/40",
       "dark:border-primary-200/40",
     )}
