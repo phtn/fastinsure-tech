@@ -244,7 +244,7 @@ export default {
         "pos-100": "100% 100%",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)"],
+        sans: ["var(--font-geist)"],
         mono: ["var(--font-mono)"],
         inter: ["var(--font-inter)"],
         jet: ["var(--font-jet)"],

@@ -1,7 +1,5 @@
 import "@/styles/globals.css";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
-import { Inter, JetBrains_Mono, Instrument_Sans } from "next/font/google";
+import { Inter, JetBrains_Mono, Instrument_Sans, Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "./ctx/providers";
 import { type PropsWithChildren } from "react";
 import { type Metadata } from "next";
@@ -13,6 +11,16 @@ const inter = Inter({
 
 const jet = JetBrains_Mono({
   variable: "--font-jet",
+  subsets: ["latin"],
+});
+
+const geist = Geist({
+  variable: "--font-geist",
+  subsets: ["latin"],
+});
+
+const mono = Geist_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
@@ -31,7 +39,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html
       lang="en"
-      className={`${instrument.variable} ${inter.variable} ${jet.variable} ${GeistSans.variable} ${GeistMono.variable} antialiased`}
+      className={`${instrument.variable} ${inter.variable} ${jet.variable} ${geist.variable} ${mono.variable} antialiased`}
     >
       <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
       <body>
