@@ -103,12 +103,12 @@ export const RenderRow: FC<{
     className={`flex items-center px-4 odd:bg-steel/20 ${className}`}
   >
     <div
-      className={`flex w-36 items-center font-jet text-adam dark:text-steel ${className}`}
+      className={`flex w-36 items-center font-jet text-adam capitalize dark:text-steel ${className}`}
     >
-      {keyName}
+      {keyName.replaceAll("_", " ")}
     </div>
     <div
-      className={`flex w-fit items-center font-jet font-medium ${className}`}
+      className={`flex w-fit items-center font-jet uppercase font-medium ${className}`}
     >
       {formatValue(value)}
     </div>

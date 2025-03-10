@@ -6,7 +6,7 @@ import { ButtSex } from "@/ui/button/ripple";
 import { FileInputIcon } from "lucide-react";
 import moment from "moment";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
-import init, { json_to_csv_2 } from "@wasm/csv2/csv";
+import init, { json_to_csv_3 } from "@wasm/csv3/csv";
 import type {
   AddressFieldProps,
   AutoFieldProps,
@@ -111,7 +111,7 @@ export const PdfObject = ({
     ];
 
     const json = JSON.stringify(table);
-    const csv = json_to_csv_2(json);
+    const csv = json_to_csv_3(json);
     console.log(csv);
 
     try {

@@ -12,6 +12,11 @@ export const env = createEnv({
     RE_UP_SECURE_URL: z.string().url(),
     RE_UP_SECURE_DEV: z.string(),
     RE_UP_SECURE_API_KEY: z.string(),
+    //
+    REDIS_PASSWORD: z.string(),
+    REDIS_USERNAME: z.string(),
+    REDIS_HOST: z.string(),
+    REDIS_PORT: z.string(),
   },
   client: {
     NEXT_PUBLIC_CONVEX_URL: z.string().url(), // NEXT_PUBLIC_ADC: z.string(),
@@ -49,6 +54,11 @@ export const env = createEnv({
     NEXT_PUBLIC_F_LENGTH: process.env.NEXT_PUBLIC_F_LENGTH,
     NEXT_PUBLIC_DEVS: process.env.NEXT_PUBLIC_DEVS,
     NODE_ENV: process.env.NODE_ENV,
+    //
+    REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+    REDIS_USERNAME: process.env.REDIS_USERNAME,
+    REDIS_HOST: process.env.REDIS_HOST,
+    REDIS_PORT: process.env.REDIS_PORT,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
