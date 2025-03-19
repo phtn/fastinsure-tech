@@ -79,7 +79,7 @@ export const CardGroup = ({ children, title }: CardGroup) => (
 );
 
 const NewCard = ({ children, title }: CardGroup) => (
-  <div className="w-full space-y-2 rounded-lg p-6">
+  <div className="w-full space-y-2 rounded-lg p-3 sm:p-6">
     <p className="font-inter font-medium tracking-tighter dark:text-icon-dark">
       {title}
     </p>
@@ -89,7 +89,7 @@ const NewCard = ({ children, title }: CardGroup) => (
 export const NewCardGroup = memo(NewCard);
 
 const SpecialCard = ({ children, title, subtext }: CardGroup) => (
-  <div className="col-span-2 h-full w-full space-y-10 px-4 drop-shadow-sm backdrop-blur-xl">
+  <div className="col-span-2 md:h-full w-full space-y-10 px-4 drop-shadow-sm backdrop-blur-xl">
     <header className="flex items-start gap-1.5">
       <ScanTextIcon className="size-4 stroke-1" />
       <section className="space-y-1 leading-none">
@@ -118,7 +118,7 @@ const ImageView = ({
 }: ImageViewerProps) => (
   <div
     className={cn(
-      "-mt-[1px] h-[22.4rem] w-full overflow-hidden rounded-lg border-[0.33px] border-primary-300 bg-primary/80 dark:border-primary-400",
+      "-mt-[1px] md:h-[22.4rem] w-full overflow-hidden rounded-lg border-[0.33px] border-primary-300 bg-primary/80 dark:border-primary-400",
       className,
     )}
   >
@@ -251,17 +251,17 @@ const ScanButtonComponent = ({
 }: ScanButtonProps) => (
   <div className="pl-2">
     <ButtSex
-      size="md"
+      size="sm"
       inverted
       loading={loading}
       disabled={!imageData || !!result || loading}
-      className={cn("w-36", {
+      className={cn("w-28 sm:w-36", {
         "cursor-not-allowed":
           loading || !imageData || result,
       })}
       onClick={onPress}
     >
-      {loading ? "Scanning..." : "Scan document"}
+      <span className=" text-xs sm:text-[16px]">{loading ? "Scanning..." : "Scan document"}</span>
     </ButtSex>
   </div>
 );

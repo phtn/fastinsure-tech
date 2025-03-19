@@ -47,7 +47,7 @@ export const DesktopSidebar = ({
 
       <motion.div
         className={cn(
-          "hidden h-full w-[300px] flex-shrink-0 px-4 py-4 md:flex md:flex-col",
+          " h-full w-[300px] flex-shrink-0 px-4 py-4 md:flex md:flex-col portrait:hidden",
           className,
         )}
         initial={{ width: 60 }}

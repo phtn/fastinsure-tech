@@ -29,7 +29,7 @@ export const HStackComponent = ({
 );
 
 const XsCol = ({ children }: PropsWithChildren) => (
-  <div className="bg-teal-300_ col-span-1 flex items-start justify-center overflow-hidden lg:size-72 xl:size-full">
+  <div className="col-span-1 flex items-start justify-center overflow-hidden lg:size-72 xl:size-full">
     {children}
   </div>
 );
@@ -41,7 +41,7 @@ const SmCol = ({ children }: PropsWithChildren) => (
 );
 
 const LgCol = ({ children }: PropsWithChildren) => (
-  <div className="h-full w-full px-6 text-background/80 lg:col-span-3 xl:pr-20 portrait:hidden">
+  <div className="h-full w-full px-6 text-background/80 lg:col-span-3 xl:pr-20">
     {children}
   </div>
 );
@@ -58,7 +58,7 @@ const Col = ({ children, lg = false, className }: ColProps) => {
     <div
       ref={ref}
       className={cn(
-        "h-full w-full text-background/80 opacity-0 transition-all delay-200 duration-500 ease-out translate-y-24 portrait:hidden",
+        "h-full w-full text-background/80 opacity-0 transition-all delay-200 duration-500 ease-out translate-y-24",
         { "flex-col justify-start delay-300 lg:col-span-3": lg },
         { "opacity-100 translate-y-0": inView },
         className,
@@ -102,7 +102,7 @@ const ColII = ({ children, lg = false, className }: ColPropsII) => {
     <div
       ref={ref}
       className={cn(
-        "h-full w-full text-background/80 portrait:hidden",
+        "h-full w-full text-background/80",
         { "flex-col justify-start lg:col-span-3": lg },
         // { "translate-y-0 opacity-100": inView },
         className,

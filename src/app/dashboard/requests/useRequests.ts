@@ -29,28 +29,25 @@ export const useRequests = () => {
   const { request, usr } = useVex();
 
   const searchFn = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value.toLowerCase());
+    setSearch(e.target.value);
   }, []);
 
   const filterFn = useCallback(
     (list: SelectRequest[], max?: number) => {
-      const searchLower = search.toLowerCase();
+      const searchLower = search;
       return list
         .filter(
           ({
             request_id,
-            agent_id,
-            underwriter_name,
             assured_name,
             status,
             service_type,
           }) =>
             request_id.toLowerCase().includes(searchLower) ||
-            agent_id.toLowerCase().includes(searchLower) ||
-            underwriter_name!.toLowerCase().includes(searchLower) ||
             assured_name.toLowerCase().includes(searchLower) ||
             status.toLowerCase().includes(searchLower) ||
-            service_type.toLowerCase().includes(searchLower),
+            service_type.toLowerCase().includes(searchLower)
+
         )
         .slice(0, max ?? 10);
     },

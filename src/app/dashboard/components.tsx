@@ -29,7 +29,7 @@ export const BrandLogo = () => {
 export const Container = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
-      "flex h-screen w-full flex-1 flex-col overflow-hidden md:flex-row",
+      "flex h-screen border-2 border-pink-400 w-full flex-1 overflow-hidden flex-row",
     )}
   >
     {children}

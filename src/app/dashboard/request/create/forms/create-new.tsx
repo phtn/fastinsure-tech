@@ -215,16 +215,16 @@ export const CreateNew = () => {
   }, [register, request_id, setValue]);
 
   return (
-    <main className="flex h-[calc(93vh)] w-[calc(97vw)] overflow-scroll border border-t-[0.33px] border-primary-200/50 bg-chalk p-6 dark:bg-void">
+    <main className="flex h-[calc(93vh)] w-full sm:w-[calc(97vw)] overflow-scroll border justify-center border-t-[0.33px] border-primary-200/50 bg-chalk py-6 px-1 sm:p-6 dark:bg-void">
       <form action={actionFn}>
         <TopActionsPanel
           submitType={submitType}
           onHover={handleSetSubmitType}
           pending={pending}
         />
-        <section className="bg-background_ grid h-fit w-full grid-cols-6 gap-4">
+        <section className="grid h-fit w-full grid-cols-1 md:grid-cols-6 gap-y-4 gap-1 xl:gap-4">
           <div className="col-span-4">
-            <div className="flex h-fit w-full flex-col justify-center rounded-[2rem] border-2 border-secondary bg-primary-50 pb-4 shadow-lg shadow-primary-400/50 dark:border-secondary-400/80 dark:bg-primary-200">
+            <div className="flex h-fit w-full flex-col justify-center rounded-2xl sm:rounded-[2rem] border-2 border-secondary bg-primary-50 pb-4 shadow-lg shadow-primary-400/50 dark:border-secondary-400/80 dark:bg-primary-200">
               <PolicyTypeFields />
               <CoverageAndServiceFields />
               <AssuredInfoFields register={register} />
@@ -236,7 +236,7 @@ export const CreateNew = () => {
             <AutoFields register={register} />
             {HiddenFieldsGroup}
           </div>
-          <div className="col-span-2">
+          <div className="md:col-span-2">
             <SpecialGroup
               title="Document Scanner"
               subtext="Currently optimized to scan Certificate of Registration."
@@ -335,7 +335,7 @@ const Underwriter = () => {
       items={underwriters ?? []}
       defaultSelectedKeys={[underwriters?.[0]?.id ?? ""]}
       placeholder="Select underwriter"
-      className="z-[200] w-[16rem] rounded-lg border-[0.33px] border-steel bg-goddess placeholder:text-xs placeholder:tracking-tight dark:bg-transparent"
+      className="z-[200] w-40 xl:w-16rem] rounded-lg border-[0.33px] border-steel bg-goddess placeholder:text-xs placeholder:tracking-tight dark:bg-transparent"
       selectedKeys={[underwriter_id]}
       onChange={onUnderwriterSelect}
       renderValue={(options: SelectedItems<HyperSelectOption>) =>
@@ -344,14 +344,14 @@ const Underwriter = () => {
             <section className="flex items-center space-x-1">
               <div
                 className={cn(
-                  "flex size-5 items-center justify-center rounded-full border-[0.33px] border-indigo-500 bg-chalk uppercase text-indigo-500 shadow-inner drop-shadow-sm",
+                  "hidden md:flex size-5 items-center justify-center rounded-full border-[0.33px] border-indigo-500 bg-chalk uppercase text-indigo-500 shadow-inner drop-shadow-sm",
                 )}
               >
                 <span className="text-sm font-extrabold capitalize">u</span>
               </div>
               <Image
                 isBlurred
-                className="size-5"
+                className="size-5 aspect-auto shrink-0"
                 alt={`avatar-of-${option.data?.value}`}
                 src={option.data?.photo_url}
               />
@@ -378,14 +378,14 @@ const Underwriter = () => {
           <FlexRow className="items-center capitalize">
             <div
               className={cn(
-                "flex size-5 items-center justify-center space-x-4 rounded-full bg-indigo-400/20 uppercase text-indigo-500 drop-shadow-sm",
+                "hidden md:flex size-5 items-center justify-center space-x-2 md:space-x-4 rounded-full bg-indigo-400/20 uppercase text-indigo-500 drop-shadow-sm",
               )}
             >
               <span className="text-xs font-bold capitalize">u</span>
             </div>
             <Image
               isBlurred
-              className="size-5"
+              className="size-5 aspect-square flex-shrink-0"
               alt={`avatar-of-${option.value}`}
               src={option.photo_url}
             />
@@ -417,16 +417,16 @@ const TopActionsPanelComponent = ({
   const saveDisabled = submitType === "save";
   const submitDisabled = submitType === "submit";
   return (
-    <FlexRow className="absolute -top-4 right-9 z-[250] h-24 w-fit items-center space-x-3">
+    <FlexRow className="absolute top-0 z-[250] sm:-left-0 md:-left-4 lg:-left-4 xl:-left-4 h-16 px-2 md:px-4 w-full justify-end flex items-center space-x-3">
       <UnderwriterSelect />
-      <section className="flex items-center space-x-1.5">
+      <section className="flex items-center space-x-0.5 md:space-x-1.5">
         <SButton
           fn={onHover("save")}
           end={ArrowDownOnSquareIcon}
           loading={pending && saveDisabled}
           disabled={saveDisabled}
         >
-          <SButtonLabel label={pending ? "Saving data...." : "Save as draft"} />
+          <SButtonLabel label={pending ? "Saving data...." : "Save"} />
         </SButton>
         <SButton
           inverted
@@ -435,7 +435,7 @@ const TopActionsPanelComponent = ({
           disabled={submitDisabled}
           loading={pending}
         >
-          <SButtonLabel label={pending ? "Submitting...." : "Submit Request"} />
+          <SButtonLabel label={pending ? "Submitting...." : "Submit"} />
         </SButton>
       </section>
     </FlexRow>

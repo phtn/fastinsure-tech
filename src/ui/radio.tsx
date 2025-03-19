@@ -206,7 +206,7 @@ const RadioItem = (
         <p
           id={`${item.title}-description`}
           className={cn(
-            "pointer-events-none max-w-[50ch] whitespace-nowrap text-xs font-light tracking-tight opacity-80",
+            "pointer-events-none sm:max-w-[50ch] whitespace-nowrap text-xs font-light tracking-tight opacity-80",
             { "opacity-70": item.disabled },
           )}
         >

@@ -38,7 +38,7 @@ export const PolicyTypeFields = memo(PolicyTypes);
 
 const CoverageAndService = () => {
   return (
-    <div className="flex w-full overflow-x-scroll">
+    <div className="sm:flex block w-full overflow-x-scroll">
       <NewCardGroup title="Policy Coverage">
         <HyperRadioCard
           name="policy_coverage"

@@ -10,11 +10,11 @@ const DashboardLayout = ({ children }: PropsWithChildren) => {
       <Sidebar />
       <div
         className={cn(
-          "relative z-[100] flex flex-1 border-l-[0.0px] bg-foreground dark:border-background/60 dark:bg-fade/40",
+          "relative z-[100] flex flex-1 bg-foreground dark:border-background/60 dark:bg-fade/40",
           {},
         )}
       >
-        <div className="relative flex h-full w-full flex-1 flex-col gap-2 overflow-clip rounded-tl-3xl border-l-[0.0px] border-foreground/15 bg-background">
+        <div className="relative flex h-full w-full flex-col gap-2 overflow-clip rounded-tl-3xl bg-background">
           {children}
         </div>
       </div>

@@ -1,7 +1,6 @@
 import type { ClassName, DualIcon } from "@/app/types";
 import { cn } from "@/lib/utils";
 import { Button, Link } from "@nextui-org/react";
-import { useInView } from "framer-motion";
 import { type PropsWithChildren, type ReactNode, useRef } from "react";
 import { ButtSex } from "./button/index";
 
@@ -14,8 +13,8 @@ interface CommonProps {
 const Component = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
-      "h-fit w-full overflow-clip bg-army",
-      "rounded-md border-[0.33px] border-foreground",
+      "h-fit w-full max-w-md overflow-clip bg-army",
+      "rounded-md border border-foreground/20",
       "shadow-sm",
 
       "transition-all duration-300 ease-out",
@@ -27,10 +26,10 @@ const Component = ({ children }: PropsWithChildren) => (
       className={cn(
         "h-fit w-full cursor-pointer",
         "bg-gradient-to-tr from-stone-300/20 via-zinc-300/40 to-slate-300/20 dark:from-adam",
-        "dark:text-primary-300 border rounded-md",
+        "dark:text-primary-300 border border-background rounded-md",
       )}
     >
-      <div className="flex h-full items-start space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-6">
+      <div className="flex h-full items-center md:items-start md:space-x-2 bg-gradient-to-r from-20% to-transparent xl:px-4 p-3 md:py-6">
         {children}
       </div>
     </div>
@@ -39,14 +38,12 @@ const Component = ({ children }: PropsWithChildren) => (
 
 const Header = ({ children, className, dark }: CommonProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true });
   return (
     <div className={cn("h-fit w-full", { "text-foreground": dark }, className)}>
       <div
         ref={ref}
         className={cn(
-          "flex h-full w-full flex-col items-start justify-center space-y-1 px-2 leading-none opacity-0 transition-all duration-500 ease-out translate-y-12",
-          { "opacity-100 translate-y-0": inView },
+          "flex h-full w-full flex-col items-start justify-center space-y-1 px-2 leading-none",
         )}
       >
         {children}
@@ -72,7 +69,7 @@ const Icon = (props: IconProps) => (
 const Title = ({ children, className }: CommonProps) => (
   <p
     className={cn(
-      "whitespace-nowrap font-sans font-medium tracking-tight text-foreground",
+      "whitespace-nowrap tracking-tighter md:tracking-tight font-semibold text-foreground",
       className,
     )}
   >
@@ -81,7 +78,7 @@ const Title = ({ children, className }: CommonProps) => (
 );
 
 const Subtext = ({ children, className }: CommonProps) => (
-  <p className={cn("text-xs font-light text-foreground", className)}>
+  <p className={cn("text-xs font-light hidden text-foreground sm:flex",  className)}>
     {children}
   </p>
 );
