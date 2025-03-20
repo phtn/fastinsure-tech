@@ -12,7 +12,7 @@ export const Splash = (props: SplashProps) => {
     <div
       className={cn(
         "relative w-full overflow-hidden rounded-2xl drop-shadow-sm h-44 xl:h-64",
-        "bg-void"
+        "bg-army"
       )}
     >
       <Header title={props.text ?? "Overview"} />

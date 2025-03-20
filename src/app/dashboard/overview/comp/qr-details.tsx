@@ -107,7 +107,7 @@ export const QrDetails = (props: QrDetailsProps) => {
 
 const calcExpiryAndValidity = (millis: number | undefined) => {
   const date = Date.now() - (millis ?? 0);
-  const expiry = `expires ${moment().from(date)}`;
+  const expiry = `expires ${moment( millis).fromNow()}`;
 
   const validity = moment().calendar(date, {
     sameDay: function () {
@@ -199,45 +199,54 @@ const detail_data: TQrDetail[] = [
     content: (
       <ItemContent>
         <div className="font-arc my-4 flex w-full items-center justify-center space-x-2 rounded-md bg-primary px-4 py-3 font-bold leading-none text-primary-50">
-          <p>You have successfully created an agent code!</p>
+          <p>You have successfully created an activation code!</p>
           <CircleCheckBigIcon className="size-4 text-background" />
         </div>
         <div className="text-primar mb-3 flex h-10 items-center font-inter text-xs tracking-tight">
-          Good to know:
+          Need to know:
         </div>
         <ol className="list-inside list-decimal space-y-3">
           <li className="pb-2">
             <span className="whitespace-nowrap font-inst font-semibold text-primary">
-              Retrieve Generated Code Details:
+              Retrieving Activation Code Details:
             </span>
             <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-primary-100/50 py-4 pl-6">
               <li>
-                The <Strong text="Agent Code" /> (a unique identifier for
+                Copy the <Strong text="Agent Code" /> (a unique identifier for
                 activation).
               </li>
               <li>
-                An <Strong text="Activation URL Link" /> that the agent will use
-                to start the activation process.
+                Activation <Strong text="Expires" /> in 48 hours.
               </li>
               <li>
-                A <Strong text="QR Code" /> visually representing the activation
-                URL link. This can be downloaded and shared with the agent.
+                The <Strong text="Activation URL" /> can be shared with the agent to start the activation process.
+              </li>
+              <li>
+                The <Strong text="QR Code" /> can be downloaded and shared with the agent.
               </li>
             </ul>
           </li>
           <li className="pb-2">
             <span className="whitespace-nowrap font-inst font-semibold text-primary">
-              Agent Activation:
+              Activation Process:
             </span>
             <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-primary-100/50 py-4 pl-6">
               <li>
-                Remind the agent to visit the activation page using the provided
-                <Strong text=" URL Link." />
+                The agent have to follow the link to the activation page using the provided
+                <Strong text=" URL" />
               </li>
               <li>
-                The agent will be prompted to enter the{" "}
-                <Strong text="Agent Code." /> They must complete activation
-                within 48 hours of code generation.
+                The agent will be prompted to enter the {" "}
+                <Strong text="6 letter Agent Code " /> for verification.
+              </li>
+              <li>
+                After the <Strong text=" code for verification" />, the agent will be redirected to FastInsure home page to create an account.
+              </li>
+              <li>
+                Agents may <Strong text=" Sign up using their email or through Google " /> to complete the activation process.
+              </li>
+              <li>
+                <Strong text="Activation Code Expires" /> within 48 hours.
               </li>
             </ul>
           </li>
@@ -248,7 +257,7 @@ const detail_data: TQrDetail[] = [
             <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-primary-100/50 py-4 pl-6">
               <li>
                 <span>
-                  You can track the status of agent activations within your
+                  You can monitor and track the status of all agent activations within your
                   dashboard. Click the QR icon from the sidebar to open the{" "}
                   <Strong text="Agent Code Table." />
                 </span>
@@ -290,7 +299,7 @@ const detail_data: TQrDetail[] = [
     content: (
       <ItemContent>
         <span className="text-xs font-light">
-          We&apos;re working on completing our documentation:{" "}
+          Activation Code:{" "}
           <strong>wo_id:890</strong>
         </span>
       </ItemContent>

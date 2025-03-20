@@ -88,9 +88,9 @@
 // //   }
 // // }
 
-// export const btoa = (string: string) => {
-//   if (typeof window === "undefined") {
-//     return Buffer.from(string).toString("base64");
-//   }
-//   return window.btoa(string);
-// };
+export const btoa = (string: string) => {
+  if (typeof window === "undefined") {
+    return Buffer.from(string).toString("base64");
+  }
+  return window.btoa(string);
+};

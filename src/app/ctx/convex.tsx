@@ -49,7 +49,7 @@ interface VexCtxValues {
     ) => Promise<(string & { __tableName: "requests" }) | null>;
     get: {
       all: () => SelectRequest[] | undefined;
-      byId: (id: string) => Promise<SelectRequest | null>;
+      byId: (uid: string) => Promise<SelectRequest | null>;
       byAgentId: (uid: string) => Promise<SelectRequest[]>;
       byUnderwriterId: (uid: string) => Promise<SelectRequest[]>;
     };

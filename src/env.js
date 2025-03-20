@@ -12,6 +12,7 @@ export const env = createEnv({
     RE_UP_SECURE_URL: z.string().url(),
     RE_UP_SECURE_DEV: z.string(),
     RE_UP_SECURE_API_KEY: z.string(),
+    RE_UP_ISSUER_ID: z.string(),
     //
     REDIS_PASSWORD: z.string(),
     REDIS_USERNAME: z.string(),
@@ -42,9 +43,12 @@ export const env = createEnv({
     FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
     CONVEX_DEPLOYMENT: process.env.CONVEX_DEPLOYMENT,
     NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
+    //
     RE_UP_SECURE_URL: process.env.RE_UP_SECURE_URL,
     RE_UP_SECURE_DEV: process.env.RE_UP_SECURE_DEV,
     RE_UP_SECURE_API_KEY: process.env.RE_UP_SECURE_API_KEY,
+    RE_UP_ISSUER_ID: process.env.RE_UP_ISSUER_ID,
+    //
     NEXT_PUBLIC_F_API_KEY: process.env.NEXT_PUBLIC_F_API_KEY,
     NEXT_PUBLIC_F_AUTH_DOMAIN: process.env.NEXT_PUBLIC_F_AUTH_DOMAIN,
     NEXT_PUBLIC_F_PROJECT_ID: process.env.NEXT_PUBLIC_F_PROJECT_ID,

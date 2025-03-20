@@ -7,7 +7,7 @@ import { copyFn, Err } from "@/utils/helpers";
 import { BookOpenIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 import { Square2StackIcon } from "@heroicons/react/24/solid";
 import { FileSymlinkIcon } from "lucide-react";
-import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { type ReactNode, useCallback, useState } from "react";
 import { useRequest } from "../../hooks/useRequest";
 import { QrCodegen } from "./qr-codegen";
 import { QrDetails } from "./qr-details";
@@ -19,16 +19,11 @@ export const CreateAgentCode = () => {
   const [open, setOpen] = useState(false);
 
   const handleCreateAgentCode = useCallback(async () => {
+    console.log(loading)
     await newAgentCode(user).then(setOpen).catch(Err);
-  }, [newAgentCode, user]);
+  }, [newAgentCode, user, loading]);
 
   const handleToggleOpen = useCallback(() => setOpen((prev) => !prev), []);
-
-  const url = useMemo(
-    () =>
-      agentCode?.url + `&exp=$` + (Date.now() + (agentCode?.expiry ?? 0)) + `$`,
-    [agentCode?.url, agentCode?.expiry],
-  );
 
   const QrViewer = () => {
     return (
@@ -36,7 +31,7 @@ export const CreateAgentCode = () => {
         <Qr.Content title="Activation Code Generated" close={handleToggleOpen}>
           <Qr.Body>
             <Qr.Code>
-              <QrCodegen url={url} />
+              <QrCodegen url={agentCode?.url} />
             </Qr.Code>
             <Qr.Detail>
               <QrDetails
@@ -47,7 +42,7 @@ export const CreateAgentCode = () => {
           </Qr.Body>
         </Qr.Content>
         <Qr.Footer>
-          <FooterContent text={url} />
+          <FooterContent text={agentCode?.url} />
         </Qr.Footer>
       </Qr>
     );

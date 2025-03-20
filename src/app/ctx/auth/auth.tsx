@@ -34,7 +34,9 @@ import {
   deleteUID,
   getCustomClaims,
   getLastLogin,
+  setIdToken,
   setLastLogin,
+  setUID,
 } from "@/app/actions";
 
 import { EmailAndPasswordSchema } from "@/app/auth/schema";
@@ -89,13 +91,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     action: (p: P | undefined) => Promise<T>,
     set: Dispatch<SetStateAction<T>>,
   ) => {
-    transition(() =>
       transition(async (p = undefined) => {
         const r = await action(p);
         set(r);
-      }),
-    );
-  };
+      })
+  }
 
   const createLog = useCallback(
     async (id: string | undefined, type: string) => {
@@ -251,7 +251,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       if (u) {
         setUser(u);
         await createLog(u.uid, "login");
-        // await verify(u);
+        const idToken = await u.getIdToken();
+        await setIdToken(idToken)
+        await setUID(u.uid)
         onSuccess("Logged in!");
       } else {
         setLoading(false);

@@ -7,7 +7,7 @@ import {
   verifyUser,
 } from "./handlers/auth";
 import { status, verifyActivationCode } from "./handlers/server";
-import { userCode } from "./handlers/manager";
+import { createCode } from "./handlers/manager";
 import { verifyCode } from "./handlers/agent";
 
 const Secure = () => {
@@ -27,7 +27,7 @@ const Secure = () => {
       verifyActivationCode: createFn(verifyActivationCode, ax),
     },
     manager: {
-      generateCode: createFn(userCode, ax),
+      generateCode: createFn(createCode, ax),
     },
     agent: {
       verifyCode: createFn(verifyCode, ax),
