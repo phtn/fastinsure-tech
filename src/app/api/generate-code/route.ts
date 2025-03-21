@@ -51,7 +51,6 @@ const generateRandomCode = async (length: number) => {
     try {
       const code = new Uint8Array(length);
       for (let i = 0; i < length; i++) {
-        // Generate cryptographically secure random number
         const randomByte = randomBytes(1)[0]; // Get a single random byte
         if (randomByte){
           const index = randomByte % letters.length; // Map to the letters index
@@ -81,12 +80,11 @@ const issuerIds = () => {
 
 
 const randIdx = (n: number) => {
-      if (n <= 0) {
-        throw new Error("Argument must be a positive integer");
-      }
-
-      return Math.floor(Math.random() * n);
-    }
+  if (n <= 0) {
+    console.error("Argument must be a positive integer");
+  }
+  return Math.floor(Math.random() * n);
+}
 
 
 // class KeyGenerationError extends Data.TaggedError("KeyGenerationError")<{

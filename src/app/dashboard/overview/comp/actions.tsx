@@ -12,6 +12,7 @@ import { useRequest } from "../../hooks/useRequest";
 import { QrCodegen } from "./qr-codegen";
 import { QrDetails } from "./qr-details";
 import { Qr } from "./qr-viewer";
+import { Spinner } from "@nextui-org/react";
 
 export const CreateAgentCode = () => {
   const { user } = useAuthCtx();
@@ -82,7 +83,7 @@ const BasicAction = (props: BasicActionProps) => (
     </ActionCard.Header>
     <Action>
       <Action.Btn onPress={props.fn} loading={props.loading}>
-        <Action.Label>{props.label}</Action.Label>
+        <Action.Label>{props.loading ? <Spinner size="sm" color="secondary"/> : props.label}</Action.Label>
       </Action.Btn>
     </Action>
     {props.children}
@@ -147,7 +148,7 @@ export const CreateRequest = () => {
       </ActionCard.Header>
       <Action>
         <Action.Btn onPress={handleCreate} loading={create.loading}>
-          <Action.Label>Create</Action.Label>
+          <Action.Label>{create.loading ? <Spinner size="sm" color="secondary"/> : "Create"}</Action.Label>
         </Action.Btn>
       </Action>
     </ActionCard>

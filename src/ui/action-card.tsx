@@ -13,19 +13,19 @@ interface CommonProps {
 const Component = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
-      "h-fit w-full max-w-md overflow-clip bg-army",
-      "rounded-md border border-foreground/20",
+      "h-fit w-full max-w-md overflow-clip bg-army/40",
+      "rounded-md border border-macl-gray/40",
       "shadow-sm",
 
       "transition-all duration-300 ease-out",
-      "hover:border-foreground hover:shadow-lg",
+      "hover:border-macl-gray hover:shadow-lg",
       "dark:border-primary-300/60",
     )}
   >
     <div
       className={cn(
         "h-fit w-full cursor-pointer",
-        "bg-gradient-to-tr from-stone-300/20 via-zinc-300/40 to-slate-300/20 dark:from-adam",
+        "bg-gradient-to-tr from-gray-100/10 via-gray-300/40 to-slate-300/20 dark:from-adam",
         "dark:text-primary-300 border border-background rounded-md",
       )}
     >
@@ -98,21 +98,21 @@ const Btn = ({ children, loading, onPress }: BtnProps) => (
     onClick={onPress}
     loading={loading}
     inverted
-    className={cn("border-void")}
+    className={cn("border-void w-20")}
   >
     {children}
   </ButtSex>
   </div>
 );
 const Label = ({ children, className }: CommonProps) => (
-  <p
+  <div
     className={cn(
-      "whitespace-nowrap font-mono font-medium uppercase tracking-widest",
+      "whitespace-nowrap flex items-center justify-center font-mono font-medium uppercase tracking-widest",
       className,
     )}
   >
     {children}
-  </p>
+  </div>
 );
 
 const BtnIcon = ({ children, className }: CommonProps) => (

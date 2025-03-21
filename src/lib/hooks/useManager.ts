@@ -26,6 +26,7 @@ export const useManager = () => {
     setAgentCode(response?.Data)
     onSuccess("Code generated successfully!")
     setLoading(false)
+    console.log("success")
     return true
 
 
@@ -56,6 +57,7 @@ export const useManager = () => {
         .catch(() => {
           onError("Re-authentication required.");
           setLoading(false);
+          console.log("error")
           return false;
         });
     },
