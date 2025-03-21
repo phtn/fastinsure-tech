@@ -15,7 +15,7 @@ export const AccountContent = () => {
         <AccountSummary
           name={vxuser?.nickname ?? vxuser?.email ?? ""}
           verified={false}
-          group_code={"group"}
+          group_code={vxuser?.group_code ?? ""}
         />
         <div className="w-full pb-24">
           <div className="h-96 w-full border-void/20">

@@ -6,7 +6,7 @@ import { LogoLight } from "@/ui/logo";
 
 export const BrandLogo = () => {
   return (
-    <div className="flex w-fit space-x-4 whitespace-nowrap">
+    <div className="flex w-fit px-1 space-x-4 whitespace-nowrap">
       <Link
         href="/"
         className="relative z-20 flex h-fit flex-shrink-0 items-center space-x-2 py-1"
@@ -16,7 +16,7 @@ export const BrandLogo = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className={cn(
-            "flex whitespace-nowrap px-4 font-jet text-sm tracking-wide text-primary-300 drop-shadow-sm dark:text-void",
+            "flex whitespace-nowrap px-4 font-inst tracking-wide text-lg text-primary-50 drop-shadow-sm font-extrabold dark:text-void",
           )}
         >
           FastInsure Tech

@@ -12,13 +12,6 @@ import { HyperList } from "../list";
 export const NavItems = () => {
   const { navs } = useNav();
 
-  // const isActive = useMemo(
-  //     () =>
-  //       (pathname.length >= 2 && href.includes(sub!)) ||
-  //       (pathname.length <= 2 && `/${pathname[1]}` === href),
-  //     [pathname, href, sub],
-  //   );
-
   return (
     <HyperList
       keyId="id"
@@ -71,7 +64,7 @@ export const NavItem = (item: NavItemProps) => {
           display: open ? "inline-block" : "none",
           opacity: open ? 1 : 0,
         }}
-        className={`${isActive ? "active dark:via-white dark:to-amber-50" : ""} rounded-xl bg-gradient-to-r from-amber-50 via-secondary-100 to-secondary-800 bg-size-200 bg-clip-text bg-pos-100 px-3 py-1 font-inst font-medium text-transparent transition-all duration-300 ease-out group-hover/sidebar:bg-pos-0 dark:to-secondary-400`}
+        className={`${isActive ? "active text-blue-400" : "text-orange-50"} rounded-xl  px-3 py-1 font-inst font-medium transition-all duration-300 ease-out`}
       >
         {item.label}
       </motion.div>

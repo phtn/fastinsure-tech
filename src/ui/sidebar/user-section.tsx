@@ -19,10 +19,9 @@ const UserSectionComponent = (props: { open: boolean }) => {
       <section className="whitespace-nowrap">
         <FlexRow className="h-4 items-center font-inst text-[11px] font-medium text-steel/80 drop-shadow-md">
           FastInsure Technologies, Inc.{" "}
-          <span className="px-[2px] font-inter">&copy;</span>{" "}
-          {/* {new Date().getFullYear()} */}
+          <span className="px-[2px] font-inter">&copy;</span>{new Date().getFullYear()}
         </FlexRow>
-        <FlexRow className="h-4 items-center px-[1px] font-inst text-[10px] text-steel/70 drop-shadow-md">
+        <FlexRow className="h-4 items-center hidden px-[1px] font-inst text-[10px] text-steel/70 drop-shadow-md">
           <span>Privacy</span>
           <span>⏺</span>
           <span>Terms</span>
@@ -71,6 +70,8 @@ const UserSectionComponent = (props: { open: boolean }) => {
         </Link>
 
         <div className="flex items-center space-x-2">
+
+          <Link href="/dashboard/account">
           <motion.span
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -80,12 +81,13 @@ const UserSectionComponent = (props: { open: boolean }) => {
           >
             {vxuser?.nickname ?? vxuser?.email}
           </motion.span>
+        </Link>
           <Button
             size="sm"
             variant="flat"
             onPress={signOut}
             className={cn(
-              "hidden w-14 border-0 bg-chalk/20 px-2 font-inst font-light tracking-tighter text-chalk/80",
+              "hidden w-14 border-0 bg-chalk/20 px-2 font-inst font-light tracking-tighter text-orange-100",
               {
                 flex: props.open,
               },

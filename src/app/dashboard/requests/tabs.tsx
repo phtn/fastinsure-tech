@@ -40,15 +40,15 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
       {
         id: 0,
         value: "/requests",
-        label: "All",
+        label: "Refresh",
         content: <TabContent />,
       },
-      {
-        id: 1,
-        value: "/requests/submitted",
-        label: "Submitted",
-        content: <TabContent />,
-      },
+      // {
+      //   id: 1,
+      //   value: "/requests/submitted",
+      //   label: "Submitted",
+      //   content: <TabContent />,
+      // },
       // {
       //   id: 4,
       //   value: "/requests/completed",
@@ -83,13 +83,11 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           defaultSelectedKey={"all"}
           selectedKey={selected}
           size="sm"
-          variant="bordered"
-          color="secondary"
           className="absolute -top-[3.2rem] right-4 z-[200]"
           isVertical={false}
           classNames={{
             tabList:
-              "w-full border border-primary-300 dark:border-primary-500/40",
+              "w-full",
             tab: "w-fit font-semibold tracking-tight text-xs",
           }}
         >
@@ -97,7 +95,7 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
             <Tab
               key={tab.value}
               title={tab.label}
-              className={cn({ "text-warning": tab.value === selected })}
+              className={cn({ "text-gray-500 border-[0.33px] border-macd-gray": tab.value === selected })}
             >
               {tab.content}
             </Tab>

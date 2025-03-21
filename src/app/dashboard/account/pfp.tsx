@@ -52,11 +52,9 @@ export const Pfp = () => {
         className="flex h-16 w-full items-center justify-end bg-background px-4"
       >
         <div className="flex h-10 w-fit items-center justify-end space-x-4">
-          <ButtSex size="md" inverted>
-            Edit Profile
-          </ButtSex>
-          <ButtSex size="md" onClick={handleSignout}>
-            <p className="font-inter text-xs font-medium tracking-tighter">
+
+          <ButtSex size="md" inverted onClick={handleSignout}>
+            <p className="font-inst text-orange-100 text-xs font-medium tracking-tighter">
               Sign out
             </p>
           </ButtSex>
