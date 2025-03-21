@@ -95,7 +95,7 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
             <Tab
               key={tab.value}
               title={tab.label}
-              className={cn({ "text-gray-500 border-[0.33px] border-macd-gray": tab.value === selected })}
+              className={cn({ "text-gray-500": tab.value === selected })}
             >
               {tab.content}
             </Tab>
@@ -114,13 +114,13 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           "space-x-4",
         )}
       >
-        <ButtSex size="md" start={PlusIcon} onClick={handleCreate}>
+        <ButtSex size="sm" start={PlusIcon} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
             Create New Request
           </p>
         </ButtSex>
 
-        <section className="flex h-[38px] items-center rounded-[11px] border border-primary-300 bg-goddess px-0.5 dark:border-primary-500/40 dark:bg-void">
+        <section className="flex h-[32px] items-center rounded-[8px] border border-primary-300 bg-goddess px-0.5 dark:border-primary-500/40 dark:bg-void">
           <ButtSqx size="sm" variant="active" icon={ListBulletIcon} />
           <ButtSqx size="sm" variant="goddess" icon={Squares2X2Icon} />
         </section>

@@ -3,10 +3,9 @@ import SkylineII from "@/app/sandbox/skylineII";
 import { ButtSqx } from "@/ui/button/button";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { SquircleIcon } from "lucide-react";
-import { Image } from "@nextui-org/react";
-import { ButtSex } from "@/ui/button/ripple";
+import { Button, Image, Spinner } from "@nextui-org/react";
 import { useAuthCtx } from "@/app/ctx/auth/auth";
-import { use, useCallback } from "react";
+import { use, useCallback, useState } from "react";
 import { AccountCtx } from "./ctx";
 import { PfpEditor } from "./side-pfp";
 import { opts } from "@/utils/helpers";
@@ -14,10 +13,12 @@ import { LoaderSm } from "@/ui/loader";
 import { useRouter } from "next/navigation";
 
 export const Pfp = () => {
+  const [loading, setLoading] = useState(false);
   const { vxuser } = useAuthCtx();
   const { fileChange, inputFileRef, browseFile, pfp } = use(AccountCtx)!;
   const router = useRouter();
   const handleSignout = useCallback(() => {
+    setLoading(true);
     router.push("/dashboard/prime");
   }, [router]);
 
@@ -53,11 +54,11 @@ export const Pfp = () => {
       >
         <div className="flex h-10 w-fit items-center justify-end space-x-4">
 
-          <ButtSex size="md" inverted onClick={handleSignout}>
+          <Button size="md" onPress={handleSignout} className="w-20">
             <p className="font-inst text-orange-100 text-xs font-medium tracking-tighter">
-              Sign out
+              { loading ? <Spinner size="sm" color="warning" className="" /> : 'Sign out'}
             </p>
-          </ButtSex>
+          </Button>
         </div>
       </div>
       <div

@@ -166,7 +166,7 @@ const Body = () => {
           radius="none"
           classNames={{
             tabList:
-              "bg-steel/40 p-0 border-b-[0.5px] border-steel w-[28rem] overflow-scroll",
+              "bg-steel/40 p-0 border-b-[0.33px] border-steel w-[28rem] overflow-scroll",
             tab: "h-[34px]",
             panel: "p-0",
           }}

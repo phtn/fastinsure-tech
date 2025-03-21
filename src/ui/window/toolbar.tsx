@@ -131,7 +131,7 @@ export const StaticToolbar = ({
       className={cn(
         "flex h-[49px] items-center justify-between rounded-t-2xl p-2",
         // LIGHT
-        "border-b-[0.5px] border-dock-border",
+        "border-b-[0.33px] border-dock-border/30",
         { "bg-demigod": variant === "demigod" },
         { "bg-god": variant === "god" },
         { "bg-goddess": variant === "goddess" },

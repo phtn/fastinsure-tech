@@ -1,9 +1,7 @@
 import { onWarn } from "@/app/ctx/toasts";
 import { cn } from "@/lib/utils";
 import type { AccountActivationResponse } from "@/server/secure/resource";
-import { ButtSex } from "@/ui/button/ripple";
-import { ArrowUpCircleIcon } from "@heroicons/react/24/solid";
-import { Input } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import { useActionState, useCallback } from "react";
 
 interface CodeEntryProps {
@@ -30,12 +28,12 @@ export const CodeEntry = ({ activateFn }: CodeEntryProps) => {
 
   return (
     <div className={cn("z-50 h-fit w-fit space-y-6 overflow-hidden")}>
-      <div className="font-inst text-xl tracking-tight text-void dark:text-chalk/80">
+      <div className="font-inst text-3xl tracking-tighter font-extrabold text-void dark:text-chalk/80">
         When you&apos;re ready,
       </div>
       <form
         action={action}
-        className="flex h-fit w-full items-center justify-start space-x-2 whitespace-nowrap px-1"
+        className="flex h-fit w-full items-center flex-col space-y-4 whitespace-nowrap px-1"
       >
         <Input
           size="lg"
@@ -43,23 +41,22 @@ export const CodeEntry = ({ activateFn }: CodeEntryProps) => {
           color="primary"
           radius="md"
           placeholder="enter code"
-          className="w-44 font-bold tracking-[0.25rem] text-foreground/80"
+          className="w-48 font-bold tracking-[0.25rem] text-foreground/80"
           classNames={{
             input:
-              "text-center uppercase dark:text-void placeholder:lowercase placeholder:tracking-normal placeholder:opacity-40",
+              "text-center uppercase bg-white dark:text-void placeholder:lowercase placeholder:tracking-normal placeholder:opacity-40",
             inputWrapper:
-              "border border-primary-400 dark:bg-adam dark:border-primary-100",
+              "border bg-chalk border-macl-gray/40 dark:bg-adam dark:border-primary-100",
           }}
         />
-        <ButtSex
+        <Button
           size="lg"
-          end={ArrowUpCircleIcon}
-          loading={pending}
+          isLoading={pending}
           type="submit"
-          variant="secondary"
+          className="w-48"
         >
-          <span className="pl-2 text-sm">Activate</span>
-        </ButtSex>
+          <span className="pl-2 text-white text-sm">Activate</span>
+        </Button>
       </form>
     </div>
   );

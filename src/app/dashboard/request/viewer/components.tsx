@@ -100,7 +100,7 @@ export const RenderRow: FC<{
   <div
     key={keyName}
     style={{ display: "flex", alignItems: "center", height: "36px" }}
-    className={`flex items-center px-4 odd:bg-steel/20 ${className}`}
+    className={`flex items-center px-4 odd:bg-steel/10 ${className}`}
   >
     <div
       className={`flex w-36 items-center font-jet text-adam capitalize dark:text-steel ${className}`}

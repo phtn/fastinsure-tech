@@ -59,7 +59,7 @@ const Fields: FC<{
   };
 
   return (
-    <div className="mb-4 bg-steel/5 backdrop-blur-2xl">
+    <div className="mb-4 bg-steel/5">
       <div className="overflow-hidden rounded-md border-[0.33px] border-primary-300 dark:border-adam/60">
         <div
           style={{ paddingBottom: pdf ? 10 : 0 }}
@@ -67,7 +67,7 @@ const Fields: FC<{
         >
           {title}
         </div>
-        {renderFilteredRows(pdf ? "h-6 text-xs items-center" : "h-10 text-sm")}
+        {renderFilteredRows(pdf ? "h-8 mb-2 flex text-xs items-center" : "h-10 mb-0 text-sm")}
       </div>
     </div>
   );

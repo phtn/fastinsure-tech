@@ -12,9 +12,9 @@ const MOverview = () => {
   return (
     <div className="h-[98vh] overflow-auto rounded-tl-3xl p-4">
       <OverviewHeader email={user?.email} vxuser={vxuser} />
-      <div className="h-full w-full space-y-4 text-foreground">
+      <div className="h-full w-full px-2 space-y-4 text-foreground">
         <div className="flex items-center mt-4 h-8 space-x-2 ps-2">
-          <span className="text-secondary">⏺</span><span>Actions</span>
+          <span className="text-secondary">⏺</span><span className=" text-sm">Actions</span>
         </div>
         <CreateAgentCode />
         <CreateRequest />

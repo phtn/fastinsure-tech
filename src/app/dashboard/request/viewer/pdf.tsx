@@ -42,39 +42,46 @@ export const PdfObject = ({
 }: PdfProps) => {
   const componentRef = useRef(null);
   const [pdfBlob, setPdfBlob] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [csvLoading, setCsvLoading] = useState(false);
+
+  const pageOne = useRef<HTMLDivElement>(null);
+  const pageTwo = useRef<HTMLDivElement>(null);
 
   const generatePdf = useCallback(async () => {
-    setLoading(true);
+    setPdfLoading(true);
     if (!componentRef.current) {
-      setLoading(false);
+      setPdfLoading(false);
       return;
     }
 
-    // Capture the component as a canvas
-    const canvas = await html2canvas(componentRef.current);
-    const imgData = canvas.toDataURL("image/png");
+    if (!pageOne.current || !pageTwo.current) {
+      setPdfLoading(false);
+      return;
+    }
+
+    const pageOneCanvas = await html2canvas(pageOne.current);
+    const pageTwoCanvas = await html2canvas(pageTwo.current);
+    const pageOneData = pageOneCanvas.toDataURL("image/png");
+    const pageTwoData = pageTwoCanvas.toDataURL("image/png");
 
     // Create a new PDF
     const pdf = new jsPDF("portrait", "mm", "a4");
     const imgWidth = 210; // A4 width in mm
-    const pageHeight = 297; // A4 height in mm
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    let position = 0;
+    const pageOneHeight = (pageOneCanvas.height * imgWidth) / pageOneCanvas.width;
+    const pageTwoHeight = (pageTwoCanvas.height * imgWidth) / pageTwoCanvas.width;
+    const position = 0;
 
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    pdf.addImage(pageOneData, "PNG", 0, position, imgWidth, pageOneHeight);
+    pdf.addPage()
+    pdf.addImage(pageTwoData, "PNG", 0, position, imgWidth, pageTwoHeight);
 
     // If the content is long, handle page breaks
-    if (imgHeight > pageHeight) {
-      position -= pageHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-    }
 
     // Create a Blob for PDF preview
     const pdfBlob = pdf.output("blob");
     setPdfBlob(URL.createObjectURL(pdfBlob));
-    setLoading(false);
+    setPdfLoading(false);
     // Optionally, save the PDF
     // pdf.save(`${title.replace(/\s+/g, "_")}.pdf`);
   }, []);
@@ -91,6 +98,7 @@ export const PdfObject = ({
   }, [initialize]);
 
   const generateCsv = useCallback(async () => {
+    setCsvLoading(true);
     const table = [
       {
         tableName: "Request",
@@ -112,7 +120,6 @@ export const PdfObject = ({
 
     const json = JSON.stringify(table);
     const csv = json_to_csv_3(json);
-    console.log(csv);
 
     try {
       // Generate CSV using WASM
@@ -131,8 +138,10 @@ export const PdfObject = ({
 
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+      setCsvLoading(false);
     } catch (error) {
       console.error("Error generating CSV:", error);
+      setCsvLoading(false);
     }
   }, [addressData, autoData, subjectData, requestData, id]);
 
@@ -145,7 +154,7 @@ export const PdfObject = ({
           inverted
           onClick={generatePdf}
           end={FileInputIcon}
-          loading={loading}
+          loading={pdfLoading}
         >
           <span className="px-4">PDF</span>
         </ButtSex>
@@ -153,7 +162,7 @@ export const PdfObject = ({
           size="md"
           inverted
           end={ArrowDownTrayIcon}
-          loading={loading}
+          loading={csvLoading}
           onClick={generateCsv}
         >
           <span className="px-4">CSV</span>
@@ -161,7 +170,7 @@ export const PdfObject = ({
       </div>
       {/* Section to generate PDF */}
       <div ref={componentRef}>
-        <div className="border-[0.33px] border-primary-300 p-5 shadow-md">
+        <div ref={pageOne} className="border-[0.33px] border-primary-300 p-5 shadow-md">
           <FileHeader page={1} title={title} id={id} />
           <div className="flex h-full justify-between">
             <div className="h-full pt-5">
@@ -180,7 +189,7 @@ export const PdfObject = ({
           </div>
         </div>
 
-        <div className="border-[0.33px] border-primary-300 p-5 shadow-md">
+        <div ref={pageTwo} className="border-[0.33px] border-primary-300 p-5 shadow-md">
           <FileHeader page={2} title={title} id={id} />
           <section className="py-4">
             <div className="h-full">

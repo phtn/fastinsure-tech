@@ -3,15 +3,18 @@ import { opts } from "@/utils/helpers";
 import { cn, Button, Image } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { FlexRow } from "../flex";
 import Link from "next/link";
 
 const UserSectionComponent = (props: { open: boolean }) => {
+  const [loading, setLoading] = useState(false);
   const { vxuser } = useAuthCtx();
   const router = useRouter();
   const signOut = useCallback(() => {
+    setLoading(true);
     router.push("/dashboard/prime");
+
   }, [router]);
 
   const LegalOptions = useCallback(() => {
@@ -53,6 +56,15 @@ const UserSectionComponent = (props: { open: boolean }) => {
 
     return <>{options.get(props.open)}</>;
   }, [props.open]);
+
+  const userAvatar = useMemo(() => {
+    if (vxuser?.photo_url && vxuser.photo_url !== ""){
+      return vxuser.photo_url
+    } else if (vxuser?.photo_url === "") {
+      return "/svg/user.svg"
+    }
+  }, [vxuser])
+
   return (
     <section>
       <div className="relative -left-4 mb-2 flex size-16 items-center whitespace-nowrap transition-transform duration-300">
@@ -62,7 +74,7 @@ const UserSectionComponent = (props: { open: boolean }) => {
         >
           <Image
             alt="admin-logo"
-            src={vxuser?.photo_url ?? "/svg/user.svg"}
+            src={userAvatar}
             className="z-[100] animate-enter border border-chalk/50"
             width={28}
             height={28}
@@ -76,7 +88,7 @@ const UserSectionComponent = (props: { open: boolean }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className={cn(
-              "ml-14 flex flex-shrink whitespace-nowrap px-4 font-jet text-sm tracking-widest text-steel dark:text-primary-600",
+              "ml-14 flex flex-shrink whitespace-nowrap px-2 font-jet text-sm text-steel dark:text-primary-600",
             )}
           >
             {vxuser?.nickname ?? vxuser?.email}
@@ -86,14 +98,15 @@ const UserSectionComponent = (props: { open: boolean }) => {
             size="sm"
             variant="flat"
             onPress={signOut}
+            isLoading={loading}
             className={cn(
-              "hidden w-14 border-0 bg-chalk/20 px-2 font-inst font-light tracking-tighter text-orange-100",
+              "hidden w-[90px] border-0 bg-chalk/20 font-inst font-light tracking-tighter text-orange-100",
               {
                 flex: props.open,
               },
             )}
           >
-            <span className="px-4">Sign out</span>
+            <span className="">Sign out</span>
           </Button>
         </div>
       </div>

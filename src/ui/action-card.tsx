@@ -25,7 +25,7 @@ const Component = ({ children }: PropsWithChildren) => (
     <div
       className={cn(
         "h-fit w-full cursor-pointer",
-        "bg-gradient-to-tr from-gray-100/10 via-gray-300/40 to-slate-300/20 dark:from-adam",
+        "bg-gradient-to-tr from-pink-100/10 via-sky-100/15 to-slate-300/10 dark:from-adam",
         "dark:text-primary-300 border border-background rounded-md",
       )}
     >

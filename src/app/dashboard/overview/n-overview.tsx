@@ -1,7 +1,5 @@
 "use client";
 
-import { HStack } from "@/ui/hstack";
-import { Widget } from "@/ui/widget";
 import { Splash } from "./comp/splash";
 
 import { useAuthCtx } from "@/app/ctx/auth/auth";
@@ -23,22 +21,18 @@ export const NeoOverview = () => {
   }, [vxuser, vx]);
 
   return (
-    <div className="overflow-auto p-4 pb-6">
-      <Splash text={"Account Activation"}>
-        <FlexRow className="relative -top-3 z-[300] h-full w-2/3 items-start space-x-7 border border-pink-500 p-4">
-          <UserCardOptions />
-        </FlexRow>
-      </Splash>
-      <Widget>
-        <Widget.BaseII>
-          <HStack.LgCol>
-            <ActivationComponent>
-              <CodeEntry activateFn={activateFn} />
-            </ActivationComponent>
-          </HStack.LgCol>
-        </Widget.BaseII>
-        <Widget.PadLg />
-      </Widget>
-    </div>
+    <div className="p-4 pb-6">
+        <Splash text={"Account Activation"}>
+          <FlexRow className="relative -top-3 z-[300] h-full w-2/3 items-start space-x-7 p-4">
+            <UserCardOptions />
+          </FlexRow>
+        </Splash>
+        <div className="mt-8 grid grid-cols-2 gap-6">
+          <ActivationComponent/>
+          <div className="flex h-96 p-6 w-full items-start justify-start font-inst text-xs">
+            <CodeEntry activateFn={activateFn} />
+          </div>
+        </div>
+      </div>
   );
 };

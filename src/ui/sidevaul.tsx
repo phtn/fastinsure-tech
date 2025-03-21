@@ -49,7 +49,7 @@ const Body = ({ children }: PropsWithChildren) => (
 );
 
 const Footer = ({ children }: PropsWithChildren) => (
-  <div className="w-full rounded-b-lg border-t-[0.5px] border-steel bg-god px-2 py-1 backdrop-blur-2xl dark:border-t-[0.5px] dark:border-steel dark:bg-background">
+  <div className="w-full rounded-b-lg border-t-[0px] bg-god px-2 py-1 backdrop-blur-2xl dark:border-t-[0.33px] dark:border-steel dark:bg-background">
     <div className="mx-auto flex items-center justify-between">{children}</div>
   </div>
 );

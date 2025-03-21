@@ -21,6 +21,8 @@ const DashboardComponent = () => {
         return <UOverview />;
       case "agent":
         return <AgentOverview />;
+      case "neo":
+        return <NeoOverview />;
       default:
         <NeoOverview />;
     }

@@ -143,6 +143,9 @@ export const useNav = () => {
         case "underwriter":
           setNavs(u_navs);
           break;
+        case "neo":
+          setNavs(n_navs);
+          break;
         default:
           setNavs(n_navs);
           break;

@@ -3,8 +3,6 @@
 import { Tab, Tabs } from "@nextui-org/react";
 import {
   CalendarDaysIcon,
-  ListBulletIcon,
-  Squares2X2Icon,
 } from "@heroicons/react/24/outline";
 import { UserGroupIcon } from "@heroicons/react/24/solid";
 
@@ -19,7 +17,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { useUtils } from "@/utils/useUtils";
 import { cn } from "@/lib/utils";
-import { ButtSex, ButtSqx } from "@/ui/button/index";
+import { ButtSex } from "@/ui/button/index";
 import { guid } from "@/utils/helpers";
 import type { TabItem } from "@/app/types";
 
@@ -81,7 +79,7 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           size="sm"
           variant="bordered"
           color="secondary"
-          className="_border-b-[0.5px] absolute -top-[3.2rem] right-4 z-[200] border-primary-300"
+          className="absolute -top-[3.2rem] right-4 z-[200] border-primary-300"
           isVertical={false}
           classNames={{
             tabList:
@@ -105,23 +103,23 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           "absolute -top-[3.5rem] z-50",
           "flex items-center justify-center",
           "transfor-gpu transition-all duration-500 ease-out",
-          "space-x-4",
+          "space-x-2",
         )}
       >
-        <ButtSex size="md" start={CalendarDaysIcon} onClick={handleCreate}>
+        <ButtSex size="sm" inverted start={CalendarDaysIcon} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
             Schedule Meetings
           </p>
         </ButtSex>
-        <ButtSex size="md" start={UserGroupIcon} onClick={handleCreate}>
+        <ButtSex size="sm" start={UserGroupIcon} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
             Create Groups
           </p>
         </ButtSex>
-        <section className="flex h-[38px] items-center rounded-[11px] border border-primary-300 bg-goddess px-0.5 dark:border-primary-500/40 dark:bg-void">
+        {/* <section className="flex h-[32px] items-center mx-1.5 rounded-[8px] border-[0.33px] border-macd-gray bg-goddess dark:border-primary-500/40 dark:bg-void">
           <ButtSqx size="sm" variant="god" disabled icon={ListBulletIcon} />
           <ButtSqx size="sm" variant="active" icon={Squares2X2Icon} />
-        </section>
+        </section> */}
       </div>
     </div>
   );

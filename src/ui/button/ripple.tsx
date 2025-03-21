@@ -88,9 +88,9 @@ export const ButtSex = ({
             "stroke-1 text-void/90 dark:text-icon-dark",
             "group-hover:text-void dark:group-hover:text-chalk",
             {
-              "size-3": size === "sm",
+              "size-3.5": size === "sm",
               "size-4": size === "md",
-              "size-6": size === "lg",
+              "size-5": size === "lg",
             },
             {
               "text-chalk group-hover:text-white dark:text-void/80": inverted,
@@ -107,12 +107,12 @@ export const ButtSex = ({
   );
 
   const StartOption = useCallback(() => {
-    const options = opts(<Icon loading={loading} icon={start!} />, null);
+    const options = opts(<div className="w-6 flex items-center justify-center"><Icon loading={loading} icon={start!} /></div>, null);
     return <>{options.get(!!start)}</>;
   }, [start, Icon, loading]);
 
   const EndOption = useCallback(() => {
-    const options = opts(<Icon loading={loading} icon={end!} />, null);
+    const options = opts(<div className="w-6 flex items-center justify-center"><Icon loading={loading} icon={end!} /></div>, null);
     return <>{options.get(!!end)}</>;
   }, [end, Icon, loading]);
 
@@ -134,8 +134,8 @@ export const ButtSex = ({
             "dark:border-void/60 dark:group-hover:border-void/80": inverted,
             "group-hover:bg-void dark:group-hover:bg-white": inverted,
             "h-8 gap-2 rounded-lg px-2 py-1.5": size === "sm",
-            "h-10 gap-2.5 rounded-xl px-2.5 py-2": size === "md",
-            "h-14 gap-2.5 rounded-xl px-2.5 py-2": size === "lg",
+            "h-10 rounded-xl px-2.5 py-2": size === "md",
+            "h-14 gap-2 rounded-xl px-2.5 py-2": size === "lg",
             "bg-secondary-300 group-hover:bg-secondary":
               variant === "secondary",
           },
@@ -148,11 +148,12 @@ export const ButtSex = ({
         {...props}
       >
         <StartOption />
+
         <div
           className={cn(
             "relative z-[200] flex h-full items-center overflow-hidden whitespace-nowrap",
             "font-inter text-xs font-bold capitalize tracking-tight text-void",
-            "px-1 drop-shadow-sm group-hover:text-void/90",
+            "drop-shadow-sm group-hover:text-void/90",
             "dark:text-chalk/80 dark:group-hover:text-chalk",
             { "text-chalk/90 group-hover:text-chalk": inverted },
             { "dark:text-void dark:group-hover:text-void": inverted },

@@ -25,7 +25,7 @@ export const AgentOverview = () => {
 
   return (
     <div className="overflow-auto scroll-smooth rounded-tl-3xl p-4">
-      <Splash text={""}>
+      <Splash text={"Dashboard"}>
         <div className="absolute top-4 z-[60] flex h-1/2 w-1/3 items-center space-x-2 border-primary px-12 font-inst text-2xl delay-1000">
           <UserOptions />
         </div>
@@ -57,14 +57,14 @@ export const AgentOverview = () => {
               </div>
             </HStack.XsCol>
             <HStack.XsCol>
-              <div className="relative h-96 w-full overflow-hidden">
+              <div className="relative mt-10 h-96 w-full overflow-hidden">
                 <div className="absolute flex h-full w-full overflow-hidden rounded-md border border-primary backdrop-blur-xl dark:border-army/40">
                   <VBar requests={[]} />
                 </div>
               </div>
             </HStack.XsCol>
             <HStack.XsCol>
-              <div className="relative h-96 w-full overflow-hidden">
+              <div className="relative mt-10 h-96 w-full overflow-hidden">
                 <div className="absolute flex h-full w-full overflow-hidden rounded-md border border-primary backdrop-blur-xl dark:border-army/40">
                   <Recents />
                 </div>

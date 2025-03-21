@@ -125,7 +125,7 @@ export function Window(props: WindowProps) {
         )}
       >
         <motion.div
-          drag
+          drag={false}
           dragMomentum={false}
           initial={{ scale: 0.95, opacity: 0, borderRadius: 112 }}
           animate={{ scale: 1, opacity: 1, borderRadius: 16 }}
@@ -138,7 +138,7 @@ export function Window(props: WindowProps) {
             { "shadow-md": shadow === "md" },
             { "shadow-sm": shadow === "sm" },
             "dark:border-fade-dark/90 dark:bg-void",
-            "border-[0.33px] border-fade-dark/20 bg-chalk",
+            "border-[0.0px] border-fade-dark/20 bg-chalk",
           )}
         >
           {props.toolbar ? (
@@ -169,7 +169,7 @@ export function FlatWindow(props: WindowProps) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className={cn(
-          "_bg-void flex w-full items-center justify-center rounded-2xl",
+          "flex w-full items-center justify-center rounded-2xl",
         )}
       >
         <motion.div
@@ -209,8 +209,8 @@ export const WindowContent = ({ children }: PropsWithChildren) => (
     className={cn(
       "relative overflow-hidden",
       "rounded-b-2xl",
-      "border-b-[0.0px] border-t-0",
-      "border-shadow-dark/40",
+      "border-b-[0.33px] border-t-0",
+      "border-shadow-dark/10",
       "dark:border-primary-200/40",
     )}
   >

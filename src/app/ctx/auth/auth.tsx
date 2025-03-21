@@ -9,6 +9,7 @@ import {
   type User,
   type IdTokenResult,
   onAuthStateChanged,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import {
   createContext,
@@ -59,6 +60,7 @@ interface AuthCtxValues {
   signOut: () => Promise<void>;
   signWithGoogle: () => Promise<void>;
   signUserWithEmail: (fd: FormData) => Promise<void>;
+  signupUserWithEmail: (fd: FormData) => Promise<void>;
   userRecord: IdTokenResult | null;
   oauth: OAuthCredential | null;
   claims: UserRole[] | null;
@@ -226,6 +228,45 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     return () => unsubscribe();
   }, [getClaims, checkLastLogin, rte]);
 
+  const signupUserWithEmail = useCallback(
+      async (f: FormData) => {
+        setLoading(true);
+
+        const validation = EmailAndPasswordSchema.safeParse({
+          email: f.get("email") as string,
+          password: f.get("password") as string,
+        });
+
+        if (validation.error) {
+          onWarn("Invalid credentials.");
+          return setLoading(false);
+        }
+
+        const { email, password } = validation.data;
+
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        ).catch(Err(setLoading, "Invalid Credentials"));
+        const u = userCredential?.user;
+        setLoading(false);
+        if (u) {
+          setUser(u);
+          await createLog(u.uid, "login");
+          const idToken = await u.getIdToken();
+          await setIdToken(idToken)
+          await setUID(u.uid)
+          onSuccess("Logged in!");
+        } else {
+          setLoading(false);
+        }
+        setLoading(false);
+      },
+      [createLog],
+    );
+
+
   const signUserWithEmail = useCallback(
     async (f: FormData) => {
       setLoading(true);
@@ -236,6 +277,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       });
       if (validated.error) {
         onWarn("Invalid credentials.");
+        setLoading(false);
         return;
       }
 
@@ -247,7 +289,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         password,
       ).catch(Err(setLoading, "Invalid Credentials"));
       const u = userCredential?.user;
-      setLoading(false);
       if (u) {
         setUser(u);
         await createLog(u.uid, "login");
@@ -255,8 +296,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         await setIdToken(idToken)
         await setUID(u.uid)
         onSuccess("Logged in!");
-      } else {
-        setLoading(false);
       }
     },
     [createLog],
@@ -310,6 +349,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       googleSigning,
       signWithGoogle,
       signUserWithEmail,
+      signupUserWithEmail,
       setClaims,
       vresult,
       loading,
@@ -325,6 +365,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       googleSigning,
       signWithGoogle,
       signUserWithEmail,
+      signupUserWithEmail,
       setClaims,
       vresult,
       loading,

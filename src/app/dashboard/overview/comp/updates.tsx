@@ -1,15 +1,12 @@
 import { BigActionCard } from "@/ui/action-card";
 import { FlexRow } from "@/ui/flex";
 import { HyperList } from "@/ui/list";
-import { ShieldCheckIcon } from "@heroicons/react/24/solid";
 import { Card } from "@nextui-org/react";
-import type { ReactNode } from "react";
 
 export const UpdatesComponent = () => (
   <div className="w-full">
   <div className="h-[45px]" />
   <BigActionCard>
-
     <div>
       <BigActionCard.Header>
         <BigActionCard.Title>Updates</BigActionCard.Title>
@@ -18,42 +15,27 @@ export const UpdatesComponent = () => (
         </BigActionCard.Subtext>
       </BigActionCard.Header>
       <div className="flex size-96 items-start justify-start pt-4 font-inst text-xs">
-                  <div className="size-full rounded-lg bg-chalk p-4 drop-shadow dark:bg-chalk/60">
-                  </div>
-                </div>
-
+        <div className="size-full rounded-lg bg-chalk p-4 drop-shadow dark:bg-chalk/60">
+        </div>
+      </div>
     </div>
-    {/* <div className="h-full w-full flex-grow-0 overflow-scroll rounded-lg bg-void"></div> */}
   </BigActionCard>
   </div>
 );
 
-interface ActivationProps {
-  children?: ReactNode;
-}
-export const ActivationComponent = ({ children }: ActivationProps) => (
+export const ActivationComponent = () => (
   <BigActionCard>
-    <BigActionCard.Icon icon={ShieldCheckIcon} />
-    <div className="h-full w-full space-y-4">
-      <BigActionCard.Header>
-        <BigActionCard.Title>Activation Guide</BigActionCard.Title>
-        <BigActionCard.Subtext>
-          Follow these steps to activate your account.
-        </BigActionCard.Subtext>
-      </BigActionCard.Header>
+    <div className="h-full px-4 w-full space-y-4">
+      <span className="text-3xl tracking-tighter mb-2">Steps to activate your account</span>
 
       <HyperList
         data={activation_steps}
         component={ActivationStep}
-        container="space-y-6"
+        container="space-y-6 pt-4"
         itemStyle="w-fit rounded-xl"
       />
     </div>
-    <div className="flex h-96 w-full items-start justify-start font-inst text-xs">
-      <div className="h-40 w-fit rounded-2xl bg-steel/10 px-8 py-6 drop-shadow dark:bg-steel/20">
-        {children}
-      </div>
-    </div>
+
   </BigActionCard>
 );
 
@@ -80,13 +62,13 @@ const activation_steps: ActivationStepData[] = [
 const ActivationStep = (step: ActivationStepData) => (
   <Card
     radius="lg"
-    className="h-fit w-fit space-y-2 overflow-scroll rounded-xl bg-steel/30 p-4 text-void shadow-sm dark:bg-steel/20 dark:text-secondary-700"
+    className="h-fit w-fit space-y-4 overflow-scroll rounded-xl bg-steel/10 p-4 text-void shadow-sm dark:bg-steel/20 dark:text-secondary-700"
   >
-    <FlexRow className="w-full items-center px-2 font-inst text-xl">
+    <FlexRow className="w-full items-center px-2 font-inst text-lg">
       <span className="font-semibold">Step {step.id + 1}:</span>
       <span>{step.title}</span>
     </FlexRow>
-    <div className="ps-2">
+    <div className="ps-2 pb-3">
       <p className="max-w-[45ch] font-inter text-sm text-adam dark:text-icon-dark">
         {step.content}
       </p>

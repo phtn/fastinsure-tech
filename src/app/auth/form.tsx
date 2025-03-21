@@ -4,22 +4,29 @@ import { Image, Spinner } from "@nextui-org/react";
 import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { cn } from "@/lib/utils";
 import { FastField } from "@/ui/input";
-import { type FormEvent, useCallback, useMemo } from "react";
+import { type FormEvent, useCallback, useMemo, useState } from "react";
 import { Err, opts } from "@/utils/helpers";
 import { FlexRow } from "@/ui/flex";
 import moment from "moment";
 import { ButtSex } from "@/ui/button/ripple";
 import { ArrowRightEndOnRectangleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
+import type { DualIcon } from "../types";
+import { ArrowUpRightSquare } from "lucide-react";
 
 export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
-  const { signUserWithEmail, loading, googleSigning } = useAuthCtx();
+  const [isSignIn, setIsSignIn] = useState(true);
+  const { signUserWithEmail, loading, googleSigning, signupUserWithEmail } = useAuthCtx();
   const defaultValues = { email: "", password: "" };
+
+  const handleToggle = useCallback((e: FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsSignIn(!isSignIn);
+  }, [isSignIn]);
+
   const { register } = useForm<EmailAndPassword>({
     defaultValues,
   });
-
-  console.log(loading);
 
   const timestamp = useMemo(
     () =>
@@ -30,22 +37,28 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
   );
 
   const HeadingOptions = useCallback(() => {
+    // const isLoading = loading || googleSigning;
     const options = opts(
       <header className="flex w-full items-center justify-start space-x-4">
-        <p>Signing in...</p> <Spinner size="sm" color="primary" />
+        <p>Signing in...</p> <Spinner size="sm" color="secondary" />
       </header>,
-      <header className="flex w-full justify-start">Sign in with email</header>,
+      <header className="flex w-full justify-start">Sign {isSignIn ? "in" : "up"}</header>,
     );
-    return <>{options.get(googleSigning || loading)}</>;
-  }, [googleSigning, loading]);
+    return <>{options.get(loading)}</>;
+  }, [loading, isSignIn]);
+
+  const SignButtonOptions = useCallback(() => {
+    const options = opts(<SignInButton icon={ArrowRightEndOnRectangleIcon} loading={loading} />, <SignInButton icon={ArrowUpRightSquare} loading={loading} />)
+    return  <>{options.get(isSignIn)}</>
+  }, [loading, isSignIn])
 
   return (
     <form
-      action={signUserWithEmail}
+      action={isSignIn ? signUserWithEmail : signupUserWithEmail}
       className="flex h-full w-full min-w-[22rem] max-w-[22rem] flex-col items-end text-primary portrait:w-screen"
     >
       <div className="flex h-full w-full flex-col items-center space-y-6">
-        <div className="flex h-16 w-full items-end justify-center px-6 font-inter text-xl font-semibold tracking-tighter dark:text-icon-dark">
+        <div className="flex h-16 w-full items-end justify-center px-8 text-xl font-semibold -tracking-wider dark:text-icon-dark">
           <HeadingOptions />
         </div>
         <div
@@ -82,31 +95,16 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
           ))}
         </div>
         <div className="flex w-[18.5rem] flex-col items-center justify-center space-y-2 text-sm">
-          <ButtSex
-            size="lg"
-            type="submit"
-            loading={loading}
-            disabled={loading}
-            className="flex w-[18rem] items-center justify-center text-medium"
-          >
-            <div className="flex h-full items-center justify-between gap-4 dark:text-icon-dark">
-              <p className="flex w-full font-inst text-xs font-medium leading-none">
-                Sign <span className="pl-1 lowercase">in</span>
-              </p>
-              <ArrowRightEndOnRectangleIcon
-                className={"text- size-5 shrink-0 dark:text-icon-dark"}
-              />
-            </div>
-          </ButtSex>
+          <SignButtonOptions />
           <div className="flex items-center justify-center font-mono text-xs tracking-tight text-void/80">
             <p>or</p>
           </div>
           <GoogleSignin />
         </div>
-        <Support />
+        <Support toggleFn={handleToggle} isSignIn={isSignIn} />
 
-        <div className="w-full px-2">
-          <FlexRow className="relative h-[36px] w-full items-center justify-center rounded-xl bg-ice">
+        <div className="w-full border-t-[0.33px] border-steel/20 mt-2">
+          <FlexRow className="relative h-[48px] w-full items-center justify-center bg-steel/10">
             <p className="w-fit space-x-2 whitespace-nowrap p-1.5 font-jet text-[10px] font-light capitalize leading-none text-void">
               <span>Last login</span>
               <span className="text-[8px]">{`:`}</span>
@@ -119,15 +117,49 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
   );
 };
 
-const Support = () => (
-  <div className="flex h-6 w-full items-center justify-center space-x-4 text-xs tracking-tight text-primary">
-    <Link
-      href={"#"}
-      className="decoration-primary underline-offset-[5px] hover:underline"
+interface SignButtonProps {
+  loading: boolean;
+  icon: DualIcon
+}
+const SignInButton = ({loading,icon: IconComponent}: SignButtonProps) => {
+  return (
+    <ButtSex
+      size="lg"
+      type="submit"
+      disabled={loading}
+      className="flex w-[18rem] items-center justify-center text-medium"
     >
-      <p>Sign up</p>
-    </Link>
-    <p className="text-center font-light opacity-15">⏺</p>
+      <div className="flex h-full items-center justify-between gap-4 dark:text-icon-dark">
+        <p className="flex w-full font-inst text-xs font-medium leading-none">
+          Sign <span className="pl-1 lowercase">in</span>
+        </p>
+        {loading ? (
+          <Spinner size="sm" className="size-5 shrink-0 dark:text-icon-dark" />
+        ) : (
+          <IconComponent
+          className={"text- size-5 shrink-0 dark:text-icon-dark"}
+          />
+        )}
+      </div>
+    </ButtSex>
+  )
+}
+
+interface SupportProps {
+  toggleFn: (e: FormEvent<HTMLButtonElement>) => void;
+  isSignIn: boolean;
+}
+
+const Support = ({ toggleFn, isSignIn }: SupportProps) => (
+
+  <div className="flex h-6 w-full items-center justify-center space-x-4 text-xs tracking-tight text-primary">
+    <button
+      onClick={toggleFn}
+      className="decoration-primary w-10 underline-offset-[5px] hover:underline"
+    >
+      <p>{isSignIn ? "Sign up" : "Sign in"}</p>
+    </button>
+    <p className="text-center font-light opacity-15">|</p>
     <Link
       href={"#"}
       className="cursor-pointer decoration-void/60 underline-offset-[5px] hover:underline"
