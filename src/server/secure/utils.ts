@@ -1,12 +1,4 @@
-import { env } from "@/env";
 import { type AxiosInstance } from "axios";
-
-export const createEndpoint = (endpoint: string) => {
-  if (env.NODE_ENV === "development") {
-    return env.RE_UP_SECURE_DEV + endpoint;
-  }
-  return env.RE_UP_SECURE_DEV + endpoint;
-};
 
 export const btoa = (string: string) => {
   if (typeof window === "undefined") {

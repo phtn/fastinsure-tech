@@ -1,25 +1,32 @@
 import { useAuthCtx, withAuth } from "@/app/ctx/auth/auth";
-import { motion } from "framer-motion";
 import { CreateAgentCode, CreateRequest } from "./comp/actions";
 import { Splash } from "./comp/splash";
 import { Flag } from "./comp/status-flag";
 import { UpdatesComponent } from "./comp/updates";
 import type { SelectUser } from "@convex/users/d";
+import { Tab, Tabs } from "@nextui-org/react";
 
 const MOverview = () => {
   const { user, vxuser } = useAuthCtx();
 
   return (
-    <div className="h-[98vh] overflow-auto rounded-tl-3xl p-4">
+    <div className="h-screen overflow-auto rounded-tl-3xl p-4">
       <OverviewHeader email={user?.email} vxuser={vxuser} />
-      <div className="h-full w-full px-2 space-y-4 text-foreground">
-        <div className="flex items-center mt-4 h-8 space-x-2 ps-2">
-          <span className="text-secondary">⏺</span><span className=" text-sm">Actions</span>
-        </div>
-        <CreateAgentCode />
-        <CreateRequest />
-      </div>
-      <UpdatesComponent />
+      <Tabs size="md" variant="underlined" classNames={{
+        cursor: "bg-macl-blue"
+      }}>
+        <Tab key="functions" title="Functions">
+          <div className="h-full w-full px-2 space-y-4 text-foreground">
+                  <CreateAgentCode />
+                  <CreateRequest />
+                </div>
+        </Tab>
+        <Tab key="stats" title="Stats">
+
+          <UpdatesComponent />
+        </Tab>
+      </Tabs>
+
     </div>
   );
 };
@@ -39,21 +46,14 @@ const OverviewHeader = ({ email, vxuser }: OverviewHeaderProps) => {
           <p>{email}</p>
         </div>
         <div className="absolute bottom-0 z-[60] h-1/2 w-full px-12">
-          <motion.section
-            initial={{ height: "0%" }}
-            animate={{ height: "66%" }}
-            transition={{ duration: 2, delay: 3 }}
-            className="flex h-2/3 w-full flex-col items-start justify-start space-y-[2px] border-l-[0.33px] border-primary/40"
-          >
-            <Flag
+          <Flag
             metric={vxuser?.group_code !== ""}
             label={["account", vxuser?.group_code, "NOT REGISTERED"]}
             />
-            <Flag
+          <Flag
             metric={vxuser?.group_code !== "NEW NOT REGISTERED"}
             label={["status", "active", "inactive"]}
-            />
-          </motion.section>
+          />
         </div>
       </div>
     </Splash>

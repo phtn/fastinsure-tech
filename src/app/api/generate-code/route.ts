@@ -18,7 +18,7 @@ export const POST = async (req: Request) => {
   const issuer = issuerIds()
   const idx = randIdx(issuer.length)
   const id = new TextEncoder().encode(uid).toString();
-  const expiry = Date.now() + 3600000
+  const expiry = Date.now() + 172800000
 
   const genkey = (i: string) => {
     const SEP = '-';
@@ -36,11 +36,13 @@ export const POST = async (req: Request) => {
     Data: {
       code: code,
       url: url,
-      expiry: Date.now() + 3600000
+      expiry: Date.now() + 172800000
     },
     Code: "OK",
     Status: 200
   } as AgentCodeResponse;
+
+
 
   return NextResponse.json(data);
 };

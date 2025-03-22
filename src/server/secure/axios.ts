@@ -14,6 +14,6 @@ export const createAxiosInstance = (config?: AxiosRequestConfig) =>
     },
     baseURL:
       env.NODE_ENV === "production"
-      ? "/api"
+      ? "https://fastinsure-tech.vercel.app/api"
         : "http://localhost:3000/api",
   });

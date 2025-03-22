@@ -5,7 +5,6 @@ import { Card } from "@nextui-org/react";
 
 export const UpdatesComponent = () => (
   <div className="w-full">
-  <div className="h-[45px]" />
   <BigActionCard>
     <div>
       <BigActionCard.Header>

@@ -21,7 +21,11 @@ export const CreateAgentCode = () => {
 
   const handleCreateAgentCode = useCallback(async () => {
     console.log(loading)
-    await newAgentCode(user).then(setOpen).catch(Err);
+    await newAgentCode(user).then(() => {
+      if (!loading){
+        setOpen(true);
+      }
+    }).catch(Err);
   }, [newAgentCode, user, loading]);
 
   const handleToggleOpen = useCallback(() => setOpen((prev) => !prev), []);

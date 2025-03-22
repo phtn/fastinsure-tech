@@ -9,15 +9,13 @@ export const env = createEnv({
     CR_PROCESSOR: z.string(),
     FIREBASE_PROJECT_ID: z.string(),
     CONVEX_DEPLOYMENT: z.string(),
-    RE_UP_SECURE_URL: z.string().url(),
-    RE_UP_SECURE_DEV: z.string(),
+
     RE_UP_SECURE_API_KEY: z.string(),
     RE_UP_ISSUER_ID: z.string(),
-    //
-    REDIS_PASSWORD: z.string(),
-    REDIS_USERNAME: z.string(),
-    REDIS_HOST: z.string(),
-    REDIS_PORT: z.string(),
+
+    UPSTASH_REDIS_REST_URL: z.string().url(),
+    UPSTASH_REDIS_REST_TOKEN: z.string(),
+
   },
   client: {
     NEXT_PUBLIC_CONVEX_URL: z.string().url(), // NEXT_PUBLIC_ADC: z.string(),
@@ -37,18 +35,18 @@ export const env = createEnv({
 
   runtimeEnv: {
     ADC: process.env.ADC,
+    //DOCUMENT-AI
     PROJECT_ID: process.env.PROJECT_ID,
     PROCESSOR_LOC: process.env.PROCESSOR_LOC,
     CR_PROCESSOR: process.env.CR_PROCESSOR,
     FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
+    //CONVEX
     CONVEX_DEPLOYMENT: process.env.CONVEX_DEPLOYMENT,
     NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
-    //
-    RE_UP_SECURE_URL: process.env.RE_UP_SECURE_URL,
-    RE_UP_SECURE_DEV: process.env.RE_UP_SECURE_DEV,
+    //RE-UP
     RE_UP_SECURE_API_KEY: process.env.RE_UP_SECURE_API_KEY,
     RE_UP_ISSUER_ID: process.env.RE_UP_ISSUER_ID,
-    //
+    //FIREBASE
     NEXT_PUBLIC_F_API_KEY: process.env.NEXT_PUBLIC_F_API_KEY,
     NEXT_PUBLIC_F_AUTH_DOMAIN: process.env.NEXT_PUBLIC_F_AUTH_DOMAIN,
     NEXT_PUBLIC_F_PROJECT_ID: process.env.NEXT_PUBLIC_F_PROJECT_ID,
@@ -56,16 +54,16 @@ export const env = createEnv({
     NEXT_PUBLIC_F_MESSAGING: process.env.NEXT_PUBLIC_F_MESSAGING,
     NEXT_PUBLIC_F_APP_ID: process.env.NEXT_PUBLIC_F_APP_ID,
     NEXT_PUBLIC_F_LENGTH: process.env.NEXT_PUBLIC_F_LENGTH,
+    //DEVS
     NEXT_PUBLIC_DEVS: process.env.NEXT_PUBLIC_DEVS,
-    NODE_ENV: process.env.NODE_ENV,
+    //UPSTASH
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     //
-    REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-    REDIS_USERNAME: process.env.REDIS_USERNAME,
-    REDIS_HOST: process.env.REDIS_HOST,
-    REDIS_PORT: process.env.REDIS_PORT,
+    NODE_ENV: process.env.NODE_ENV,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 
   emptyStringAsUndefined: true,
-});
+})

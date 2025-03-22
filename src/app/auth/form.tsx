@@ -48,7 +48,7 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
   }, [loading, isSignIn]);
 
   const SignButtonOptions = useCallback(() => {
-    const options = opts(<SignInButton icon={ArrowRightEndOnRectangleIcon} loading={loading} />, <SignInButton icon={ArrowUpRightSquare} loading={loading} />)
+    const options = opts(<SignInButton isSignIn={isSignIn} icon={ArrowRightEndOnRectangleIcon} loading={loading} />, <SignInButton isSignIn={isSignIn}  icon={ArrowUpRightSquare} loading={loading} />)
     return  <>{options.get(isSignIn)}</>
   }, [loading, isSignIn])
 
@@ -120,8 +120,9 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
 interface SignButtonProps {
   loading: boolean;
   icon: DualIcon
+  isSignIn: boolean;
 }
-const SignInButton = ({loading,icon: IconComponent}: SignButtonProps) => {
+const SignInButton = ({loading,icon: IconComponent, isSignIn }: SignButtonProps) => {
   return (
     <ButtSex
       size="lg"
@@ -131,13 +132,13 @@ const SignInButton = ({loading,icon: IconComponent}: SignButtonProps) => {
     >
       <div className="flex h-full items-center justify-between gap-4 dark:text-icon-dark">
         <p className="flex w-full font-inst text-xs font-medium leading-none">
-          Sign <span className="pl-1 lowercase">in</span>
+          Sign <span className="pl-1 lowercase">{isSignIn ? 'in ' : 'up '} with email</span>
         </p>
         {loading ? (
           <Spinner size="sm" className="size-5 shrink-0 dark:text-icon-dark" />
         ) : (
           <IconComponent
-          className={"text- size-5 shrink-0 dark:text-icon-dark"}
+          className={"size-5 stroke-1 shrink-0 dark:text-icon-dark"}
           />
         )}
       </div>

@@ -3,10 +3,9 @@ import { Atomic } from "@/ui/atomic";
 import {
   AnimatePresence,
   motion,
-  useMotionValue,
 } from "framer-motion";
 import type { Dispatch, SetStateAction } from "react";
-import { memo, useCallback, useEffect, useMemo } from "react";
+import { memo, useCallback, useEffect } from "react";
 import { useAuthFn } from "./useAuthFn";
 import { opts } from "@/utils/helpers";
 import { UserIcon } from "@heroicons/react/24/solid";
@@ -31,8 +30,6 @@ function AuthComponent(props: AuthComponentProps) {
     console.log("is_open", open, uid);
     if (!open) {
       checkSession().catch((err) => console.error(err));
-      // await checkLastLogin();
-      // checkServer();
     }
   }, [open, checkSession, uid]);
 
@@ -42,33 +39,6 @@ function AuthComponent(props: AuthComponentProps) {
     add();
     return () => remove();
   }, [add, remove]);
-
-  //////////
-  // MOTION
-
-  const state = useMotionValue(0);
-
-  const constraints = useMemo(() => {
-    if (typeof window !== "undefined") {
-      return {
-        left: -window.innerWidth / 2 + (window.innerWidth < 600 ? 215 : 250),
-        top: -window?.innerHeight / 2 + 300,
-        right: window.innerWidth / 2 - (window.innerWidth < 600 ? 215 : 250),
-        bottom: window?.innerHeight / 2 - 300,
-      };
-    }
-  }, []);
-
-  //////////
-  // WINDOW
-
-  const toggleStateValue = useCallback(() => {
-    state.set(pending ? 1 : 0);
-  }, [pending, state]);
-
-  useEffect(() => {
-    toggleStateValue();
-  }, [toggleStateValue]);
 
   const SignCardOptions = useCallback(() => {
     const options = opts(
@@ -82,38 +52,16 @@ function AuthComponent(props: AuthComponentProps) {
     <AnimatePresence>
       {open && (
         <motion.div
-          initial={{ opacity: 0.5 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{duration: 0.3, ease: "easeInOut"}}
+          exit={{ opacity: 0, y: -20 }}
           className={cn(
             "fixed inset-0 z-[250] flex h-screen w-screen items-center justify-center p-4",
-            "bg-zinc-950 bg-opacity-20 p-4",
+            "bg-zinc-950 bg-opacity-20 p-4 transition-transform will-change-auto",
           )}
         >
-          <motion.div
-            drag={window.innerWidth >= 600}
-            dragMomentum={false}
-            dragConstraints={constraints}
-            initial={{
-              scale: 0.8,
-              // opacity: 0,
-              // borderRadius: r.get(),
-              // height: h.get(),
-            }}
-            animate={{
-              scale: 1,
-              // opacity: 1,
-              // borderRadius: r.get(),
-              // height: h.get(),
-            }}
-            exit={{
-              scale: 0.2,
-              // opacity: 0.2,
-              y: 50,
-              // borderRadius: 400,
-              // height: 100,
-            }}
-            transition={{}}
+          <div
             className={cn(
               "h-fit w-fit overflow-hidden shadow-xl",
               "rounded-2xl",
@@ -128,7 +76,7 @@ function AuthComponent(props: AuthComponentProps) {
             onClick={stopPropagation}
           >
             <SignCardOptions />
-          </motion.div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

@@ -48,7 +48,7 @@ export const Spacing = memo(
               variants={framerProps}
               transition={{ duration, delay }}
               className={cn(
-                "flex-shrink-0 font-jet text-lg text-foreground/50 drop-shadow-sm md:text-xl md:-tracking-[5px] xl:text-3xl xl:-tracking-widest",
+                "flex-shrink-0 will-change-contents font-jet text-lg text-foreground/50 drop-shadow-sm md:text-xl md:-tracking-[5px] xl:text-3xl xl:-tracking-widest",
                 {
                   "font-inst text-5xl font-extrabold text-primary md:text-4xl xl:text-6xl portrait:tracking-[-6px]":
                     bold,
