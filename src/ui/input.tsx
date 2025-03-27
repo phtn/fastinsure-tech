@@ -16,7 +16,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { BoltIcon, PhotoIcon } from "@heroicons/react/24/solid";
 import { Button } from "@nextui-org/react";
-import { AsteriskIcon } from "lucide-react";
+import { AsteriskIcon, XIcon } from "lucide-react";
 import {
   type FormEvent,
   forwardRef,
@@ -37,6 +37,7 @@ import { ButtSpc, ButtSqx } from "./button/button";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: DualIcon;
+  clearable?: boolean;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -239,7 +240,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 InputField.displayName = "InputField";
 
 export const FastField = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => (
+  ({ className, clearable = false, ...props }, ref) => (
     <div
       className={cn(
         "flex h-[50px] w-full items-center pl-3 ps-2 focus:bg-adam/40",
@@ -252,10 +253,16 @@ export const FastField = forwardRef<HTMLInputElement, InputProps>(
 
       <input
         {...props}
-        type={type}
         ref={ref}
         className="placeholder:text-clay/50 h-[42px] w-full rounded-md bg-transparent px-2 ps-4 font-sans text-[16px] font-normal tracking-normal text-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
       />
+      {clearable && props.value !== "" &&
+        <button onClick={(e) => {
+          e.preventDefault()
+
+        }} className="absolute size-3.5 flex items-center justify-center rounded-full bg-primary/50 right-2">
+          <XIcon className=" size-2 stroke-white fill-white" />
+        </button>}
     </div>
   ),
 );

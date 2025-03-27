@@ -1,4 +1,5 @@
 import { type DualIcon } from "@/app/types";
+import { copyFn, Err, Ok } from "@/utils/helpers";
 import {
   ArrowDownTrayIcon,
   ChevronDoubleDownIcon,
@@ -22,16 +23,17 @@ import {
 import {
   useCallback,
   useMemo,
+  useState,
   type PropsWithChildren,
   type ReactElement,
   type ReactNode,
 } from "react";
-import { copyFn } from "@/utils/helpers";
 
-import {format, formatDistanceToNow} from "date-fns"
+import { onError } from "@/app/ctx/toasts";
+import { EmailContextSchema, type EmailContext } from "@/lib/email/schema";
 import { ButtSex } from "@/ui/button/ripple";
 import { FastField } from "@/ui/input";
-import { type EmailContext, EmailContextSchema } from "@/lib/email/schema";
+import { format, formatDistanceToNow } from "date-fns";
 
 interface QrDetailsProps {
   key_code: string | undefined;
@@ -41,6 +43,7 @@ interface QrDetailsProps {
   sendFn: (payload: EmailContext) => Promise<void>;
 }
 export const QrDetails = (props: QrDetailsProps) => {
+  const {sendFn, shareFn, downloadFn, key_code} = props
   const { expiry, validity } = useMemo(
     () => calcExpiryAndValidity(props.expiry),
     [props.expiry],
@@ -50,40 +53,51 @@ export const QrDetails = (props: QrDetailsProps) => {
     (text: string) => () => copyFn({ name: text, text }),
     [],
   );
+  const [sending, setSending] = useState(false)
 
   const handleSubmit = useCallback(
     async (data: FormData) => {
-
+      setSending(true)
       const validated = EmailContextSchema.safeParse({
+        type: "activation",
         email: data.get("email") as string,
         name: "Donald Trump",
-        type: "activation",
         subject: "FastInsure Activation Code",
       })
-
       if (validated.error) {
         console.log("Validation failed:", validated.error);
-        return;
+        setSending(false)
+        onError("Email validation failed")
+        return
       }
       const payload = {
         type: validated.data.type,
         name: validated.data.name,
         email: validated.data.email,
         subject: validated.data.subject,
-        text: "This code expires in 48 hours",
+        text: key_code,
       } as EmailContext
-
-      await props.sendFn(payload)
-
+      if (validated.success){
+        await sendFn(payload).then(Ok(setSending, "Email sent!")).catch(Err(setSending))
+      }
     },
-    [props],
+    [sendFn, key_code],
   );
 
-  const renderContent = (id: string) => {
+  const SendEmail = useCallback(() => (
+    <GenericContent>
+      <form action={handleSubmit} className="flex space-x-2">
+        <FastField clearable name="email" icon={EnvelopeIcon} placeholder="Email" className="w-[20rem] border-[0.33px] drop-shadow-sm bg-white border-gray-400/40 rounded-lg h-10" />
+        <ButtSex className="w-20" inverted type="submit" disabled={sending}>{sending ? "Sending..." : 'Send'}</ButtSex>
+      </form>
+    </GenericContent>
+  ), [sending, handleSubmit])
+
+  const RenderContent = useCallback(({id}: {id: string}) => {
     switch(id) {
       case "code":
         return <CodeContent>
-          <p>{props.key_code}</p>
+          <p>{key_code}</p>
           <div>
             <Button
               size="sm"
@@ -91,7 +105,7 @@ export const QrDetails = (props: QrDetailsProps) => {
               className="h-9 rounded-e-md border-[0.33px] border-primary font-inter font-medium"
               variant="solid"
               color="primary"
-              onPress={handleCopyCode(props.key_code!)}
+              onPress={handleCopyCode(key_code!)}
             >
               <span>copy</span>
               <Square2StackIcon className="size-5 text-primary-50" />
@@ -102,20 +116,15 @@ export const QrDetails = (props: QrDetailsProps) => {
         return <ExpiryContent>This activation code expires in {expiry}</ExpiryContent>;
       case "download":
         return <GenericContent>
-          <ButtSex onClick={props.downloadFn}>Download</ButtSex>
-          <ButtSex onClick={props.shareFn} inverted>Share</ButtSex>
+          <ButtSex onClick={downloadFn}>Download</ButtSex>
+          <ButtSex onClick={shareFn} inverted>Share</ButtSex>
         </GenericContent>;
       case "send":
-        return <GenericContent>
-          <form action={handleSubmit} className="flex space-x-2">
-            <FastField name="email" icon={EnvelopeIcon} placeholder="Email" className="w-[20rem] border-[0.33px] drop-shadow-sm bg-white border-gray-400/40 rounded-lg h-10" />
-            <ButtSex className="w-20" inverted type="submit">Send</ButtSex>
-          </form>
-        </GenericContent>;
+        return <SendEmail />;
       default:
         return null;
     }
-  }
+  }, [expiry, handleCopyCode, downloadFn, shareFn, key_code, SendEmail])
 
 
   return (
@@ -151,7 +160,7 @@ export const QrDetails = (props: QrDetailsProps) => {
           title={item.title}
           subtitle={item.id === "expiry" ? validity : null}
         >
-          {renderContent(item.id)}
+          <RenderContent id={item.id} />
         </AccordionItem>
       ))}
     </Accordion>

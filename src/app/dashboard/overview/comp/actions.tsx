@@ -37,83 +37,74 @@ export const CreateAgentCode = () => {
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-   const generateImage = useCallback(async () => {
-     if (imageUrl) {
-       return imageUrl;
-     }
-
-     const options = {
-       useCORS: true,
-       logging: false,
-       background: "#fff",
-       removeContainer: true,
-     };
-
-     if (!codeRef.current) return null;
-     const canvas = await html2canvas(codeRef.current, options);
-     const dataUrl = canvas.toDataURL("image/png");
-     setImageUrl(dataUrl)
-     return dataUrl;
-   }, [imageUrl]);
-
-   const handleDownload = async () => {
-     if (!codeRef.current) return;
-     const image = await generateImage();
-     if (image) {
-       const link = document.createElement("a");
-       link.href = image;
-       link.download = `fast-${agentCode?.code}.png`;
-       link.click();
-     }
-   };
-
-   const handleShare = async () => {
-     const image = await generateImage();
-     if (image) {
-       // Convert data URL to Blob
-       const response = await fetch(image);
-       const blob = await response.blob();
-       const file = new File([blob], `fast-${agentCode?.code}.png`, {
-         type: "image/png",
-       });
-
-       // Check if Web Share API is supported
-       if (navigator.share) {
-         try {
-           await navigator.share({
-             title: `FastInsure Activation Code`,
-             text: "This code expires in 48 hours",
-             files: [file],
-           });
-           console.log("Receipt shared successfully");
-         } catch (error) {
-           if (error instanceof Error && error.name === "AbortError") {
-             console.log("User cancelled sharing");
-           } else {
-             console.log("Error sharing qr-code:", error);
-           }
-           console.log("Error sharing qr-code:", error);
-         }
-       } else {
-         await handleDownload();
-       }
-     }
-   };
-
    const {send} = useEmail()
 
-   const handleSend = async (payload: EmailContext) => {
-     if (agentCode?.url) {
-       try {
-         await send(payload).then(console.table);
-         console.log("Email sent successfully");
-       } catch (error) {
-         console.log("Error sending email:", error);
-       }
-     }
-   };
+   const handleSend = useCallback(async (payload: EmailContext) => {
+     await send(payload);
+   }, [send]);
 
-  const QrViewer = () => {
+  const QrViewer = useCallback(() => {
+    const generateImage = async () => {
+      if (imageUrl) {
+        return imageUrl;
+      }
+
+      const options = {
+        useCORS: true,
+        logging: false,
+        background: "#fff",
+        removeContainer: true,
+      };
+
+      if (!codeRef.current) return null;
+      const canvas = await html2canvas(codeRef.current, options);
+      const dataUrl = canvas.toDataURL("image/png");
+      setImageUrl(dataUrl)
+      return dataUrl;
+    };
+    const handleDownload = async () => {
+      if (!codeRef.current) return;
+      const image = await generateImage();
+      if (image) {
+        const link = document.createElement("a");
+        link.href = image;
+        link.download = `fast-${agentCode?.code}.png`;
+        link.click();
+      }
+    };
+
+    const handleShare = async () => {
+      const image = await generateImage();
+      if (image) {
+        // Convert data URL to Blob
+        const response = await fetch(image);
+        const blob = await response.blob();
+        const file = new File([blob], `fast-${agentCode?.code}.png`, {
+          type: "image/png",
+        });
+
+        // Check if Web Share API is supported
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: `FastInsure Activation Code`,
+              text: "This code expires in 48 hours",
+              files: [file],
+            });
+            console.log("Receipt shared successfully");
+          } catch (error) {
+            if (error instanceof Error && error.name === "AbortError") {
+              console.log("User cancelled sharing");
+            } else {
+              console.log("Error sharing qr-code:", error);
+            }
+            console.log("Error sharing qr-code:", error);
+          }
+        } else {
+          await handleDownload();
+        }
+      }
+    };
     return (
       <Qr open={open} onOpenChange={handleToggleOpen}>
         <Qr.Content title="Activation Code Generated" close={handleToggleOpen}>
@@ -139,9 +130,8 @@ export const CreateAgentCode = () => {
         </Qr.Footer>
       </Qr>
     );
-  };
+  }, [agentCode, imageUrl, handleSend, open, handleToggleOpen]);
 
-  // QrViewer.displayName = "QrViewer";
 
   return (
     <BasicAction

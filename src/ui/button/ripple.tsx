@@ -18,7 +18,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   rippleColor?: string;
   duration?: string;
   start?: DualIcon;
-  end?: DualIcon;
+  end?: DualIcon | ReactElement;
   inverted?: boolean;
   loading?: boolean;
   size?: ButtSize;
@@ -112,7 +112,10 @@ export const ButtSex = ({
   }, [start, Icon, loading]);
 
   const EndOption = useCallback(() => {
-    const options = opts(<div className="w-6 flex items-center justify-center"><Icon loading={loading} icon={end!} /></div>, null);
+    const Component = typeof end === 'object' ? end : <Icon loading={loading} icon={end!} />;
+    const options = opts(<div className="w-6 flex items-center justify-center">
+      {Component}
+    </div>, null);
     return <>{options.get(!!end)}</>;
   }, [end, Icon, loading]);
 

@@ -482,6 +482,7 @@ export const Ok =
   () => {
     setLoading(false);
     onSuccess(`${args[0]} ${args[1] ?? ""}`);
+    return null
   };
 
 export const onSettle =

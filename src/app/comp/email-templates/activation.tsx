@@ -1,13 +1,15 @@
 import type { FC } from "react";
 
 interface EmailTemplateProps {
-  firstName: string;
+  code: string | undefined;
 }
 
 export const ActivationEmail: FC<EmailTemplateProps> = async ({
-  firstName,
+  code,
 }) => (
   <div>
-    <h1>Welcome, {firstName}!</h1>
+    <div className="px-3 py-1 border border-primary rounded-xl">
+      <h1 className="uppercase font-mono font-light tracking-widest">{code}</h1>
+    </div>
   </div>
 );
