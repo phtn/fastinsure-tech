@@ -5,8 +5,7 @@ export const btoa = (string: string) => {
     return Buffer.from(string).toString("base64");
   }
   return window.btoa(string);
-};
-
+}
 export const createFn = <TParams, TReturn>(
   fn: (params: TParams, axiosInstance: AxiosInstance) => Promise<TReturn>,
   axiosInstance: AxiosInstance,

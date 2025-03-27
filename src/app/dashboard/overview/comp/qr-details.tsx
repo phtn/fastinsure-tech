@@ -1,10 +1,11 @@
 import { type DualIcon } from "@/app/types";
 import {
-  BookOpenIcon,
+  ArrowDownTrayIcon,
   ChevronDoubleDownIcon,
   ChevronLeftIcon,
   ClockIcon,
-  InformationCircleIcon,
+  EnvelopeIcon,
+  PaperAirplaneIcon,
   QrCodeIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -25,13 +26,19 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
-import moment from "moment";
-import { CircleCheckBigIcon } from "lucide-react";
 import { copyFn } from "@/utils/helpers";
+
+import {format, formatDistanceToNow} from "date-fns"
+import { ButtSex } from "@/ui/button/ripple";
+import { FastField } from "@/ui/input";
+import { type EmailContext, EmailContextSchema } from "@/lib/email/schema";
 
 interface QrDetailsProps {
   key_code: string | undefined;
   expiry: number | undefined;
+  downloadFn: VoidFunction;
+  shareFn: VoidFunction;
+  sendFn: (payload: EmailContext) => Promise<void>;
 }
 export const QrDetails = (props: QrDetailsProps) => {
   const { expiry, validity } = useMemo(
@@ -43,6 +50,73 @@ export const QrDetails = (props: QrDetailsProps) => {
     (text: string) => () => copyFn({ name: text, text }),
     [],
   );
+
+  const handleSubmit = useCallback(
+    async (data: FormData) => {
+
+      const validated = EmailContextSchema.safeParse({
+        email: data.get("email") as string,
+        name: "Donald Trump",
+        type: "activation",
+        subject: "FastInsure Activation Code",
+      })
+
+      if (validated.error) {
+        console.log("Validation failed:", validated.error);
+        return;
+      }
+      const payload = {
+        type: validated.data.type,
+        name: validated.data.name,
+        email: validated.data.email,
+        subject: validated.data.subject,
+        text: "This code expires in 48 hours",
+      } as EmailContext
+
+      await props.sendFn(payload)
+
+    },
+    [props],
+  );
+
+  const renderContent = (id: string) => {
+    switch(id) {
+      case "code":
+        return <CodeContent>
+          <p>{props.key_code}</p>
+          <div>
+            <Button
+              size="sm"
+              radius="none"
+              className="h-9 rounded-e-md border-[0.33px] border-primary font-inter font-medium"
+              variant="solid"
+              color="primary"
+              onPress={handleCopyCode(props.key_code!)}
+            >
+              <span>copy</span>
+              <Square2StackIcon className="size-5 text-primary-50" />
+            </Button>
+          </div>
+        </CodeContent>;
+        case "expiry":
+        return <ExpiryContent>This activation code expires in {expiry}</ExpiryContent>;
+      case "download":
+        return <GenericContent>
+          <ButtSex onClick={props.downloadFn}>Download</ButtSex>
+          <ButtSex onClick={props.shareFn} inverted>Share</ButtSex>
+        </GenericContent>;
+      case "send":
+        return <GenericContent>
+          <form action={handleSubmit} className="flex space-x-2">
+            <FastField name="email" icon={EnvelopeIcon} placeholder="Email" className="w-[20rem] border-[0.33px] drop-shadow-sm bg-white border-gray-400/40 rounded-lg h-10" />
+            <ButtSex className="w-20" inverted type="submit">Send</ButtSex>
+          </form>
+        </GenericContent>;
+      default:
+        return null;
+    }
+  }
+
 
   return (
     <Accordion
@@ -56,7 +130,7 @@ export const QrDetails = (props: QrDetailsProps) => {
 
         base: "h-fit",
         content:
-          "bg-gradient-to-r from-primary-100/5 via-primary-100/30 to-primar-100/5",
+          "bg-gradient-to-r from-primary-100/5 via-slate-200/50 to-slate-100/5",
       }}
       showDivider={false}
     >
@@ -77,28 +151,7 @@ export const QrDetails = (props: QrDetailsProps) => {
           title={item.title}
           subtitle={item.id === "expiry" ? validity : null}
         >
-          {item.id === "code" ? (
-            <CodeContent>
-              <p>{props.key_code}</p>
-              <div>
-                <Button
-                  size="sm"
-                  radius="none"
-                  className="h-9 rounded-e-md border-[0.33px] border-primary font-inter font-medium"
-                  variant="solid"
-                  color="primary"
-                  onPress={handleCopyCode(props.key_code!)}
-                >
-                  <span>copy</span>
-                  <Square2StackIcon className="size-5 text-primary-50" />
-                </Button>
-              </div>
-            </CodeContent>
-          ) : item.id === "expiry" ? (
-            <ExpiryContent>This activation code {expiry}</ExpiryContent>
-          ) : (
-            item.content
-          )}
+          {renderContent(item.id)}
         </AccordionItem>
       ))}
     </Accordion>
@@ -106,19 +159,10 @@ export const QrDetails = (props: QrDetailsProps) => {
 };
 
 const calcExpiryAndValidity = (millis: number | undefined) => {
-  const date = Date.now() - (millis ?? 0);
-  const expiry = `expires ${moment( millis).fromNow()}`;
 
-  const validity = moment().calendar(date, {
-    sameDay: function () {
-      return moment().diff(date, "hours") > 12
-        ? "[Today] h:mm a"
-        : "[In about] h [hours]";
-    },
-    nextDay: "[Tomorrow] h:mm a", // if the date is tomorrow
-    nextWeek: "LLLL", // within the next week
-    sameElse: "MM/DD/YYYY h:mm a",
-  });
+  const expiry = formatDistanceToNow(Number(millis))
+  const validity = format(Number(millis), 'MMMM do, yyyy · h:mm a')
+
   return { validity, expiry };
 };
 
@@ -148,6 +192,14 @@ const ExpiryContent = ({ children }: PropsWithChildren) => (
   </div>
 );
 
+const GenericContent = ({ children }: PropsWithChildren) => (
+  <div className="ms-10 my-1 flex h-10 w-fit items-center">
+    <div className="flex h-9 items-center space-x-3 py-2 font-semibold">
+      {children}
+    </div>
+  </div>
+);
+
 const indicator = (icons: boolean, value?: string | number) => {
   const DoubleLeft = () => (
     <ChevronDoubleLeftIcon className="size-4 text-foreground/50" />
@@ -155,28 +207,28 @@ const indicator = (icons: boolean, value?: string | number) => {
 
   return icons
     ? ({ isOpen }: AccordionItemIndicatorProps) =>
-        isOpen ? (
-          <DoubleLeft />
-        ) : (
-          <ChevronLeftIcon className="size-4 text-foreground/80" />
-        )
+    isOpen ? (
+      <DoubleLeft />
+    ) : (
+      <ChevronLeftIcon className="size-4 text-foreground/80" />
+    )
     : ({ isOpen }: AccordionItemIndicatorProps) =>
-        isOpen ? (
-          <ChevronDoubleDownIcon className="size-4 text-foreground/50" />
-        ) : (
-          <p className="rounded-md bg-primary-100/5 px-2 py-1 text-xs tracking-wide text-primary-800 drop-shadow-sm">
-            {value}
-          </p>
-        );
+    isOpen ? (
+      <ChevronDoubleDownIcon className="size-4 text-foreground/50" />
+    ) : (
+      <p className="rounded-md bg-primary-100/5 px-2 py-1 text-xs tracking-wide text-primary-800 drop-shadow-sm">
+        {value}
+      </p>
+    );
 };
 
-const ItemContent = ({ children }: PropsWithChildren) => (
-  <div className="w-fit px-3 text-sm leading-5 text-foreground/80">
+export const ItemContent = ({ children }: PropsWithChildren) => (
+  <div className="w-fit px-3 space-y-2 text-sm leading-5 text-foreground/80">
     {children}
   </div>
 );
 
-const Strong = (props: { text: string }) => (
+export const Strong = (props: { text: string }) => (
   <span className="font-semibold text-foreground">{props.text}</span>
 );
 
@@ -190,88 +242,11 @@ interface TQrDetail {
   animateIndicator: boolean;
 }
 const detail_data: TQrDetail[] = [
-  {
-    id: "instructions",
-    title: "Instructions",
-    startContent: InformationCircleIcon,
-    indicator: indicator(true),
-    animateIndicator: false,
-    content: (
-      <ItemContent>
-        <div className="font-arc my-4 flex w-full items-center justify-center space-x-2 rounded-md bg-primary px-4 py-3 font-bold leading-none text-primary-50">
-          <p>You have successfully created an activation code!</p>
-          <CircleCheckBigIcon className="size-4 text-background" />
-        </div>
-        <div className="text-primar mb-3 flex h-10 items-center font-inter text-xs tracking-tight">
-          Need to know:
-        </div>
-        <ol className="list-inside list-decimal space-y-3">
-          <li className="pb-2">
-            <span className="whitespace-nowrap font-inst font-semibold text-primary">
-              Retrieving Activation Code Details:
-            </span>
-            <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-primary-100/50 py-4 pl-6">
-              <li>
-                Copy the <Strong text="Agent Code" /> (a unique identifier for
-                activation).
-              </li>
-              <li>
-                Activation <Strong text="Expires" /> in 48 hours.
-              </li>
-              <li>
-                The <Strong text="Activation URL" /> can be shared with the agent to start the activation process.
-              </li>
-              <li>
-                The <Strong text="QR Code" /> can be downloaded and shared with the agent.
-              </li>
-            </ul>
-          </li>
-          <li className="pb-2">
-            <span className="whitespace-nowrap font-inst font-semibold text-primary">
-              Activation Process:
-            </span>
-            <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-primary-100/50 py-4 pl-6">
-              <li>
-                The agent have to follow the link to the activation page using the provided
-                <Strong text=" URL" />
-              </li>
-              <li>
-                The agent will be prompted to enter the {" "}
-                <Strong text="6 letter Agent Code " /> for verification.
-              </li>
-              <li>
-                After the <Strong text=" code for verification" />, the agent will be redirected to FastInsure home page to create an account.
-              </li>
-              <li>
-                Agents may <Strong text=" Sign up using their email or through Google " /> to complete the activation process.
-              </li>
-              <li>
-                <Strong text="Activation Code Expires" /> within 48 hours.
-              </li>
-            </ul>
-          </li>
-          <li className="pb-2">
-            <span className="whitespace-nowrap font-inst font-semibold text-primary">
-              Monitor Activation Status:
-            </span>
-            <ul className="mt-2 list-outside list-disc space-y-1 rounded-lg bg-primary-100/50 py-4 pl-6">
-              <li>
-                <span>
-                  You can monitor and track the status of all agent activations within your
-                  dashboard. Click the QR icon from the sidebar to open the{" "}
-                  <Strong text="Agent Code Table." />
-                </span>
-              </li>
-            </ul>
-          </li>
-        </ol>
-      </ItemContent>
-    ),
-  },
+
   {
     id: "code",
     title: "Activation Code",
-    subtitle: "Valid until 2023-01-01",
+    subtitle: "QR code generated",
     startContent: QrCodeIcon,
     indicator: indicator(false),
     animateIndicator: true,
@@ -279,10 +254,10 @@ const detail_data: TQrDetail[] = [
   {
     id: "expiry",
     title: "Valid Until",
-    subtitle: "Valid until 2023-01-01",
+    subtitle: "Valid until",
     startContent: ClockIcon,
     animateIndicator: true,
-    indicator: indicator(false, "1234567890"),
+    indicator: indicator(false, 0),
     content: (
       <ItemContent>
         This is the generated code: <strong>1234567890</strong>
@@ -290,19 +265,37 @@ const detail_data: TQrDetail[] = [
     ),
   },
   {
-    id: "reference",
-    title: "References",
-    subtitle: "View previous codes",
-    startContent: BookOpenIcon,
+    id: "download",
+    title: "Download QR Code",
+    subtitle: "Download the QR code",
+    startContent: ArrowDownTrayIcon,
     indicator: indicator(true),
     animateIndicator: false,
     content: (
-      <ItemContent>
-        <span className="text-xs font-light">
-          Activation Code:{" "}
-          <strong>wo_id:890</strong>
-        </span>
-      </ItemContent>
+      <div className="space-y-3">
+        <div className="text-xs space-x-2 font-light">
+          <span>{1}</span>
+          <Strong text="Activation Code:"/>
+          <span>A code generated by the group manager.</span>
+        </div>
+      </div>
     ),
   },
+  {
+      id: "send",
+      title: "Send to Email",
+      subtitle: "Send link to email",
+      startContent: PaperAirplaneIcon,
+      indicator: indicator(true),
+      animateIndicator: false,
+      content: (
+        <ItemContent>
+          <div className="text-xs space-x-2 font-light">
+            <span>{1}</span>
+            <Strong text="Activation Code:"/>
+            <span>A code generated by the group manager.</span>
+          </div>
+        </ItemContent>
+      ),
+    },
 ];

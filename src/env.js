@@ -16,6 +16,8 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_URL: z.string().url(),
     UPSTASH_REDIS_REST_TOKEN: z.string(),
 
+    RESEND_API: z.string(),
+
   },
   client: {
     NEXT_PUBLIC_CONVEX_URL: z.string().url(), // NEXT_PUBLIC_ADC: z.string(),
@@ -59,6 +61,8 @@ export const env = createEnv({
     //UPSTASH
     UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
     UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
+    //RESEND
+    RESEND_API: process.env.RESEND_API,
     //
     NODE_ENV: process.env.NODE_ENV,
   },

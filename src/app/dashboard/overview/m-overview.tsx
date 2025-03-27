@@ -17,12 +17,11 @@ const MOverview = () => {
       }}>
         <Tab key="functions" title="Functions">
           <div className="h-full w-full px-2 space-y-4 text-foreground">
-                  <CreateAgentCode />
-                  <CreateRequest />
-                </div>
+            <CreateAgentCode />
+            <CreateRequest />
+          </div>
         </Tab>
         <Tab key="stats" title="Stats">
-
           <UpdatesComponent />
         </Tab>
       </Tabs>

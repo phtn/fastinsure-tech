@@ -1,5 +1,5 @@
 import type { ExampleValueType, ActivationType } from "./schema";
-import redis from "@/lib/redis/upstash";
+import redis from "@/lib/redis";
 
 
 const rdbExampleSet = async (data: ExampleValueType) => {

@@ -6,6 +6,7 @@ import { docaiRouter } from "./routers/docai";
 import { managerRoute } from "./routers/manager";
 import { agentRoute } from "./routers/agent";
 import { rdbRouter } from "./routers/rdb";
+import { emailRouter } from "./routers/email";
 
 export const appRouter = router({
   auth: authRouter,
@@ -15,6 +16,7 @@ export const appRouter = router({
   manager: managerRoute,
   agent: agentRoute,
   rdb: rdbRouter,
+  email: emailRouter,
 });
 
 export type AppRouter = typeof appRouter;
