@@ -9,6 +9,7 @@ import { notification_schema } from "./notifications/d";
 import { chat_schema } from "./chats/d";
 import { room_schema } from "./rooms/d";
 import { message_like_schema } from "./message_likes/d";
+import { group_schema } from "./groups/d";
 
 export default defineSchema({
   users: defineTable(user_schema)
@@ -41,6 +42,11 @@ export default defineSchema({
       "group_code",
       "phone_number",
     ]),
+
+  groups: defineTable(group_schema)
+    .index("by_group_id", ["group_id"])
+    .index("by_group_code", ["group_code"])
+    .index("by_sup_id", ["manager_id"]),
 
   address: defineTable(address_schema)
     .index("by_address_id", ["address_id", "city", "country"])

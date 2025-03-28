@@ -15,7 +15,6 @@ export const MetadataSchema = v.optional(
   v.array(v.record(v.string(), v.any())),
 );
 export type Metadata = Infer<typeof MetadataSchema>;
-
 export const user_schema = v.object({
   uid: v.string(),
   account_id: v.optional(v.string()),

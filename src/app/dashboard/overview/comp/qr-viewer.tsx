@@ -1,15 +1,15 @@
 import Link from "next/link";
 import type { PropsWithChildren, ReactNode, RefObject } from "react";
-import { Drawer } from "vaul";
+import { Drawer, type DialogProps } from "vaul";
 
-interface ComponentProps {
+interface ComponentProps  {
   open: boolean;
   onOpenChange: VoidFunction;
   children: ReactNode;
 }
-const Component = ({ children, open, onOpenChange }: ComponentProps) => {
+const Component = (props: ComponentProps & DialogProps) => {
   return (
-    <Drawer.Root open={open} onOpenChange={onOpenChange}>
+    <Drawer.Root {...props}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-foreground/10" />
         <Drawer.Content className="fixed bottom-24 left-0 right-0 z-[100] mt-28 flex h-fit flex-col rounded-t-xl bg-transparent px-[5.5rem] outline-none">
@@ -17,7 +17,24 @@ const Component = ({ children, open, onOpenChange }: ComponentProps) => {
           <Drawer.Description className="hidden">
             Shows a dialog box with QR code
           </Drawer.Description>
-          {children}
+          {props.children}
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
+  );
+};
+
+export const RightSideVaul = (props: ComponentProps & DialogProps) => {
+  return (
+    <Drawer.Root direction="right" {...props}>
+      <Drawer.Portal>
+        <Drawer.Overlay className="fixed inset-0 bg-foreground/10" />
+        <Drawer.Content className="fixed z-[100] flex h-fit">
+          <Drawer.Title className="hidden">Right Side</Drawer.Title>
+          <Drawer.Description className="hidden">
+            Shows a dialog box with QR code
+          </Drawer.Description>
+          {props.children}
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>

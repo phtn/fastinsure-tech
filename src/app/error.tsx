@@ -14,10 +14,10 @@ export default function Error({
   const MemoizedButton = useCallback(
     () => (
       <Button
-        onClick={reset}
+        onPress={reset}
         variant={"solid"}
-        color="default"
-        className="border-dyan/20 h-[36px] border-[0.33px] px-4"
+        color="primary"
+        className="border-dyan/20 text-white h-[36px] border-[0.33px] px-4"
       >
         Try again?
       </Button>

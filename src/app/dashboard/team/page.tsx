@@ -1,4 +1,3 @@
-// import { type Metadata } from "next";
 import { All } from "./all";
 
 // export const metadata: Metadata = {

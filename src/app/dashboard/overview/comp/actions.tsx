@@ -157,7 +157,7 @@ interface BasicActionProps {
   loading: boolean;
   children: ReactNode;
 }
-const BasicAction = (props: BasicActionProps) => (
+export const BasicAction = (props: BasicActionProps) => (
   <ActionCard>
     <ActionCard.Icon icon={props.icon} />
     <ActionCard.Header>
@@ -237,6 +237,8 @@ export const CreateRequest = () => {
     </ActionCard>
   );
 };
+
+
 
 export const Documentation = (props: {
   fn: VoidFunction;

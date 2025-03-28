@@ -169,7 +169,7 @@ export function FlatWindow(props: WindowProps) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className={cn(
-          "flex w-full items-center justify-center rounded-2xl",
+          "flex border-[0.33px] border-primary/60 rounded-2xl w-full items-center justify-center",
         )}
       >
         <motion.div
@@ -177,13 +177,11 @@ export function FlatWindow(props: WindowProps) {
           animate={{ opacity: 1, borderRadius: 16 }}
           className={cn(
             "w-full overflow-hidden shadow-xl",
-            "rounded-xl",
             { "shadow-xl": shadow === "xl" },
             { "shadow-lg": shadow === "lg" },
             { "shadow-md": shadow === "md" },
             { "shadow-sm": shadow === "sm" },
-            "dark:border-fade-dark/90 dark:bg-void",
-            "border-[0px] border-fade-dark/20 bg-chalk",
+            "border-0 bg-chalk",
           )}
         >
           {props.toolbar ? (
@@ -208,14 +206,10 @@ export const WindowContent = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
       "relative overflow-hidden",
-      "rounded-b-2xl",
-      "border-b-[0.33px] border-t-0",
-      "border-shadow-dark/10",
-      "dark:border-primary-200/40",
+      "border-0 border-t-0",
     )}
   >
-    <div className="absolute top-0 h-[0.5px] w-full bg-shadow-dark/40 dark:bg-primary-200/80" />
-
+    <div className="absolute top-0 h-[0.0px] w-full bg-shadow-dark/5 dark:bg-primary-200/80" />
     {children}
   </div>
 );

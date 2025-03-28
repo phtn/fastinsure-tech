@@ -11,7 +11,7 @@ export const Splash = (props: SplashProps) => {
   return (
     <div
       className={cn(
-        "relative w-full border border-macl-gray/40 overflow-hidden drop-shadow-sm rounded-2xl h-44 xl:h-64",
+        "relative w-full border border-macl-gray/40 overflow-hidden drop-shadow-sm rounded-2xl h-44 xl:h-80",
         "bg-gray-200"
       )}
     >
