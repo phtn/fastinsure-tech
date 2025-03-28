@@ -18,9 +18,7 @@ export const useRGC = () => {
     set: Dispatch<SetStateAction<T>>,
   ) => {
     xt(() => {
-      xt(() => {
-        set(action());
-      });
+      set(action());
     });
   };
 
@@ -30,6 +28,7 @@ export const useRGC = () => {
 
       geolocation.getCurrentPosition(
         (position) => {
+          console.log(position.coords)
           return position.coords as Coordinates;
         },
         (error) => {

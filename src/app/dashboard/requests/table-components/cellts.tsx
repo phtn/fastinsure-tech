@@ -1,6 +1,5 @@
 import { ButtSqx } from "@/ui/button/button";
 import { FlexRow } from "@/ui/flex";
-import { DocumentTextIcon } from "@heroicons/react/24/outline";
 import { cn, User } from "@nextui-org/react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
@@ -30,7 +29,7 @@ export const RequestIdCell = memo((props: { id: string }) => {
       variant="god"
         onClick={handleRoute}
         iconStyle="group-hover/btn:text-secondary text-primary stroke-1"
-        icon={DocumentTextIcon}
+        icon={"document-outline"}
         size="md"
       />
     </div>

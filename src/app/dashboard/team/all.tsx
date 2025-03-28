@@ -1,34 +1,26 @@
 "use client";
 
-import { ButtSqx } from "@/ui/button/index";
-import { Separator } from "@/ui/separator";
-import {
-  ChatBubbleLeftRightIcon,
-  DevicePhoneMobileIcon,
-} from "@heroicons/react/24/outline";
-import {
-  BoltIcon,
-  CursorArrowRaysIcon,
-  EllipsisHorizontalIcon,
-} from "@heroicons/react/24/solid";
-import { Link, User } from "@nextui-org/react";
-import { FileSymlink } from "lucide-react";
-import { useTeam } from "./useTeam";
-import { LoaderMd } from "@/ui/loader";
-import { type SelectUser } from "@convex/users/d";
-import type { ClassName, DualIcon } from "@/app/types";
+import type { ClassName } from "@/app/types";
+import { Icon } from "@/lib/icon";
+import { type IconName } from "@/lib/icon/types";
 import { cn } from "@/lib/utils";
-import {
-  type FC,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { Err, opts } from "@/utils/helpers";
+import { ButtSqx } from "@/ui/button/index";
 import { HyperList } from "@/ui/list";
+import { LoaderMd } from "@/ui/loader";
+import { Separator } from "@/ui/separator";
+import { Err, opts } from "@/utils/helpers";
+import { type SelectUser } from "@convex/users/d";
+import { Link, User } from "@nextui-org/react";
+import {
+    type FC,
+    type ReactNode,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 import { UserConfig } from "./components";
+import { useTeam } from "./useTeam";
 
 export const All = () => {
   const { vxmembers, userLogs, getUserLogs, pending } = useTeam();
@@ -64,17 +56,11 @@ export const All = () => {
         <div className="h-28 w-full rounded-2xl bg-primary-50 drop-shadow-sm">
           <div className="flex h-1/2 items-center justify-between px-3">
             <UserCard {...props} />
-            {/* <TooltipNode
-              title="User Settings"
-              description="butt-fuck"
-              id={props.uid!}
-            > */}
             <ButtSqx
               id={props.uid}
               onClick={createUserWindow(props.uid)}
-              icon={EllipsisHorizontalIcon}
+              icon={"more-horizontal"}
             />
-            {/* </TooltipNode> */}
           </div>
           <div className="flex justify-center">
             <Separator
@@ -83,10 +69,7 @@ export const All = () => {
             />
           </div>
           <div className="flex h-1/2 w-full items-center justify-start space-x-4 px-6">
-            <ButtSqx variant="goddess" icon={ChatBubbleLeftRightIcon} />
-            <ButtSqx variant="goddess" icon={DevicePhoneMobileIcon} />
-            <ButtSqx variant="goddess" icon={FileSymlink} />
-            <ButtSqx variant="goddess" icon={CursorArrowRaysIcon} />
+            <ButtSqx variant="goddess" icon={"chat-outline"} />
           </div>
         </div>
       );
@@ -104,7 +87,7 @@ export const All = () => {
 
   return (
     <div className="w-full">
-      <div className="grid w-full grid-cols-1 gap-6 px-6 md:grid-cols-3">
+      <div className="grid w-full grid-cols-1 gap-4 px-6 md:grid-cols-2 lg:grid-cols-3">
         <ListContainer pending={pending}>
           <MostActiveList />
         </ListContainer>
@@ -124,14 +107,14 @@ export const All = () => {
 
 interface ListTitleProps {
   title: string;
-  icon: DualIcon;
+  icon: IconName;
   iconColor?: ClassName;
 }
 
 const ListTitle = (props: ListTitleProps) => (
   <div className="flex h-10 items-center space-x-2 text-sm font-bold capitalize tracking-tight">
     <div className="rounded-full bg-void/80 p-1">
-      <props.icon className={cn("size-3", props.iconColor)} />
+      <Icon name={props.icon} className={cn("size-4", props.iconColor)} />
     </div>
     <p>{props.title}</p>
   </div>
@@ -172,7 +155,7 @@ const ListContent = <T extends SelectUser>({
 }: ListContentProps<T>) => {
   return (
     <section className="space-y-3">
-      <ListTitle title="most active" icon={BoltIcon} iconColor="text-warning" />
+      <ListTitle title="most active" icon="energy-fill" iconColor="text-warning" />
       <HyperList
         data={data}
         component={comp}

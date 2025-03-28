@@ -1,19 +1,14 @@
+import { ButtSqx } from "@/ui/button/button";
 import { ButtSex } from "@/ui/button/ripple";
 import { FlexRow } from "@/ui/flex";
 import { LoaderMd } from "@/ui/loader";
 import { SideVaul } from "@/ui/sidevaul";
 import { FlatWindow } from "@/ui/window";
-import { Image } from "@nextui-org/react";
-import { UserCircle } from "lucide-react";
-import { use, useCallback } from "react";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { AccountCtx } from "./ctx";
-import { ButtSqx } from "@/ui/button/button";
-import {
-  MagnifyingGlassMinusIcon,
-  MagnifyingGlassPlusIcon,
-} from "@heroicons/react/24/outline";
 import { opts } from "@/utils/helpers";
+import { Image } from "@nextui-org/react";
+import { use, useCallback } from "react";
+import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
+import { AccountCtx } from "./ctx";
 
 interface UserPfpProps {
   title: string;
@@ -30,7 +25,7 @@ export const PfpEditor = ({ title }: UserPfpProps) => {
   return (
     <SideVaul open={open} onOpenChange={toggleEditor} direction="right">
       <FlatWindow
-        icon={UserCircle}
+        icon={"user-circle"}
         title={title}
         variant="god"
         closeFn={toggleEditor}
@@ -98,12 +93,12 @@ const TransformView = () => {
               <div className="absolute bottom-2 left-1/2 z-40 flex space-x-2 -translate-x-1/2 transform">
                 <ButtSqx
                   onClick={handleZoom(zoomIn)}
-                  icon={MagnifyingGlassPlusIcon}
+                  icon="zoom-in"
                 />
 
                 <ButtSqx
                   onClick={handleZoom(zoomOut)}
-                  icon={MagnifyingGlassMinusIcon}
+                  icon="zoom-out"
                 />
               </div>
             )}

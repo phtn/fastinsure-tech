@@ -8,9 +8,7 @@ import { motion } from "framer-motion";
 import { HyperText } from "@/ui/hypertext";
 import { Button } from "@nextui-org/react";
 import { useAuthCtx } from "@/app/ctx/auth/auth";
-
 import { BigActionCard } from "@/ui/action-card";
-import { CommandLineIcon, FireIcon } from "@heroicons/react/24/solid";
 import { Flag } from "./comp/status-flag";
 import { useVex } from "@/app/ctx/convex";
 import { useCallback } from "react";
@@ -75,7 +73,7 @@ export const DevOverview = () => {
                 <GenericAction
                   loading={false}
                   fn={getvx}
-                  icon={CommandLineIcon}
+                  icon="information-circle"
                   title={"Get Button"}
                   subtext="𝒇(𝒙) ⟹ get vxuser"
                   label="run"
@@ -92,7 +90,7 @@ export const DevOverview = () => {
             </HStack.XsCol>
             <HStack.SmCol>
               <BigActionCard>
-                <BigActionCard.Icon icon={FireIcon} />
+                <BigActionCard.IconComponent icon={"information-circle"} />
                 <div>
                   <BigActionCard.Header>
                     <BigActionCard.Title>Updates</BigActionCard.Title>

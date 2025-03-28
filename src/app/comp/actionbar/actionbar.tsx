@@ -3,37 +3,30 @@
 import { Separator } from "@/ui/separator";
 import { Dock, DockIcon } from "@/ui/dock";
 import { useEffect, useState, useCallback } from "react";
-
 import { ThemeSwitch } from "@ctx/theme";
-import {
-  BellIcon,
-  ChatBubbleBottomCenterIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline";
 import { useServer } from "@/lib/hooks/useServer";
 
-import type { DualIcon } from "@/app/types";
 import { getLivez } from "@/trpc/secure/callers/server";
-import { type LivezResponse } from "@/server/secure/resource";
 import { Err, opts } from "@/utils/helpers";
 import { DevCommands } from "@/debug/fn";
-import { ServerHealth, ServerIcon } from "./server-status";
-import { ButtSqx } from "@/ui/button/button";
+import { ServerHealth } from "./server-status";
 import { useRouter } from "next/navigation";
+import { type IconName } from "@/lib/icon/types";
+import { Icon } from "@/lib/icon";
 
 const DATA = {
-  navbar: [{ href: "/dashboard/account", icon: UserIcon, label: "Profile" }],
+  navbar: [{ href: "/dashboard/account", icon: "user-circle", label: "Profile" }],
   quicklinks: {
     alerts: {
       Chat: {
         name: "Chat",
         url: "#",
-        icon: ChatBubbleBottomCenterIcon,
+        icon: "chat-outline",
       },
       Notifications: {
         name: "Notifications",
         url: "#",
-        icon: BellIcon,
+        icon: "bell",
       },
     },
   },
@@ -41,7 +34,7 @@ const DATA = {
     server: {
       name: "Server Status",
       url: "#",
-      icon: ServerIcon,
+      icon: "server",
     },
   },
 };
@@ -74,7 +67,7 @@ export function ActionBar() {
 
   const ServerHealthChild = useCallback(() => {
     const options = opts(
-      <ServerButton livez={livez} />,
+      <ServerButton icon="settings-01" />,
       <p className="font-jet text-[13px] font-medium text-icon">
         {elapsed}
         <span className="text-[10px] font-thin">s</span>
@@ -106,7 +99,7 @@ export function ActionBar() {
             prefetch={prefetchRoute(item.href)}
             onClick={handleIconClick(item.href)}
           >
-            <Icon href={item.href} icon={item.icon} />
+            <Icon name="arrow-left-01" href={item.href} />
           </DockIcon>
         ))}
         <Separator
@@ -115,7 +108,7 @@ export function ActionBar() {
         />
         {Object.entries(DATA.quicklinks.alerts).map(([name, item]) => (
           <DockIcon key={name}>
-            <Icon href={item.url} icon={item.icon} />
+            <Icon href={item.url} name="arrow-right-02" />
           </DockIcon>
         ))}
         <Separator
@@ -138,15 +131,13 @@ export function ActionBar() {
 
 interface DockIcon {
   href: string;
-  icon: DualIcon;
+  icon: IconName;
 }
-const Icon = ({ icon }: DockIcon) => <ButtSqx size="md" icon={icon} />;
 
 interface ActionButton {
-  livez: LivezResponse | null;
+  icon: IconName;
 }
 
 function ServerButton(props: ActionButton) {
-  const { server } = DATA.system;
-  return <server.icon className="size-5" livez={props?.livez} />;
+  return <Icon name={props.icon} className="size-5" />;
 }

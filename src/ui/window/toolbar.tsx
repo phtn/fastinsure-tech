@@ -1,14 +1,9 @@
+import { Icon } from "@/lib/icon";
+import { type IconName } from "@/lib/icon/types";
 import { cn } from "@/lib/utils";
 import { type ChangeEvent, memo, type ReactNode } from "react";
 import { type WindowVariant } from ".";
-import {
-  ArrowRightIcon,
-  MagnifyingGlassIcon,
-  WindowIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
 import { ButtSqx } from "../button/index";
-import { type DualIcon } from "@/app/types";
 import { type ButtIconProps } from "../button/types";
 
 export interface StaticToolbarProps {
@@ -17,7 +12,7 @@ export interface StaticToolbarProps {
   title?: ReactNode;
   variant?: WindowVariant;
   loading?: boolean;
-  icon?: DualIcon;
+  icon?: IconName;
   action?: VoidFunction;
 }
 
@@ -27,7 +22,7 @@ export interface ToolbarProps<T> {
   title?: ReactNode;
   variant?: WindowVariant;
   loading?: boolean;
-  icon?: DualIcon;
+  icon?: IconName;
   action?: VoidFunction;
   value?: string;
   size?: "sm" | "md" | "lg" | "xl";
@@ -39,7 +34,7 @@ const ToolbarComponent = <T,>({
   title,
   variant = "demigod",
   loading = false,
-  icon = WindowIcon,
+  icon = "search",
   action = () => null,
   size = "sm",
 }: ToolbarProps<T>) => {
@@ -68,7 +63,7 @@ const ToolbarComponent = <T,>({
         {children}
       </section>
 
-      <CloseButton onClick={closeFn} icon={XMarkIcon} />
+      <CloseButton onClick={closeFn} icon={"close"} iconStyle={cn({"text-chalk": variant === "void"})} shadow={cn({"text-icon/25": variant === "void"})} />
     </div>
   );
 };
@@ -110,7 +105,7 @@ export const ToolbarSearch = (props: ToolbarSearchProps) => {
         onChange={searchFn}
         autoFocus
       />
-      <MagnifyingGlassIcon className="dark:text-dark-icon absolute left-2 top-2 z-[30] size-3.5 stroke-[3px] text-icon" />
+      <Icon name="search" className="dark:text-dark-icon absolute left-2 top-2 z-[30] size-3.5 stroke-[3px] text-icon" />
     </div>
   );
 };
@@ -123,7 +118,7 @@ export const StaticToolbar = ({
   title,
   variant = "demigod",
   loading = false,
-  icon = WindowIcon,
+  icon = "search",
   action = () => null,
 }: StaticToolbarProps) => {
   return (
@@ -146,7 +141,7 @@ export const StaticToolbar = ({
         {children}
       </section>
 
-      <CloseButton onClick={closeFn} icon={ArrowRightIcon} />
+      <CloseButton onClick={closeFn} icon="arrow-right-02" />
     </div>
   );
 };

@@ -15,7 +15,7 @@ export const SuperOverview = () => {
       <OverviewHeader email={user?.email} vxuser={vxuser} />
       <Tabs size="md" variant="underlined" classNames={{
         cursor: "bg-macl-blue",
-        base: "mt-10"
+        base: "mt-6"
       }}>
         <Tab key="functions" title="Functions">
           <div className="h-full w-full px-2 space-y-4 text-foreground">

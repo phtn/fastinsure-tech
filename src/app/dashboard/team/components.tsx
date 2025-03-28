@@ -1,4 +1,4 @@
-import type { DualIcon, TabItem } from "@/app/types";
+import type { TabItem } from "@/app/types";
 import { cn } from "@/lib/utils";
 import { ButtSqx } from "@/ui/button/button";
 import { ButtSex } from "@/ui/button/ripple";
@@ -7,24 +7,10 @@ import { HyperList } from "@/ui/list";
 import { LoaderSm } from "@/ui/loader";
 import { type HyperSelectOption } from "@/ui/select";
 import { SideVaul } from "@/ui/sidevaul";
-import { Window } from "@/ui/window";
+import { FlatWindow } from "@/ui/window";
 import { SpToolbar, type ToolbarProps } from "@/ui/window/toolbar";
 import { type SelectLog } from "@convex/logs/d";
 import type { SelectUser, UserRole } from "@convex/users/d";
-import {
-  ArrowDownRightIcon,
-  ArrowTrendingUpIcon,
-  ChevronUpDownIcon,
-  CogIcon,
-  InboxIcon,
-  KeyIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import {
-  ChatBubbleLeftRightIcon,
-  ClockIcon,
-  MapPinIcon,
-} from "@heroicons/react/24/solid";
 import {
   Image,
   Select,
@@ -33,7 +19,6 @@ import {
   Tab,
   Tabs,
 } from "@nextui-org/react";
-import { PercentIcon, UserCog2 } from "lucide-react";
 import moment from "moment";
 import {
   type ReactElement,
@@ -45,6 +30,8 @@ import {
 } from "react";
 import { TeamContext, TeamCtx } from "./ctx";
 import { opts } from "@/utils/helpers";
+import { type IconName } from "@/lib/icon/types";
+import { Icon } from "@/lib/icon";
 
 interface UserConfigProps {
   open: boolean;
@@ -65,7 +52,7 @@ export const UserConfig = ({
       <ToolbarComponent
         title={vx?.nickname ?? vx?.email}
         closeFn={toggleFn}
-        icon={UserCog2}
+        icon="settings-01"
         v={vx}
       />
     );
@@ -86,16 +73,18 @@ export const UserConfig = ({
 
   return (
     <SideVaul open={open} onOpenChange={toggleFn} direction="right">
-      <Window title={title} variant="god" toolbar={ConfigToolbar}>
+      <FlatWindow title={title} variant="god" toolbar={ConfigToolbar}>
+        <div>
         <UserConfigContent />
-        <SideVaul.Footer>
+        {/* <SideVaul.Footer>
           <FlexRow className="w-full items-center justify-end">
             <ButtSex size="sm" end={ChevronUpDownIcon}>
               <span>Advanced Settings</span>
             </ButtSex>
           </FlexRow>
-        </SideVaul.Footer>
-      </Window>
+        </SideVaul.Footer> */}
+        </div>
+      </FlatWindow>
     </SideVaul>
   );
 };
@@ -121,38 +110,38 @@ const ToolbarComponent = ({ closeFn, v }: ToolbarProps<SelectUser>) => {
           </div>
         </FlexRow>
         <div className="size-[3rem]">
-          <ButtSqx icon={XMarkIcon} onClick={closeFn}></ButtSqx>
+          <ButtSqx icon="close" onClick={closeFn}></ButtSqx>
         </div>
       </FlexRow>
       <FlexRow className="h-10 w-full items-end px-4">
-        <ButtSqx size="lg" variant="god" icon={ChatBubbleLeftRightIcon} />
+        <ButtSqx size="lg" variant="god" icon="chat-outline" />
       </FlexRow>
     </SpToolbar>
   );
 };
 
 interface TabIconProps {
-  icon: DualIcon;
+  icon: IconName;
 }
 
 const Body = () => {
-  const tabs: (TabItem & TabIconProps)[] = useMemo(
+  const tabs = useMemo(
     () => [
       {
         id: 0,
         value: "setttings",
         label: "User Settings",
         content: <Settings />,
-        icon: CogIcon,
+        icon: "settings-01",
       },
       {
         id: 1,
         value: "activity",
         label: "Activity Logs",
         content: <ActivityLogs />,
-        icon: ArrowTrendingUpIcon,
+        icon: "circle-arrow-swap",
       },
-    ],
+    ] as (TabItem & TabIconProps)[],
     [],
   );
 
@@ -186,9 +175,9 @@ const Body = () => {
   );
 };
 
-const TabTitle = (props: { label: string; icon: DualIcon }) => (
+const TabTitle = (props: { label: string; icon: IconName }) => (
   <FlexRow className="space-x-2">
-    <props.icon className="size-4" />
+    <Icon name={props.icon} className="size-4" />
     <p className="font-inst text-xs font-medium tracking-tight">
       {props.label}
     </p>
@@ -213,7 +202,7 @@ const ActivityLogs = () => {
 
 const EmptyList = () => (
   <FlexRow className="h-32 items-center justify-center text-xs opacity-60">
-    <InboxIcon className="size-4 text-steel" />
+    <Icon name="inbox-outline" className="size-4 text-steel" />
     <span>No record found.</span>
   </FlexRow>
 );
@@ -224,10 +213,10 @@ const LogItem = (props: SelectLog) => {
       <section
         className={cn(
           "size-18 flex items-center justify-center rounded-lg bg-secondary-100/60 p-1.5",
-          { "bg-warning-50/50": props?.type === "logout" },
+          { "bg-warning-50/30": props?.type === "logout" },
         )}
       >
-        <ArrowDownRightIcon
+        <Icon name="arrow-down-right"
           className={cn(
             "relative size-6 stroke-2 text-secondary drop-shadow-md",
             {
@@ -237,18 +226,20 @@ const LogItem = (props: SelectLog) => {
         />
       </section>
       <div className="flex-1 items-center space-y-1">
-        <p className="text-xs font-medium uppercase leading-none">
-          <span className="font-jet">{props.type}</span>
+        <div className="flex space-x-4 items-center">
+        <p className="text-xs font-inst font-semibold text-primary/80 uppercase leading-none">
+          <span>{props.type}</span>
         </p>
-        <div className="flex items-center space-x-4 font-inst text-xs tracking-tight text-void/80">
-          <FlexRow className="w-fit items-center space-x-1">
-            <ClockIcon className="size-3.5 opacity-50" />
+        </div>
+        <div className="flex items-end h-[18px] space-x-4 font-inst text-xs tracking-tight text-void/80">
+          <div className="flex w-fit h-fit items-center space-x-1">
+            <Icon name="clock" className="size-3 opacity-80" />
             <span>{moment(Number(props.created_at)).fromNow()}</span>
-          </FlexRow>
-          <FlexRow className="w-fit items-center space-x-1">
-            <MapPinIcon className="size-3.5 opacity-50" />
+          </div>
+          <div className="flex w-fit h-fit items-center space-x-1">
+            <Icon name="map-marker-fill" className="size-3 opacity-50" />
             <span>Makati</span>
-          </FlexRow>
+          </div>
         </div>
       </div>
     </FlexRow>
@@ -275,7 +266,7 @@ const Settings = () => {
   //   [],
   // );
 
-  const settings_data: UserSetting[] = useMemo(
+  const settings_data = useMemo(
     () => [
       {
         title: "User Access Roles",
@@ -288,7 +279,7 @@ const Settings = () => {
         newValue: roleSelected,
         loading,
         isDone,
-        icon: KeyIcon,
+        icon: "key-outline",
       },
       {
         title: "Commission Rate",
@@ -301,7 +292,7 @@ const Settings = () => {
         newValue: isDone ? commissionPct : currentComm,
         loading,
         isDone,
-        icon: PercentIcon,
+        icon: "percentage",
       },
       // {
       //   title: "Group Assignment",
@@ -323,7 +314,7 @@ const Settings = () => {
       //   isDone: false,
       //   icon: PercentIcon,
       // },
-    ],
+    ] as UserSetting[],
     [
       // SettingFnComponent,
       currentRole,
@@ -343,6 +334,7 @@ const Settings = () => {
       data={settings_data}
       itemStyle="rounded-lg"
       component={SettingsItem}
+      disableAnimation={true}
       container="px-2 pt-8 space-y-12 pb-20 bg-steel/15 h-[60vh] w-full overflow-y-scroll"
     />
   );
@@ -358,7 +350,7 @@ interface UserSetting {
   isModified: boolean;
   loading: boolean;
   isDone: boolean;
-  icon: DualIcon;
+  icon: IconName;
 }
 const SettingsItem = (props: UserSetting) => {
   const { title, icon, isModified, isDone, loading, value, newValue, saveFn } =

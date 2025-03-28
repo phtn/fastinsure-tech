@@ -8,11 +8,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/ui/dropdown";
-import { RepeatIcon, Settings2Icon } from "lucide-react";
+// import { RepeatIcon } from "lucide-react";
 import { BeachCheckItem } from "./styles";
 import { cn } from "@/lib/utils";
 import { ButtSqx } from "@/ui/button/index";
-import { ClockIcon } from "@heroicons/react/24/outline";
+import { Icon } from "@/lib/icon";
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
@@ -29,7 +29,7 @@ export function DataTableViewOptions<TData>({
     <div className="flex h-9 items-center space-x-2">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <ButtSqx icon={Settings2Icon} size="md" onClick={() => null} />
+          <ButtSqx icon={"settings-01"} size="md" onClick={() => null} />
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="start"
@@ -37,7 +37,7 @@ export function DataTableViewOptions<TData>({
           className="z-[250] mr-8 mt-8"
         >
           <DropdownMenuLabel className="flex h-[45px] items-center space-x-2 px-4">
-            <RepeatIcon className="size-4 stroke-[2.5px] text-cyan-50/50 -rotate-45" />
+            <Icon name="refresh-circle" className="size-4 stroke-[2.5px] text-cyan-50/50 -rotate-45" />
             <p className="tracking-tighter text-cyan-300/90">Toggle Columns</p>
           </DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-opus/20 m-0 h-[0.33px]" />
@@ -70,7 +70,7 @@ export function DataTableViewOptions<TData>({
             toolbarActions ? "" : "hidden",
           )}
           onClick={toolbarActions?.[1]}
-          icon={ClockIcon}
+          icon={"clock"}
         />
       )}
     </div>

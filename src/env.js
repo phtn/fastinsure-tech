@@ -17,6 +17,7 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_TOKEN: z.string(),
 
     RESEND_API: z.string(),
+    MAPS_API: z.string(),
 
   },
   client: {
@@ -63,6 +64,9 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     //RESEND
     RESEND_API: process.env.RESEND_API,
+    //MAPS
+    MAPS_API: process.env.MAPS_API,
+
     //
     NODE_ENV: process.env.NODE_ENV,
   },

@@ -9,18 +9,25 @@ import { HyperList } from "@/ui/list";
 import { SideVaul } from "@/ui/sidevaul";
 import { FlatWindow } from "@/ui/window";
 import { SpToolbar, type StaticToolbarProps, type ToolbarProps } from "@/ui/window/toolbar";
-import { BuildingOfficeIcon, EnvelopeIcon, MapIcon, MapPinIcon, PhoneIcon, PuzzlePieceIcon, UserCircleIcon, UsersIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { BuildingOfficeIcon, EnvelopeIcon, MapIcon, MapPinIcon, PhoneIcon, PuzzlePieceIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { BuildingOffice2Icon, MapPinIcon as MapPin } from "@heroicons/react/24/solid";
 import { Image } from "@nextui-org/react";
-import { UserCog2 } from "lucide-react";
 import { type ChangeEvent, type FC, type FocusEvent, useActionState, useCallback, useMemo } from "react";
 import { create } from "zustand";
 import { useGroup } from "../../hooks/useGroup";
 import { BasicAction } from "./actions";
 import { ButtSex } from "@/ui/button/ripple";
 import { z } from "zod";
+import { Icon } from "@/lib/icon";
+import { useMutation } from "convex/react";
+import { api } from "@vex/api";
+import { type InsertGroup, type SelectGroup } from "@convex/groups/d";
+import { useAuthCtx } from "@/app/ctx/auth/auth";
+import { Err, guid } from "@/utils/helpers";
+import { onSuccess } from "@/app/ctx/toasts";
 
 export const CreateGroup = () => {
+  const {user} = useAuthCtx()
   const { open, toggle } = useGroup();
   const handleCreate = useCallback(() => {
     if (!open) {
@@ -29,12 +36,12 @@ export const CreateGroup = () => {
   }, [toggle, open]);
 
   const {
-    groupName,
-    groupCode,
-    groupLogoUrl,
-    groupManagerName,
-    groupManagerEmail,
-    groupManagerPhone,
+    group_name,
+    group_code,
+    group_logo_url,
+    manager_name,
+    manager_email,
+    manager_phone,
     groupFields,
     location,
     address,
@@ -51,18 +58,18 @@ export const CreateGroup = () => {
   const Toolbar = useCallback(() => {
     return (
       <ToolbarComponent
-        title={groupName}
+        title={group_name}
         closeFn={toggle}
-        icon={UserCog2}
+        icon="settings-01"
         variant="goddess"
-        v={{ groupManagerName, groupManagerEmail, groupManagerPhone, groupLogoUrl, location, address }}
+        v={{ manager_name, manager_email, manager_phone, group_logo_url, location, address }}
       />
     );
-  }, [toggle, groupName, groupManagerName, groupManagerEmail, groupManagerPhone, groupLogoUrl, location, address]);
+  }, [toggle, group_name, manager_name, manager_email, manager_phone, group_logo_url, location, address]);
 
   const onChangeFn = useCallback((setFn: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setFn(e.target.name === "groupCode" ? String(e.target.value).toUpperCase() : e.target.value);
+    setFn(e.target.name === "group_code" ? String(e.target.value).toUpperCase() : e.target.value);
   }, []);
 
   const onBlur = useCallback(() => (e: FocusEvent<HTMLInputElement>) => {
@@ -78,56 +85,56 @@ export const CreateGroup = () => {
 
   const group_fields: GroupFields[] = useMemo(() => [
     {
-      name: "groupName",
+      name: "group_name",
       label: "Group Name",
       required: true,
       description: "Name of the Group, Branch, or Office.",
       placeholder: "Group name",
       icon: BuildingOfficeIcon,
-      defaultValue: groupName,
+      defaultValue: group_name,
       onChange: onChangeFn(setGroupName),
       onBlur
     },
     {
-      name: "groupCode",
+      name: "group_code",
       label: "Group Code",
       required: true,
       description: "Code identifier for the group.",
       placeholder: "Group code",
       icon: PuzzlePieceIcon,
-      defaultValue: groupCode,
+      defaultValue: group_code,
       onChange: onChangeFn(setGroupCode),
       onBlur
     },
     {
-      name: "groupManagerName",
+      name: "manager_name",
       label: "Manager's Name",
       required: true,
       description: "Group Manager's Name.",
       placeholder: "Manager's Name",
       icon: UserCircleIcon,
-      defaultValue: groupManagerName,
+      defaultValue: manager_name,
       onChange: onChangeFn(setGroupManagerName),
       onBlur
     },
     {
-      name: "groupManagerEmail",
+      name: "manager_email",
       label: "Manager's Email",
       required: true,
       description: "Group Manager's Email.",
       placeholder: "Manager's Email",
       icon: EnvelopeIcon,
-      defaultValue: groupManagerEmail,
+      defaultValue: manager_email,
       onChange: onChangeFn(setGroupManagerEmail),
       onBlur
     },
     {
-      name: "groupManagerPhone",
+      name: "manager_phone",
       label: "Manager's Phone",
       description: "Group Manager's Phone.",
       placeholder: "Manager's Phone",
       icon: PhoneIcon,
-      defaultValue: groupManagerPhone,
+      defaultValue: manager_phone,
       onChange: onChangeFn(setGroupManagerPhone),
       onBlur
     },
@@ -153,35 +160,36 @@ export const CreateGroup = () => {
       onBlur
     },
     {
-      name: "groupLogoUrl",
+      name: "group_logoUrl",
       label: "Group Logo",
       description: "Group's office address.",
       placeholder: "Logo",
       icon: MapIcon,
       type: "file",
       required: false,
-      defaultValue: groupLogoUrl,
+      defaultValue: group_logo_url,
       onChange: onChangeFn(setGroupLogoUrl),
       onBlur
     },
-  ], [groupName, groupCode, groupLogoUrl, onChangeFn, setGroupName, setGroupCode, setGroupLogoUrl, onBlur, setGroupManagerPhone, setLocation, setAddress, address, groupManagerPhone, groupManagerEmail, groupManagerName, location, setGroupManagerName, setGroupManagerEmail])
+  ], [group_name, group_code, group_logo_url, onChangeFn, setGroupName, setGroupCode, setGroupLogoUrl, onBlur, setGroupManagerPhone, setLocation, setAddress, address, manager_phone, manager_email, manager_name, location, setGroupManagerName, setGroupManagerEmail])
 
 
   return (
     <BasicAction
       title="Create New Group"
       subtext="New Group / Branch"
-      icon={UsersIcon}
+      icon="group"
       fn={handleCreate}
       label="create"
       loading={false}
     >
-      <NewGroupWindow open={open} toggle={toggle} toolbar={Toolbar} data={group_fields} initialState={groupFields} />
+      <NewGroupWindow userId={user?.uid} open={open} toggle={toggle} toolbar={Toolbar} data={group_fields} initialState={groupFields} />
     </BasicAction>
   );
 };
 
 interface NewGroupWindowProps {
+  userId: string | undefined;
   open: boolean;
   toggle: () => void;
   toolbar: FC<StaticToolbarProps>;
@@ -189,17 +197,31 @@ interface NewGroupWindowProps {
   initialState: Partial<GroupField>
 }
 
-const NewGroupWindow = ({ open, toggle, data, toolbar, initialState }: NewGroupWindowProps) => {
-  const handleCreateGroup = useCallback((initialState: Partial<GroupField | null>, fd: FormData) => {
+const NewGroupWindow = ({ userId, open, toggle, data, toolbar, initialState }: NewGroupWindowProps) => {
+  const create = useMutation(api.groups.create.default);
+  const createGroup = useCallback(async (params: InsertGroup) => {
+    if (!userId) {
+      console.error("Reauthentication required.");
+      return null;
+    }
+    await create(params).then(() => {
+      onSuccess("Group created successfully!")
+      localStorage.removeItem("fastinsure--group-fields");
+      toggle()
+    });
+
+  }, [userId, create, toggle]);
+
+  const handleCreateGroup = useCallback((initialState: Partial<SelectGroup | null>, fd: FormData) => {
     try {
       // Create a properly typed object from FormData
-      const formData: Partial<GroupField> = {
-        groupName: fd.get("groupName") as string,
-        groupCode: fd.get("groupCode") as string,
-        // groupLogoUrl: fd.get("groupLogoUrl") as string,
-        groupManagerName: fd.get("groupManagerName") as string,
-        groupManagerEmail: fd.get("groupManagerEmail") as string,
-        groupManagerPhone: fd.get("groupManagerPhone") as string,
+      const formData: Partial<SelectGroup> = {
+        group_name: fd.get("group_name") as string,
+        group_code: fd.get("group_code") as string,
+        // group_logo_url: fd.get("group_logoUrl") as string,
+        manager_name: fd.get("manager_name") as string,
+        manager_email: fd.get("manager_email") as string,
+        manager_phone: fd.get("manager_phone") as string,
         location: fd.get("groupLocation") as string,
         address: fd.get("groupAddress") as string,
       };
@@ -212,18 +234,24 @@ const NewGroupWindow = ({ open, toggle, data, toolbar, initialState }: NewGroupW
       }
 
       // Store validated data in localStorage
-      // localStorage.setItem("fastinsure--group-fields", JSON.stringify(validation.data));
+      //
+      if (!userId) {
+        console.error("User ID is missing");
+        return null;
+      }
 
-      // Close drawer on success
+      createGroup({id: userId, data: {...validation.data, group_id: guid()}}).catch(Err)
+
+
       // toggle();
-      console.table(validation.data);
+      // console.table(validation.data);
       return validation.data
 
     } catch (error) {
       console.error(error instanceof Error ? error.message : 'Failed to create group');
       return null
     }
-  }, []);
+  }, [createGroup, userId]);
 
   const [, action, pending] = useActionState(handleCreateGroup, initialState);
 
@@ -242,8 +270,8 @@ const NewGroupWindow = ({ open, toggle, data, toolbar, initialState }: NewGroupW
         <SideVaul.Footer variant="goddess">
           <div className="flex w-full justify-end space-x-1.5">
             <ButtSex onClick={toggle}>Cancel</ButtSex>
-            <ButtSex type="submit" inverted disabled={pending}>
-              {pending ? 'Creating...' : 'Create Group'}
+            <ButtSex type="submit" inverted disabled={pending} className="w-fit">
+              {pending ? 'Creating...' : <div className="flex space-x-2 items-center"><span>Create Group</span><Icon name="add-circle-fill" className="size-4" /></div>}
             </ButtSex>
           </div>
         </SideVaul.Footer>
@@ -266,33 +294,33 @@ const GroupFieldItem = ({ name, defaultValue, onChange, onBlur, label, descripti
     <div className="space-y-1">
       <div className="text-sm font-medium tracking-tight ps-3">{label} <span className="text-macl-red text-lg ps-1">{required && "*"}</span></div>
       <div className="text-xs ps-3 opacity-60">{description}</div>
-      <FastField icon={icon} name={name} defaultValue={defaultValue} onChange={onChange} onBlur={onBlur} required={required} placeholder={placeholder} className={cn("border-b-[0.33px] border-gray-400/60", { "uppercase": name === "groupCode" }, className)} />
+      <FastField icon={icon} name={name} defaultValue={defaultValue} onChange={onChange} onBlur={onBlur} required={required} placeholder={placeholder} className={cn("border-b-[0.33px] border-gray-400/60", { "uppercase": name === "group_code" }, className)} />
     </div>
   );
 };
 
+
 const GroupFieldSchema = z.object({
-  groupName: z.string().min(2).max(100),
-  groupCode: z.string().min(2).max(100),
-  groupManagerName: z.string().min(2).max(100),
-  groupManagerEmail: z.string().email().min(2).max(100),
-  groupManagerPhone: z.string().min(2).max(100),
-  groupLogoUrl: z.string().url().optional(),
+  group_name: z.string().min(2).max(100),
+  group_code: z.string().min(2).max(100),
+  manager_name: z.string().min(2).max(100),
+  manager_email: z.string().email().min(2).max(100),
+  manager_phone: z.string().min(2).max(100),
+  group_logo_url: z.string().url().optional(),
   location: z.string().min(2).max(100),
   address: z.string().min(2).max(100),
 });
-
 type GroupField = z.infer<typeof GroupFieldSchema>;
 
 interface GroupStore extends GroupField {
-  groupFields: GroupField;
+  groupFields: Partial<GroupField>;
   setGroupField: (fields: GroupField) => void
-  setGroupName: (groupName: string) => void;
-  setGroupCode: (groupCode: string) => void;
-  setGroupLogoUrl: (groupLogoUrl: string) => void;
-  setGroupManagerName: (groupManagerName: string) => void;
-  setGroupManagerEmail: (groupManagerEmail: string) => void;
-  setGroupManagerPhone: (groupManagerPhone: string) => void;
+  setGroupName: (group_name: string) => void;
+  setGroupCode: (group_code: string) => void;
+  setGroupLogoUrl: (group_logoUrl: string) => void;
+  setGroupManagerName: (manager_name: string) => void;
+  setGroupManagerEmail: (manager_email: string) => void;
+  setGroupManagerPhone: (manager_phone: string) => void;
   setLocation: (location: string) => void;
   setAddress: (address: string) => void;
 }
@@ -300,12 +328,12 @@ interface GroupStore extends GroupField {
 const useGroupStore = create<GroupStore>((set) => {
   // Create initial empty state
   const initialState: GroupField = {
-    groupName: "",
-    groupCode: "",
-    groupManagerName: "",
-    groupManagerEmail: "",
-    groupManagerPhone: "",
-    groupLogoUrl: "",
+    group_name: "",
+    group_code: "",
+    manager_name: "",
+    manager_email: "",
+    manager_phone: "",
+    group_logo_url: "",
     location: "",
     address: "",
   };
@@ -325,48 +353,57 @@ const useGroupStore = create<GroupStore>((set) => {
 
   return {
     ...initialState,
-    groupFields: initialState,
+    groupFields: {
+      group_code: "",
+      group_name: "",
+      manager_name: "",
+      manager_email: "",
+      manager_phone: "",
+      group_logo_url: "",
+      location: "",
+      address: "",
+    },
     setGroupField: (fields: GroupField) => {
       set(fields);
       localStorage.setItem("fastinsure--group-fields", JSON.stringify(fields));
     },
-    setGroupName: (groupName: string) => {
+    setGroupName: (group_name: string) => {
       set((state) => {
-        const newState = { ...state, groupName };
+        const newState = { ...state, group_name };
         localStorage.setItem("fastinsure--group-fields", JSON.stringify(newState));
         return newState;
       });
     },
-    setGroupCode: (groupCode: string) => {
+    setGroupCode: (group_code: string) => {
       set((state) => {
-        const newState = { ...state, groupCode };
+        const newState = { ...state, group_code };
         localStorage.setItem("fastinsure--group-fields", JSON.stringify(newState));
         return newState;
       });
     },
-    setGroupLogoUrl: (groupLogoUrl: string) => {
+    setGroupLogoUrl: (group_logo_url: string) => {
       set((state) => {
-        const newState = { ...state, groupLogoUrl };
+        const newState = { ...state, group_logo_url };
         localStorage.setItem("fastinsure--group-fields", JSON.stringify(newState));
         return newState;
       });
     },
     // Add other setters with the same pattern
-    setGroupManagerName: (groupManagerName: string) =>
+    setGroupManagerName: (manager_name: string) =>
       set((state) => {
-        const newState = { ...state, groupManagerName };
+        const newState = { ...state, manager_name };
         localStorage.setItem("fastinsure--group-fields", JSON.stringify(newState));
         return newState;
       }),
-    setGroupManagerEmail: (groupManagerEmail: string) =>
+    setGroupManagerEmail: (manager_email: string) =>
       set((state) => {
-        const newState = { ...state, groupManagerEmail };
+        const newState = { ...state, manager_email };
         localStorage.setItem("fastinsure--group-fields", JSON.stringify(newState));
         return newState;
       }),
-    setGroupManagerPhone: (groupManagerPhone: string) =>
+    setGroupManagerPhone: (manager_phone: string) =>
       set((state) => {
-        const newState = { ...state, groupManagerPhone };
+        const newState = { ...state, manager_phone };
         localStorage.setItem("fastinsure--group-fields", JSON.stringify(newState));
         return newState;
       }),
@@ -391,8 +428,8 @@ const ToolbarComponent = ({ closeFn, v, title, variant }: ToolbarProps<Partial<G
       <FlexRow className="h-full items-start justify-between">
         <FlexRow className="w-full h-24 items-center p-2">
           <Image
-            alt={`logo-of-${v?.groupName}`}
-            src={v?.groupLogoUrl && v.groupLogoUrl !== "" ? v.groupLogoUrl : "/svg/f_v2.svg"}
+            alt={`logo-of-${v?.group_name}`}
+            src={v?.group_logo_url && v.group_logo_url !== "" ? v.group_logo_url : "/svg/f_v2.svg"}
             className="size-16"
             isBlurred
           />
@@ -402,16 +439,16 @@ const ToolbarComponent = ({ closeFn, v, title, variant }: ToolbarProps<Partial<G
             </h1>
             <div className="space-y-1.5">
               <h2 className="text-sm leading-none font-medium tracking-tight text-primary/80 dark:text-secondary">
-                {v?.groupManagerName ? <div className="">{v?.groupManagerName}<span className="ps-2 text-macl-gray text-xs font-normal">Manager</span></div> : "Manager's Name"}
+                {v?.manager_name ? <div className="">{v?.manager_name}<span className="ps-2 text-macl-gray text-xs font-normal">Manager</span></div> : "Manager's Name"}
               </h2>
               <h3 className="flex space-x-2 text-xs leading-none tracking-tight text-macl-gray dark:text-secondary">
-                {v?.groupManagerEmail ? <span className="text-macl-blue">{v?.groupManagerEmail}</span> : "Email"} <span className="">●</span> {v?.groupManagerPhone ? <span className="text-macl-blue">{v?.groupManagerPhone}</span> : "Phone"}
+                {v?.manager_email ? <span className="text-macl-blue">{v?.manager_email}</span> : "Email"} <span className="">●</span> {v?.manager_phone ? <span className="text-macl-blue">{v?.manager_phone}</span> : "Phone"}
               </h3>
             </div>
           </div>
         </FlexRow>
         <div className="size-[3rem]">
-          <ButtSqx icon={XMarkIcon} onClick={closeFn}></ButtSqx>
+          <ButtSqx icon="close" onClick={closeFn}></ButtSqx>
         </div>
       </FlexRow>
       <FlexRow className="h-8 w-full border-t-[0.0px] bg-gradient-to-r from-transparent via-macd-gray/5 to-transparent border-macd-gray/30 items-center flex space-x-4 px-4">

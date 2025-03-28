@@ -1,25 +1,23 @@
 "use client";
 
-import { Tab, Tabs } from "@nextui-org/react";
-import {
-  ListBulletIcon,
-  PlusIcon,
-  Squares2X2Icon,
-} from "@heroicons/react/24/outline";
-import {
-  type Key,
-  useCallback,
-  useMemo,
-  useState,
-  type ReactElement,
-  type PropsWithChildren,
-  useRef,
-} from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { useUtils } from "@/utils/useUtils";
 import { cn } from "@/lib/utils";
 import { ButtSex, ButtSqx } from "@/ui/button/index";
 import { guid } from "@/utils/helpers";
+import { useUtils } from "@/utils/useUtils";
+import {
+    PlusIcon,
+} from "@heroicons/react/24/outline";
+import { Tab, Tabs } from "@nextui-org/react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+    type Key,
+    type PropsWithChildren,
+    type ReactElement,
+    useCallback,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 
 export interface TabItem {
   id: string | number;
@@ -121,8 +119,8 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
         </ButtSex>
 
         <section className="flex h-[32px] items-center rounded-[8px] border border-primary-300 bg-goddess px-0.5 dark:border-primary-500/40 dark:bg-void">
-          <ButtSqx size="sm" variant="active" icon={ListBulletIcon} />
-          <ButtSqx size="sm" variant="goddess" icon={Squares2X2Icon} />
+          <ButtSqx size="sm" variant="active" icon={"list-down"} />
+          <ButtSqx size="sm" variant="goddess" icon={"slider"} />
         </section>
       </div>
     </div>

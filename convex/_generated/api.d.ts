@@ -25,6 +25,8 @@ import type * as chats_fn from "../chats/fn.js";
 import type * as chats_get from "../chats/get.js";
 import type * as files_create from "../files/create.js";
 import type * as files_get from "../files/get.js";
+import type * as groups_create from "../groups/create.js";
+import type * as groups_d from "../groups/d.js";
 import type * as http from "../http.js";
 import type * as logs_create from "../logs/create.js";
 import type * as logs_d from "../logs/d.js";
@@ -70,6 +72,8 @@ declare const fullApi: ApiFromModules<{
   "chats/get": typeof chats_get;
   "files/create": typeof files_create;
   "files/get": typeof files_get;
+  "groups/create": typeof groups_create;
+  "groups/d": typeof groups_d;
   http: typeof http;
   "logs/create": typeof logs_create;
   "logs/d": typeof logs_d;

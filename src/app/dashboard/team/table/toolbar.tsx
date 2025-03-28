@@ -4,7 +4,6 @@ import { type Table } from "@tanstack/react-table";
 import { DataTableFacetedFilter } from "./filter-facets";
 import { useCallback, type ChangeEvent } from "react";
 import { cn } from "@/lib/utils";
-import { X } from "lucide-react";
 import { ButtSqx } from "@/ui/button/index";
 
 interface DataTableToolbarProps<TData> {
@@ -49,7 +48,7 @@ export function Toolbar<TData>({ table }: DataTableToolbarProps<TData>) {
             title=""
           />
         )}
-        {isFiltered && <ButtSqx icon={X} onClick={resetFilters} />}
+        {isFiltered && <ButtSqx icon="close" className="" onClick={resetFilters} />}
       </div>
       {/* <DataTableViewOptions table={table} toolbarActions={toolbarActions} /> */}
     </div>

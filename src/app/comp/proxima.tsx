@@ -35,13 +35,13 @@ export function Proxima() {
 
           <div className="flex w-full items-center justify-center"></div>
         </div>
-        <div className="flex h-full w-full items-end space-x-4">
+        <div className="flex h-1/3 w-full items-end space-x-4">
           <Scene />
         </div>
-        <div className="relative z-20 flex h-[calc(100vh/4)] w-full items-end px-4 py-4 justify-between font-inst text-xs leading-none text-icon dark:text-icon-dark xl:px-10">
+        <div className="relative z-20 flex h-[calc(100vh/4)] w-full items-end px-4 py-4 justify-between font-inst text-xs leading-none text-primary/70 dark:text-icon-dark xl:px-10">
           <div className="flex h-1/3 items-end space-x-4">
-            <p className="">
-              FastInsure Technologies &copy; {new Date().getFullYear()}
+            <p className="space-x-1">
+              <span>FastInsure Technologies</span><span>&copy; {new Date().getFullYear()}</span>
             </p>
           </div>
           <p className="opacity-50">&middot;</p>

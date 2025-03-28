@@ -1,21 +1,19 @@
 "use client";
-
-import { Button, Tab, Tabs } from "@nextui-org/react";
-import { PlusIcon } from "@heroicons/react/24/outline";
-import { CircleHelpIcon } from "lucide-react";
-import {
-  type Key,
-  useCallback,
-  useMemo,
-  useState,
-  type ReactElement,
-  type PropsWithChildren,
-  useRef,
-} from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { useUtils } from "@/utils/useUtils";
+import { Icon } from "@/lib/icon";
 import { cn } from "@/lib/utils";
 import { ButtSqx } from "@/ui/button/index";
+import { useUtils } from "@/utils/useUtils";
+import { Button, Tab, Tabs } from "@nextui-org/react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+    type Key,
+    type PropsWithChildren,
+    type ReactElement,
+    useCallback,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 
 export interface TabItem {
   id: string | number;
@@ -109,7 +107,7 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           className="w-fit"
           onPress={() => null}
         >
-          <PlusIcon className="size-4" />
+          <Icon name="plus-sign" className="size-4" />
           <p className="font-inter text-xs font-medium tracking-tight">
             Create
           </p>
@@ -118,7 +116,7 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           size="md"
           variant="god"
           className="group w-fit"
-          icon={CircleHelpIcon}
+          icon={"information-circle"}
         />
       </div>
     </div>

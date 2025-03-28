@@ -1,15 +1,15 @@
+import { type IconName } from "@/lib/icon/types";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import type { FC, PropsWithChildren, ReactNode } from "react";
 import { useEffect } from "react";
 import {
-  StaticToolbar,
-  type StaticToolbarProps,
-  Toolbar,
-  type ToolbarProps,
+    StaticToolbar,
+    type StaticToolbarProps,
+    Toolbar,
+    type ToolbarProps,
 } from "./toolbar";
 import { type UseWindow, useWindow } from "./useWindow";
-import type { DualIcon } from "@/app/types";
 import { type Keys } from "./utils";
 
 export type WindowVariant = "demigod" | "god" | "goddess" | "adam" | "void";
@@ -108,7 +108,7 @@ interface WindowProps {
   shadow?: "sm" | "md" | "lg" | "xl";
   toolbar?: FC<StaticToolbarProps>;
   title?: ReactNode;
-  icon?: DualIcon;
+  icon?: IconName;
   closeFn?: VoidFunction;
 }
 export function Window(props: WindowProps) {

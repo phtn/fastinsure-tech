@@ -136,7 +136,7 @@ export const ButtSex = ({
             "bg-void dark:bg-primary": inverted,
             "dark:border-void/60 dark:group-hover:border-void/80": inverted,
             "group-hover:bg-void dark:group-hover:bg-white": inverted,
-            "h-8 gap-2 rounded-lg px-2 py-1.5": size === "sm",
+            "h-8 gap-0.5 rounded-lg ps-1 pe-2.5 py-1.5": size === "sm",
             "h-10 rounded-xl px-2.5 py-2": size === "md",
             "h-14 gap-2 rounded-xl px-2.5 py-2": size === "lg",
             "bg-secondary-300 group-hover:bg-secondary":

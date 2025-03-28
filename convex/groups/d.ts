@@ -5,11 +5,11 @@ export const group_schema = v.object({
   group_id: v.string(),
   group_code: v.optional(v.string()),
   group_name: v.optional(v.string()),
-  logo_url: v.optional(v.string()),
+  group_logo_url: v.optional(v.string()),
   manager_id: v.optional(v.string()),
-  manager: v.optional(v.string()),
-  email: v.optional(v.string()),
-  phone_number: v.optional(v.string()),
+  manager_name: v.optional(v.string()),
+  manager_email: v.optional(v.string()),
+  manager_phone: v.optional(v.string()),
   location: v.optional(v.string()),
   address: v.optional(v.string()),
   supervisors: v.optional(v.array(v.string())),
@@ -22,4 +22,8 @@ export const group_schema = v.object({
 });
 
 export type SelectGroup = Infer<typeof group_schema>;
-export type InsertGroup = Infer<typeof group_schema>;
+export const InsertGroupSchema = v.object({
+  id: v.string(),
+  data: group_schema,
+});
+export type InsertGroup = Infer<typeof InsertGroupSchema>;

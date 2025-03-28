@@ -1,11 +1,4 @@
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronDoubleLeftIcon,
-  ChevronDoubleRightIcon,
-} from "@heroicons/react/24/outline";
 import { type Table } from "@tanstack/react-table";
-
 import { Select, SelectTrigger, SelectValue } from "@/ui/select";
 import { BeachSelect, BeachSelectItem } from "./styles";
 import { ButtSqx } from "@/ui/button/index";
@@ -60,28 +53,28 @@ export function DataTablePagination<TData>({
             size="sm"
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
-            icon={ChevronDoubleLeftIcon}
+            icon={"arrow-right-02"}
             id="go_to_first_page"
           />
           <ButtSqx
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            icon={ChevronLeftIcon}
+            icon={"arrow-left-01"}
             id="go_to_previous_page"
           />
           <ButtSqx
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            icon={ChevronRightIcon}
+            icon={"chevron-double-right"}
             id="go_to_next_page"
           />
           <ButtSqx
             size="sm"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
-            icon={ChevronDoubleRightIcon}
+            icon={"chevron-double-right"}
             id="go_to_last_page"
           />
         </div>

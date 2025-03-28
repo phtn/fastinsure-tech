@@ -8,11 +8,9 @@ import {
   pasteFn,
 } from "@/utils/helpers";
 import {
-  ClipboardIcon,
   EyeIcon,
   EyeSlashIcon,
   LockOpenIcon,
-  Square2StackIcon,
 } from "@heroicons/react/24/outline";
 import { BoltIcon, PhotoIcon } from "@heroicons/react/24/solid";
 import { Button } from "@nextui-org/react";
@@ -401,7 +399,7 @@ export const FastFieldGroup = forwardRef<
               />
               <ButtSpc
                 size="sm"
-                icon={ClipboardIcon}
+                icon={"clipboard-outline"}
                 onClick={paste(item.name)}
                 className="absolute right-1 top-1 z-[50] hidden size-fit group-hover:flex"
               />
@@ -521,7 +519,7 @@ const RenderInputList = (props: {
               />
               <ButtSpc
                 size="sm"
-                icon={ClipboardIcon}
+                icon={"clipboard-outline"}
                 onClick={paste(item.name)}
                 className="absolute right-1 top-1 z-[50] hidden size-fit group-hover:flex"
               />
@@ -662,7 +660,7 @@ const RenderInputIII = (props: {
               />
               <ButtSpc
                 size="sm"
-                icon={ClipboardIcon}
+                icon={"clipboard-outline"}
                 onClick={paste(item.name)}
                 className="absolute right-1 top-1 z-[50] hidden size-fit group-hover:flex"
               />
@@ -850,7 +848,7 @@ export const InputFieldName = forwardRef<
         <div>
           <ButtSqx
             size="sm"
-            icon={Square2StackIcon}
+            icon={"slider"}
             onClick={handleCopyValue}
             className="hidden border-0 group-hover:flex"
           />

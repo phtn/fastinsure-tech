@@ -1,28 +1,30 @@
 import { mutation } from "@vex/server";
 import { group_schema } from "./d";
-import { guid } from "@/utils/helpers";
 import { type GenericDatabaseWriter } from "convex/server";
 import { type DataModel } from "@vex/dataModel";
+import { v } from "convex/values";
 
 const create = mutation({
-  args: group_schema,
-  handler: async ({ db }, data) => {
+  args: {id: v.string(), data: group_schema},
+  handler: async ({ db }, {id, data}) => {
+    if (!id) {
+      return null;
+    }
     const group = await checkGroup(db, data.group_id);
     if (group !== null) {
       await db.patch(group._id, {
         updated_at: Date.now(),
         is_active: true,
       });
-      return group._id;
+      return "success";
     }
 
     return await db.insert("groups", {
       ...data,
-      group_id: guid(),
+      created_by: id,
       updated_at: Date.now(),
       is_active: true,
       is_verified: false,
-      group_code: data.group_code,
     });
   },
 });

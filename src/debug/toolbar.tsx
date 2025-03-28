@@ -1,12 +1,11 @@
+import { FlexRow } from "@/ui/flex";
 import {
-  Toolbar,
-  ToolbarSearch,
-  type ToolbarSearchProps,
+    Toolbar,
+    ToolbarSearch,
+    type ToolbarSearchProps,
 } from "@/ui/window/toolbar";
-import { CommandLineIcon } from "@heroicons/react/24/outline";
 import { memo } from "react";
 import { ButtStat } from "../ui/button/index";
-import { FlexRow } from "@/ui/flex";
 
 interface DevToolbarProps extends ToolbarSearchProps {
   closeFn: VoidFunction;
@@ -20,7 +19,7 @@ const DevToolbarComponent = (props: DevToolbarProps) => {
 
   return (
     <Toolbar
-      icon={CommandLineIcon}
+      icon={"information-circle"}
       loading={loading}
       closeFn={closeFn}
       action={action}

@@ -1,8 +1,6 @@
 import { cn } from "@/lib/utils";
 import SkylineII from "@/app/sandbox/skylineII";
 import { ButtSqx } from "@/ui/button/button";
-import { PencilIcon } from "@heroicons/react/24/solid";
-import { SquircleIcon } from "lucide-react";
 import { Button, Image, Spinner } from "@nextui-org/react";
 import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { use, useCallback, useState } from "react";
@@ -11,6 +9,7 @@ import { PfpEditor } from "./side-pfp";
 import { opts } from "@/utils/helpers";
 import { LoaderSm } from "@/ui/loader";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/lib/icon";
 
 export const Pfp = () => {
   const [loading, setLoading] = useState(false);
@@ -69,7 +68,7 @@ export const Pfp = () => {
           <AvatarOptions />
         </div>
 
-        <SquircleIcon className="_bg-foreground/60 bg-void_ justify-center- absolute bottom-2 right-3 z-[50] flex size-[28px] items-center fill-secondary-200 stroke-secondary-200 drop-shadow-sm -rotate-[15deg] dark:fill-secondary-700 dark:stroke-secondary-700" />
+        <Icon name="squircle" className="_bg-foreground/60 bg-void_ justify-center- absolute bottom-2 right-3 z-[50] flex size-[28px] items-center fill-secondary-200 stroke-secondary-200 drop-shadow-sm -rotate-[15deg] dark:fill-secondary-700 dark:stroke-secondary-700" />
         <input
           type="file"
           ref={inputFileRef}
@@ -79,7 +78,7 @@ export const Pfp = () => {
         <ButtSqx
           size="sm"
           inverted
-          icon={PencilIcon}
+          icon="pencil-edit-01"
           onClick={browseFile}
           className="absolute bottom-[6px] right-[9.7px] z-50 -rotate-[15deg]"
         />

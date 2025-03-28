@@ -9,10 +9,9 @@ import { Err, opts } from "@/utils/helpers";
 import { FlexRow } from "@/ui/flex";
 import moment from "moment";
 import { ButtSex } from "@/ui/button/ripple";
-import { ArrowRightEndOnRectangleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
-import type { DualIcon } from "../types";
-import { ArrowUpRightSquare } from "lucide-react";
+import { type IconName } from "@/lib/icon/types";
+import { Icon } from "@/lib/icon";
 
 export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -42,13 +41,13 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
       <header className="flex w-full items-center justify-start space-x-4">
         <p>Signing in...</p> <Spinner size="sm" color="secondary" />
       </header>,
-      <header className="flex w-full justify-start">Sign {isSignIn ? "in" : "up"}</header>,
+      <header className="flex w-full items-center space-x-2 justify-start tracking-tighter"><span>{isSignIn ? "Sign in" : "Create account"}</span><Icon name={isSignIn ? "key-01" : "sparkle"} className={cn("size-4 text-primary/80", {"size-5 transform scale-y-[-1] rotate-[135deg]": isSignIn})} /></header>,
     );
     return <>{options.get(loading)}</>;
   }, [loading, isSignIn]);
 
   const SignButtonOptions = useCallback(() => {
-    const options = opts(<SignInButton isSignIn={isSignIn} icon={ArrowRightEndOnRectangleIcon} loading={loading} />, <SignInButton isSignIn={isSignIn}  icon={ArrowUpRightSquare} loading={loading} />)
+    const options = opts(<SignInButton isSignIn={isSignIn} icon="square-right-outline" loading={loading} />, <SignInButton isSignIn={isSignIn}  icon="square-right-up-outline" loading={loading} />)
     return  <>{options.get(isSignIn)}</>
   }, [loading, isSignIn])
 
@@ -87,7 +86,7 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
                   "dark:primary-200 rounded-b-lg rounded-t-none border-t-[0.33px] border-primary":
                     field.name === "password",
                 },
-                "bg-adam/20 dark:bg-adam",
+                "bg-adam/15 dark:bg-adam",
               )}
               // {...register(field.name === "email" ? "email" : "password")}
               {...register(field.name)}
@@ -119,10 +118,10 @@ export const EmailSigninForm = (props: { lastLogin: string | undefined }) => {
 
 interface SignButtonProps {
   loading: boolean;
-  icon: DualIcon
+  icon: IconName
   isSignIn: boolean;
 }
-const SignInButton = ({loading,icon: IconComponent, isSignIn }: SignButtonProps) => {
+const SignInButton = ({loading, icon, isSignIn }: SignButtonProps) => {
   return (
     <ButtSex
       size="lg"
@@ -137,8 +136,9 @@ const SignInButton = ({loading,icon: IconComponent, isSignIn }: SignButtonProps)
         {loading ? (
           <Spinner size="sm" className="size-5 shrink-0 dark:text-icon-dark" />
         ) : (
-          <IconComponent
-          className={"size-5 stroke-1 shrink-0 dark:text-icon-dark"}
+          <Icon
+            name={icon}
+            className={"size-5 shrink-0 text-primary/80 dark:text-icon-dark"}
           />
         )}
       </div>

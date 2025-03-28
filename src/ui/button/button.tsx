@@ -1,10 +1,12 @@
-import type { ClassName, DualIcon } from "@/app/types";
+import type { ClassName } from "@/app/types";
+import { Icon } from "@/lib/icon";
+import { type IconName } from "@/lib/icon/types";
+import { cn } from "@/lib/utils";
+import { opts } from "@/utils/helpers";
 import { Button, Spinner } from "@nextui-org/react";
 import { Squircle } from "lucide-react";
 import { type ReactNode, type RefObject, useCallback } from "react";
-import { cn } from "@/lib/utils";
-import { opts } from "@/utils/helpers";
-import type { ButtSize, ButtIconProps } from "./types";
+import type { ButtIconProps, ButtSize } from "./types";
 
 interface ButtStatProps {
   value?: string;
@@ -54,7 +56,7 @@ export const ButtIcx = (props: ButtIconProps) => {
   return (
     <div>
       <Button isIconOnly className="bg-god">
-        <props.icon className="size-4" />
+        <Icon name={props.icon} className="size-4" />
       </Button>
     </div>
   );
@@ -69,11 +71,13 @@ export const ButtSqx = (props: ButtIconProps) => {
     className,
     inverted = false,
     iconStyle,
+    shadow = ""
   } = props;
   const Opts = useCallback(() => {
     const options = opts(
       <Spinner size="sm" />,
-      <props.icon
+      <Icon
+        name={props.icon}
         className={cn(
           "z-40 size-4 stroke-[1.5px]",
           "group-hover/btn:drop-shadow-md",
@@ -108,7 +112,8 @@ export const ButtSqx = (props: ButtIconProps) => {
         className,
       )}
     >
-      <Squircle
+      <Icon
+        name="squircle"
         className={cn(
           "pointer-events-none absolute size-0 text-transparent opacity-40",
           "transition-all duration-200 transform-gpu",
@@ -117,8 +122,6 @@ export const ButtSqx = (props: ButtIconProps) => {
             "group-hover/btn:size-8": size === "sm",
             "group-hover/btn:size-[40px]": size === "md",
             "group-hover/btn:size-[48px]": size === "lg",
-          },
-          {
             "fill-demigod/80": variant === "demigod",
             "fill-god/80": variant === "goddess",
             "size-8 fill-god": variant === "active",
@@ -131,6 +134,7 @@ export const ButtSqx = (props: ButtIconProps) => {
             "stroke-chalk group-hover/btn:fill-chalk dark:stroke-steel dark:group-hover/btn:fill-chalk":
               variant === "bright",
           },
+          shadow
         )}
       />
       <Opts />
@@ -138,7 +142,7 @@ export const ButtSqx = (props: ButtIconProps) => {
   );
 };
 
-export const ButtSpc = (props: ButtIconProps & { icon: DualIcon }) => {
+export const ButtSpc = (props: ButtIconProps & { icon: IconName }) => {
   const {
     size = "md",
     loading = false,
@@ -149,7 +153,7 @@ export const ButtSpc = (props: ButtIconProps & { icon: DualIcon }) => {
   const Opts = useCallback(() => {
     const options = opts(
       <Spinner size="sm" />,
-      <props.icon
+      <Icon name={props.icon}
         className={cn(
           "z-40 size-4 stroke-[1.5px]",
           "group-hover:drop-shadow-md",
@@ -211,7 +215,8 @@ export const ButtIconSex = (props: ButtIconProps & ButtProps) => {
   const Opts = useCallback(() => {
     const options = opts(
       <Spinner size="sm" />,
-      <props.icon
+      <Icon
+        name={props.icon}
         className={cn(
           "z-40 size-4 stroke-[1.5px]",
           "group-hover:drop-shadow-md",

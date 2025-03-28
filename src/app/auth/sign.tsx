@@ -8,7 +8,6 @@ import type { Dispatch, SetStateAction } from "react";
 import { memo, useCallback, useEffect } from "react";
 import { useAuthFn } from "./useAuthFn";
 import { opts } from "@/utils/helpers";
-import { UserIcon } from "@heroicons/react/24/solid";
 import { EmailSigninForm } from "./form";
 import { useWindow } from "@/ui/window/useWindow";
 import { Toolbar } from "@/ui/window/toolbar";
@@ -94,7 +93,7 @@ const SignCard = ({ close, lastLogin }: SignCardProps) => {
       initial={false}
       className="h-[540px] w-fit bg-white dark:bg-adam/80"
     >
-      <Toolbar icon={UserIcon} closeFn={close} variant="void" />
+      <Toolbar icon="user-circle" closeFn={close} variant="void" />
       <WindowContent>
         <EmailSigninForm lastLogin={lastLogin} />
       </WindowContent>

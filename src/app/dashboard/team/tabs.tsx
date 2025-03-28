@@ -108,12 +108,12 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
       >
         <ButtSex size="sm" inverted start={CalendarDaysIcon} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
-            Schedule Meetings
+            View Calendar
           </p>
         </ButtSex>
         <ButtSex size="sm" start={UserGroupIcon} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
-            Create Groups
+            Create Teams
           </p>
         </ButtSex>
         {/* <section className="flex h-[32px] items-center mx-1.5 rounded-[8px] border-[0.33px] border-macd-gray bg-goddess dark:border-primary-500/40 dark:bg-void">

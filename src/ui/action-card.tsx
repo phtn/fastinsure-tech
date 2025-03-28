@@ -1,4 +1,6 @@
-import type { ClassName, DualIcon } from "@/app/types";
+import type { ClassName } from "@/app/types";
+import { Icon } from "@/lib/icon";
+import { type IconName } from "@/lib/icon/types";
 import { cn } from "@/lib/utils";
 import { Button, Link } from "@nextui-org/react";
 import { type PropsWithChildren, type ReactNode, useRef } from "react";
@@ -53,14 +55,14 @@ const Header = ({ children, className, dark }: CommonProps) => {
 };
 
 interface IconProps {
-  icon: DualIcon;
+  icon: IconName;
   className?: ClassName;
 }
-const Icon = (props: IconProps) => (
+const IconComponent = (props: IconProps) => (
   <div className="h-full items-start justify-center rounded-md">
     {
-      <props.icon
-        className={cn("hidden stroke-1 size-8 text-primary xl:flex", props.className)}
+      <Icon name={props.icon}
+        className={cn("hidden stroke-1 size-8 text-primary md:flex", props.className)}
       />
     }
   </div>
@@ -95,10 +97,10 @@ const Btn = ({ children, loading, onPress }: BtnProps) => (
   <div className="h-fit">
   <ButtSex
     size={"sm"}
+    inverted
     onClick={onPress}
     loading={loading}
-    inverted
-    className={cn("border-void w-20")}
+    className={cn("border-void md:w-20 w-fit")}
   >
     {children}
   </ButtSex>
@@ -166,7 +168,7 @@ type TActionComp = typeof Component & {
   Subtext: typeof Subtext;
   Action: typeof Action;
   ActionLink: typeof ActionLink;
-  Icon: typeof Icon;
+  IconComponent: typeof IconComponent;
 };
 
 export const ActionCard: TActionComp = Object.assign(Component, {
@@ -175,7 +177,7 @@ export const ActionCard: TActionComp = Object.assign(Component, {
   Subtext,
   Action,
   ActionLink,
-  Icon,
+  IconComponent,
 });
 
 const ComponentII = ({ children }: PropsWithChildren) => (
@@ -201,7 +203,7 @@ type TBigActionComp = typeof Component & {
   Subtext: typeof Subtext;
   Action: typeof Action;
   ActionLink: typeof ActionLink;
-  Icon: typeof Icon;
+  IconComponent: typeof IconComponent;
 };
 
 export const BigActionCard: TBigActionComp = Object.assign(ComponentII, {
@@ -210,5 +212,5 @@ export const BigActionCard: TBigActionComp = Object.assign(ComponentII, {
   Subtext,
   Action,
   ActionLink,
-  Icon,
+  IconComponent,
 });

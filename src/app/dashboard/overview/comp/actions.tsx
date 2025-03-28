@@ -1,21 +1,18 @@
 import { useAuthCtx } from "@/app/ctx/auth/auth";
-import { type DualIcon } from "@/app/types";
 import { type EmailContext } from "@/lib/email/schema";
 import { useManager } from "@/lib/hooks/useManager";
 import { Action, ActionCard, ActionLink } from "@/ui/action-card";
 import { ButtSqx } from "@/ui/button/button";
 import { copyFn, Err } from "@/utils/helpers";
-import { BookOpenIcon, QrCodeIcon } from "@heroicons/react/24/outline";
-import { Square2StackIcon } from "@heroicons/react/24/solid";
 import { Spinner } from "@nextui-org/react";
 import html2canvas from "html2canvas";
-import { FileSymlinkIcon } from "lucide-react";
 import { memo, type ReactNode, useCallback, useRef, useState } from "react";
 import { useEmail } from "../../hooks/useEmail";
 import { useRequest } from "../../hooks/useRequest";
 import { QrCodegen } from "./qr-codegen";
 import { ItemContent, QrDetails, Strong } from "./qr-details";
 import { Qr } from "./qr-viewer";
+import { type IconName } from "@/lib/icon/types";
 
 export const CreateAgentCode = () => {
   const { user } = useAuthCtx();
@@ -137,7 +134,7 @@ export const CreateAgentCode = () => {
     <BasicAction
       title="Create Activation code"
       subtext="Generate a code for a new user."
-      icon={QrCodeIcon}
+      icon={"qr-code"}
       fn={handleCreateAgentCode}
       label="create"
       loading={loading}
@@ -151,7 +148,7 @@ export const CreateAgentCode = () => {
 interface BasicActionProps {
   title?: string;
   subtext?: string;
-  icon: DualIcon;
+  icon: IconName;
   fn: VoidFunction;
   label: string;
   loading: boolean;
@@ -159,7 +156,7 @@ interface BasicActionProps {
 }
 export const BasicAction = (props: BasicActionProps) => (
   <ActionCard>
-    <ActionCard.Icon icon={props.icon} />
+    <ActionCard.IconComponent icon={props.icon} />
     <ActionCard.Header>
       <ActionCard.Title>{props.title}</ActionCard.Title>
       <ActionCard.Subtext>{props.subtext}</ActionCard.Subtext>
@@ -179,7 +176,7 @@ const FooterContent = ({ text }: FooterContent) => {
   const copyText = () => text && copyFn({ name: "Activation URL", text });
   return (
     <Qr.Url url={text}>
-      <ButtSqx size="md" iconStyle="fill-void/80" onClick={copyText} icon={Square2StackIcon} />
+      <ButtSqx size="md" iconStyle="fill-void/80" onClick={copyText} icon={"copy-01"} />
     </Qr.Url>
   );
 };
@@ -187,7 +184,7 @@ const FooterContent = ({ text }: FooterContent) => {
 interface SpecialActionProps {
   title?: string;
   subtext?: string;
-  icon: DualIcon;
+  icon: IconName;
   href: string;
   label: string;
   loading: boolean;
@@ -202,7 +199,7 @@ export const SpecialAction = ({
 }: SpecialActionProps) => {
   return (
     <ActionCard>
-      <ActionCard.Icon icon={icon} />
+      <ActionCard.IconComponent icon={icon} />
       <ActionCard.Header>
         <ActionCard.Title>{title}</ActionCard.Title>
         <ActionCard.Subtext>{subtext}</ActionCard.Subtext>
@@ -224,7 +221,7 @@ export const CreateRequest = () => {
 
   return (
     <ActionCard>
-      <ActionCard.Icon icon={FileSymlinkIcon} />
+      <ActionCard.IconComponent icon={"file-right"} />
       <ActionCard.Header>
         <ActionCard.Title>Create Request</ActionCard.Title>
         <ActionCard.Subtext>New policy request</ActionCard.Subtext>
@@ -246,7 +243,7 @@ export const Documentation = (props: {
 }) => {
   return (
     <ActionCard>
-      <ActionCard.Icon icon={BookOpenIcon} />
+      <ActionCard.IconComponent icon={"bookmark"} />
       <ActionCard.Header>
         <ActionCard.Title>Read Documentation</ActionCard.Title>
         <ActionCard.Subtext>Need help?</ActionCard.Subtext>
@@ -263,14 +260,14 @@ export const Documentation = (props: {
 export const GenericAction = (props: {
   fn: VoidFunction;
   loading: boolean;
-  icon: DualIcon;
+  icon: IconName;
   title: string;
   subtext?: string;
   label: string;
 }) => {
   return (
     <ActionCard>
-      <ActionCard.Icon icon={props.icon} />
+      <ActionCard.IconComponent icon={props.icon} />
       <ActionCard.Header>
         <ActionCard.Title>{props.title}</ActionCard.Title>
         <ActionCard.Subtext>{props.subtext}</ActionCard.Subtext>

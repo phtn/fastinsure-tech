@@ -9,8 +9,6 @@ import { motion } from "framer-motion";
 import { Flag } from "./comp/status-flag";
 import { GenericAction } from "./comp/actions";
 import { BigActionCard } from "@/ui/action-card";
-import { FireIcon } from "@heroicons/react/24/solid";
-import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 
 export const LoggedOutView = () => {
   const { user, signOut } = useAuthCtx();
@@ -52,7 +50,7 @@ export const LoggedOutView = () => {
                 <GenericAction
                   loading={false}
                   fn={signOut}
-                  icon={ShieldCheckIcon}
+                  icon="sparkle"
                   title={"Verify Account"}
                   subtext=""
                   label="verify"
@@ -61,7 +59,7 @@ export const LoggedOutView = () => {
             </HStack.XsCol>
             <HStack.SmCol>
               <BigActionCard>
-                <BigActionCard.Icon icon={FireIcon} />
+                <BigActionCard.IconComponent icon={"energy-fill"} />
                 <div>
                   <BigActionCard.Header>
                     <BigActionCard.Title>Updates</BigActionCard.Title>

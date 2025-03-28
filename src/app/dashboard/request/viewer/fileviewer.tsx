@@ -5,17 +5,12 @@ import { ButtSqx } from "@/ui/button/button";
 import { FlexRow } from "@/ui/flex";
 import { HyperList } from "@/ui/list";
 import { Err, guid, opts } from "@/utils/helpers";
-import {
-  ArrowDownTrayIcon,
-  ViewfinderCircleIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import {Image, Spinner } from "@nextui-org/react";
+import { Image, Spinner } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
-import { downloadFile } from "./utils";
-import { PDFDocument } from "./fileuploader";
-import { pdfjs } from "react-pdf";
 import { ErrorBoundary } from "react-error-boundary";
+import { pdfjs } from "react-pdf";
+import { PDFDocument } from "./fileuploader";
+import { downloadFile } from "./utils";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -146,14 +141,14 @@ const AttachmentItem = ({ url, filename, file }: IAttachmentItem) => {
         <FlexRow className="items-center space-x-1">
           <ButtSqx
             size="md"
-            icon={ViewfinderCircleIcon}
+            icon={"search"}
             iconStyle="text-chalk"
             variant="steel"
             disabled={!!error || !url}
           />
           <ButtSqx
             size="md"
-            icon={ArrowDownTrayIcon}
+            icon={"download"}
             onClick={handleDownload}
             iconStyle={!url ? "text-gray-600" : "text-chalk"}
             variant="steel"
@@ -163,7 +158,7 @@ const AttachmentItem = ({ url, filename, file }: IAttachmentItem) => {
 
         <ButtSqx
           size="md"
-          icon={XMarkIcon}
+          icon={"close"}
           iconStyle="text-chalk"
           variant="steel"
         />

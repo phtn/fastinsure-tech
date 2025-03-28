@@ -5,11 +5,8 @@ import { Widget } from "@/ui/widget";
 import { VBar } from "./charts/vbar";
 import { GenericAction } from "./comp/actions";
 import { Splash } from "./comp/splash";
-import {
-  DocumentChartBarIcon,
-  InformationCircleIcon,
-} from "@heroicons/react/24/outline";
 import { Tab, Tabs } from "@nextui-org/react";
+import { Icon } from "@/lib/icon";
 
 export const UOverview = () => {
   return (
@@ -60,7 +57,7 @@ const GenerateReport = () => {
     <GenericAction
       title="Generate Reports"
       subtext=""
-      icon={DocumentChartBarIcon}
+      icon={"file-right"}
       fn={() => console.log()}
       label="create"
       loading={false}
@@ -91,7 +88,7 @@ const Recents = () => (
         <div className="mt-8 flex h-full w-full items-center justify-center p-6">
           <div className="flex w-full flex-col border-[0.33px] border-primary-300 bg-stone-200/40 p-6">
             <div className="flex w-full items-center justify-center space-x-2 text-sm">
-              <InformationCircleIcon className="size-4 shrink-0 stroke-2 text-gray-500" />
+              <Icon name="information-circle" className="size-4 shrink-0 stroke-2 text-gray-500" />
               <span className="font-medium">No record.</span>
             </div>
             <p className="text-center text-sm opacity-80">

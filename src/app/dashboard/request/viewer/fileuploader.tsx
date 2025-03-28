@@ -1,31 +1,27 @@
 "use client";
 
-import { type ReactNode, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { FlexRow } from "@/ui/flex";
 import { ButtSqx } from "@/ui/button/button";
-import {
-  DocumentArrowUpIcon,
-  XCircleIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/solid";
+import { ButtSex } from "@/ui/button/ripple";
+import { FlexRow } from "@/ui/flex";
 import { SideVaul } from "@/ui/sidevaul";
 import { FlatWindow } from "@/ui/window";
-import { ButtSex } from "@/ui/button/ripple";
 import {
-  ArrowUpTrayIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  PlusIcon,
-} from "@heroicons/react/24/outline";
+    DocumentArrowUpIcon,
+    XMarkIcon,
+} from "@heroicons/react/24/solid";
+import { type ReactNode, useEffect, useState } from "react";
+
+import { type ClassName } from "@/app/types";
+import { Icon } from "@/lib/icon";
+import { LoaderSm } from "@/ui/loader";
+import { Err } from "@/utils/helpers";
+import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { useFiles } from "../hooks/useFiles";
-import { LoaderSm } from "@/ui/loader";
 import { useRequestViewer } from "./ctx";
-import { Err } from "@/utils/helpers";
-import { type ClassName } from "@/app/types";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 export const FileUpload = () => {
@@ -115,7 +111,7 @@ const DataViewer = ({ files, removeFile }: DataViewerProps) => {
               </div>
               <ButtSqx
                 size="sm"
-                icon={XCircleIcon}
+                icon={"close"}
                 variant="steel"
                 iconStyle="text-chalk size-5"
                 onClick={handleFileRemove(i)}
@@ -166,7 +162,7 @@ const FileUploadViewer = ({
         }
         variant="adam"
         closeFn={toggle}
-        icon={DocumentArrowUpIcon}
+        icon={"document-outline"}
       >
         {children}
         <SideVaul.Footer>
@@ -176,7 +172,7 @@ const FileUploadViewer = ({
             </ButtSex>
             <div className="flex gap-1.5">
               <ButtSex onClick={browseFiles}>
-                <PlusIcon className="size-4" />
+                <Icon name="cloud-upload" className="size-4" />
               </ButtSex>
               <ButtSex
                 loading={loading}
@@ -246,7 +242,7 @@ export const PDFDocument = (props: {
         <ButtSqx
           size="sm"
           disabled={pageNumber === 1}
-          icon={ChevronLeftIcon}
+          icon={"arrow-left-01"}
           onClick={prevPage}
         />
         <p className="font-jet">
@@ -254,7 +250,7 @@ export const PDFDocument = (props: {
         </p>
         <ButtSqx
           size="sm"
-          icon={ChevronRightIcon}
+          icon={"arrow-right-02"}
           onClick={nextPage}
           disabled={pageNumber === numPages}
         />
