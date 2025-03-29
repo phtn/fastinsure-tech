@@ -16,9 +16,7 @@ const Component = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
       "h-fit w-full max-w-md overflow-clip bg-army/40",
-      "rounded-md border border-macl-gray/40",
-      "shadow-sm",
-
+      "shadow-sm rounded-md border border-macl-gray/40",
       "transition-all duration-300 ease-out",
       "hover:border-macl-gray hover:shadow-lg",
       "dark:border-primary-300/60",
@@ -71,7 +69,7 @@ const IconComponent = (props: IconProps) => (
 const Title = ({ children, className }: CommonProps) => (
   <p
     className={cn(
-      "whitespace-nowrap tracking-tighter md:tracking-tight font-semibold text-foreground",
+      "whitespace-nowrap tracking-tighter md:tracking-tight font-medium text-foreground",
       className,
     )}
   >
@@ -183,15 +181,16 @@ export const ActionCard: TActionComp = Object.assign(Component, {
 const ComponentII = ({ children }: PropsWithChildren) => (
   <div
     className={cn(
-      "h-[30rem] w-full cursor-pointer overflow-clip",
-      "border-[0.33px] rounded-lg border-foreground backdrop-blur-lg",
+      "h-[38rem] pb-8 md:h-[35rem] w-full cursor-pointer overflow-clip",
+      "border-[0.33px] rounded-xl border-foreground backdrop-blur-lg",
       "transition-all duration-300 ease-out",
-      "bg-gradient-to-b from-stone-50/10 via-cake/40 to-chalk",
+      // "bg-gradient-to-b from-stone-50/10 via-cake/40 to-chalk",
+      "bg-primary",
       "dark:border-primary-500/50 dark:from-void/80 dark:via-void dark:to-zinc-800/10",
       "",
     )}
   >
-    <div className="flex h-full items-center space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-8 dark:bg-transparent">
+    <div className="flex h-full items-center space-x-2 bg-gradient-to-r from-20% to-transparent px-4 py-6 dark:bg-transparent">
       {children}
     </div>
   </div>

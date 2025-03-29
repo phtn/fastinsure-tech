@@ -6,9 +6,9 @@ const ExampleValue = z.object({
 });
 
 export const BaseData = z.object({
-  key: z.string(),
+  key: z.string().min(10).max(42),
   path: z.literal("$"),
-  ttl: z.number().min(0).max(172800),
+  ttl: z.number().min(0).max(172800).optional(),
 });
 
 export const ExampleResource = BaseData.merge(z.object({
@@ -22,7 +22,13 @@ export const ActivationValue = z.object({
   group: z.string().min(2).max(100),
   expiry: z.number().min(0).max(172800),
 });
-export const ActivationResource = BaseData.merge(z.object({
+export const ActivationSetResource = BaseData.merge(z.object({
   value: ActivationValue
 }));
-export type ActivationType = z.infer<typeof ActivationResource>;
+export type ActivationSet = z.infer<typeof ActivationSetResource>;
+
+export const ActivationGetResource = BaseData.merge(z.object({}));
+export type ActivationGet = z.infer<typeof ActivationGetResource>;
+
+export const ActivationDelResource = BaseData.merge(z.object({}));
+export type ActivationDel = z.infer<typeof ActivationDelResource>;

@@ -1,57 +1,55 @@
+import {
+    deleteAuthClient,
+    deleteCustomClaims,
+    deleteLastLogin,
+    deleteRefresh,
+    deleteSession,
+    deleteUID,
+    getCustomClaims,
+    getLastLogin,
+    setIdToken,
+    setLastLogin,
+    setUID,
+} from "@/app/actions";
 import { auth } from "@/lib/fire";
-import { useRouter, usePathname, redirect } from "next/navigation";
-import {
-  GoogleAuthProvider,
-  type OAuthCredential,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut as logout,
-  type User,
-  type IdTokenResult,
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
-import {
-  createContext,
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-  type PropsWithChildren,
-  useEffect,
-  type FC,
-  useTransition,
-  type TransitionStartFunction,
-} from "react";
 import { Err } from "@/utils/helpers";
 import {
-  deleteAuthClient,
-  deleteCustomClaims,
-  deleteLastLogin,
-  deleteRefresh,
-  deleteSession,
-  deleteUID,
-  getCustomClaims,
-  getLastLogin,
-  setIdToken,
-  setLastLogin,
-  setUID,
-} from "@/app/actions";
-
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    type IdTokenResult,
+    signOut as logout,
+    type OAuthCredential,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    type User,
+} from "firebase/auth";
+import { redirect, usePathname, useRouter } from "next/navigation";
+import {
+    createContext,
+    type Dispatch,
+    type FC,
+    type PropsWithChildren,
+    type SetStateAction,
+    type TransitionStartFunction,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+    useTransition,
+} from "react";
 import { EmailAndPasswordSchema } from "@/app/auth/schema";
 import type {
-  AccountActivationResponse,
-  OnSigninVerificationResponse,
+    OnSigninVerificationResponse,
 } from "@/server/secure/resource";
-import { onSuccess, onWarn } from "../toasts";
 import { Loader } from "@/ui/loader";
-import { useVex } from "../convex";
-import type { UserRole, SelectUser } from "@convex/users/d";
+import type { SelectUser, UserRole } from "@convex/users/d";
 import moment from "moment";
-// import { initVerification } from "./utils";
-import { activateAccount } from "@/trpc/secure/callers/auth";
+import { useVex } from "../convex";
+import {onError, onSuccess, onWarn } from "../toasts";
+import { activationGet } from "@/server/rdb/caller";
+import type { ActivationSet } from "@/server/rdb/schema";
 
 interface AuthCtxValues {
   loading: boolean;
@@ -67,7 +65,7 @@ interface AuthCtxValues {
   setClaims: Dispatch<SetStateAction<UserRole[] | null>>;
   vresult: OnSigninVerificationResponse | null;
   vxuser: SelectUser | null;
-  activateFn: (hcode: string) => Promise<AccountActivationResponse | undefined>;
+  activateFn: (hcode: string) => Promise<string | null>;
 }
 
 const AuthCtx = createContext<AuthCtxValues | null>(null);
@@ -329,12 +327,23 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     async (hcode: string) => {
       if (!user) {
         onWarn("You need to re-authenticate.");
-        return;
+        return null;
       }
       const id_token = await user.getIdToken();
-      const email = user?.email ?? "";
-      const uid = user?.uid;
-      return await activateAccount({ uid, email, id_token, hcode });
+      if (!id_token){
+        onError("Unauthorized")
+        return null
+      }
+
+      const storedValue = await activationGet({ key: `ACT•${hcode}`, path: "$" }) as ActivationSet[] | null
+
+      if (!storedValue) {
+        onError("Activation code not found");
+        return null;
+      }
+
+      return storedValue[0]?.value?.group ?? null
+
     },
     [user],
   );

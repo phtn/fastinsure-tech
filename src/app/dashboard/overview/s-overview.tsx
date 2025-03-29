@@ -14,7 +14,6 @@ export const SuperOverview = () => {
     <div className="h-screen overflow-auto rounded-tl-3xl p-4">
       <OverviewHeader email={user?.email} vxuser={vxuser} />
       <Tabs size="md" variant="underlined" classNames={{
-        cursor: "bg-macl-blue",
         base: "mt-6"
       }}>
         <Tab key="functions" title="Functions">
@@ -39,7 +38,7 @@ interface OverviewHeaderProps {
 }
 const OverviewHeader = ({ email, vxuser }: OverviewHeaderProps) => {
   return (
-    <Splash text={"Overview"}>
+    <Splash text={"Overview"} role={vxuser?.role}>
       <div>
         <div className="absolute top-4 z-[60] flex h-1/2 w-1/3  items-center space-x-2 border-primary px-12 font-inst text-xl delay-1000">
           <p>{email}</p>

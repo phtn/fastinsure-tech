@@ -506,6 +506,15 @@ export const pasteFn = async (id: string) => {
   return v;
 };
 
+export const pasteState = async (set: Dispatch<SetStateAction<string>>) => {
+  const text = await navigator.clipboard.readText();
+  const value = text.trim();
+  if (value.includes('"')) {
+    value.replaceAll('"', "");
+  }
+  set(value)
+};
+
 export const urlToFile = async (url: string | null, filename: string) => {
   if (!url) return;
   const response = await fetch(url);

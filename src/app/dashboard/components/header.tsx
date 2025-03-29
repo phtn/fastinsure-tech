@@ -5,15 +5,18 @@ import { SlashIcon } from "@heroicons/react/24/outline";
 import { Link } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { Icon } from "@/lib/icon";
 
 interface HeaderProps {
   title: string;
   sm?: boolean;
   xs?: boolean;
+  role?: string;
 }
-export const Header = ({ title, sm, xs }: HeaderProps) => {
+export const Header = ({ title, sm, xs, role }: HeaderProps) => {
   const pathname = usePathname();
   const crumbs = pathname.split("/");
+  console.log(role)
   return (
     <div
       className={cn(
@@ -22,10 +25,10 @@ export const Header = ({ title, sm, xs }: HeaderProps) => {
         { "px-2 py-2": xs },
       )}
     >
-      <section className="flex h-full items-center px-3 leading-none">
+      <section className="flex h-full items-center px-3 leading-none space-x-2">
         <Link
           href={`/dashboard/${title}`}
-          className="font-inter text-xl font-semibold capitalize tracking-tighter text-foreground opacity-100"
+          className="text-lg md:text-xl font-semibold capitalize tracking-tighter text-foreground opacity-100"
         >
           <motion.p
             initial={{ opacity: 0, scale: 0.95 }}
@@ -35,18 +38,15 @@ export const Header = ({ title, sm, xs }: HeaderProps) => {
             {title}
           </motion.p>
         </Link>
-        <SlashIcon className={cn("flex size-5 stroke-1 opacity-30", {})} />
+        <Icon name="arrow-left-01" className={cn("flex rotate-180 size-4 opacity-80")} />
         <div className="flex h-6 items-center">
-          <motion.span
-            initial={{ opacity: 0, x: -2 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.75, ease: "easeOut" }}
-            className="rounded-md bg-primary-100/60 px-1.5 py-1 font-mono text-[10px] uppercase leading-3"
+          <span
+            className={cn("rounded-md border-[0.33px] border-macl-gray/80 px-1.5 py-1 capitalize tracking-tight font-medium text-xs bg-white", {"text-primary/80 border-macd-blue/80": role === "neo"})}
           >
             {crumbs[1] === "dashboard" && !crumbs[2]
-              ? "home"
+              ? role === "neo" ? <div className="space-x-1 flex items-center"><span>Account activation</span><Icon name="activate" className="size-3.5" /></div> : "admin"
               : (crumbs[3] ?? "all")}
-          </motion.span>
+          </span>
           <SlashIcon
             className={cn("hidden size-5 stroke-1 opacity-30", {
               flex: crumbs[4],
@@ -61,7 +61,7 @@ export const Header = ({ title, sm, xs }: HeaderProps) => {
               flex: crumbs[4],
             })}
           />
-          <span className="_bg-default/60 _uppercase rounded-md px-1.5 py-1 font-mono text-[10px] leading-3">
+          <span className="rounded-md px-1.5 py-1 font-mono text-[10px] leading-3">
             {crumbs[4] ? "saved as draft" : ""}
           </span>
         </div>

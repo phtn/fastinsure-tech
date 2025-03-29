@@ -18,6 +18,9 @@ export const env = createEnv({
 
     RESEND_API: z.string(),
     MAPS_API: z.string(),
+    //
+    QSTASH_TOKEN: z.string(),
+    UPSTASH_WORKFLOW_URL: z.string().url(),
 
   },
   client: {
@@ -66,6 +69,10 @@ export const env = createEnv({
     RESEND_API: process.env.RESEND_API,
     //MAPS
     MAPS_API: process.env.MAPS_API,
+    //QSTASH
+    QSTASH_TOKEN: process.env.QSTASH_TOKEN,
+    UPSTASH_WORKFLOW_URL: process.env.UPSTASH_WORKFLOW_URL,
+
 
     //
     NODE_ENV: process.env.NODE_ENV,

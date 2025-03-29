@@ -14,7 +14,7 @@ const DashboardLayout = ({ children }: PropsWithChildren) => {
           {},
         )}
       >
-        <div className="relative flex h-full w-full flex-col gap-2 overflow-clip rounded-tl-3xl bg-background">
+        <div className="relative flex h-full w-full flex-col gap-2 overflow-clip md:rounded-tl-3xl bg-background">
           {children}
         </div>
       </div>

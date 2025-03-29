@@ -64,7 +64,11 @@ export const NavItem = (item: NavItemProps) => {
           display: open ? "inline-block" : "none",
           opacity: open ? 1 : 0,
         }}
-        className={`${isActive ? "active text-blue-400" : "text-orange-50"} rounded-xl  px-3 py-1 font-inst font-medium transition-all duration-300 ease-out`}
+        className={cn(
+          "rounded-xl px-3 py-1 font-inst font-medium text-orange-50",
+          "transition-all duration-300 ease-out",
+          {"active text-blue-400": isActive}
+          )}
       >
         {item.label}
       </motion.div>

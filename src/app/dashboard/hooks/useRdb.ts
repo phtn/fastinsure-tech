@@ -1,5 +1,5 @@
 import { activationSet, rdbExampleSet } from "@/server/rdb/caller";
-import type { ActivationType, ExampleValueType } from "@/server/rdb/schema";
+import type { ActivationSet, ExampleValueType } from "@/server/rdb/schema";
 import { useCallback } from "react";
 
 export const useRdb = () => {
@@ -7,7 +7,7 @@ export const useRdb = () => {
     await rdbExampleSet({...data});
   }, []);
 
-  const activation = useCallback(async (data: ActivationType) => {
+  const activation = useCallback(async (data: ActivationSet) => {
     await activationSet({...data});
   }, []);
 

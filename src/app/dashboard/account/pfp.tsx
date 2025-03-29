@@ -25,7 +25,7 @@ export const Pfp = () => {
     const options = opts(
       <Image
         alt="user-pfp"
-        src={pfp ?? vxuser?.photo_url}
+        src={pfp ?? vxuser?.photo_url ?? "/svg/f_v2.svg"}
         width={124}
         height={124}
         isLoading={!pfp}
@@ -78,8 +78,9 @@ export const Pfp = () => {
         <ButtSqx
           size="sm"
           inverted
-          icon="pencil-edit-01"
+          icon="plus-sign"
           onClick={browseFile}
+          iconStyle="text-white"
           className="absolute bottom-[6px] right-[9.7px] z-50 -rotate-[15deg]"
         />
       </div>

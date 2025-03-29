@@ -64,3 +64,21 @@ export const commission = mutation({
     return user._id;
   },
 });
+
+const activation_schema = v.object({
+  group_code: v.string(),
+});
+
+export const activation = mutation({
+  args: { uid: v.string(), data: activation_schema },
+  handler: async ({ db }, { uid, data }) => {
+    const user = await checkUser(db, uid);
+
+    if (user === null || data.group_code === "") {
+      return null;
+    }
+
+    await db.patch(user._id, { group_code: data.group_code, updated_at: Date.now(), role: "agent" });
+    return "success";
+  },
+});

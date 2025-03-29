@@ -7,6 +7,7 @@ import { managerRoute } from "./routers/manager";
 import { agentRoute } from "./routers/agent";
 import { rdbRouter } from "./routers/rdb";
 import { emailRouter } from "./routers/email";
+import { workflowRouter } from "./routers/workflow";
 
 export const appRouter = router({
   auth: authRouter,
@@ -17,6 +18,7 @@ export const appRouter = router({
   agent: agentRoute,
   rdb: rdbRouter,
   email: emailRouter,
+  workflow: workflowRouter,
 });
 
 export type AppRouter = typeof appRouter;
