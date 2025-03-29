@@ -76,11 +76,6 @@ export const useNav = () => {
         href: "/dashboard/requests",
         icon: { type: "icon", content: TableCellsIcon },
       },
-      {
-        label: "Agents",
-        href: "#",
-        icon: { type: "icon", content: UsersIcon },
-      },
     ],
     [],
   );

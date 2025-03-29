@@ -10,6 +10,7 @@ import { type FormEvent, useActionState, useCallback, useRef, useState } from "r
 import { api } from "@vex/api";
 import { useAuthCtx } from "@/app/ctx/auth/auth";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface CodeEntryProps {
   activateFn: (hcode: string) => Promise<string | null>;
@@ -19,6 +20,7 @@ export const CodeEntry = ({ activateFn }: CodeEntryProps) => {
   const {user} = useAuthCtx()
 
   const updateFn = useMutation(api.users.update.activation)
+  const router = useRouter()
 
   const activateAccount = useCallback(
     async (prev: string | null, f: FormData) => {
@@ -47,15 +49,20 @@ export const CodeEntry = ({ activateFn }: CodeEntryProps) => {
         },
       });
 
-      return await toast.promise(update, {
+      await toast.promise(update, {
         loading: "Activating...",
         success: "Account Activated!",
         error: "Failed to Activate Account",
       })
 
+      router.push("/dashboard/onboard")
+
+      return null
+
+
 
     },
-    [activateFn, updateFn, user]
+    [activateFn, updateFn, user, router]
   );
   const [, action, pending] = useActionState(activateAccount, initialState);
   const [pasteText, setPasteText] = useState("");

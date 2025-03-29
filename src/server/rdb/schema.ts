@@ -30,5 +30,5 @@ export type ActivationSet = z.infer<typeof ActivationSetResource>;
 export const ActivationGetResource = BaseData.merge(z.object({}));
 export type ActivationGet = z.infer<typeof ActivationGetResource>;
 
-export const ActivationDelResource = BaseData.merge(z.object({}));
+export const ActivationDelResource = z.string().min(1);
 export type ActivationDel = z.infer<typeof ActivationDelResource>;

@@ -44,7 +44,7 @@ export const Header = ({ title, sm, xs, role }: HeaderProps) => {
             className={cn("rounded-md border-[0.33px] border-macl-gray/80 px-1.5 py-1 capitalize tracking-tight font-medium text-xs bg-white", {"text-primary/80 border-macd-blue/80": role === "neo"})}
           >
             {crumbs[1] === "dashboard" && !crumbs[2]
-              ? role === "neo" ? <div className="space-x-1 flex items-center"><span>Account activation</span><Icon name="activate" className="size-3.5" /></div> : "admin"
+              ? role === "neo" ? <div className="space-x-1 flex items-center"><span>Account activation</span><Icon name="activate" className="size-3.5" /></div> : "Home"
               : (crumbs[3] ?? "all")}
           </span>
           <SlashIcon

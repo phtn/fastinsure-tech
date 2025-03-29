@@ -46,3 +46,8 @@ yarn-error.log*
 .idea
 # Million Lint
 .million
+
+icon.txt
+_.txt
+
+.env.test

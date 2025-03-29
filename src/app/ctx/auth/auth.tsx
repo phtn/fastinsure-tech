@@ -48,7 +48,7 @@ import type { SelectUser, UserRole } from "@convex/users/d";
 import moment from "moment";
 import { useVex } from "../convex";
 import {onError, onSuccess, onWarn } from "../toasts";
-import { activationGet } from "@/server/rdb/caller";
+import { activationDel, activationGet } from "@/server/rdb/caller";
 import type { ActivationSet } from "@/server/rdb/schema";
 
 interface AuthCtxValues {
@@ -341,6 +341,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         onError("Activation code not found");
         return null;
       }
+
+      await activationDel(`ACT•${hcode}`)
 
       return storedValue[0]?.value?.group ?? null
 

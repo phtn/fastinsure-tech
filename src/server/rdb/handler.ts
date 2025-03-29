@@ -1,5 +1,5 @@
 import redis from "@/lib/redis";
-import type { ActivationDel, ActivationGet, ActivationSet, ExampleValueType } from "./schema";
+import type { ActivationGet, ActivationSet, ExampleValueType } from "./schema";
 
 
 const rdbExampleSet = async (data: ExampleValueType) => {
@@ -15,7 +15,7 @@ const activationSet = async (data: ActivationSet) => {
 const activationGet = async ({key, path}: ActivationGet) =>
   await redis.json.get(key, path)
 
-const activationDel = async ({key}: ActivationDel) =>
+const activationDel = async (key: string) =>
   await redis.json.del(key)
 
 export const rdb = {

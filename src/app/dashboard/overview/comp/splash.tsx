@@ -37,10 +37,10 @@ export const Splash = (props: SplashProps) => {
         <Header role={props.role} title={props.text ?? "Overview"} />
         <RoleBadge role={props.role} />
         </div>
-        <div className="h-1/6 w-full border-macd-gray flex justify-start px-3 items-center">
+        <div className="h-1/6 md:hidden w-full border-macd-gray flex justify-start px-3 items-center">
           {loading && <TextLoader container="animate-enter" size={12} />}
         </div>
-        <div className="flex border-t border-x-[0.33px] px-4 md:px-8 border-macd-gray/20 space-x-8 rounded-t-sm rounded-b-[15px] bg-macd-gray/30 w-full items-center h-2/6">
+        <div className="flex md:hidden border-t border-x-[0.33px] px-4 md:px-8 border-macd-gray/20 space-x-8 rounded-t-sm rounded-b-[15px] bg-macd-gray/30 w-full items-center h-2/6">
           <ButtSqx icon="user-circle-fill" iconStyle="text-primary/80" onClick={handleUserRoute} />
           <ButtSqx icon="info-circle-fill" onClick={handleSignOutRoute} />
         </div>
