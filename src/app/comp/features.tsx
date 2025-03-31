@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { Iphone15Pro } from "@/ui/iphone";
 import { Safari } from "@/ui/safari";
 import { Screen } from "@/ui/screen";
+import { HyperSpaced } from "@/ui/spacing";
 import { Image } from "@nextui-org/react";
 
 export const Features = () => {
@@ -9,6 +10,7 @@ export const Features = () => {
     <Screen>
       <Screen.Base>
         <Screen.Header dark>
+          <HyperSpaced text="BUILDS" />
           <Screen.Title>Multi-platform Applications</Screen.Title>
           <Screen.Subtext>
             Work seemlessly through different devices and platforms.
@@ -20,7 +22,7 @@ export const Features = () => {
             src="/images/dash.png"
             className={cn("h-fit w-auto grayscale")}
           />
-          <Iphone15Pro className={cn("h-fit grayscale")} src="/images/f.png" />
+          <Iphone15Pro className={cn("h-fit object-right grayscale")} src="/images/mobile-ss.jpg" />
         </Screen.Flex>
       </Screen.Base>
     </Screen>

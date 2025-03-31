@@ -1,6 +1,6 @@
 "use client";
 
-import { Spacing } from "@/ui/spacing";
+import { HyperSpaced } from "@/ui/spacing";
 import { Button, Image } from "@nextui-org/react";
 import { memo, Suspense, useCallback, useState } from "react"; // Import lazy and Suspense
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
@@ -62,9 +62,9 @@ const Jumbotron = memo(() => {
   return (
     <div className="relative ml-6 h-full w-full content-center space-y-12 md:ml-14 xl:ml-20">
       <div>
-        <Spacing text="TECH DRIVEN" />
-        <Spacing bold text="Business" />
-        <Spacing bold text="Engineering" />
+        <HyperSpaced text="TECH DRIVEN" />
+        <HyperSpaced delay={0.2} bold text="Business" />
+        <HyperSpaced delay={0.4} bold text="Engineering" />
       </div>
       <HeroButton />
     </div>

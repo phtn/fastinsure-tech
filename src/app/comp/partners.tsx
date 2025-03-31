@@ -2,6 +2,7 @@ import { Marq } from "@/ui/marq";
 import { Image } from "@nextui-org/react";
 import { useCallback } from "react";
 import { useThemeCtx } from "../ctx/theme";
+import { HyperSpaced } from "@/ui/spacing";
 
 export const Partners = () => {
   const { theme } = useThemeCtx();
@@ -9,11 +10,11 @@ export const Partners = () => {
     () => (
       <Marq pauseOnHover>
         {partners.map((partner) => (
-          <div key={partner.id} className="w-[calc(100vh*0.3)] cursor-pointer">
+          <div key={partner.id} className="w-[calc(100vh*0.15)] md:w-[calc(100vh*0.3)] cursor-pointer">
             <Image
               src={partner.logo}
               alt={partner.name}
-              className="h-[calc(100vh*0.075)] rounded-none"
+              className="md:h-[calc(100vh*0.075)] h-[calc(100vh*0.05)] select-none rounded-none"
             />
           </div>
         ))}
@@ -22,23 +23,26 @@ export const Partners = () => {
     [],
   );
   return (
-    <div className="relative h-[calc(100vh*0.5)] content-center md:my-24 xl:h-[calc(100vh*0.5)]">
+    <div className="relative h-screen content-center md:my-24">
+      <div className="absolute top-56 h-24 px-12">
+      <HyperSpaced text="PARTNERS" />
+      </div>
       <Marquee />
 
-      <div className="pointer-events-none absolute top-0 flex h-[calc(100vh*0.4)] w-full items-center justify-end bg-gradient-to-r from-background/50 from-5% via-transparent via-15% to-transparent dark:from-background/50 dark:via-30% xl:h-[calc(100vh*0.40)]">
+      <div className="pointer-events-none absolute top-0 flex h-full w-full items-center justify-end bg-gradient-to-r from-background/50 from-5% via-transparent via-15% to-transparent dark:from-background/50 dark:via-30%">
         <Image
           alt="back-wormhole"
           src="/svg/wormhole_back.svg"
-          className="relative -bottom-12 -right-[28.76vw] z-0 aspect-square w-auto rounded-none xl:h-[calc(100vh*0.5)]"
+          className="relative origin-right scale-75 -right-[48vw] md:-right-[28vw] z-10 w-auto aspect-square rounded-none h-[50vh]"
         />
         <Image
           alt="wormhole"
           src={
             theme === "light" ? "/svg/wormhole.svg" : "/svg/wormhole_dark.svg"
           }
-          className="relative -bottom-12 right-0 z-[200] aspect-square w-auto rounded-none xl:h-[calc(100vh*0.5)]"
+          className="relative bottom-0 -right-0 z-[200] scale-75 origin-right aspect-square w-auto rounded-none h-[50vh]"
         />
-        <div className="-rounded-l-md absolute bottom-[6vh] right-0 z-[100] h-[calc(100vh*0.17)] w-[100px] bg-gradient-to-r from-background/90 to-background backdrop-blur-sm md:bottom-12 md:w-[178px]" />
+        <div className="-rounded-l-md absolute top-1/4 right-0 origin-right z-[100] h-[50vh] w-[90px] scale-75 bg-gradient-to-r from-chalk/60 to-background backdrop-blur-sm md:bottom-12 md:w-[200px]" />
       </div>
     </div>
   );
