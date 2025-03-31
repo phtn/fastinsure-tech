@@ -6,14 +6,7 @@ import { cn } from "@/lib/utils";
 import { ButtSex } from "@/ui/button/ripple";
 import { FlexRow } from "@/ui/flex";
 import type { SelectUser } from "@convex/users/d";
-import {
-  DocumentTextIcon,
-  PaperAirplaneIcon,
-  ArrowPathRoundedSquareIcon,
-  RectangleStackIcon,
-} from "@heroicons/react/24/outline";
 import { Avatar } from "@nextui-org/react";
-import { CheckCircleIcon, SparklesIcon, ClockIcon } from "lucide-react";
 import { type FC, memo, type ReactNode, useMemo } from "react";
 import { useToggle } from "@/utils/hooks/useToggle";
 
@@ -32,10 +25,10 @@ const Status = (props: { status: string | undefined }) => {
       size="lg"
       start={
         props.status === "draft"
-          ? DocumentTextIcon
+        ? "file-right"
           : props.status === "submitted"
-            ? PaperAirplaneIcon
-            : CheckCircleIcon
+            ? "mail-send"
+            : "check"
       }
     >
       <PillDetail value={props.status} label="status" />
@@ -50,9 +43,9 @@ const PolicyPill = (props: { type: string | undefined; label: string }) => {
       start={
         props.label === "policy"
           ? props.type === "new"
-            ? SparklesIcon
-            : ArrowPathRoundedSquareIcon
-          : RectangleStackIcon
+            ? "sparkle"
+            : "refresh-circle"
+          : "box-linear"
       }
     >
       <PillDetail value={props.type} label={props.label} />
@@ -74,7 +67,7 @@ const CreatedAt = ({ created }: { created: number | undefined }) => {
     return open ? v1 : v2;
   }, [created, open]);
   return (
-    <ButtSex size="lg" start={ClockIcon} onClick={toggle}>
+    <ButtSex size="lg" start={"clock"} onClick={toggle}>
       <PillDetail
         value={value}
         label={open ? "created on" : "created on"}
@@ -154,7 +147,6 @@ const TopPanelComp = ({
   role,
 }: ITopPanel) => (
   <FlexRow className="h-fit w-full items-center space-x-1 from-void/40 to-void/20 px-4 py-2 backdrop-blur-xl dark:bg-gradient-to-r">
-    {/* <FlexRow className="h-fit w-full items-center space-x-2"> */}
     <PolicyPill type={service_type} label="policy" />
     <PolicyPill type={policy_coverage} label="coverage" />
     <CreatedAt created={_creationTime} />
@@ -168,7 +160,6 @@ const TopPanelComp = ({
       label={role === "underwriter" ? "supervisor" : "underwriter"}
     />
     <Status status={status} />
-    {/* </FlexRow> */}
   </FlexRow>
 );
 export const TopPanel = memo(TopPanelComp);

@@ -59,13 +59,17 @@ const RoleBadge = ({ role }: RoleBadgeProps) => {
       <div className="rounded-xl bg-gradient-to-tl from-slate-600 via-zinc-500/60 to-macl-gray border-[0.33px] border-white shadow-md">
         {role === "admin" && <Icon name="crown-light" className="text-white drop-shadow-sm" />}
       </div>
-      <div className={cn("rounded-s-xl py-1 relative -right-[2.5px] shadow-md border-chalk border-e-0 border-[0.75px] px-3 h-fit",
-        "text-tiny font-bold text-white uppercase bg-gradient-to-l",
-        {"from-blue-700 via-macl-blue to-macd-blue": role === "admin",
-          "from-green-600 via-macl-green/80 to-macd-green/80": !role,
+      <div className={cn("rounded-s-xl py-1 relative -right-[2.5px] shadow-lg border-chalk border-e-0 border-[0.75px] px-3 h-fit",
+        "text-sm font-bold text-white uppercase bg-gradient-to-l",
+        {
+          "from-green-600 via-macl-green/80 to-slate-500/40": !role,
+          "from-blue-700 via-macl-blue to-macd-blue": role === "admin",
+          "from-sky-400 via-sky-500/60 to-sky-500/80": role === "manager",
+          "from-slate-400 via-slate-500/60 to-slate-500/80": role === "agent",
+          "from-indigo-400 via-indigo-500/60 to-indigo-500/80": role === "underwriter",
           "text-orange-400 from-slate-200 via-slate-100/80 to-slate-100/40": role === "neo"
         }
-      )}>{role === "neo" ? "new" : "New"}</div>
+      )}>{role === "neo" ? "new" : role}</div>
     </div>
   );
 };

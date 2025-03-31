@@ -1,24 +1,24 @@
 "use client";
 
-import type { ClassName, DualIcon } from "@/app/types";
+import type { ClassName } from "@/app/types";
 import { cn } from "@/lib/utils";
 import { opts } from "@/utils/helpers";
 import type {
   ButtonHTMLAttributes,
   MouseEvent,
-  ReactElement,
   ReactNode,
   RefObject,
 } from "react";
 import { useCallback, useEffect, useState } from "react";
-import type { ButtSize } from "./types";
-import { Spinner } from "@nextui-org/react";
+import type { ButtIconVariant, ButtSize } from "./types";
+import { type IconName } from "@/lib/icon/types";
+import { Icon } from "@/lib/icon";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   rippleColor?: string;
   duration?: string;
-  start?: DualIcon;
-  end?: DualIcon | ReactElement;
+  start?: IconName;
+  end?: IconName;
   inverted?: boolean;
   loading?: boolean;
   size?: ButtSize;
@@ -78,46 +78,18 @@ export const ButtSex = ({
     }
   }, [buttonRipples]);
 
-  const Icon = useCallback(
-    (props: { icon: DualIcon; loading: boolean }) =>
-      (loading ? (
-        <Spinner size="sm" color={inverted ? "warning" : "primary"} />
-      ) : (
-        <props.icon
-          className={cn(
-            "stroke-1 text-void/90 dark:text-icon-dark",
-            "group-hover:text-void dark:group-hover:text-chalk",
-            {
-              "size-3.5": size === "sm",
-              "size-4": size === "md",
-              "size-5": size === "lg",
-            },
-            {
-              "text-chalk group-hover:text-white dark:text-void/80": inverted,
-              "dark:group-hover:text-void": inverted,
-            },
-            {
-              "stroke-1 text-void group-hover:text-chalk":
-                variant === "secondary",
-            },
-          )}
-        />
-      )) as ReactElement,
-    [inverted, size, loading, variant],
-  );
-
   const StartOption = useCallback(() => {
-    const options = opts(<div className="w-6 flex items-center justify-center"><Icon loading={loading} icon={start!} /></div>, null);
+    const options = opts(<div className="w-6 flex items-center justify-center"><IconComponent loading={loading} size={size} icon={start!} inverted={inverted} /></div>, null);
     return <>{options.get(!!start)}</>;
-  }, [start, Icon, loading]);
+  }, [start, loading, inverted, size]);
 
   const EndOption = useCallback(() => {
-    const Component = typeof end === 'object' ? end : <Icon loading={loading} icon={end!} />;
+    const Component = typeof end === 'object' ? end : <IconComponent size={size} loading={loading} icon={end!} inverted={inverted} />;
     const options = opts(<div className="w-6 flex items-center justify-center">
       {Component}
     </div>, null);
     return <>{options.get(!!end)}</>;
-  }, [end, Icon, loading]);
+  }, [end, loading, inverted, size]);
 
   return (
     <Container size={size} inverted={inverted} disabled={disabled}>
@@ -125,8 +97,8 @@ export const ButtSex = ({
         disabled={disabled ?? loading}
         className={cn(
           "relative flex w-full items-center justify-center overflow-hidden",
-          "rounded-lg border",
-          "border-primary/40 bg-goddess group-hover:bg-white",
+          "rounded-lg border space-x-1.5",
+          "border-primary/40 bg-white group-hover:bg-white",
           "dark:bg-void dark:group-hover:bg-void",
           "dark:border-primary-500/40 dark:group-hover:border-primary-500/50",
           "dark:shadow-secondary dark:group-hover:drop-shadow-md",
@@ -136,8 +108,11 @@ export const ButtSex = ({
             "bg-void dark:bg-primary": inverted,
             "dark:border-void/60 dark:group-hover:border-void/80": inverted,
             "group-hover:bg-void dark:group-hover:bg-white": inverted,
-            "h-8 gap-0.5 rounded-lg px-2.5 py-1.5": size === "sm",
+            "h-8 rounded-lg ps-2 pe-1 py-1.5": size === "sm",
+            "h-8 rounded-lg px-2 py-1.5": size === "sm" && !end,
+            "h-8 rounded-lg pe-3 py-1.5": size === "sm" && !!start,
             "h-10 rounded-xl px-2.5 py-2": size === "md",
+            "h-10 rounded-xl gap-0.5 ps-3 pe-2.5 py-2": size === "md" && !!end,
             "h-14 gap-2 rounded-xl px-2.5 py-2": size === "lg",
             "bg-secondary-300 group-hover:bg-secondary":
               variant === "secondary",
@@ -155,7 +130,7 @@ export const ButtSex = ({
         <div
           className={cn(
             "relative z-[200] flex h-full items-center overflow-hidden whitespace-nowrap",
-            "font-inter text-xs font-bold capitalize tracking-tight text-void",
+            "font-inter text-xs font-bold capitalize tracking-tighter text-void",
             "drop-shadow-sm group-hover:text-void/90",
             "dark:text-chalk/80 dark:group-hover:text-chalk",
             { "text-chalk/90 group-hover:text-chalk": inverted },
@@ -201,6 +176,38 @@ export const ButtSex = ({
     </Container>
   );
 };
+
+interface IconComponentProps {
+  icon: IconName;
+  size?: ButtSize;
+  loading?: boolean;
+  inverted?: boolean;
+  variant?: ButtIconVariant;
+}
+
+const IconComponent = ({ icon, size, loading=false, inverted=false, variant }: IconComponentProps) => {
+  return (
+    <Icon name={loading ? "spinners-ring" : icon}
+    className={cn(
+      "text-void/90 dark:text-icon-dark",
+      "group-hover:text-void dark:group-hover:text-chalk",
+      {
+        "size-4": size === "sm",
+        "size-5": size === "md",
+        "size-6": size === "lg",
+      },
+      {
+        "text-chalk group-hover:text-white dark:text-void/80": inverted,
+        "dark:group-hover:text-void": inverted,
+      },
+      {
+        "text-void group-hover:text-chalk":
+        variant === "secondary",
+      },
+    )}
+    />
+  )
+}
 
 interface ContainerProps {
   children?: ReactNode;

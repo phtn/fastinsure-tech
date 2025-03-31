@@ -8,13 +8,8 @@ let idToken: string | undefined = undefined;
 let refresh: string | undefined = undefined;
 
 export const getConfig = async (): Promise<AxiosRequestConfig> => {
-  if (!idToken) {
-    idToken = await getSession();
-  }
-
-  if (!refresh) {
-    refresh = await getRefresh();
-  }
+  idToken ??= await getSession();
+  refresh ??= await getRefresh();
 
   const config: AxiosRequestConfig = {
     headers: {

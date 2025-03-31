@@ -23,7 +23,7 @@ export function Proxima() {
                 className="size-8 rounded-none"
               />
               <div className="-space-y-0.5 text-lg leading-none">
-                <h2 className="text-normal font-semibold -tracking-wide text-primary dark:text-icon-dark">
+                <h2 className="text-normal font-bold -tracking-wide text-primary dark:text-icon-dark">
                   FastInsure
                 </h2>
                 <h2 className="text-normal -tracking-wider font-light text-primary dark:text-icon-dark">

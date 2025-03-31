@@ -8,8 +8,9 @@ import { log_schema } from "./logs/d";
 import { notification_schema } from "./notifications/d";
 import { chat_schema } from "./chats/d";
 import { room_schema } from "./rooms/d";
-import { message_like_schema } from "./message_likes/d";
+import { like_schema } from "./likes/d";
 import { group_schema } from "./groups/d";
+import { message_schema } from "./messages/d";
 
 export default defineSchema({
   users: defineTable(user_schema)
@@ -124,11 +125,14 @@ export default defineSchema({
 
   chats: defineTable(chat_schema)
     .index("by_chat_id", ["chat_id"])
-    .index("by_author_uid", ["author_uid"])
-    .index("by_author_name", ["author_name"])
-    .index("by_room_id", ["room_id"]),
+    .index("by_creator_id", ["creator_id"])
+    .index("by_participant", ["participants"]),
 
-  message_likes: defineTable(message_like_schema)
+  messages: defineTable(message_schema)
+      .index("by_chat_id", ["chat_id"])
+      .index("by_author", ["author"]),
+
+  likes: defineTable(like_schema)
     .index("by_chat_id", ["chat_id"])
     .index("by_liker_uid", ["liker_uid"]),
 

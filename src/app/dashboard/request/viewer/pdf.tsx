@@ -1,17 +1,15 @@
-import { type FC, useCallback, useEffect, useRef, useState } from "react";
+import { ButtSex } from "@/ui/button/ripple";
+import { Image } from "@nextui-org/react";
+import init, { json_to_csv_3 } from "@wasm/csv3/csv";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { Image } from "@nextui-org/react";
-import { ButtSex } from "@/ui/button/ripple";
-import { FileInputIcon } from "lucide-react";
 import moment from "moment";
-import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
-import init, { json_to_csv_3 } from "@wasm/csv3/csv";
+import { type FC, useCallback, useEffect, useRef, useState } from "react";
 import type {
-  AddressFieldProps,
-  AutoFieldProps,
-  ReqFieldProps,
-  SubjectFieldProps,
+    AddressFieldProps,
+    AutoFieldProps,
+    ReqFieldProps,
+    SubjectFieldProps,
 } from "./body";
 
 interface PdfProps {
@@ -137,7 +135,7 @@ export const PdfObject = ({
       link.click();
 
       document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+        URL.revokeObjectURL(url);
       setCsvLoading(false);
     } catch (error) {
       console.error("Error generating CSV:", error);
@@ -151,21 +149,30 @@ export const PdfObject = ({
       <div className="flex h-24 items-center space-x-4 border-b">
         <ButtSex
           size="md"
+          end="pdf-file"
           inverted
           onClick={generatePdf}
-          end={FileInputIcon}
           loading={pdfLoading}
         >
-          <span className="px-4">PDF</span>
+          <span className="px-1 text-orange-300">PDF</span>
         </ButtSex>
         <ButtSex
           size="md"
           inverted
-          end={ArrowDownTrayIcon}
+          end="csv-file"
           loading={csvLoading}
           onClick={generateCsv}
         >
-          <span className="px-4">CSV</span>
+          <span className="px-1 text-teal-300">CSV</span>
+        </ButtSex>
+        <ButtSex
+          size="md"
+          inverted
+          end="mail-send"
+          loading={csvLoading}
+          onClick={generateCsv}
+        >
+          <span className="px-1 text-blue-300">Email</span>
         </ButtSex>
       </div>
       {/* Section to generate PDF */}

@@ -2,11 +2,6 @@
 
 import { Tab, Tabs } from "@nextui-org/react";
 import {
-  CalendarDaysIcon,
-} from "@heroicons/react/24/outline";
-import { UserGroupIcon } from "@heroicons/react/24/solid";
-
-import {
   type Key,
   useCallback,
   useMemo,
@@ -106,12 +101,12 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           "space-x-2",
         )}
       >
-        <ButtSex size="sm" inverted start={CalendarDaysIcon} onClick={handleCreate}>
+        <ButtSex size="sm" inverted start={"calendar-outline"} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
             View Calendar
           </p>
         </ButtSex>
-        <ButtSex size="sm" start={UserGroupIcon} onClick={handleCreate}>
+        <ButtSex size="sm" start={"group"} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
             Create Teams
           </p>

@@ -25,7 +25,7 @@ export const AgentOverview = () => {
 
   return (
     <div className="overflow-auto scroll-smooth rounded-tl-3xl p-4">
-      <Splash text={"Dashboard"}>
+      <Splash text={"Dashboard"} role={vxuser?.role}>
         <div className="absolute top-4 z-[60] flex h-1/2 w-1/3 items-center space-x-2 border-primary px-12 font-inst text-2xl delay-1000">
           <UserOptions />
         </div>

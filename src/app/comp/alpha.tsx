@@ -17,8 +17,13 @@ const Header = () => (
         className="size-[12px] rounded-none xl:size-[16px]"
       />
     </div>
-    <h1 className="font-inst font-medium text-foreground drop-shadow-lg dark:text-foreground/60 xl:text-lg">
-      FastInsure Technologies
+    <h1 className="font-inst space-x-1.5 font-medium text-foreground drop-shadow-lg dark:text-foreground/60 xl:text-lg">
+      <span className="text-normal font-semibold -tracking-wide text-primary dark:text-icon-dark">
+        FastInsure
+      </span>
+      <span className="text-normal -tracking-wider font-light text-primary dark:text-icon-dark">
+        Technologies
+      </span>
     </h1>
   </div>
 );

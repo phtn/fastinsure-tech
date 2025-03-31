@@ -15,7 +15,7 @@ export const like = mutation({
       return null;
     }
     if (chat.chat_id !== undefined) {
-      await db.insert("message_likes", {
+      await db.insert("likes", {
         liker_uid,
         chat_id,
         updated_at: Date.now(),
@@ -24,40 +24,40 @@ export const like = mutation({
   },
 });
 
-export const read = mutation({
-  args: {
-    chat_id: v.string(),
-    is_read: v.boolean(),
-  },
-  handler: async ({ db }, { chat_id, is_read }) => {
-    const chat = await checkChat(db, chat_id);
+// export const read = mutation({
+//   args: {
+//     chat_id: v.string(),
+//     is_read: v.boolean(),
+//   },
+//   handler: async ({ db }, { chat_id, is_read }) => {
+//     const chat = await checkChat(db, chat_id);
 
-    if (chat === null) {
-      return null;
-    }
-    if (chat.body !== undefined) {
-      await db.patch(chat._id, { is_read });
-    }
-  },
-});
+//     if (chat === null) {
+//       return null;
+//     }
+//     if (chat.body !== undefined) {
+//       await db.patch(chat._id, { is_read });
+//     }
+//   },
+// });
 
-export const edit = mutation({
-  args: {
-    chat_id: v.string(),
-    body: v.optional(v.string()),
-    is_read: v.optional(v.boolean()),
-  },
-  handler: async ({ db }, { chat_id, body }) => {
-    const chat = await checkChat(db, chat_id);
+// export const edit = mutation({
+//   args: {
+//     chat_id: v.string(),
+//     body: v.optional(v.string()),
+//     is_read: v.optional(v.boolean()),
+//   },
+//   handler: async ({ db }, { chat_id, body }) => {
+//     const chat = await checkChat(db, chat_id);
 
-    if (chat === null) {
-      return null;
-    }
-    if (chat.body !== undefined) {
-      await db.patch(chat._id, { body });
-    }
-  },
-});
+//     if (chat === null) {
+//       return null;
+//     }
+//     if (chat.body !== undefined) {
+//       await db.patch(chat._id, { body });
+//     }
+//   },
+// });
 
 const checkChat = async <DB extends GenericDatabaseWriter<DataModel>>(
   db: DB,

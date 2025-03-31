@@ -7,8 +7,6 @@ import { FlexRow } from "@/ui/flex";
 import { FastField, FastFile } from "@/ui/input";
 import type { HyperSelectOption } from "@/ui/select";
 import { opts } from "@/utils/helpers";
-import { ArrowDownOnSquareIcon } from "@heroicons/react/24/outline";
-import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import {
   Image,
   Select,
@@ -422,7 +420,7 @@ const TopActionsPanelComponent = ({
       <section className="flex items-center space-x-0.5 md:space-x-1.5">
         <SButton
           fn={onHover("save")}
-          end={ArrowDownOnSquareIcon}
+          end={"square-top-up"}
           loading={pending && saveDisabled}
           disabled={saveDisabled}
         >
@@ -431,7 +429,7 @@ const TopActionsPanelComponent = ({
         <SButton
           inverted
           fn={onHover("submit")}
-          end={PaperAirplaneIcon}
+          end={"arrow-right-02"}
           disabled={submitDisabled}
           loading={pending}
         >

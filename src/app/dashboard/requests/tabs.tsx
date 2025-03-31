@@ -4,9 +4,6 @@ import { cn } from "@/lib/utils";
 import { ButtSex, ButtSqx } from "@/ui/button/index";
 import { guid } from "@/utils/helpers";
 import { useUtils } from "@/utils/useUtils";
-import {
-    PlusIcon,
-} from "@heroicons/react/24/outline";
 import { Tab, Tabs } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -112,7 +109,7 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           "space-x-4",
         )}
       >
-        <ButtSex size="sm" start={PlusIcon} onClick={handleCreate}>
+        <ButtSex size="sm" end={"plus-circle-linear"} onClick={handleCreate}>
           <p className="font-inter text-xs font-medium tracking-tight">
             Create New Request
           </p>

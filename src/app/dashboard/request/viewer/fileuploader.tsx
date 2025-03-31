@@ -1,22 +1,17 @@
 "use client";
 
+import { type ClassName } from "@/app/types";
+import { Icon } from "@/lib/icon";
 import { cn } from "@/lib/utils";
 import { ButtSqx } from "@/ui/button/button";
 import { ButtSex } from "@/ui/button/ripple";
 import { FlexRow } from "@/ui/flex";
+import { LoaderSm } from "@/ui/loader";
 import { SideVaul } from "@/ui/sidevaul";
 import { FlatWindow } from "@/ui/window";
-import {
-    DocumentArrowUpIcon,
-    XMarkIcon,
-} from "@heroicons/react/24/solid";
-import { type ReactNode, useEffect, useState } from "react";
-
-import { type ClassName } from "@/app/types";
-import { Icon } from "@/lib/icon";
-import { LoaderSm } from "@/ui/loader";
 import { Err } from "@/utils/helpers";
-import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
+import type { ChangeEvent, ReactNode, RefObject, } from "react";
+import { useEffect, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -47,20 +42,11 @@ export const FileUpload = () => {
     }
   }, [updateRequestFiles, urlList]);
 
-  return (
+  // return true && <Trigger inputRef={inputFileRef} onFileChange={onFileChange} browseFn={browseFiles} />
+  return true && (
     <div className="">
-      <FlexRow className="">
-        <ButtSex end={DocumentArrowUpIcon} size="md" onClick={browseFiles}>
-          Upload Files
-        </ButtSex>
-        <input
-          multiple
-          type="file"
-          ref={inputFileRef}
-          onChange={onFileChange}
-          className="inert pointer-events-none absolute size-0 opacity-0"
-        />
-      </FlexRow>
+      <Trigger inputRef={inputFileRef} onFileChange={onFileChange} browseFn={browseFiles} />
+
       <FileUploadViewer
         open={open}
         toggle={toggle}
@@ -79,6 +65,27 @@ export const FileUpload = () => {
     </div>
   );
 };
+
+interface TriggerProps {
+  browseFn: VoidFunction
+  inputRef: RefObject<HTMLInputElement | null>
+  onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+const Trigger = ({browseFn, inputRef, onFileChange}: TriggerProps) => (
+  <FlexRow className="rounded-2xl">
+    <ButtSex size="md" end="cloud-upload" onClick={browseFn}>
+      Upload Files
+    </ButtSex>
+    <input
+    multiple
+    type="file"
+    ref={inputRef}
+    onChange={onFileChange}
+    className="pointer-events-none absolute size-0 opacity-0"
+    />
+  </FlexRow>
+)
 
 interface DataViewerProps {
   removeFile: (index: number) => void;
@@ -111,7 +118,7 @@ const DataViewer = ({ files, removeFile }: DataViewerProps) => {
               </div>
               <ButtSqx
                 size="sm"
-                icon={"close"}
+                icon="close"
                 variant="steel"
                 iconStyle="text-chalk size-5"
                 onClick={handleFileRemove(i)}
@@ -167,7 +174,7 @@ const FileUploadViewer = ({
         {children}
         <SideVaul.Footer>
           <FlexRow className="w-full items-center justify-between space-x-1.5">
-            <ButtSex onClick={cancel} end={XMarkIcon}>
+            <ButtSex onClick={cancel} end={"close"}>
               <span className="">clear all</span>
             </ButtSex>
             <div className="flex gap-1.5">
@@ -178,7 +185,7 @@ const FileUploadViewer = ({
                 loading={loading}
                 onClick={submitFn}
                 disabled={count === 0}
-                start={ArrowUpTrayIcon}
+                start={"square-arrow-up-right"}
                 inverted
               >
                 <div className="flex items-center justify-between gap-3">

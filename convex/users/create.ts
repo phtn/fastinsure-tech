@@ -1,7 +1,7 @@
 import { mutation } from "@vex/server";
 import { user_schema } from "./d";
 import { guid } from "@/utils/helpers";
-import { type GenericDatabaseWriter } from "convex/server";
+import type { GenericDatabaseReader, GenericDatabaseWriter } from "convex/server";
 import { type DataModel } from "@vex/dataModel";
 
 const create = mutation({
@@ -36,6 +36,16 @@ const create = mutation({
 export default create;
 
 export const checkUser = async <DB extends GenericDatabaseWriter<DataModel>>(
+  db: DB,
+  uid: string,
+) =>
+  await db
+    .query("users")
+    .withIndex("by_uid", (q) => q.eq("uid", uid))
+    .first();
+
+
+export const getUser = async <DB extends GenericDatabaseReader<DataModel>>(
   db: DB,
   uid: string,
 ) =>

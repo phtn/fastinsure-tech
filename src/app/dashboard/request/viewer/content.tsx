@@ -11,7 +11,6 @@ export const ViewerContent = () => {
   return (
     <main>
       <Header title="request" xs />
-
       <RequestViewerProvider request_id={request_id}>
         <ContentBody />
       </RequestViewerProvider>

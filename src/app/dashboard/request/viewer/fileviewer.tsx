@@ -63,8 +63,8 @@ const FileCounter = ({ count, pending }: IFileCounter) => (
       { "-top-10": count === 0 },
     )}
   >
-    <div className="flex h-8 w-fit items-center space-x-1 rounded-md bg-cake/40 pe-3 ps-1 text-sm font-medium capitalize leading-none tracking-tight backdrop-blur-xl">
-      <div className="flex size-5 items-center justify-center rounded-md font-bold">
+    <div className="flex h-8 w-fit items-center rounded-md bg-cake/40 pe-3 ps-1 text-sm font-medium capitalize leading-none tracking-tight backdrop-blur-xl">
+      <div className="flex size-5 items-center justify-center rounded-md">
         {pending ? <Spinner size="sm" /> : count}
       </div>
       <h2 className="text-slate-950">File{`${count > 1 ? "s" : ""}`}</h2>
@@ -142,15 +142,16 @@ const AttachmentItem = ({ url, filename, file }: IAttachmentItem) => {
           <ButtSqx
             size="md"
             icon={"search"}
-            iconStyle="text-chalk"
-            variant="steel"
+            iconStyle="text-chalk group-hover/btn:text-orange-200"
+            // variant="steel"
             disabled={!!error || !url}
           />
           <ButtSqx
             size="md"
             icon={"download"}
             onClick={handleDownload}
-            iconStyle={!url ? "text-gray-600" : "text-chalk"}
+            iconStyle={cn("text-chalk group-hover/btn:text-orange-200", {"text-gray-600": !url})}
+            // iconStyle={!url ? "text-gray-600" : "text-chalk"}
             variant="steel"
             disabled={!!error || !url}
           />
@@ -159,8 +160,7 @@ const AttachmentItem = ({ url, filename, file }: IAttachmentItem) => {
         <ButtSqx
           size="md"
           icon={"close"}
-          iconStyle="text-chalk"
-          variant="steel"
+          iconStyle="text-chalk group-hover/btn:text-orange-200"
         />
       </FlexRow>
     </div>

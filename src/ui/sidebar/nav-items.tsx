@@ -1,13 +1,14 @@
 import { useNav } from "@/app/dashboard/hooks/useNav";
-import { motion } from "framer-motion";
-import { memo, use, useCallback } from "react";
-import type { NavItemProps } from "./types";
-import { SidebarCtx } from "./ctx";
-import { usePathname } from "next/navigation";
+import { Icon } from "@/lib/icon";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { memo, use, useCallback } from "react";
 import { HyperList } from "../list";
+import { SidebarCtx } from "./ctx";
+import { type NavItemProps } from "./types";
 
 export const NavItems = () => {
   const { navs } = useNav();
@@ -30,15 +31,15 @@ export const NavItem = (item: NavItemProps) => {
 
   const renderIcon = useCallback(() => {
     if (icon.type === "icon") {
-      const IconComponent = icon.content;
       return (
         <div
           className={cn("p-1", className, { active: isActive })}
           data-testid={`sidebar-button-${id}`}
         >
-          <IconComponent
+          <Icon
+            name={icon.content}
             className={cn(
-              "size-[1.5rem] shrink-0 stroke-1 text-primary-200 drop-shadow-md transition-all duration-300 ease-out transform-gpu hover:text-primary-200 group-hover:text-chalk group-hover:scale-105 dark:text-primary-700",
+              "size-[1.5rem] shrink-0 text-primary-200 drop-shadow-md transition-all duration-300 ease-out transform-gpu hover:text-primary-200 group-hover:text-chalk group-hover:scale-105 dark:text-primary-700",
               {
                 "active text-secondary dark:text-secondary-400": isActive,
               },
@@ -50,7 +51,7 @@ export const NavItem = (item: NavItemProps) => {
       return (
         <Image
           alt={label}
-          src={icon.content as string}
+          src={icon.content}
           className={cn("size-7 flex-shrink-0 rounded-full", {})}
         />
       );
@@ -65,7 +66,7 @@ export const NavItem = (item: NavItemProps) => {
           opacity: open ? 1 : 0,
         }}
         className={cn(
-          "rounded-xl px-3 py-1 font-inst font-medium text-orange-50",
+          "rounded-xl px-3 tracking-tight py-1 font-medium text-orange-50/80",
           "transition-all duration-300 ease-out",
           {"active text-blue-400": isActive}
           )}

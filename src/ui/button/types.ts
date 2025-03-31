@@ -9,7 +9,8 @@ export type ButtIconVariant =
   | "goddess"
   | "active"
   | "steel"
-  | "bright";
+  | "bright"
+  | "secondary"
 export interface ButtIconProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   variant?: ButtIconVariant;

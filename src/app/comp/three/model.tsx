@@ -1,63 +1,39 @@
-import { useGLTF } from "@react-three/drei";
-import { type GLTF } from "three-stdlib";
-import type {
-  EulerOrder,
-  Group,
-  Material,
-  Mesh,
-  Object3DEventMap,
-} from "three";
-import type { Euler, ReactProps, Vector3 } from "@react-three/fiber";
-import { memo, useCallback } from "react";
 
-type GLTFResult = GLTF & {
-  nodes: Record<string, Mesh>;
-  materials: Record<string, Material>;
-};
+import { useGLTF } from "@react-three/drei";
+import type { Mesh, Material } from "three";
+import type { Euler, Vector3 } from "@react-three/fiber";
+import { memo, type ComponentProps } from "react";
 
 const shuttle = "/threed/space_shuttle.glb";
 
-const ModelComponent = (
-  props: ReactProps<Group<Object3DEventMap>> & {
-    position: (number | Vector3 | [x: number, y: number, z: number]) & Vector3;
-  } & {
-    rotation: (
-      | number
-      | Euler
-      | [x: number, y: number, z: number, order?: EulerOrder | undefined]
-    ) &
-      Euler;
-  } & {
-    scale: (number | Vector3 | [x: number, y: number, z: number]) & Vector3;
-  },
-) => {
-  const { nodes, materials } = useGLTF(shuttle) as GLTFResult;
+interface ModelProps extends ComponentProps<"group"> {
+  position?: Vector3 | [number, number, number];
+  rotation?: Euler | [number, number, number];
+  scale?: Vector3 | [number, number, number];
+}
 
-  const Nodes = useCallback(
-    () =>
-      Object.keys(nodes).map((key) => (
-        <mesh
-          key={key}
-          castShadow
-          receiveShadow
-          geometry={nodes[key]?.geometry}
-          material={materials[key] ?? nodes[key]?.material}
-        />
-      )),
-    [materials, nodes],
-  );
+const ModelComponent = ({ position, rotation, scale, ...props }: ModelProps) => {
+  const { nodes, materials } = useGLTF(shuttle) as unknown as {
+    nodes: Record<string, Mesh>;
+    materials: Record<string, Material>;
+  };
 
   return (
-    <group {...props} dispose={null}>
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Cube?.geometry}
-        material={materials.Material}
-      />
-      <Nodes />
+    <group position={position} rotation={rotation} scale={scale} {...props} dispose={null}>
+      {Object.entries(nodes).map(([key, node]) =>
+        node.geometry ? ( // Ensure it's a mesh with geometry
+          <mesh
+            key={key}
+            castShadow
+            receiveShadow
+            geometry={node.geometry}
+            material={materials[key] ?? node.material}
+          />
+        ) : null
+      )}
     </group>
   );
 };
+
 export const Model = memo(ModelComponent);
 useGLTF.preload(shuttle);

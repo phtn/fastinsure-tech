@@ -1,17 +1,18 @@
-import type { ClassName, DualIcon } from "@/app/types";
+import type { ClassName } from "@/app/types";
 import { type SpecialEntity } from "@/lib/docai/resource";
+import { Icon } from "@/lib/icon";
+import { type IconName } from "@/lib/icon/types";
 import { cn } from "@/lib/utils";
 import { ButtSex } from "@/ui/button/ripple";
 import { InputFieldName } from "@/ui/input";
-import { ArrowUturnLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Button, Image } from "@nextui-org/react";
 import { FileSymlinkIcon, ScanIcon, ScanTextIcon } from "lucide-react";
 import {
-  memo,
-  type FormEvent,
-  type MouseEvent,
-  type PropsWithChildren,
-  type ReactNode,
+    memo,
+    type FormEvent,
+    type MouseEvent,
+    type PropsWithChildren,
+    type ReactNode,
 } from "react";
 
 export const Wrapper = ({ children }: PropsWithChildren) => (
@@ -41,7 +42,7 @@ interface FormHeaderProps {
   isValid: boolean;
   children?: ReactNode;
   title?: string;
-  icon?: DualIcon;
+  icon?: IconName;
 }
 export const FormHeader = (props: FormHeaderProps) => {
   return (
@@ -136,7 +137,7 @@ const ImageView = ({
         onPress={clearFile}
         className="absolute right-1 top-1 z-50 hidden size-6 animate-enter items-center rounded-full border group-hover:flex"
       >
-        <XMarkIcon className={"size-4 text-background"} />
+        <Icon name="close" className={"size-5 text-background"} />
       </Button>
       {children}
     </div>
@@ -287,7 +288,7 @@ const Results = ({ children, withResult, applyFn }: ResultsWrapperProps) => (
         inverted
         size="md"
         onClick={applyFn}
-        start={ArrowUturnLeftIcon}
+        start={"square-bottom-up"}
         className="relative z-[60] font-medium tracking-tight"
       >
         Apply Scan Results

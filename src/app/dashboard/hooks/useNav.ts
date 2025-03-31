@@ -1,119 +1,112 @@
 import { useAuthCtx } from "@/app/ctx/auth/auth";
 import { type INavItem } from "@/ui/sidebar/types";
-import {
-  ShieldCheckIcon,
-  Squares2X2Icon,
-  TableCellsIcon,
-  UsersIcon,
-} from "@heroicons/react/24/solid";
 import { useCallback, useEffect, useMemo, useState } from "react";
-
-// const f_navs: INavItem[] = [
-//   {
-//     id: 3,
-//     label: "Overview",
-//     href: "/dashboard",
-//     icon: { type: "icon", content: Squares2X2Icon },
-//   },
-//   {
-//     id: 4,
-//     label: "Requests",
-//     href: "/dashboard/requests",
-//     icon: { type: "icon", content: TableCellsIcon },
-//   },
-//   {
-//     id: 5,
-//     label: "Agents",
-//     href: "#",
-//     icon: { type: "icon", content: UsersIcon },
-//   },
-// ];
 
 export const useNav = () => {
   const [navs, setNavs] = useState<INavItem[] | undefined>();
 
-  const n_navs: INavItem[] = useMemo(
+  const n_navs = useMemo(
     () => [
       {
         label: "Activation",
         href: "/dashboard",
-        icon: { type: "icon", content: ShieldCheckIcon },
+        icon: { type: "icon", content: "home-linear" },
       },
-    ],
+    ] as  INavItem[],
     [],
   );
 
-  const s_navs: INavItem[] = useMemo(
+  const s_navs = useMemo(
     () => [
       {
         label: "Overview",
         href: "/dashboard",
-        icon: { type: "icon", content: Squares2X2Icon },
+        icon: { type: "icon", content: "home-linear" },
       },
       {
         label: "Requests",
         href: "/dashboard/requests",
-        icon: { type: "icon", content: TableCellsIcon },
+        icon: { type: "icon", content: "folder-linear" },
       },
       {
         label: "Team",
         href: "/dashboard/team",
-        icon: { type: "icon", content: UsersIcon },
+        icon: { type: "icon", content: "group" },
       },
-    ],
+      {
+        label: "Chats",
+        href: "/dashboard/chats",
+        icon: { type: "icon", content: "chat-linear" },
+      },
+    ] as INavItem[],
     [],
   );
 
-  const a_navs: INavItem[] = useMemo(
+  const a_navs  = useMemo(
     () => [
       {
         label: "Overview",
         href: "/dashboard",
-        icon: { type: "icon", content: Squares2X2Icon },
+        icon: { type: "icon", content: "home-linear" },
       },
       {
         label: "Requests",
         href: "/dashboard/requests",
-        icon: { type: "icon", content: TableCellsIcon },
+        icon: { type: "icon", content: "folder-linear" },
       },
-    ],
+      {
+        label: "Chats",
+        href: "/dashboard/chats",
+        icon: { type: "icon", content: "chat-round-outline" },
+      },
+    ] as INavItem[],
     [],
   );
 
-  const m_navs: INavItem[] = useMemo(
+  const m_navs = useMemo(
     () => [
       {
         label: "Overview",
         href: "/dashboard",
-        icon: { type: "icon", content: Squares2X2Icon },
+        icon: { type: "icon", content: "home-linear" },
       },
       {
         label: "Requests",
         href: "/dashboard/requests",
-        icon: { type: "icon", content: TableCellsIcon },
+        icon: { type: "icon", content: "folder-linear" },
       },
       {
         label: "Team",
         href: "/dashboard/team",
-        icon: { type: "icon", content: UsersIcon },
+        icon: { type: "icon", content: "group" },
       },
-    ],
+      {
+        label: "Chats",
+        href: "/dashboard/chats",
+        icon: { type: "icon", content: "chat-linear" },
+      },
+    ] as INavItem[],
     [],
   );
 
-  const u_navs: INavItem[] = useMemo(
+  const u_navs = useMemo(
     () => [
       {
         label: "Overview",
         href: "/dashboard",
-        icon: { type: "icon", content: Squares2X2Icon },
+        icon: { type: "icon", content: "home-linear" },
       },
       {
         label: "Requests",
         href: "/dashboard/requests",
-        icon: { type: "icon", content: TableCellsIcon },
+        icon: { type: "icon", content: "folder-linear" },
       },
-    ],
+      {
+        label: "Chats",
+        href: "/dashboard/chats",
+        icon: { type: "icon", content: "chat-linear" },
+      },
+    ] as  INavItem[],
     [],
   );
 

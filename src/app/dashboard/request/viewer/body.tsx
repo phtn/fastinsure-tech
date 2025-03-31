@@ -1,32 +1,27 @@
 import { ButtSex } from "@/ui/button/ripple";
-import {
-  PaperAirplaneIcon,
-  UserIcon,
-  TruckIcon,
-  DocumentArrowDownIcon,
-} from "@heroicons/react/24/outline";
+import { opts } from "@/utils/helpers";
 import { Accordion, AccordionItem } from "@nextui-org/react";
-import { FileSymlinkIcon } from "lucide-react";
-import { type FC, useCallback, useMemo } from "react";
+import { type FC, memo, useCallback, useMemo } from "react";
 import { useRequestViewer } from "./ctx";
 import { PdfObject } from "./pdf";
-import { opts } from "@/utils/helpers";
 
-import type { SelectRequest } from "@convex/requests/d";
-import type { SelectAuto } from "@convex/autos/d";
+import type { ClassName } from "@/app/types";
+import { Icon } from "@/lib/icon";
+import type { IconName } from "@/lib/icon/types";
 import type { SelectAddress } from "@convex/address/d";
+import type { SelectAuto } from "@convex/autos/d";
+import type { SelectRequest } from "@convex/requests/d";
 import type { SelectSubject } from "@convex/subjects/d";
 import {
-  excludeProps,
-  type ITopPanel,
-  RenderRow,
-  RequestId,
-  TopPanel,
+    excludeProps,
+    type ITopPanel,
+    RenderRow,
+    RequestId,
+    TopPanel,
 } from "./components";
-import type { ClassName, DualIcon } from "@/app/types";
-import { AttachedFiles } from "./fileviewer";
-import { ArrowUpCircleIcon } from "@heroicons/react/24/solid";
 import { FileUpload } from "./fileuploader";
+import { AttachedFiles } from "./fileviewer";
+import { ButtSqx } from "@/ui/button/button";
 
 export type ReqFieldProps = Omit<
   SelectRequest,
@@ -59,13 +54,14 @@ const Fields: FC<{
   };
 
   return (
-    <div className="mb-4 bg-steel/5">
+    <div className="mb-4 group/table bg-steel/5">
       <div className="overflow-hidden rounded-md border-[0.33px] border-primary-300 dark:border-adam/60">
         <div
           style={{ paddingBottom: pdf ? 10 : 0 }}
-          className="flex h-[39px] w-full items-center bg-steel/50 px-4 font-medium tracking-tight text-void"
+          className="flex h-[39px] w-full items-center justify-between bg-steel/50 ps-4 font-medium tracking-tight text-void"
         >
-          {title}
+          <span>{title}</span>
+          <ButtSqx id="copy" icon="copy-fill" shadow="text-chalk/20" iconStyle="scale-[40%] text-primary/80 group-hover/table:opacity-100 opacity-0 group-hover/table:scale-100 origin-top-right transition-all ease-inOut duration-200" />
         </div>
         {renderFilteredRows(pdf ? "h-8 mb-2 flex text-xs items-center" : "h-10 mb-0 text-sm")}
       </div>
@@ -75,7 +71,7 @@ const Fields: FC<{
 
 interface IDetailItem {
   value: string;
-  icon: DualIcon;
+  icon: IconName;
   description?: string;
   component: FC;
 }
@@ -237,30 +233,33 @@ export const ContentBody = () => {
     ],
   );
 
-  const request_detail: IDetailItem[] = useMemo(
+  const request_detail = useMemo(
     () => [
       {
         value: "Request Info",
         description: "View all request fields.",
         component: ReqFields,
-        icon: FileSymlinkIcon,
+        icon: "document-linear",
       },
       {
         value: "Assured Info",
-        icon: UserIcon,
+        icon: "user-circle",
+        description: "Policy holder information.",
         component: AssuredFields,
       },
       {
         value: "Vehicle Info",
-        icon: TruckIcon,
+        icon: "scooter-linear",
+        description: "Vehicle information.",
         component: AutoFields,
       },
       {
-        value: "Downloads",
-        icon: DocumentArrowDownIcon,
+        value: "Exports",
+        icon: "share",
+        description: "PDF, CSV and Email",
         component: PDFViewer,
       },
-    ],
+    ] as IDetailItem[],
     [AutoFields, ReqFields, AssuredFields, PDFViewer],
   );
 
@@ -269,25 +268,7 @@ export const ContentBody = () => {
     [vxrequest?.status],
   );
 
-  const UpdateButton = useMemo(() => {
-    const options = opts(
-      <ButtSex
-        size="md"
-        inverted
-        end={PaperAirplaneIcon}
-        onClick={submitRequest}
-        loading={loading}
-      >
-        <span className="px-3">Submit Request</span>
-      </ButtSex>,
-      <ButtSex size="md" inverted end={ArrowUpCircleIcon}>
-        <span className="px-3 text-sm">Update Request</span>
-      </ButtSex>,
-    );
-    return <>{options.get(draft)}</>;
-  }, [draft, submitRequest, loading]);
-
-  const panelProps: ITopPanel = useMemo(
+    const panelProps: ITopPanel = useMemo(
     () => ({
       service_type: vxrequest?.service_type,
       policy_coverage: vxrequest?.policy_coverage,
@@ -316,24 +297,27 @@ export const ContentBody = () => {
 
       <div className="absolute right-1.5 top-1.5 z-50 flex items-center space-x-1">
         <FileUpload />
-        {UpdateButton}
+        <UpdateButton submitFn={submitRequest} isDraft={draft} loading={loading} />
       </div>
       <div className="pointer-events-none absolute top-0 z-[100] h-16 w-full bg-gradient-to-l from-void/20 via-transparent to-transparent"></div>
       <div className="relative -top-6 w-full overflow-hidden">
         <TopPanel {...panelProps} />
-        <div className="flex h-[calc(84vh)] w-full justify-center overflow-hidden border-y-[0.33px] border-primary-300">
+        <div className="flex h-[calc(100vh)] w-full justify-center overflow-hidden border-y-[0.33px] border-primary-300">
           <div className="grid w-full grid-cols-1 gap-x-4 md:grid-cols-6">
-            <Accordion className="col-span-4 h-[calc(84vh)] w-full overflow-y-scroll">
+            <Accordion className="col-span-4 h-[calc(100vh)] w-full overflow-y-scroll">
               {request_detail.map((detail) => (
                 <AccordionItem
                   classNames={{
                     trigger: "h-24 px-4",
                     content: "px-4",
+                    title: "data-[open=true]:text-secondary"
                   }}
                   key={detail.value}
                   aria-label={detail.value}
                   startContent={
-                    <detail.icon className="size-6 stroke-1 text-adam dark:text-steel" />
+                    <div className="h-10">
+                      <Icon name={detail.icon} className="size-6 stroke-1 text-adam dark:text-steel" />
+                    </div>
                   }
                   title={
                     <h2 className="font-medium tracking-tight">
@@ -355,3 +339,27 @@ export const ContentBody = () => {
     </div>
   );
 };
+
+interface UpdateButtonProps {
+  isDraft: boolean;
+  submitFn: VoidFunction;
+  loading: boolean;
+}
+
+const UpdateButton = memo(({ isDraft, submitFn, loading }: UpdateButtonProps) => {
+    const options = opts(
+      <ButtSex
+        size="md"
+        inverted
+        onClick={submitFn}
+        loading={loading}
+      >
+        <span>Submit Request</span>
+      </ButtSex>,
+      <ButtSex size="md" end="circle-arrow-up-right" inverted onClick={submitFn} loading={loading}>
+        <span className="text-sm">Update Request</span>
+      </ButtSex>,
+    );
+    return <>{options.get(isDraft)}</>;
+  } );
+UpdateButton.displayName = "UpdateButton";

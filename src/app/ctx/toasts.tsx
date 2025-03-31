@@ -51,9 +51,9 @@ export const onWarn = (msg: string) =>
   });
 
 export const onAwait = async (fn: () => Promise<void>, ...args: string[]) =>
-  await toast.promise(fn(), {
-    loading: args[0],
-    success: args[1],
+  await toast.promise(fn, {
+    loading: args[0] ?? "Loading...",
+    success: args[1] ?? "Success!",
     error: (err: Error) => err.message,
   });
 

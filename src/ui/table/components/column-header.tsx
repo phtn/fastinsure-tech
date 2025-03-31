@@ -35,7 +35,7 @@ export function ColumnHeader<TData, TValue>({
   if (!column.getCanSort()) {
     return (
       <div className={cn(defaultStyle, className)}>
-        {title ? title : element}
+        {title ?? element}
       </div>
     );
   }
