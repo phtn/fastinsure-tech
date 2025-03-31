@@ -24,7 +24,7 @@ export const DesktopSidebar = ({
         className={cn(
           "absolute top-0 z-50 my-6 h-[calc(100vh/12)] w-[20px] cursor-w-resize rounded-full bg-primary-50/50",
           { "cursor-e-resize": !open },
-          "transition-colors duration-1000 ease-in-out dark:hover:bg-[#B8B4AC]/80",
+          "transition-colors duration-1000 ease-in-out hover:bg-orange-200",
           "border-b-[0.33px] border-l-[0.33px] border-slate-400/40",
           "shadow-2xl shadow-void dark:border-slate-700/70 dark:bg-zinc-600/80",
         )}
@@ -42,7 +42,15 @@ export const DesktopSidebar = ({
           "flex justify-end",
         )}
       >
-        <div className="h-full w-[16px] rounded-full bg-transparent transition-all duration-500 ease-out translate-x-4 transform-gpu group-hover:animate-pulse group-hover:bg-primary-50/50 group-hover:shadow-inner group-hover:-translate-x-0 dark:group-hover:bg-[#B8B4AC]/80" />
+
+        {/* "", */}
+
+        <div className={cn("h-full w-[17px] rounded-full",
+          "transition-all translate-x-6 transform-gpu",
+          "duration-1000 ease-in-out group-hover:bg-orange-200",
+          "group-hover:shadow-inner group-hover:-translate-x-0",
+          "shadow-inner"
+        )} />
       </motion.button>
 
       <motion.div

@@ -17,7 +17,7 @@ const Header = () => (
         className="size-[12px] rounded-none xl:size-[16px]"
       />
     </div>
-    <h1 className="font-inst space-x-1.5 font-medium text-foreground drop-shadow-lg dark:text-foreground/60 xl:text-lg">
+    <h1 className="font-inst space-x-1 font-medium text-foreground drop-shadow-lg dark:text-foreground/60 xl:text-lg">
       <span className="text-normal font-semibold -tracking-wide text-primary dark:text-icon-dark">
         FastInsure
       </span>

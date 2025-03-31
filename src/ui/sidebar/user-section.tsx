@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { memo, useCallback, useMemo, useState } from "react";
 import { FlexRow } from "../flex";
 import Link from "next/link";
+import { Brand } from "@/app/(legal)/_components/toc";
 
 const UserSectionComponent = (props: { open: boolean }) => {
   const [loading, setLoading] = useState(false);
@@ -19,17 +20,15 @@ const UserSectionComponent = (props: { open: boolean }) => {
 
   const LegalOptions = useCallback(() => {
     const options = opts(
-      <section className="whitespace-nowrap">
+      <section className="whitespace-nowrap flex">
         <FlexRow className="h-4 items-center font-inst text-[11px] font-medium text-steel/80 drop-shadow-md">
-          FastInsure Technologies, Inc.{" "}
-          <span className="px-[2px] font-inter">&copy;</span>{new Date().getFullYear()}
+          <Brand name="FastInsure Technologies" gap={0.5} />
         </FlexRow>
-        <FlexRow className="h-4 items-center hidden px-[1px] font-inst text-[10px] text-steel/70 drop-shadow-md">
-          <span>Privacy</span>
-          <span>⏺</span>
-          <span>Terms</span>
-          <span>⏺</span>
-          <span>Cookies</span>
+        <FlexRow className="h-4 items-center px-[1px] font-inst text-[10px] text-steel/70 drop-shadow-md">
+          <span>&middot;</span>
+          <Link href="/privacy">Privacy</Link>
+          <span>&middot;</span>
+          <Link href="/terms">Terms</Link>
         </FlexRow>
       </section>,
       <motion.div

@@ -3,6 +3,7 @@ import { Image } from "@nextui-org/react";
 import { Scene } from "./three/scene";
 import { useThemeCtx } from "../ctx/theme";
 import { FlexRow } from "@/ui/flex";
+import Link from "next/link";
 
 export function Proxima() {
   const { theme } = useThemeCtx();
@@ -46,9 +47,9 @@ export function Proxima() {
           </div>
           <p className="opacity-50">&middot;</p>
           <div className="flex h-1/2 items-end space-x-4">
-            <p className="">Privacy</p>
+            <Link href="/privacy">Privacy</Link>
             <p className="opacity-50">&middot;</p>
-            <p className="">Terms</p>
+            <Link href="/terms">Terms</Link>
           </div>
         </div>
         <SynthGrid />
