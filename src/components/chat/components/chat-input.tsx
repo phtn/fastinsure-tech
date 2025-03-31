@@ -29,7 +29,7 @@ export function ChatInput({ value, onChange, onSend }: ChatInputProps) {
             }}
           />
         </div>
-        <ButtSqx icon="arrow-left-02" iconStyle="rotate-90 group-hover/btn:text-white" shadow="text-secondary" onClick={onSend} size="lg" />
+        <ButtSqx icon="arrow-left-02" iconStyle="rotate-90 group-hover/btn:text-white" shadow="text-macl-blue" onClick={onSend} size="lg" />
       </div>
     </div>
   )

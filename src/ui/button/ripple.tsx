@@ -97,7 +97,7 @@ export const ButtSex = ({
         disabled={disabled ?? loading}
         className={cn(
           "relative flex w-full items-center justify-center overflow-hidden",
-          "rounded-lg border space-x-1.5",
+          "rounded-lg border space-x-1.5 min-w-[36px]",
           "border-primary/40 bg-white group-hover:bg-white",
           "dark:bg-void dark:group-hover:bg-void",
           "dark:border-primary-500/40 dark:group-hover:border-primary-500/50",
@@ -108,8 +108,7 @@ export const ButtSex = ({
             "bg-void dark:bg-primary": inverted,
             "dark:border-void/60 dark:group-hover:border-void/80": inverted,
             "group-hover:bg-void dark:group-hover:bg-white": inverted,
-            "h-8 rounded-lg ps-2 pe-1 py-1.5": size === "sm",
-            "h-8 rounded-lg px-2 py-1.5": size === "sm" && !end,
+            "h-8 rounded-lg px-2 py-1.5": size === "sm",
             "h-8 rounded-lg pe-3 py-1.5": size === "sm" && !!start,
             "h-10 rounded-xl px-2.5 py-2": size === "md",
             "h-10 rounded-xl gap-0.5 ps-3 pe-2.5 py-2": size === "md" && !!end,

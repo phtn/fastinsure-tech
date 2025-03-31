@@ -163,7 +163,7 @@ export const BasicAction = (props: BasicActionProps) => (
     </ActionCard.Header>
     <Action>
       <Action.Btn onPress={props.fn} loading={props.loading}>
-        <Action.Label>{props.loading ? <Spinner size="sm" color="secondary"/> : props.label}</Action.Label>
+        <Action.Label>{props.loading ? <Spinner size="sm" color="warning"/> : props.label}</Action.Label>
       </Action.Btn>
     </Action>
     {props.children}
@@ -228,7 +228,7 @@ export const CreateRequest = () => {
       </ActionCard.Header>
       <Action>
         <Action.Btn onPress={handleCreate} loading={create.loading}>
-          <Action.Label>{create.loading ? <Spinner size="sm" color="secondary"/> : "Create"}</Action.Label>
+          <Action.Label>{create.loading ? <Spinner size="sm" color="warning"/> : "Create"}</Action.Label>
         </Action.Btn>
       </Action>
     </ActionCard>

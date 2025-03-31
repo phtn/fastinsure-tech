@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState, type ChangeEvent } from "react";
 import { cn } from "@/lib/utils";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Button } from "@nextui-org/react";
+import { ButtSex } from "@/ui/button/ripple";
 
 interface DataToolbarProps {
   searchFn: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -46,8 +46,10 @@ export const DataToolbar = ({ searchFn, search, count }: DataToolbarProps) => {
         </div>
         <ToolbarTitle title={`Items`} />
         <Searchbar />
-        <Button size="sm" onPress={resetSearch} color={searchValue === "" ? "secondary" : "default"} variant={searchValue === "" ? "solid" : "light"} className="">All</Button>
-        <Button size="sm" onPress={handleSearchSubmitted} color={searchValue === "submitted" ? "secondary" : "default"} variant={searchValue === "submitted" ? "solid" : "light"} className="">Submitted</Button>
+        <div className="flex items-center space-x-3 w-fit">
+        <ButtSex size="sm" onClick={resetSearch} inverted={searchValue === ""} className="">All</ButtSex>
+        <ButtSex size="sm" onClick={handleSearchSubmitted} inverted={searchValue === "submitted"} className="">Submitted</ButtSex>
+        </div>
         {/* <Button size="sm" color="secondary"><span className="px-2">Submitted</span></Button> */}
       </div>
     </div>

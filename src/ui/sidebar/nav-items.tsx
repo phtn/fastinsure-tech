@@ -41,7 +41,7 @@ export const NavItem = (item: NavItemProps) => {
             className={cn(
               "size-[1.5rem] shrink-0 text-primary-200 drop-shadow-md transition-all duration-300 ease-out transform-gpu hover:text-primary-200 group-hover:text-chalk group-hover:scale-105 dark:text-primary-700",
               {
-                "active text-secondary dark:text-secondary-400": isActive,
+                "active text-macd-blue dark:text-secondary-400": isActive,
               },
             )}
           />

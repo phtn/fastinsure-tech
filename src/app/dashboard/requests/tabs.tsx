@@ -1,5 +1,6 @@
 "use client";
 
+import { Icon } from "@/lib/icon";
 import { cn } from "@/lib/utils";
 import { ButtSex, ButtSqx } from "@/ui/button/index";
 import { guid } from "@/utils/helpers";
@@ -73,24 +74,26 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
     <div className="relative">
       <section className="flex items-center px-4">
         <Tabs
-          items={tabs}
-          onSelectionChange={handleSelect}
-          defaultSelectedKey={"all"}
-          selectedKey={selected}
           size="sm"
-          className="absolute -top-[3.2rem] right-4 z-[200]"
+          items={tabs}
           isVertical={false}
+          variant="light"
+          selectedKey={selected}
+          defaultSelectedKey={"all"}
+          onSelectionChange={handleSelect}
+          className="absolute -top-[3.2rem] right-4 z-[200]"
           classNames={{
             tabList:
-              "w-full",
-            tab: "w-fit font-semibold tracking-tight text-xs",
+              "w-full pe-2",
+            tab: "w-fit tracking-tight font-medium px-1.5",
+            tabContent: "text-xs",
           }}
         >
           {tabs.map((tab) => (
             <Tab
               key={tab.value}
-              title={tab.label}
-              className={cn({ "text-gray-500": tab.value === selected })}
+              title={<div className="flex items-center space-x-1"><Icon name="refresh-circle" className="size-4 text-macl-gray/80" /><span>{tab.label}</span></div>}
+              className={cn({ "text-macl-gray": tab.value === selected })}
             >
               {tab.content}
             </Tab>
@@ -115,9 +118,8 @@ export const TabContainer = ({ children }: PropsWithChildren) => {
           </p>
         </ButtSex>
 
-        <section className="flex h-[32px] items-center rounded-[8px] border border-primary-300 bg-goddess px-0.5 dark:border-primary-500/40 dark:bg-void">
+        <section className="flex h-[32px] items-center rounded-[8px] border border-primary-300 px-0.5 dark:border-primary-500/40 dark:bg-void">
           <ButtSqx size="sm" variant="active" icon={"list-down"} />
-          <ButtSqx size="sm" variant="goddess" icon={"slider"} />
         </section>
       </div>
     </div>

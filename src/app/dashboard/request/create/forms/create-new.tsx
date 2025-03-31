@@ -234,7 +234,7 @@ export const CreateNew = () => {
             <AutoFields register={register} />
             {HiddenFieldsGroup}
           </div>
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 pt-10">
             <SpecialGroup
               title="Document Scanner"
               subtext="Currently optimized to scan Certificate of Registration."

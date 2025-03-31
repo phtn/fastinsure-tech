@@ -38,7 +38,9 @@ const SAMPLE_CHATS = [
     name: "Robert Allen",
     lastMessage: "You unblocked this user",
     timestamp: "4:30 PM",
+    unreadCount: 9,
     isOnline: true,
+    isTyping: true,
     avatar: "/placeholder.svg?height=50&width=50"
   },
   {
@@ -116,7 +118,7 @@ export function Chats() {
       <div
         ref={sidebarRef}
         className={`
-          w-80 border-r transition-all duration-300 ease-in-out
+          w-96 border-r transition-all duration-300 ease-in-out
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
           fixed left-0 top-0 bottom-0 z-30 bg-white
           lg:relative lg:translate-x-0
@@ -136,7 +138,7 @@ export function Chats() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col w-full lg:w-[calc(100%-20rem)]">
+      <div className="flex-1 flex flex-col w-full lg:w-[calc(100%-24rem)]">
         <ChatHeader
           name={selectedChat?.name}
           isTyping={true}
