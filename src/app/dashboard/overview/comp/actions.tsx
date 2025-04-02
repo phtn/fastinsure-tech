@@ -37,7 +37,10 @@ export const CreateAgentCode = () => {
    const {send} = useEmail()
 
    const handleSend = useCallback(async (payload: EmailContext) => {
-     await send(payload);
+     await send(payload).catch((e: unknown) => {
+       console.log("ACTIONS")
+       console.log(e)
+     });
    }, [send]);
 
   const QrViewer = useCallback(() => {
@@ -111,6 +114,7 @@ export const CreateAgentCode = () => {
             </Qr.Code>
             <Qr.Detail>
               <QrDetails
+                url={agentCode?.url}
                 key_code={agentCode?.code}
                 expiry={agentCode?.expiry}
                 downloadFn={handleDownload}

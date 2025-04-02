@@ -38,8 +38,8 @@ const TableRow = (request: SelectRequest) => {
       <PolicyCoverageCell type={request?.policy_coverage} />
       <ServiceTypeCell type={request?.service_type} />
       <StatusCell status={request?.status} />
-      <UserCell id={request?.agent_id} agent />
-      <UserCell id={request?.underwriter_id} />
+      <UserCell id={request?.agent_name} agent />
+      <UserCell id={request?.underwriter_name} />
     </div>
   );
 };

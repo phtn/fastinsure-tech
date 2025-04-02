@@ -46,12 +46,12 @@ const Handle = ({ close }: { close: VoidFunction }) => (
    <div
     onClick={close}
     aria-hidden
-    className="h-1 w-5 absolute -rotate-45 flex-shrink-0 cursor-pointer rounded-full bg-amber-600"
+    className="h-[3px] w-5 absolute -rotate-45 flex-shrink-0 cursor-pointer rounded-full bg-amber-600/90"
     />
   <div
     onClick={close}
     aria-hidden
-    className="h-1 w-5 absolute rotate-45 flex-shrink-0 cursor-pointer rounded-full bg-amber-500 drop-shadow-sm transition-colors duration-300 ease-in group-hover:bg-warning"
+    className="h-[3px] w-5 absolute rotate-45 flex-shrink-0 cursor-pointer rounded-full bg-amber-500 drop-shadow-sm transition-colors duration-300 ease-in group-hover:bg-warning"
   />
   </div>
 );
@@ -113,7 +113,7 @@ const Url = ({ url, children }: UrlProps) => (
   <div className="mx-auto flex w-full items-center justify-between">
     <div className="flex w-fit items-center overflow-auto whitespace-nowrap">
       <Link
-        href={url ?? ""}
+        href={url ?? "#"}
         target="_blank"
         className="font-mono text-xs font-light text-primary decoration-macd-blue hover:underline hover:underline-offset-2"
       >

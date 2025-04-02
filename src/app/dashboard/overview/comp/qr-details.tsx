@@ -1,3 +1,5 @@
+"use client"
+
 import { type DualIcon } from "@/app/types";
 import { copyFn, Err, Ok } from "@/utils/helpers";
 import {
@@ -37,13 +39,14 @@ import { format, formatDistanceToNow } from "date-fns";
 
 interface QrDetailsProps {
   key_code: string | undefined;
+  url: string | undefined;
   expiry: number | undefined;
   downloadFn: VoidFunction;
   shareFn: VoidFunction;
   sendFn: (payload: EmailContext) => Promise<void>;
 }
 export const QrDetails = (props: QrDetailsProps) => {
-  const {sendFn, shareFn, downloadFn, key_code} = props
+  const {sendFn, shareFn, downloadFn, key_code, url} = props
   const { expiry, validity } = useMemo(
     () => calcExpiryAndValidity(props.expiry),
     [props.expiry],
@@ -75,13 +78,13 @@ export const QrDetails = (props: QrDetailsProps) => {
         name: validated.data.name,
         email: validated.data.email,
         subject: validated.data.subject,
-        text: key_code,
+        text: key_code + "--" + url,
       } as EmailContext
       if (validated.success){
         await sendFn(payload).then(Ok(setSending, "Email sent!")).catch(Err(setSending))
       }
     },
-    [sendFn, key_code],
+    [sendFn, key_code, url],
   );
 
   const SendEmail = useCallback(() => (
@@ -244,7 +247,6 @@ export const Strong = (props: { text: string }) => (
 interface TQrDetail {
   id: string;
   title: string;
-  subtitle?: string;
   indicator: ({ isOpen }: AccordionItemIndicatorProps) => ReactElement;
   content?: ReactNode | string;
   startContent: DualIcon;
@@ -255,7 +257,6 @@ const detail_data: TQrDetail[] = [
   {
     id: "code",
     title: "Activation Code",
-    subtitle: "QR code generated",
     startContent: QrCodeIcon,
     indicator: indicator(false),
     animateIndicator: true,
@@ -263,7 +264,6 @@ const detail_data: TQrDetail[] = [
   {
     id: "expiry",
     title: "Valid Until",
-    subtitle: "Valid until",
     startContent: ClockIcon,
     animateIndicator: true,
     indicator: indicator(false, 0),
@@ -276,7 +276,6 @@ const detail_data: TQrDetail[] = [
   {
     id: "download",
     title: "Download QR Code",
-    subtitle: "Download the QR code",
     startContent: ArrowDownTrayIcon,
     indicator: indicator(true),
     animateIndicator: false,
@@ -293,7 +292,6 @@ const detail_data: TQrDetail[] = [
   {
       id: "send",
       title: "Send to Email",
-      subtitle: "Send link to email",
       startContent: PaperAirplaneIcon,
       indicator: indicator(true),
       animateIndicator: false,

@@ -1,8 +1,12 @@
+"use client"
+
+import { type EmailContext } from "@/lib/email/schema";
 import { sendEmail } from "@/server/email/callers";
-import { asyncFn } from "@/utils/async";
 
 
 export const useEmail = () => {
-  const send = asyncFn(sendEmail);
+  const send = async (params: EmailContext) => {
+    return await sendEmail(params)
+  };
   return { send};
 };

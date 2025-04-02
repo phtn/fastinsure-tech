@@ -40,11 +40,11 @@ const UserSectionComponent = (props: { open: boolean }) => {
         className="flex justify-center rounded-full"
       >
         <motion.div
-          initial={{ height: 6, width: 6, backgroundColor: "transparent" }}
+          initial={{ height: 6, width: 6, backgroundColor: "#14141b" }}
           animate={{
             height: props.open ? 8 : 6,
             width: props.open ? 6 : 32,
-            backgroundColor: props.open ? "transparent" : "#9ca3af ",
+            backgroundColor: props.open ? "#14141b" : "#9CA3AF",
           }}
           exit={{ height: 0 }}
           transition={{ duration: 0.3, delay: 0.15 }}

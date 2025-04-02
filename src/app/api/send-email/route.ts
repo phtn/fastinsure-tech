@@ -17,13 +17,16 @@ export async function POST(req: Request) {
   if (!email) {
     return NextResponse.json({message: "Email address is required."})
   }
+  if (!text) {
+      return NextResponse.json({message: "Email text is required."})
+    }
 
   const template = async (type: string) => {
     switch(type) {
       case 'activation':
-        return ActivationEmail({ code: text });
+        return ActivationEmail({ text });
       default:
-        return ActivationEmail({ code: name });
+        return ActivationEmail({ text: name });
     }
   }
 

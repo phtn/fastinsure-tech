@@ -1,17 +1,16 @@
 import { ButtSqx } from "@/ui/button/button";
 import { FlexRow } from "@/ui/flex";
+import { getInitials } from "@/utils/helpers";
 import { cn, User } from "@nextui-org/react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import { memo, useCallback, useMemo } from "react";
-import { useRequests } from "../useRequests";
-import { getInitials } from "@/utils/helpers";
 
 // Common styles
 const cellStyles = {
-  base: "flex h-6 border-[0.33px] border-primary-400 items-center rounded-md px-1.5",
+  base: "flex h-6 border border-primary-400 text-sm items-center rounded-md px-1.5",
   gradientBase: "bg-gradient-to-tr",
-  text: "text-sm font-medium capitalize tracking-tight dark:text-chalk",
+  text: "text-xs font-medium capitalize dark:text-chalk",
 };
 
 export const RequestIdCell = memo((props: { id: string }) => {
@@ -110,7 +109,7 @@ export const PolicyCoverageCell = memo((props: { type: string | undefined }) => 
           <div className={cn(
             cellStyles.base,
             cellStyles.gradientBase,
-            "from-vanilla via-ice to-cake"
+            "bg-macd-indigo/20"
           )}>
             <span className={cn(cellStyles.text, "uppercase")}>full</span>
           </div>
@@ -120,7 +119,7 @@ export const PolicyCoverageCell = memo((props: { type: string | undefined }) => 
           <div className={cn(
             cellStyles.base,
             cellStyles.gradientBase,
-            "from-army/30 via-army/20 to-transparent"
+            "bg-macd-orange/20"
           )}>
             <span className={cellStyles.text}>CTPL</span>
           </div>
@@ -135,7 +134,7 @@ PolicyCoverageCell.displayName = "PolicyCoverageCell";
 export const ServiceTypeCell = memo((props: { type: string | undefined }) => {
   const content = useMemo(() => {
     const gradientClass = props.type === "new"
-      ? "from-amber-300/50 via-amber-300/20 to-amber-300/10 dark:from-slate-800/20"
+      ? "bg-macd-green/20 text-primary"
       : "from-teal-300/50 via-teal-300/20 to-teal-300/10 dark:from-slate-800/20";
 
     return (
@@ -162,8 +161,8 @@ export const StatusCell = memo((props: { status: string | undefined }) => {
       <div className={cn(
         cellStyles.base,
         isSubmitted
-          ? "bg-gradient-to-tr from-secondary/50 via-secondary/10 to-transparent dark:bg-steel/15 dark:from-slate-800/20"
-          : "bg-steel/10"
+          ? "bg-macd-blue/20 text-primary"
+          : "bg-steel/20"
       )}>
         <span className={cellStyles.text}>
           {isSubmitted ? "submitted" : "draft"}
@@ -179,18 +178,8 @@ export const StatusCell = memo((props: { status: string | undefined }) => {
 StatusCell.displayName = "StatusCell";
 
 export const UserCell = memo((props: { id: string | undefined; agent?: boolean }) => {
-  const { underwriters, vxusers, role } = useRequests();
 
-  const vx = useMemo(() => {
-    if (!props.id) return null;
-    return props.agent
-      ? vxusers?.find((u) => u.uid === props.id)
-      : role === "underwriter"
-        ? vxusers?.find((u) => u.role === "supervisor")
-        : underwriters?.find((u) => u.uid === props.id);
-  }, [props.id, props.agent, vxusers, role, underwriters]);
-
-  if (!props.id) {
+    if (!props.id) {
     return (
       <span className="flex h-6 items-center rounded-md border-[0.33px] border-primary-400 px-1.5 text-primary/60 text-xs">
         Not set
@@ -200,20 +189,20 @@ export const UserCell = memo((props: { id: string | undefined; agent?: boolean }
 
   return (
     <User
-      id={vx?.uid}
-      name={vx?.nickname?.split(" ")[0]}
+      id={props.id}
+      name={props.id}
       description={
         <div className="flex items-center font-mono text-xs tracking-tight text-adam drop-shadow-sm hover:opacity-100 hover:drop-shadow-md dark:text-chalk" />
       }
       avatarProps={{
-        src: vx?.photo_url,
-        size: "sm",
-        className: "size-4",
-        fallback: getInitials(vx?.fullname),
+        name: getInitials(props.id)?.toUpperCase(),
+        size: "sm"
       }}
+
       classNames={{
         name: "font-semibold text-sm text-primary/90 font-inter capitalize tracking-tighter",
         wrapper: "w-44 truncate",
+        base: "text-chalk font-bold"
       }}
     />
   );

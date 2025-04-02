@@ -39,9 +39,10 @@ export function LoaderMd() {
 interface TextLoaderProps {
   size?: number;
   container?: ClassName;
+  color?: ClassName;
 }
 
-export const TextLoader = ({ size = 16, container }: TextLoaderProps) => {
+export const TextLoader = ({ size = 16, container, color }: TextLoaderProps) => {
   const containerRef = useRef(null);
   const { width } = useDimension(containerRef).dimensions;
 
@@ -98,7 +99,7 @@ export const TextLoader = ({ size = 16, container }: TextLoaderProps) => {
           ref={(ref) => {
             dotsRef.current[i] = ref;
           }}
-          className={cn("leading-none text-xs text-macd-blue drop-shadow-xl")}
+          className={cn("leading-none text-xs text-macd-blue drop-shadow-xl", color)}
           style={{
             position: "absolute",
             transform: "translateY(-50%)",

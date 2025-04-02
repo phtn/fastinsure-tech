@@ -31,7 +31,7 @@ export const useNav = () => {
       {
         label: "Team",
         href: "/dashboard/team",
-        icon: { type: "icon", content: "group" },
+        icon: { type: "icon", content: "groups" },
       },
       {
         label: "Chats",

@@ -302,9 +302,9 @@ export const ContentBody = () => {
       <div className="pointer-events-none absolute top-0 z-[100] h-16 w-full bg-gradient-to-l from-void/20 via-transparent to-transparent"></div>
       <div className="relative -top-6 w-full overflow-hidden">
         <TopPanel {...panelProps} />
-        <div className="flex h-[calc(100vh)] w-full justify-center overflow-hidden border-y-[0.33px] border-primary-300">
+        <div className="flex h-[calc(100vh-100px)] w-full justify-center overflow-hidden border-y-[0.33px] border-primary-300">
           <div className="grid w-full grid-cols-1 gap-x-4 md:grid-cols-6">
-            <Accordion className="col-span-4 h-[calc(100vh)] w-full overflow-y-scroll">
+            <Accordion className="col-span-4 h-[calc(100vh-150px)] w-full overflow-y-scroll">
               {request_detail.map((detail) => (
                 <AccordionItem
                   classNames={{

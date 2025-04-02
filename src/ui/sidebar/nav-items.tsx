@@ -27,7 +27,10 @@ export const NavItem = (item: NavItemProps) => {
   const { open } = use(SidebarCtx)!;
   const { href, label, icon, className, id } = item;
   const pathname = usePathname();
-  const isActive = pathname.startsWith(href);
+  const currentSlug = pathname.split("/").pop()
+  console.log(currentSlug, href)
+
+  const isActive = currentSlug === href.split("/").pop();
 
   const renderIcon = useCallback(() => {
     if (icon.type === "icon") {
@@ -39,9 +42,9 @@ export const NavItem = (item: NavItemProps) => {
           <Icon
             name={icon.content}
             className={cn(
-              "size-[1.5rem] shrink-0 text-primary-200 drop-shadow-md transition-all duration-300 ease-out transform-gpu hover:text-primary-200 group-hover:text-chalk group-hover:scale-105 dark:text-primary-700",
+              "size-[1.5rem] shrink-0 drop-shadow-md text-chalk/80 transition-all duration-300 ease-out transform-gpu hover:text-warning group-hover:text-chalk group-hover:scale-105 dark:text-primary-700",
               {
-                "active text-macd-blue dark:text-secondary-400": isActive,
+                "active text-macd-blue": isActive,
               },
             )}
           />
@@ -68,7 +71,7 @@ export const NavItem = (item: NavItemProps) => {
         className={cn(
           "rounded-xl px-3 tracking-tight py-1 font-medium text-orange-50/80",
           "transition-all duration-300 ease-out",
-          {"active text-blue-400": isActive}
+          {"active text-macd-blue": isActive}
           )}
       >
         {item.label}

@@ -1,5 +1,3 @@
-"use server";
-
 import { type EmailContext } from "@/lib/email/schema";
 import type { AxiosInstance, AxiosRequestConfig } from "axios";
 

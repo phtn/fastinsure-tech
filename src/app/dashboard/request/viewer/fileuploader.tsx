@@ -257,7 +257,8 @@ export const PDFDocument = (props: {
         </p>
         <ButtSqx
           size="sm"
-          icon={"arrow-right-02"}
+          icon={"arrow-left-01"}
+          iconStyle="rotate-180"
           onClick={nextPage}
           disabled={pageNumber === numPages}
         />
